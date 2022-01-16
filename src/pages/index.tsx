@@ -17,12 +17,12 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/api">
-            Quick Start
+            Read Docs
           </Link>
           <Link
             className="button button--secondary button--lg"
             to="/api">
-            API Docs
+            Browse APIs
           </Link>
         </div>
       </div>

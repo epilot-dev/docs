@@ -58,7 +58,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         },
         items: [
           {
-            label: 'About',
+            label: 'Documentation',
             type: 'doc',
             docId: 'intro',
             position: 'left',
@@ -69,7 +69,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             position: 'left',
           },
           {
-            to: '/api',
+            to: '/docs/architecture/sdk',
             label: 'SDK',
             position: 'left',
           },
@@ -87,7 +87,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             title: 'Docs',
             items: [
               {
-                label: 'About',
+                label: 'Documentation',
                 to: '/docs/intro',
               },
               {
@@ -96,7 +96,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
               },
               {
                 label: 'SDK',
-                to: '/api',
+                to: '/docs/architecture/sdk',
               },
               {
                 label: 'Engineering Principles',
@@ -108,7 +108,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             title: 'Links',
             items: [
               {
-                label: 'epilot.cloud',
+                label: 'Portal',
+                href: 'https://portal.epilot.cloud',
+              },
+              {
+                label: 'Website',
                 href: 'https://epilot.cloud',
               },
               {
