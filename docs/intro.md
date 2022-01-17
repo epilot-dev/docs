@@ -1,18 +1,15 @@
 ---
+title: Developer Documentation
+hide_title: true
 sidebar_position: 1
 ---
 
-# Developer Documentation
+<p>&nbsp;</p>
 
-Welcome to the official epilot developer documentation!
+<p align="center"><a href="/"><img src="/img/logo.png" width="150" /></a></p>
 
-Please use the search feature or use the left navigation to browse pages.
+<h2 align="center">Welcome to epilot developer documentation!</h2>
 
-<a href="/"><img src="/img/logo.png" width="150" /></a>
+<p align="center">Please use the Search feature or use the left navigation to browse pages.</p>
 
-## Quick Start
-
-- [Authentication Quick Start](http://localhost:3000/docs/auth/authentication)
-- [SDK](/docs/architecture/sdk)
-- [API Specs](/api)
-- [Architecture Overview](/docs/architecture/overview)
+<p align="center">You can reach out to us at <a href="mailto:dev@epilot.cloud">dev@epilot.cloud</a></p>

@@ -91,7 +91,7 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
           },
         ].map((spec) => ({ ...spec, apiDocComponent: '../src/components/RedocPage' })),
         theme: {
-          primaryColor: '#1b3855',
+          primaryColor: '#cc5cac',
           redocOptions: {
             hideDownloadButton: false,
             nativeScrollbars: true,
