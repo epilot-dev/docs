@@ -11,8 +11,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'epilot-dev', // Usually your GitHub org/user name.
+  projectName: 'docs', // Usually your repo name.
 
   presets: [
     [
@@ -22,7 +22,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
+          editUrl: 'https://github.com/epilot-dev/docs/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -35,8 +35,12 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         debug: Boolean(process.env.DEBUG || process.env.CI),
         specs: [
           {
-            routePath: '/api/',
-            specUrl: 'https://redocly.github.io/redoc/openapi.yaml',
+            routePath: '/api/user',
+            specUrl: 'https://docs.api.epilot.io/user.yaml',
+          },
+          {
+            routePath: '/api/entity',
+            specUrl: 'https://docs.api.epilot.io/entity.yaml',
           },
         ],
         theme: {
