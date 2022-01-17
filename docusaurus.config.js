@@ -119,6 +119,11 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
             routePath: '/api/workflow-execution',
             specUrl: 'https://docs.api.epilot.io/workflows-execution.yaml',
           },
+          {
+            layout: { title: 'Internal Auth API' },
+            routePath: '/api/internal-auth',
+            specUrl: 'https://docs.api.epilot.io/internal-auth.yaml',
+          },
         ].map((spec) => ({ ...spec, apiDocComponent: '../src/components/RedocPage' })),
         theme: {
           primaryColor: '#cc5cac',

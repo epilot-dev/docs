@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Template Variables
+# Email Templates
 
 ```
 // TODO

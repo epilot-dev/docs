@@ -4,6 +4,9 @@ sidebar_position: 12
 
 # Webhooks
 
+[[API Docs](/api/webhooks)]
+[[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
+
 The epilot [Webhooks API](/api/webhooks) provides the possibility to subscribe to epilot public events. This will allow you to receive notifications with payload to your configured webhook URL every time events happen in your account.
 
 This document describes the steps how to configure hooks, subscribe to events and how to manage those configurations. Service is reachable using https connection to ensure encryption between client and service.

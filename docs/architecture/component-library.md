@@ -4,6 +4,8 @@ sidebar_position: 5
 
 # Component Library
 
+[[SDK](https://www.npmjs.com/package/@epilot/base-elements)]
+
 We provide a shared component library, based on [Material UI](https://mui.com/) for shared frontend UI elements.
 
 The component library is distributed as a set of npm packages:

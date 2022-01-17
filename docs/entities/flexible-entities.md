@@ -4,6 +4,9 @@ sidebar_position: 1
 
 # Flexible Entities
 
+[[API Docs](/api/entity)]
+[[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
+
 The epilot application uses a flexible *Entities* data layer to model business data on the platform.
 
 ## Entities

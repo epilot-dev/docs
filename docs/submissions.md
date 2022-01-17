@@ -5,6 +5,7 @@ sidebar_position: 7
 # Submissions
 
 [[API Docs](/api/submission)]
+[[SDK](https://www.npmjs.com/package/@epilot/submission-client)]
 
 Submissions are entities that store raw data collected from Journeys or other outside data sources into epilot.
 

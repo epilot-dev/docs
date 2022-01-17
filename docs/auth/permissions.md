@@ -4,6 +4,9 @@ sidebar_position: 3
 
 # Permissions
 
+[[API Docs](/api/permissions)]
+[[SDK](https://www.npmjs.com/package/@epilot/permissions)]
+
 Epilot implements flexible role-based access control using influenced by the design of AWS IAM policies.
 
 The epilot Permissions system consists of these basic ideas:
