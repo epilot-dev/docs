@@ -178,7 +178,7 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
             ],
           },
         ],
-        copyright: `&copy; epilot GmbH ${new Date().getFullYear()} – Max-the-DEV`,
+        copyright: `&copy; epilot.cloud ${new Date().getFullYear()} – Max-the-DEV`,
       },
       prism: {
         theme: lightCodeTheme,
