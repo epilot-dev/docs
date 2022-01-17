@@ -94,7 +94,8 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
           primaryColor: '#1b3855',
           redocOptions: {
             hideDownloadButton: false,
-            sideNavStyle: false,
+            nativeScrollbars: true,
+            pathInMiddlePanel: true,
           },
         },
       },
