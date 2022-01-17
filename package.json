@@ -12,11 +12,14 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "lint": "eslint src --ext js,jsx,ts,tsx,json",
+    "lint:fix": "eslint src --ext js,jsx,ts,tsx,json --fix"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-beta.6",
-    "@docusaurus/preset-classic": "2.0.0-beta.6",
+    "@cmfcmf/docusaurus-search-local": "^0.9.3",
+    "@docusaurus/core": "2.0.0-beta.14",
+    "@docusaurus/preset-classic": "2.0.0-beta.14",
     "@mdx-js/react": "^1.6.21",
     "@svgr/webpack": "^5.5.0",
     "clsx": "^1.1.1",
@@ -29,10 +32,12 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.0.0-beta.6",
+    "@epilot/eslint-config": "^1.2.10",
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/react": "^17.0.14",
     "@types/react-helmet": "^6.1.2",
     "@types/react-router-dom": "^5.1.8",
+    "eslint": "^7.15.0",
     "typescript": "^4.3.5"
   },
   "browserslist": {

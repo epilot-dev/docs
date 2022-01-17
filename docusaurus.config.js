@@ -1,11 +1,12 @@
-const lightCodeTheme = require('prism-react-renderer/themes/github');
+/* eslint-disable @typescript-eslint/no-var-requires */
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer/themes/github');
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
-  title: 'Epilot Developer Portal',
-  tagline: 'The epilot platform for developers.',
+  title: 'Epilot Dev Docs',
+  tagline: 'Official epilot developer documentation',
   url: 'https://dev.epilot.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -13,7 +14,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   favicon: 'img/favicon.ico',
   organizationName: 'epilot-dev', // Usually your GitHub org/user name.
   projectName: 'docs', // Usually your repo name.
-
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -35,27 +35,79 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         debug: Boolean(process.env.DEBUG || process.env.CI),
         specs: [
           {
+            layout: { title: 'User API' },
             routePath: '/api/user',
             specUrl: 'https://docs.api.epilot.io/user.yaml',
           },
           {
+            layout: { title: 'Organization API' },
+            routePath: '/api/organization',
+            specUrl: 'https://docs.api.epilot.io/organization-v2.yaml',
+          },
+          {
+            layout: { title: 'Entity API' },
             routePath: '/api/entity',
             specUrl: 'https://docs.api.epilot.io/entity.yaml',
           },
-        ],
+          {
+            layout: { title: 'Submission API' },
+            routePath: '/api/submission',
+            specUrl: 'https://docs.api.epilot.io/submission-api.yaml',
+          },
+          {
+            layout: { title: 'Pricing API' },
+            routePath: '/api/pricing',
+            specUrl: 'https://docs.api.epilot.io/pricing-api.yaml',
+          },
+          {
+            layout: { title: 'Permissions API' },
+            routePath: '/api/permissions',
+            specUrl: 'https://docs.api.epilot.io/permissions.yaml',
+          },
+          {
+            layout: { title: 'Message API' },
+            routePath: '/api/message',
+            specUrl: 'https://docs.api.epilot.io/message.yaml',
+          },
+          {
+            layout: { title: 'File API' },
+            routePath: '/api/file',
+            specUrl: 'https://docs.api.epilot.io/file.yaml',
+          },
+          {
+            layout: { title: 'Document API' },
+            routePath: '/api/document',
+            specUrl: 'https://docs.api.epilot.io/document.yaml',
+          },
+          {
+            layout: { title: 'Webhooks API' },
+            routePath: '/api/webhooks',
+            specUrl: 'https://docs.api.epilot.io/webhooks.yaml',
+          },
+          {
+            layout: { title: 'Automation API' },
+            routePath: '/api/automation',
+            specUrl: 'https://docs.api.epilot.io/automation.yaml',
+          },
+        ].map((spec) => ({ ...spec, apiDocComponent: '../src/components/RedocPage' })),
         theme: {
           primaryColor: '#1b3855',
-          redocOptions: { hideDownloadButton: false },
+          redocOptions: {
+            hideDownloadButton: false,
+            sideNavStyle: false,
+          },
         },
       },
     ],
   ],
 
+  plugins: [require.resolve('@cmfcmf/docusaurus-search-local')],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'Developer Portal',
+        title: 'epilot dev',
         logo: {
           alt: 'epilot',
           src: 'img/logo.png',
@@ -69,18 +121,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
           },
           {
             to: '/api',
-            label: 'API Docs',
+            label: 'API Specs',
             position: 'left',
           },
           {
             to: '/docs/architecture/sdk',
             label: 'SDK',
             position: 'left',
-          },
-          {
-            href: 'https://github.com/epilot-dev',
-            label: 'GitHub',
-            position: 'right',
           },
         ],
       },

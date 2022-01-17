@@ -4,10 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import React from 'react';
-import clsx from 'clsx';
-import styles from './HomepageFeatures.module.css';
 import Link from '@docusaurus/Link';
+import clsx from 'clsx';
+import React from 'react';
+
+import styles from './HomepageFeatures.module.css';
 
 type FeatureItem = {
   title: string;
@@ -21,7 +22,8 @@ const FeatureList: FeatureItem[] = [
     image: '/img/unicorn.png',
     description: (
       <>
-        The developer portal is intended for all developers building and working with epilot. All resources you need in one place.
+        The developer portal is intended for all developers building and working with epilot. All resources you need in
+        one place.
       </>
     ),
   },
@@ -30,7 +32,8 @@ const FeatureList: FeatureItem[] = [
     image: '/img/openapi-logo.png',
     description: (
       <>
-        All our platform features are available and documented behind industry standard <Link to="/api">API specs</Link> like OpenAPI and GraphQL.
+        All our platform features are available and documented behind industry standard <Link to="/api">API specs</Link>{' '}
+        like OpenAPI and GraphQL.
       </>
     ),
   },
@@ -38,14 +41,12 @@ const FeatureList: FeatureItem[] = [
     title: 'SDK',
     image: '/img/npm-logo.png',
     description: (
-      <>
-        Use our SDK for TypeScript and JavaScript to build faster. All our APIs just one npm install away.
-      </>
+      <>Use our SDK for TypeScript and JavaScript to build faster. All our APIs just one npm install away.</>
     ),
   },
 ];
 
-function Feature({title, image, description}: FeatureItem) {
+function Feature({ title, image, description }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
