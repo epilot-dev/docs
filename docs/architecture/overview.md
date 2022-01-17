@@ -12,7 +12,7 @@ Our tenants use epilot to sell complex products online and collaborate with part
 
 The epilot application consists of:
 
-- [The main 360 portal app](/docs/portal/overview)
+- [The main 360 portal app](/docs/portal/microfrontends)
 - Embeddable customer-facing journey frontends
 - End customer portal app
 - Serverless microservices exposed via [APIs](/api)
