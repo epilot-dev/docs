@@ -8,8 +8,24 @@ sidebar_position: 1
 
 <p align="center"><a href="/"><img src="/img/logo.png" width="150" /></a></p>
 
-<h2 align="center">Welcome to epilot developer documentation!</h2>
+<h1 align="center">Documentation</h1>
 
-<p align="center">Please use the Search feature or use the left navigation to browse pages.</p>
+<p align="center">Learn the basics of using epilot developer tools and APIs to unlock the potential of the epilot 360 platform.</p>
 
-<p align="center">You can reach out to us at <a href="mailto:dev@epilot.cloud">dev@epilot.cloud</a></p>
+## Arhitecture
+
+Understand the basics of the epilot platform and learn core concepts like entities, authentication and automation.
+
+[Overview](/docs/architecture/overview) - [Tech Stack](/docs/architecture/overview#tech-stack)
+
+## APIs
+
+Explore and learn to use our APIs to build your own solutions on epilot.
+
+[Overview](/docs/architecture/api-first) - [Docs](/api)
+
+## SDK
+
+Explore our developer tools and get started with the epilot SDK
+
+[Overview](/docs/architecture/sdk)
