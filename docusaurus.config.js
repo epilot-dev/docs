@@ -160,16 +160,16 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
             title: 'Links',
             items: [
               {
-                label: 'Portal',
+                label: '360 Portal',
                 href: 'https://portal.epilot.cloud',
-              },
-              {
-                label: 'Website',
-                href: 'https://epilot.cloud',
               },
               {
                 label: 'GitHub',
                 href: 'https://github.com/epilot-dev',
+              },
+              {
+                label: 'Stackoverflow',
+                href: 'https://stackoverflow.com/c/epilot/questions',
               },
               {
                 label: 'Blog',
