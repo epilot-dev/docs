@@ -4,11 +4,11 @@ sidebar_position: 1
 
 # Developer Documentation
 
-Welcome to the official epilot developer documentation.
+Welcome to the official epilot developer documentation!
 
 Please use the search feature or use the left navigation to browse pages.
 
-[![Unicorn](../static/img/unicorn.png)](/)
+<a href="/"><img src="/img/logo.png" width="150" /></a>
 
 ## Quick Start
 
