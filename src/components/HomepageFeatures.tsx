@@ -32,7 +32,7 @@ const FeatureList: FeatureItem[] = [
     image: '/img/openapi-logo.png',
     description: (
       <>
-        All our platform features are available and documented behind industry standard <Link to="/api">API specs</Link>{' '}
+        All our platform features are available and documented with industry standard <Link to="/api">API specs</Link>{' '}
         like OpenAPI and GraphQL.
       </>
     ),
@@ -41,7 +41,10 @@ const FeatureList: FeatureItem[] = [
     title: 'SDK',
     image: '/img/npm-logo.png',
     description: (
-      <>Use our SDK for TypeScript and JavaScript to build faster. All our APIs just one npm install away.</>
+      <>
+        Use <Link to="/docs/architecture/sdk">our SDK</Link> for TypeScript and JavaScript to build faster. All our APIs
+        just one npm install away.
+      </>
     ),
   },
 ];
