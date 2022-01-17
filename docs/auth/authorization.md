@@ -54,7 +54,6 @@ See [documentation](/docs/auth/internal-auth) for the internal auth service for 
 
 ## Links
 
-- Custom Authorizer GitLab:
-https://gitlab.com/e-pilot/product/auth/custom-authorizer
+- API Gateway Authorizer project: https://gitlab.com/e-pilot/product/auth/custom-authorizer
 - Permissions package: https://www.npmjs.com/package/@epilot/permissions
 - Internal Auth package: https://www.npmjs.com/package/@epilot/internal-auth
