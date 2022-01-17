@@ -89,6 +89,31 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
             routePath: '/api/automation',
             specUrl: 'https://docs.api.epilot.io/automation.yaml',
           },
+          {
+            layout: { title: 'Consent API' },
+            routePath: '/api/consent',
+            specUrl: 'https://docs.api.epilot.io/consent.yaml',
+          },
+          {
+            layout: { title: 'Customer Portal API' },
+            routePath: '/api/customer-portal',
+            specUrl: 'https://docs.api.epilot.io/customer-portal.yaml',
+          },
+          {
+            layout: { title: 'Notification API' },
+            routePath: '/api/svc-notification-api',
+            specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
+          },
+          {
+            layout: { title: 'Workflows Definition API' },
+            routePath: '/api/workflows-definition',
+            specUrl: 'https://docs.api.epilot.io/workflows-definition.yaml',
+          },
+          {
+            layout: { title: 'Workflows Execution API' },
+            routePath: '/api/workflows-execution',
+            specUrl: 'https://docs.api.epilot.io/workflows-execution.yaml',
+          },
         ].map((spec) => ({ ...spec, apiDocComponent: '../src/components/RedocPage' })),
         theme: {
           primaryColor: '#cc5cac',
