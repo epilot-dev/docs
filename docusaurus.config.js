@@ -75,11 +75,6 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
             specUrl: 'https://docs.api.epilot.io/file.yaml',
           },
           {
-            layout: { title: 'Document API' },
-            routePath: '/api/document',
-            specUrl: 'https://docs.api.epilot.io/document.yaml',
-          },
-          {
             layout: { title: 'Webhooks API' },
             routePath: '/api/webhooks',
             specUrl: 'https://docs.api.epilot.io/webhooks.yaml',
@@ -88,6 +83,16 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
             layout: { title: 'Automation API' },
             routePath: '/api/automation',
             specUrl: 'https://docs.api.epilot.io/automation.yaml',
+          },
+          {
+            layout: { title: 'Document API' },
+            routePath: '/api/document',
+            specUrl: 'https://docs.api.epilot.io/document.yaml',
+          },
+          {
+            layout: { title: 'Template Variables API' },
+            routePath: '/api/template-variables',
+            specUrl: 'https://docs.api.epilot.io/template-variables.yaml',
           },
           {
             layout: { title: 'Consent API' },
