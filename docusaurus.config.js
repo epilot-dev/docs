@@ -106,17 +106,17 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
           },
           {
             layout: { title: 'Notification API' },
-            routePath: '/api/svc-notification-api',
+            routePath: '/api/notification',
             specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
           },
           {
-            layout: { title: 'Workflows Definition API' },
-            routePath: '/api/workflows-definition',
+            layout: { title: 'Workflow Definition API' },
+            routePath: '/api/workflow-definition',
             specUrl: 'https://docs.api.epilot.io/workflows-definition.yaml',
           },
           {
-            layout: { title: 'Workflows Execution API' },
-            routePath: '/api/workflows-execution',
+            layout: { title: 'Workflow Execution API' },
+            routePath: '/api/workflow-execution',
             specUrl: 'https://docs.api.epilot.io/workflows-execution.yaml',
           },
         ].map((spec) => ({ ...spec, apiDocComponent: '../src/components/RedocPage' })),
