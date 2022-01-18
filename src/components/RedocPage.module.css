@@ -6,6 +6,12 @@
   width: 100%;
   min-height: 100vh; 
 }
+
 .redocContainer > div {
-  width: calc(100vw - var(--doc-sidebar-width) - 15px);
+  max-width: 100%;
+}
+@media screen and (min-width: 997px) {
+  .redocContainer > div {
+    max-width: calc(100vw - var(--doc-sidebar-width) - 15px);
+  }
 }
