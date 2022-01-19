@@ -14,7 +14,8 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
     "lint": "eslint src --ext js,jsx,ts,tsx,json",
-    "lint:fix": "eslint src --ext js,jsx,ts,tsx,json --fix"
+    "lint:fix": "eslint src --ext js,jsx,ts,tsx,json --fix",
+    "pdf": "./scripts/build-pdf.sh"
   },
   "dependencies": {
     "@cmfcmf/docusaurus-search-local": "^0.9.3",
