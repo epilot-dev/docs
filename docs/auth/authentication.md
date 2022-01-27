@@ -8,10 +8,23 @@ The epilot application uses standard [OAuth 2.0](https://oauth.net/2/) for user 
 
 ## Quick Start
 
-To obtain OAuth tokens, the user should initiate authentication using their user pool details.
-
 ```sh
-# TODO: Provide an example for this using the epilot SDK
+npm install --save @epilot/auth
+```
+
+```typescript
+import { authenticate, authorizeClient } from '@epilot/auth';
+import { getClient } from '@epilot/entity-client';
+
+const credentials = await authenticate({
+  username: 'email@example.com',
+  password: 'xxx',
+});
+
+const entityClient = await getClient()
+  .then(authorizeClient(credentials))
+
+// entityClient will be authorized using epilot OAuth tokens
 ```
 
 ## Cognito User Pools
