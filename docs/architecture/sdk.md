@@ -4,12 +4,38 @@ sidebar_position: 3
 
 # SDK
 
-We provide a Javascript / Typescript SDK to interact with epilot APIs.
+[[GitHub](https://github.com/epilot-dev/sdk-js)]
+[[NPM](https://www.npmjs.com/package/epilot-sdk)]
+
+We provide a JavaScript / TypeScript SDK for interacting with epilot APIs.
+
+## Quick Start
+
+```sh
+npm install --save epilot-sdk
+```
+
+```typescript
+import { authenticate, authorizeClient } from 'epilot-sdk/auth';
+import { getClient } from 'epilot-sdk/entity';
+
+const credentials = await authenticate({
+  username: 'email@example.com',
+  password: 'xxx',
+});
+
+const entityClient = await getClient()
+  .then(authorizeClient(credentials))
+
+await entityClient.createEntity('contact', { fist_name: 'Example', last_name: 'Contact' });
+```
 
 ## SDK Packages
 
-> TODO: packages not yet public
+TODO: Some packages are not yet public
 
+- [epilot-sdk](https://www.npmjs.com/package/epilot-sdk)
+- [@epilot/auth](https://www.npmjs.com/package/@epilot/auth)
 - [@epilot/entity-client](https://www.npmjs.com/package/@epilot/entity-client)
 - [@epilot/user-client](https://www.npmjs.com/package/@epilot/user-client)
 - [@epilot/organization-client](https://www.npmjs.com/package/@epilot/organization-client)
@@ -24,4 +50,4 @@ We provide a Javascript / Typescript SDK to interact with epilot APIs.
 - [@epilot/workflows-definition-client](https://www.npmjs.com/package/@epilot/workflows-definition-client)
 - [@epilot/workflows-execution-client](https://www.npmjs.com/package/@epilot/workflows-execution-client)
 - [@epilot/design-builder-api-client](https://www.npmjs.com/package/@epilot/design-builder-api-client)
-- [@epilot/customer-portal-client](https://www.npmjs.com/package/@epilot/customer-portal-client)
+- [@epilot/customer-portal-client](https://www.npmjs.com/package/@epilot-sdk/customer-portal-client)
