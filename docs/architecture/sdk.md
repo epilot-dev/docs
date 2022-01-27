@@ -7,17 +7,21 @@ sidebar_position: 3
 [[GitHub](https://github.com/epilot-dev/sdk-js)]
 [[NPM](https://www.npmjs.com/package/epilot-sdk)]
 
-We provide a JavaScript / TypeScript SDK for interacting with epilot APIs.
+We provide a JavaScript / TypeScript SDK library for developers interacting with epilot APIs.
 
-## Quick Start
+## Getting Started
+
+Install the SDK
 
 ```sh
 npm install --save epilot-sdk
 ```
 
+Authenticate and call epilot APIs:
+
 ```typescript
 import { authenticate, authorizeClient } from 'epilot-sdk/auth';
-import { getClient } from 'epilot-sdk/entity';
+import { getClient } from 'epilot-sdk/entity-client';
 
 const credentials = await authenticate({
   username: 'email@example.com',
@@ -30,11 +34,19 @@ const entityClient = await getClient()
 await entityClient.createEntity('contact', { fist_name: 'Example', last_name: 'Contact' });
 ```
 
+## Importing
+
+The full SDK library is available both as a single package [`epilot-sdk`](https://www.npmjs.com/package/epilot-sdk) and as separate dependencies:
+
+```typescript
+import { getClient } from 'epilot-sdk/entity-client' // recommended way
+import { getClient } from '@epilot/entity-client' // granular way
+```
+
 ## SDK Packages
 
-TODO: Some packages are not yet public
+> TODO: some packages are still private
 
-- [epilot-sdk](https://www.npmjs.com/package/epilot-sdk)
 - [@epilot/auth](https://www.npmjs.com/package/@epilot/auth)
 - [@epilot/entity-client](https://www.npmjs.com/package/@epilot/entity-client)
 - [@epilot/user-client](https://www.npmjs.com/package/@epilot/user-client)
