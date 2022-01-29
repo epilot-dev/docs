@@ -20,16 +20,14 @@ npm install --save epilot-sdk
 Authenticate and call epilot APIs:
 
 ```typescript
-import { authenticate, authorizeClient } from 'epilot-sdk/auth';
-import { getClient } from 'epilot-sdk/entity-client';
+import { authenticate } from 'epilot-sdk/auth';
+import entityClient from 'epilot-sdk/entity-client';
 
 const credentials = await authenticate({
   username: 'email@example.com',
   password: 'xxx',
 });
-
-const entityClient = await getClient()
-  .then(authorizeClient(credentials))
+credentials.configureClient(entityClient);
 
 await entityClient.createEntity('contact', { fist_name: 'Example', last_name: 'Contact' });
 ```
