@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkepilot_dev_handbook=self.webpackChunkepilot_dev_handbook||[]).push([[3707],{1209:function(e){e.exports=JSON.parse('{"specUrl":"https://docs.api.epilot.io/template-variables.yaml","type":"url","content":"https://docs.api.epilot.io/template-variables.yaml"}')}}]);
