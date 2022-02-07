@@ -26,3 +26,16 @@
 html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.button.button--secondary {
+  background-color: #039BE5;
+  color: white;
+  font-weight: 400;
+  border-radius: 4px;
+  border: 0px none;
+}
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+}

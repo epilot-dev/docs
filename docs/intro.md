@@ -12,7 +12,7 @@ sidebar_position: 1
 
 <p align="center">Learn the basics of using epilot developer tools and APIs to unlock the potential of the epilot 360 platform.</p>
 
-## Arhitecture
+## Architecture
 
 Understand the basics of the epilot platform and learn core concepts like entities, authentication and automation.
 

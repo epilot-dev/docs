@@ -22,8 +22,8 @@ const FeatureList: FeatureItem[] = [
     image: '/img/unicorn.png',
     description: (
       <>
-        This developer handbook is intended for all developers building and working with epilot. All resources you need
-        in one place.
+        This developer center is intended for all developers building and working with epilot platform. All resources
+        you need in one place.
       </>
     ),
   },

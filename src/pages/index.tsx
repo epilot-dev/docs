@@ -12,10 +12,10 @@ function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
 
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
+    <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
-        <h1 className="hero__title">{siteConfig.title}</h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <h1 className={clsx('hero__title', styles.heroBannerTitle)}>{siteConfig.title}</h1>
+        <p className={clsx('hero__subtitle', styles.heroBannerSubtitle)}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link className="button button--secondary button--lg" to="/docs/intro">
             Read the Docs
@@ -32,10 +32,20 @@ function HomepageHeader() {
 export default function Home(): JSX.Element {
   return (
     <Layout>
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
-      </main>
+      <div
+        style={{
+          background: 'url("/img/epilot-devportal-jumbotron.svg") right 10px no-repeat',
+          alignItems: 'stretch',
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+        }}
+      >
+        <HomepageHeader />
+        <main style={{ backgroundColor: '#039be51a', flex: 1 }}>
+          <HomepageFeatures />
+        </main>
+      </div>
     </Layout>
   );
 }
