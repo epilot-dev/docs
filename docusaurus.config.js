@@ -5,7 +5,7 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
-  title: '<epilot dev center />',
+  title: 'epilot dev center',
   tagline: 'Build complex commerce solutions easily powered by epilot platform & portals',
   url: 'https://dev.epilot.io',
   baseUrl: '/',
