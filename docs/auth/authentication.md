@@ -13,12 +13,12 @@ You can obtain a token for testing epilot APIs quickly via the command line.
 Requires [Node.js](https://nodejs.org/en/download/) to be installed.
 
 ```sh
-npx @epilot/auth
+$ npx @epilot/auth
 
 ? Email email@example.com
 ? Password [hidden]
 
-<access token printed out here>
+# <access token printed here>
 ```
 
 Authentication using the [SDK](/docs/architecture/sdk):
