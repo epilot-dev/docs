@@ -8,6 +8,21 @@ The epilot application uses standard [OAuth 2.0](https://oauth.net/2/) for user 
 
 ## Quick Start
 
+You can obtain a token for testing epilot APIs quickly via the command line.
+
+Requires [Node.js](https://nodejs.org/en/download/) to be installed.
+
+```sh
+npx @epilot/auth
+
+? Email email@example.com
+? Password [hidden]
+
+<access token printed out here>
+```
+
+Authentication using the [SDK](/docs/architecture/sdk):
+
 ```sh
 npm install --save @epilot/auth
 ```
