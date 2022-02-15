@@ -2,7 +2,7 @@
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
-const DOCS_URL = 'https://docs.epilot.io'
+const DOCS_URL = 'https://docs.epilot.io';
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
