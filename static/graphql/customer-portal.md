@@ -1,5 +1,5 @@
 ---
-id: schema
+id: customer-portal
 slug: /customer-portal
 title: Customer Portal
 sidebar_position: 1
