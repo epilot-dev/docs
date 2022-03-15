@@ -174,12 +174,12 @@ const DOCS_URL = 'https://docs.epilot.io';
             },
             {
               to: '/api',
-              label: 'API Specs',
+              label: 'REST API',
               position: 'left',
             },
             {
               position: 'left',
-              label: 'Graphql Schema',
+              label: 'Graphql API',
               to: '/graphql/customer-portal',
             },
             {
@@ -200,11 +200,11 @@ const DOCS_URL = 'https://docs.epilot.io';
                   to: '/docs/intro',
                 },
                 {
-                  label: 'API Docs',
+                  label: 'REST API Docs',
                   to: '/api',
                 },
                 {
-                  label: 'Graphql Docs',
+                  label: 'Graphql API Docs',
                   to: '/graphql/customer-portal',
                 },
                 {
