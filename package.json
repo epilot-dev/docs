@@ -4,19 +4,19 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
+    "start": "npm run graphql:generate && docusaurus start",
+    "build": "npm run graphql:generate && docusaurus build",
+    "swizzle": "npm run graphql:generate && docusaurus swizzle",
+    "deploy": "npm run graphql:generate && docusaurus deploy",
+    "clear": "npm run graphql:generate && docusaurus clear",
+    "serve": "npm run graphql:generate && docusaurus serve",
+    "write-translations": "npm run graphql:generate && docusaurus write-translations",
+    "write-heading-ids": "npm run graphql:generate && docusaurus write-heading-ids",
     "typecheck": "tsc",
     "lint": "eslint src --ext js,jsx,ts,tsx,json",
     "lint:fix": "eslint src --ext js,jsx,ts,tsx,json --fix",
     "pdf": "./scripts/build-pdf.sh",
-    "graphql:generate": "mkdir graphql && npx docusaurus graphql-to-doc:customer-portal -f"
+    "graphql:generate": "./scripts/generate-graphql.sh"
   },
   "dependencies": {
     "@cmfcmf/docusaurus-search-local": "^0.9.3",
