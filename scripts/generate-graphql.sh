@@ -1,5 +1,6 @@
 #!/bin/sh
 
-rm -rf graphql
-mkdir graphql
+BASEDIR=$(dirname "${0}")/..
+rm -rf $BASEDIR/graphql
+mkdir $BASEDIR/graphql
 npx docusaurus graphql-to-doc:customer-portal -f

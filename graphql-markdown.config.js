@@ -2,7 +2,7 @@ module.exports = [
   ...[
     {
       id: 'customer-portal',
-      url: 'https://customer-portal-api.dev.sls.epilot.io/v1/graphql',
+      url: 'https://customer-portal-api.sls.epilot.io/v1/graphql',
       homepage: 'static/graphql/customer-portal.md',
     },
   ].map((schema) => [
