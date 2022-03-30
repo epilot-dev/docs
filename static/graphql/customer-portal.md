@@ -9,4 +9,4 @@ pagination_prev: null
 sidebar_class_name: navbar__toggle
 ---
 
-This documentation has been automatically generated using [Customer Portal Graphql](https://customer-portal-api.sls.epilot.io/v1/graphql) endpoint.
+This documentation has been automatically generated using [Customer Portal Graphql](https://docs.api.epilot.io/graphql/customer-portal.graphql) schema.
