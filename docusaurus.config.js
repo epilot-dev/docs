@@ -1,7 +1,9 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
+const graphqlMarkdownConfig = require('./graphql-markdown.config');
 const DOCS_URL = 'https://docs.epilot.io';
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
@@ -22,6 +24,7 @@ const DOCS_URL = 'https://docs.epilot.io';
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          id: 'default',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl: 'https://github.com/epilot-dev/docs/edit/main/',
@@ -144,7 +147,19 @@ const DOCS_URL = 'https://docs.epilot.io';
     ],
   ],
 
-  plugins: [require.resolve('@cmfcmf/docusaurus-search-local')],
+  plugins: [
+    require.resolve('@cmfcmf/docusaurus-search-local'),
+    ...graphqlMarkdownConfig,
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'graphql',
+        path: 'graphql',
+        routeBasePath: 'graphql',
+        sidebarPath: require.resolve('./sidebars.js'),
+      },
+    ],
+  ],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
@@ -164,8 +179,13 @@ const DOCS_URL = 'https://docs.epilot.io';
           },
           {
             to: '/api',
-            label: 'API Specs',
+            label: 'REST API',
             position: 'left',
+          },
+          {
+            position: 'left',
+            label: 'Graphql API',
+            to: '/graphql/customer-portal',
           },
           {
             to: '/docs/architecture/sdk',
@@ -185,8 +205,12 @@ const DOCS_URL = 'https://docs.epilot.io';
                 to: '/docs/intro',
               },
               {
-                label: 'API Docs',
+                label: 'REST API Docs',
                 to: '/api',
+              },
+              {
+                label: 'Graphql API Docs',
+                to: '/graphql/customer-portal',
               },
               {
                 label: 'SDK',

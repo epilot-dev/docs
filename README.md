@@ -8,6 +8,12 @@ This website is built using [Docusaurus 2](https://docusaurus.io/), a modern sta
 npm install
 ```
 
+### Graphql Doc Generation
+
+```
+npm run graphql:generate
+```
+
 ### Local Development
 
 ```
