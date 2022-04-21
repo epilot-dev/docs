@@ -85,11 +85,6 @@ const DOCS_URL = 'https://docs.epilot.io';
             specUrl: 'https://docs.api.epilot.io/webhooks.yaml',
           },
           {
-            layout: { title: 'Webhooks API & Schemas' },
-            routePath: '/api/webhooks/schemas',
-            specUrl: 'https://docs.api.epilot.io/webhooks-howto.yaml',
-          },
-          {
             layout: { title: 'Automation API' },
             routePath: '/api/automation',
             specUrl: 'https://docs.api.epilot.io/automation.yaml',
