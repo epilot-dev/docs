@@ -55,6 +55,11 @@ const DOCS_URL = 'https://docs.epilot.io';
             specUrl: 'https://docs.api.epilot.io/entity.yaml',
           },
           {
+            layout: { title: 'Journey API' },
+            routePath: '/api/app',
+            specUrl: 'https://docs.api.epilot.io/journey.yaml',
+          },
+          {
             layout: { title: 'Submission API' },
             routePath: '/api/submission',
             specUrl: 'https://docs.api.epilot.io/submission-api.yaml',
