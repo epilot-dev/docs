@@ -184,7 +184,7 @@ const DOCS_URL = 'https://docs.epilot.io';
           },
           {
             position: 'left',
-            label: 'Graphql API',
+            label: 'GraphQL',
             to: '/graphql/customer-portal',
           },
           {
