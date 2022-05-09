@@ -14,7 +14,7 @@ Each Automation Flow has:
 - **Triggers** (when the automation should be executed)
 - **Actions** (what happens when the automation is executed)
 
-## Automaton Triggers
+## Automation Triggers
 
 The following is a list of automation trigger types supported by epilot:
 
@@ -32,7 +32,7 @@ The following is a list of automation trigger types supported by epilot:
     - Entity Updated
     - Entity Deleted
 
-## Automaton Actions
+## Automation Actions
 
 ![Automation Actions](../../static/img/automation-actions.png)
 
