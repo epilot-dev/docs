@@ -37,7 +37,7 @@ await entityClient.createEntity('contact', { fist_name: 'Example', last_name: 'C
 The full SDK library is available both as a single package [`epilot-sdk`](https://www.npmjs.com/package/epilot-sdk) and as separate dependencies:
 
 ```typescript
-import { getClient } from 'epilot-sdk/entity-client' // recommended way
+import entityClient from 'epilot-sdk/entity-client' // recommended way
 import { getClient } from '@epilot/entity-client' // granular way
 ```
 
@@ -61,3 +61,4 @@ import { getClient } from '@epilot/entity-client' // granular way
 - [@epilot/workflows-execution-client](https://www.npmjs.com/package/@epilot/workflows-execution-client)
 - [@epilot/design-builder-api-client](https://www.npmjs.com/package/@epilot/design-builder-api-client)
 - [@epilot/customer-portal-client](https://www.npmjs.com/package/@epilot-sdk/customer-portal-client)
+- [@epilot/workflow-client](https://www.npmjs.com/package/@epilot-sdk/workflow-client)
