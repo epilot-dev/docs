@@ -9,10 +9,20 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  background-color: #ffffffba;
+  background-image: linear-gradient(-19deg, rgba(0, 215, 255), rgb(75, 57, 255), rgba(255, 98, 207));
+  color: white;
+}
+
+.heroBanner>* {
+  z-index: 1;
+}
+
+html[data-theme='dark'] .heroBanner {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .heroBannerTitle {
+  font-size: 4.5rem;
   font-weight: normal;
 }
 
@@ -41,4 +51,48 @@
 
 .buttons>* {
   margin: .25rem;
+}
+
+.mainLogoContainer {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 2rem;
+}
+
+.mainLogoContainer>img {
+  max-width: 8rem;
+}
+
+.graphic {
+  background: url(/img/epilot-devportal-jumbotron.svg) right 10px no-repeat;
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: absolute;
+  top: 66px;
+  left: 0;
+  right: 0;
+  height: 66vw;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 1200px) {
+  .heroBannerTitle {
+    font-size: 3.5rem;
+  }
+
+  .graphic {
+    opacity: .2;
+  }
+}
+
+@media screen and (max-width: 966px) {
+  .heroBannerTitle {
+    font-size: 2.5rem;
+  }
+
+  .graphic {
+    display: none;
+  }
 }

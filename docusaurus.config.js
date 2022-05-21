@@ -10,12 +10,12 @@ const DOCS_URL = 'https://docs.epilot.io';
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
   title: 'epilot dev center',
-  tagline: 'Build complex commerce solutions easily powered by epilot platform & portals',
+  tagline: 'The platform to simplify your business - for developers.',
   url: DOCS_URL,
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
   organizationName: 'epilot-dev', // Usually your GitHub org/user name.
   projectName: 'docs', // Usually your repo name.
   presets: [
@@ -136,7 +136,7 @@ const DOCS_URL = 'https://docs.epilot.io';
           },
         ].map((spec) => ({ ...spec, apiDocComponent: '../src/components/RedocPage' })),
         theme: {
-          primaryColor: '#cc5cac',
+          primaryColor: '#9b91ff',
           redocOptions: {
             hideDownloadButton: false,
             nativeScrollbars: true,
@@ -195,7 +195,7 @@ const DOCS_URL = 'https://docs.epilot.io';
         ],
       },
       footer: {
-        style: 'dark',
+        style: 'light',
         links: [
           {
             title: 'Docs',
@@ -215,10 +215,6 @@ const DOCS_URL = 'https://docs.epilot.io';
               {
                 label: 'SDK',
                 to: '/docs/architecture/sdk',
-              },
-              {
-                label: 'Engineering Principles',
-                href: 'https://github.com/epilot-dev/engineering-principles',
               },
             ],
           },
@@ -240,6 +236,10 @@ const DOCS_URL = 'https://docs.epilot.io';
               {
                 label: 'Tech Radar',
                 href: `${DOCS_URL}/techradar`,
+              },
+              {
+                label: 'Engineering Principles',
+                href: 'https://github.com/epilot-dev/engineering-principles',
               },
             ],
           },

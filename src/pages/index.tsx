@@ -14,13 +14,16 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
+        <div className={clsx(styles.mainLogoContainer)}>
+          <img src="/img/logo-white.svg" alt="epilot-log" />
+        </div>
         <h1 className={clsx('hero__title', styles.heroBannerTitle)}>&lt;{siteConfig.title} /&gt;</h1>
         <p className={clsx('hero__subtitle', styles.heroBannerSubtitle)}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link className="button button--secondary button--lg" to="/docs/intro">
+          <Link className="button button--primary button--lg" to="/docs/intro">
             Read the Docs
           </Link>
-          <Link className="button button--secondary button--lg" to="/api">
+          <Link className="button button--primary button--lg" to="/api">
             Browse APIs
           </Link>
         </div>
@@ -32,20 +35,9 @@ function HomepageHeader() {
 export default function Home(): JSX.Element {
   return (
     <Layout>
-      <div
-        style={{
-          background: 'url("/img/epilot-devportal-jumbotron.svg") right 10px no-repeat',
-          alignItems: 'stretch',
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-        }}
-      >
-        <HomepageHeader />
-        <main style={{ backgroundColor: '#039be51a', flex: 1 }}>
-          <HomepageFeatures />
-        </main>
-      </div>
+      <HomepageHeader />
+      <HomepageFeatures />
+      <div className={styles.graphic} />
     </Layout>
   );
 }

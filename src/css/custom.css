@@ -6,14 +6,24 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #cc5cac;
-  --ifm-color-primary-dark: #c545a1;
-  --ifm-color-primary-darker: #c03c9a;
-  --ifm-color-primary-darkest: #9e317f;
-  --ifm-color-primary-light: #d373b7;
-  --ifm-color-primary-lighter: #d77ebd;
-  --ifm-color-primary-lightest: #e1a0ce;
+  --ifm-color-primary: #9b91ff;
+  --ifm-color-primary-dark: #7769ff;
+  --ifm-color-primary-darker: #6455ff;
+  --ifm-color-primary-darkest: #2e19ff;
+  --ifm-color-primary-light: #bfb9ff;
+  --ifm-color-primary-lighter: #d2cdff;
+  --ifm-color-primary-lightest: #ffffff;
   --ifm-code-font-size: 95%;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #9b91ff;
+  --ifm-color-primary-dark: #7769ff;
+  --ifm-color-primary-darker: #6455ff;
+  --ifm-color-primary-darkest: #2e19ff;
+  --ifm-color-primary-light: #bfb9ff;
+  --ifm-color-primary-lighter: #d2cdff;
+  --ifm-color-primary-lightest: #ffffff;
 }
 
 .docusaurus-highlight-code-line {
@@ -27,10 +37,6 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-.button.button--secondary {
-  background-color: #039BE5;
+html[data-theme='dark'] .button.button--primary {
   color: white;
-  font-weight: 400;
-  border-radius: 4px;
-  border: 0px none;
 }
