@@ -20,7 +20,7 @@ Files that are uploaded but not saved expire and are deleted within 24 hours.
 
 ## Example Flow
 
-### Step 1: Call uploadFile to receive s3ref:
+### Step 1: Call uploadFile to receive s3ref
 
 ```
 POST https://file.sls.epilot.io/v1/files/upload
@@ -62,7 +62,11 @@ Body (application/pdf):
 ```
 
 Response (201):
-### Step 3: Call saveFile  to persist the file and receive an entity id
+```
+(empty)
+```
+
+### Step 3: Call saveFile to persist the file and create a File entity
 
 ```
 POST https://file.sls.epilot.io/v1/files/upload
@@ -96,10 +100,21 @@ Response (201):
 }
 ```
 
-You can now attach the returned file entity to any business entity as a relation.
+Note that the `public_url` property of the File entity is still present in the response, even if the entity has `access_control` set to `private`. For `private` the public URL is simply not accessible and will return a 403 response.
 
-Note that the `public_url` ptroperty of the File entity is still present in the response, even if the entity has `access_control` set to `private`. For `private` the public URL is simply not accessible and will return a 403 response.
+You can now attach the returned file entity to any business entity as a relation using the `_id`:
 
+```json
+{
+  "_schema": "opportunity",
+  // ...other entity fields
+  "_files": {
+    "$relation": [
+      { "entity_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8" }
+    ]
+  }
+}
+```
 
 ## Updating Files
 
