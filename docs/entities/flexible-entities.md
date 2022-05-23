@@ -66,7 +66,28 @@ Examples of capabilities:
 
 Entities also natively support relations, meaning entities can be linked with each other.
 
-Related entities appear in each-others detail views as previewable links.
+Relations are stored as Relation attributes, containing a reference to the related entity and a list of labels to show on the relation item.
+
+Example relation attribute value:
+
+```json
+{
+  "contacts": {
+    "$relation": [
+      {
+        "entity_id": "48e9432b-05e9-44fb-a8c2-8d29d9ceade8",
+        "_tags": ["CEO", "primary"]
+      },
+      {
+        "entity_id": "c0f7ad05-f03d-4d6a-a36a-c85281da28bb",
+        "_tags": ["Head of sales"]
+      }
+    ]
+  }
+}
+```
+
+See [Relations](/docs/entities/relations) for more info.
 
 ## Activity
 

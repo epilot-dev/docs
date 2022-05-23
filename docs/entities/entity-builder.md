@@ -1,10 +1,10 @@
 ---
-sidebar_position: 13
+sidebar_position: 11
 ---
 
-# Activity API
+# Entity Builder
 
-[[API Docs](/api/entity#tag/Activity)]
+[[API Docs](/api/entity/#tag/Schemas)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
 ```
