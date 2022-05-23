@@ -32,6 +32,7 @@ Body (application/json):
   "filename": "example.pdf",
   "mime_type": "application/pdf"
 }
+```
 
 Response (200):
 ```json
@@ -60,6 +61,7 @@ Body (application/pdf):
 (binary data)
 ```
 
+Response (201):
 ### Step 3: Call saveFile  to persist the file and receive an entity id
 
 ```
@@ -78,7 +80,7 @@ Body (application/json):
 }
 ```
 
-Response (201)
+Response (201):
 ```json
 {
   "_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8",
