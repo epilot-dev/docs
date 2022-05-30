@@ -63,20 +63,6 @@ html[data-theme='dark'] .heroBanner {
   max-width: 8rem;
 }
 
-.graphic {
-  background: url(/img/epilot-devportal-jumbotron.svg) right 10px no-repeat;
-  align-items: stretch;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  position: absolute;
-  top: 66px;
-  left: 0;
-  right: 0;
-  height: 66vw;
-  pointer-events: none;
-}
-
 @media screen and (max-width: 1200px) {
   .heroBannerTitle {
     font-size: 3.5rem;

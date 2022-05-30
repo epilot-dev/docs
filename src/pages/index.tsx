@@ -37,7 +37,6 @@ export default function Home(): JSX.Element {
     <Layout>
       <HomepageHeader />
       <HomepageFeatures />
-      <div className={styles.graphic} />
     </Layout>
   );
 }
