@@ -87,7 +87,7 @@ const DOCS_URL = 'https://docs.epilot.io';
           {
             layout: { title: 'Journey API' },
             routePath: '/api/journey',
-            specUrl: 'https://docs.api.epilot.io/journey.yaml',
+            specUrl: 'https://docs.api.epilot.io/journey-config.yaml',
           },
           {
             layout: { title: 'Automation API' },
