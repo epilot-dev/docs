@@ -49,5 +49,5 @@ The following is a list of automation actions supported by epilot:
   - Sends an Email using an Email Template, which can contain variables from the triggering entity and all relations
 - **Create Document**
   - Generates a document file attachment using a document template
-- **Create Opportunity**
-  - A special action to create Order and Opportunity entities from handled epilot Journeys
+- **Create Order**
+  - Creates an Order entity with product line items from submission data. Supports custom mappings for order entity.
