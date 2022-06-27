@@ -443,7 +443,7 @@ POST https://workflows-execution.sls.epilot.io/v1/workflows/executions
 }
 ```
 
-### Step 5: Create Submission (optional)
+### Step 6: Create Submission (optional)
 
 To store the raw journey submission data and possibly trigger further automations, we can also create a submission entity using the `createEntity` operation:
 
