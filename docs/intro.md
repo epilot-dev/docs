@@ -29,3 +29,7 @@ Explore and learn to use our APIs to build your own solutions on epilot.
 Explore our developer tools and get started with the epilot SDK
 
 [Overview](/docs/architecture/sdk)
+
+## Contact us
+
+You can always [open an issue](https://github.com/epilot-dev/docs/issues) on our GitHub repository, or if you're already a customer, contact us via customer support to receive technical assistance.
