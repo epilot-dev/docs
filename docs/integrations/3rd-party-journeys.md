@@ -145,7 +145,7 @@ You may also optionally add marketing opt ins to your Submission API payload to 
 
 To automatically create epilot epilot entities, send emails and start workflows from your submissions, you can configure an [Automation](/docs/automation/intro).
 
-Create a new Automation from [Configuration > Advanced Configuration > Automations > Create](/app/automation-hub/flow/create)
+Create a new Automation from [Configuration > Advanced Configuration > Automations > Create](https://portal.epilot.cloud/app/automation-hub/flow/create)
 
 Configure an API Submission trigger with the same `source_id` you're passing in your Submission API payload.
 
@@ -170,7 +170,7 @@ To ensure proper relations between actions, the recommended order for journey su
 1. Start Workflow
 1. Trigger Webhook
 
-Refer to the [Automation documentation](/docs/automation) for details.
+Refer to the [Automation documentation](/docs/automation/intro) for details.
 
 ## Method 2: Direct API usage
 
