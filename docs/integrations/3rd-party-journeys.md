@@ -14,7 +14,7 @@ In this example we'll create the following entities:
 
 - **Opportunity**
 - **Order**
-- **Submissiom**
+- **Submission**
 - **Contact**
 - **Account**
 
