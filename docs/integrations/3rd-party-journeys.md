@@ -24,7 +24,7 @@ We'll also cover the following topics:
 
 [[Postman Collection](/downloads/simple-submission.postman_collection.json.zip)]
 
-The simplest way to integrate a custom 3rd party journey is to directly use the [Submission API](/api/submission) and configure an [Automation](/docs/automation) to create further entities and trigger emails and workflows.
+The simplest way to integrate a custom 3rd party journey is to directly use the [Submission API](/api/submission) and configure an [Automation](/docs/automation/intro) to create further entities and trigger emails and workflows.
 
 ### Step 1: Upload Files (optional)
 
