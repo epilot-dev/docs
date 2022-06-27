@@ -174,11 +174,11 @@ To ensure proper relations between actions, the recommended order for journey su
 
 Refer to the [Automation documentation](/docs/automation/intro) for details.
 
-## Method 2: Direct API usage
+## Method 2: Direct API usage (Advanced)
 
 [[Postman Collection](/downloads/api-journey.postman_collection.json.zip)]
 
-In some cases it may be easier to directly use epilot APIs to create your business objects and trigger actions, instead of using Automation.
+In some cases it may be easier to directly use epilot APIs to create your business objects and trigger actions, in place of using Automation.
 
 ### Step 1: Create customer entities (contact + account)
 
