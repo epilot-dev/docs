@@ -6,6 +6,8 @@ sidebar_position: 1
 
 This article shows 2 examples for integrating a custom 3rd party form source via the epilot API.
 
+Feel free to contact customer support for help in integrating your custom journey into epilot!
+
 In this example we'll create the following entities:
 
 - **Opportunity**
