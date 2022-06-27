@@ -163,8 +163,6 @@ You can now start mapping fields from your submission to business objects. Refer
 
 ![Map Entity Action](/img/automation-entity-mapping.png)
 
-You may also
-
 To ensure proper relations between actions, the recommended order for journey submission Automation actions is the following:
 
 1. Create/Edit Account
