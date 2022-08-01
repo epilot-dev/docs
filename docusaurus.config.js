@@ -105,11 +105,6 @@ const DOCS_URL = 'https://docs.epilot.io';
             specUrl: 'https://docs.api.epilot.io/template-variables.yaml',
           },
           {
-            layout: { title: 'Consent API' },
-            routePath: '/api/consent',
-            specUrl: 'https://docs.api.epilot.io/consent.yaml',
-          },
-          {
             layout: { title: 'Customer Portal API' },
             routePath: '/api/customer-portal',
             specUrl: 'https://docs.api.epilot.io/customer-portal.yaml',
