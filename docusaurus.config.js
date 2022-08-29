@@ -40,6 +40,11 @@ const DOCS_URL = 'https://docs.epilot.io';
         debug: Boolean(process.env.DEBUG || process.env.CI),
         specs: [
           {
+            layout: { title: 'Access Token API' },
+            routePath: '/api/access-token',
+            specUrl: 'https://docs.api.epilot.io/access-token.yaml',
+          },
+          {
             layout: { title: 'User API' },
             routePath: '/api/user',
             specUrl: 'https://docs.api.epilot.io/user.yaml',
