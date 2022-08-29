@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Authentication
 
-The epilot application uses standard [OAuth 2.0](https://oauth.net/2/) for user authentication.
+The epilot application uses standard [OAuth 2.0](https://oauth.net/2/) tokens for user authentication.
 
 ## Quick Start
 
@@ -21,7 +21,34 @@ $ npx @epilot/auth
 # <access token printed here>
 ```
 
-Authentication using the [SDK](/docs/architecture/sdk):
+Using [Access Tokens](/docs/auth/access-tokens) with the [SDK](/docs/architecture/sdk):
+
+```sh
+npm install --save @epilot/auth
+```
+
+```typescript
+import { authorizeWithToken } from '@epilot/auth';
+import entityClient from '@epilot/entity-client';
+
+authorizeWithToken(entityClient, '<my_access_token>');
+
+// you can now use authorized entity client
+```
+
+## Cognito User Pools
+
+Each tenant organisation in epilot has their own Cognito user pool backend and OAuth configuration to provide login and 3rd party Single Sign-On.
+
+## User API
+
+The epilot user API provides functionality to invite and manage users in epilot organisations.
+
+The Cognito sync service part of the User API takes care of managing users in each User Pool.
+
+## Login using API
+
+While we recommend using [Access Tokens](/docs/auth/access-tokens), you can also authenticate with your username and password using the the [SDK](/docs/architecture/sdk):
 
 ```sh
 npm install --save @epilot/auth
@@ -37,17 +64,5 @@ const credentials = await authenticate({
 });
 credentials.configureClient(entityClient);
 
-await entityClient.createEntity('contact', { fist_name: 'Example', last_name: 'Contact' });
-
-// entityClient will be authorized using epilot OAuth tokens
+// entityClient is now authorized with epilot OAuth2 tokens
 ```
-
-## Cognito User Pools
-
-Each tenant organisation in epilot has their own Cognito user pool backend and OAuth configuration to provide login and 3rd party Single Sign-On.
-
-## User API
-
-The epilot user API provides functionality to invite and manage users in epilot organisations.
-
-The Cognito sync service part of the User API takes care of managing users in each User Pool.

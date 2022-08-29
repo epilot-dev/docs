@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Permissions
@@ -22,9 +22,9 @@ To use the epilot Permissions API, we provide a package that implements both fet
 Example:
 
 ```js
-import { tokenIsPermitted } from '@epilot/permissions';
+import { tokenIsPermitted } from "@epilot/permissions";
 
-const isPermitted = await tokenIsPermitted(token, 'myaction');
+const isPermitted = await tokenIsPermitted(token, "myaction");
 ```
 
 Readme link: [@epilot/permissions](https://www.npmjs.com/package/@epilot/permissions)
@@ -59,11 +59,9 @@ Readme link: [@epilot/permissions](https://www.npmjs.com/package/@epilot/permiss
   ]
 ```
 
-
-
 ## Grants Evaluation Logic
 
-A lot of this will be familiar to AWS IAM users. This is “heavily inspired” by their design  
+A lot of this will be familiar to AWS IAM users. This is “heavily inspired” by their design
 
 - **Rule 1**: Tenants are isolated into Organizations. Roles may only grant access to resources within the tenant Organization.
 - **Rule 2**: The owner role inherits all grants from the organization. (hardcoded role, present in all orgs)
@@ -71,7 +69,6 @@ A lot of this will be familiar to AWS IAM users. This is “heavily inspired” 
 - **Rule 4**: When evaluating all role and organization grants are added to the grant pool.
 - **Rule 5**: At least one organization role grant and at least one user role grant must be matched to pass the evaluation. Neither must contain a matched explicit deny.
 - **Rule 6**: An evaluation will try to match all available grants where a given action and resource matches. Wildcard expressions are supported.
-
 
 ## Organization Root Role
 

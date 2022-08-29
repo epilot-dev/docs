@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Internal Auth
@@ -28,19 +28,19 @@ Resources:
     Type: AWS::Serverless::Function
     Policies:
       - Statement:
-        - Effect: Allow
-          Action: execute-api:Invoke
-          Resource:
-            - arn:aws:execute-api:eu-central-1:*:*/*/GET/v1/internal-auth/auth # internal auth api
-            - arn:aws:execute-api:eu-central-1:*:*/*/GET/v?/mock-api/* # api you want to call
+          - Effect: Allow
+            Action: execute-api:Invoke
+            Resource:
+              - arn:aws:execute-api:eu-central-1:*:*/*/GET/v1/internal-auth/auth # internal auth api
+              - arn:aws:execute-api:eu-central-1:*:*/*/GET/v?/mock-api/* # api you want to call
 ```
 
 Call the API to obtain your token
 
 ```js
-import { getToken } from '@epilot/internal-auth'
+import { getToken } from "@epilot/internal-auth";
 
-const token = await getToken()
+const token = await getToken();
 ```
 
 ## Example Token
@@ -66,6 +66,6 @@ const token = await getToken()
 }
 ```
 
-##  Links
+## Links
 
 - Internal Auth package: https://www.npmjs.com/package/@epilot/internal-auth
