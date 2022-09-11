@@ -24,7 +24,7 @@ We also utilise Fargate for of serverless containers and Redshift Serverless + F
 
 Other notable 3rd party cloud services we use include Elastic Cloud for search, Datadog for observability and GitLab for CI, feature flags and package registry.
 
-See our [Tech Radar](/techradar) for more info on the serverless technologies we use.
+See our [Tech Radar](https://docs.epilot.io/techradar/) for more info on the serverless technologies we use.
 
 ## Boilerplate Projects
 

@@ -32,4 +32,4 @@ The epilot application backend consists of serverless microservices written most
 
 ![Tech Stack](../../static/img/epilot-tech-stack.png)
 
-Check out our [Tech Radar](/techradar) for a more detailed view of our tech stack!
+Check out our [Tech Radar](https://docs.epilot.io/techradar/) for a more detailed view of our tech stack!
