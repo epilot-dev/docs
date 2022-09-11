@@ -155,9 +155,7 @@ Any JSON object can be stored and retrieved as an entity using the CRUD API.
 
 [[API Docs](/api/entity/#tag/Relations)]
 
-The Relations API is a convenience API to manage relations between entities.
-
-Relations are stored as an attribute with a `$relation` property on the entity document.
+The Relations API is a convenience API to manage relations between entities:
 
 ```json
 // addRelations
@@ -167,6 +165,21 @@ Relations are stored as an attribute with a `$relation` property on the entity d
     "attribute": "products",
     "entity_id": "e8878f62-2d3d-4c86-bfe7-01a4180ff048",
     "_tags": []
+  }
+]
+```
+
+The API can also be used to retrieve the related entities using the `?hydrate=true` parameter:
+
+```json
+// getRelations
+// GET /v1/entity/exampleSchema/77f9e5ad-7809-4376-bbf1-817b3cadb94c/relations?hydrate=true
+[
+  {
+    "_id": "e8878f62-2d3d-4c86-bfe7-01a4180ff048",
+    "_schema": "product",
+    "_title": "Sample Product",
+    "price": 10000
   }
 ]
 ```
