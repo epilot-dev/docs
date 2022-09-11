@@ -19,9 +19,9 @@ Each Automation Flow has:
 The following is a list of automation trigger types supported by epilot:
 
 - **Journey Submission**
-  - Triggers when a Journey created in epilot [Journey Builder](/docs/journeys/journey-builder) receives a new [Submission](/docs/submissions)
+  - Triggers when a Journey created in epilot [Journey Builder](/docs/journeys/journey-builder) receives a new [Submission](/docs/journeys/submissions)
 - **Frontend Submission**
-  - Triggers when a legacy Frontend created in epilot classic receives a new [Submission](/docs/submissions)
+  - Triggers when a legacy Frontend created in epilot classic receives a new [Submission](/docs/journeys/submissions)
 - **API Submission**
   - Triggers when a submission is received via the [Submission API](/api/submission) with a matching `source_id` field
 - **Manual Triggers**

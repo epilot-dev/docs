@@ -22,7 +22,7 @@ Script snippets for embedding can be generated directly from the Journey Builder
 
 ## Journey Submissions
 
-Journeys built using the Journey Builder always create [Submission entities](/docs/submissions) when a user completes them.
+Journeys built using the Journey Builder always create [Submission entities](/docs/journeys/submissions) when a user completes them.
 
 Automation and [Entity Mapping](/docs/automation/entity-mapping) are then used to create further business objects and automate the process of handling requests, opportunities or orders.
 
