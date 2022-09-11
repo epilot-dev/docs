@@ -7,7 +7,7 @@ sidebar_position: 1
 [[API Docs](/api/entity)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
-The epilot application uses a flexible *Entities* data layer to model business data on the platform.
+The epilot application uses a flexible _Entities_ data layer to model business data on the platform.
 
 ## Entities
 
@@ -24,6 +24,7 @@ Examples of Entity Schemas:
 - Contact
 - Account
 - Product
+- Price
 - Submission
 - Order
 - Opportunity
@@ -34,9 +35,9 @@ The primary purpose of schemas is to control how the flexible entities are repre
 
 ## Entity Builder
 
-The epilot 360 potal provides a builder interface to modify the schemas defined in the organization.
+The epilot 360 potal provides a builder interface to modify Entity Schemas defined in the organization.
 
-![](../../static/img/entity-builder.png)
+![](../../static/img/entity-builder-example.png)
 
 ## Attributes
 
