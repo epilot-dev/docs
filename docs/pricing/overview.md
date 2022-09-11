@@ -7,4 +7,8 @@ sidebar_position: 1
 [[API Docs](/api/pricing)]
 [[SDK](https://www.npmjs.com/package/@epilot/pricing-client)]
 
-The Pricing API manages everything related to Products, Pricing and Checkout in epilot.
+:::note
+This article is missing content (TODO)
+:::
+
+The Pricing API manages everything related to Products, Pricing and Orders in epilot.

@@ -1,12 +1,18 @@
 ---
-id: customer-portal
+id: Customer Portal API
 slug: /customer-portal
-title: Customer Portal
-sidebar_position: 1
+title: Customer Portal API
+sidebar_position: 2
 hide_table_of_contents: true
 pagination_next: null
 pagination_prev: null
 sidebar_class_name: navbar__toggle
 ---
 
-This documentation has been automatically generated using [Customer Portal Graphql](https://docs.api.epilot.io/graphql/customer-portal.graphql) schema.
+[[Download GraphQL Schema](https://docs.api.epilot.io/graphql/customer-portal.graphql)]
+
+:::note
+This article is missing content (TODO)
+:::
+
+API backend for epilot end customer portal

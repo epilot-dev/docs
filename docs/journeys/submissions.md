@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 3
 ---
 
 # Submissions
@@ -17,7 +17,7 @@ A Submission entity does not have a fixed schema for all its data like other bus
 
 A typical use of submissions is to map the incoming submission payload into further business entities like Contacts, Opportunities and Orders using [Automation](/docs/automation/automation-flows).
 
-![Submission Example](../static/img/submission.png)
+![Submission Example](../../static/img/submission.png)
 
 ## Submission API
 
