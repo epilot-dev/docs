@@ -9,7 +9,7 @@ sidebar_position: 7
 
 Submissions are entities that store raw data collected from Journeys or other outside data sources into epilot.
 
-Submissions are created via the public [Submission API](/api/submission).
+Submissions are created via the [Submission API](/api/submission).
 
 ## Submission Entity
 
@@ -17,7 +17,7 @@ A Submission entity does not have a fixed schema for all its data like other bus
 
 A typical use of submissions is to map the incoming submission payload into further business entities like Contacts, Opportunities and Orders using [Automation](/docs/automation/automation-flows).
 
-![](../static/img/submission.png)
+![Submission Example](../static/img/submission.png)
 
 ## Submission API
 
@@ -36,6 +36,7 @@ POST https://file.sls.epilot.io/v1/files/public/upload
 ```
 
 Request Body:
+
 ```json
 // application/json
 {
@@ -45,6 +46,7 @@ Request Body:
 ```
 
 Response (200):
+
 ```json
 // application/json
 {
@@ -63,6 +65,7 @@ PUT https://epilot-files-prod.s3.eu-central-1.amazonaws.com/123/temp/4d689aeb-14
 ```
 
 Request Body:
+
 ```
 (binary data)
 ```
@@ -74,27 +77,26 @@ POST https://submission.sls.epilot.io/v1/submission/submissions
 ```
 
 Request Body:
+
 ```json
 // application/json
-{ 
+{
   "organization_id": "123",
   "source_type": "api",
   "source_id": "example",
   "entities": [
-    { 
+    {
       "_schema": "submission",
       "description": "Submission with files",
       "files": [
-        {   
+        {
           "s3ref": {
             "bucket": "epilot-user-content",
             "key": "temp/123/4d689aeb-1497-4410-a9fe-b36ca9ac4389/document.pdf"
-          } 
-        }   
-      ]   
+          }
+        }
+      ]
     }
   ]
 }
-
 ```
-

@@ -114,7 +114,7 @@ The Schema API gives full control to create, update and delete Schemas, complete
 
 [[API Docs](/api/entity/#tag/Entities)]
 
-The CRUD API (create-read-update-delete) is a simple JSON document storage for JSON.
+The CRUD API (create-read-update-delete) is a simple JSON document storage for entities.
 
 Any JSON object can be stored and retrieved as an entity using the CRUD API.
 
