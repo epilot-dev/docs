@@ -212,7 +212,7 @@ Relations are stored as an attribute with a `$relation` property on the entity d
 ]
 ```
 
-# Activity API
+## Activity API
 
 [[API Docs](/api/entity#tag/Activity)]
 
