@@ -46,8 +46,6 @@ import entityClient from 'epilot-sdk/entity-client'
 import { getClient } from '@epilot/entity-client' // latest
 ```
 
-## SDK Packages
-
-View full list of API clients in our GitHub repository:
+You can view the full list of available API clients in our public GitHub repository:
 
 https://github.com/epilot-dev/sdk-js/tree/main/clients
