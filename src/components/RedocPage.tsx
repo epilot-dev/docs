@@ -4,6 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import DocSidebar from '@theme/DocSidebar';
 import Layout from '@theme/Layout';
 import Redoc from '@theme/Redoc';
+import useSpecData from '@theme/useSpecData';
 import { ApiDocProps as Props } from 'docusaurus-theme-redoc/src/types/common';
 import React from 'react';
 
@@ -13,11 +14,12 @@ interface Spec {
   layout: {
     title: string;
   };
-  routePath: string;
-  specUrl: string;
+  route: string;
+  spec: string;
 }
 
 function RedocPage({ layoutProps, spec: propSpec }: Props): JSX.Element {
+  const specData = useSpecData('using-custom-layout');
   const { title = 'API Docs', description = 'Open API Reference Docs for the API' } = layoutProps || {};
 
   const location = useLocation();
@@ -25,8 +27,6 @@ function RedocPage({ layoutProps, spec: propSpec }: Props): JSX.Element {
 
   const redocusaurusOpts = siteConfig.presets.find((preset) => preset[0] === 'redocusaurus');
   const specs: Spec[] = redocusaurusOpts?.[1]?.['specs'] ?? [];
-
-  const specUrl: string | undefined = propSpec.type === 'url' ? propSpec.content : undefined;
 
   return (
     <Layout {...layoutProps} title={title} description={description} pageClassName={DocPageStyles.docPage}>
@@ -37,14 +37,14 @@ function RedocPage({ layoutProps, spec: propSpec }: Props): JSX.Element {
           onCollapse={() => null}
           sidebar={specs.map((spec) => ({
             type: 'link',
-            href: spec.routePath,
+            href: spec.route,
             label: spec.layout.title,
           }))}
         />
       </aside>
 
       <main className={styles.redocContainer}>
-        <Redoc specUrl={specUrl || propSpec.specUrl} style={{ width: '100%' }} />
+        <Redoc {...specData} style={{ width: '100%' }} />
       </main>
     </Layout>
   );

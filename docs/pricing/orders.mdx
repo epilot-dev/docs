@@ -2,68 +2,50 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import { GetOrderApiSample, GetOrderSample, UpdateOrderSample, UpdateOrderApiSample } from './code-samples.tsx'
+
 # Orders
 
 An Order is a collection of Products and Prices that can be purchased by a Customer. Orders can be created manually on the platform our through automations that run upon certain events, such as a Journey submission.
 
 Our platform is build in a way such that [Business Entities](/docs/entities/flexible-entities) can be installed by our customers, and on this context we can also claim that we "eat our own dog food". This means that we use our own platform to build and model the Order Entity.
 
-<img style={{ boxShadow: '#a2a2a2 0px 0px 25px -8px', borderRadius: '5px' }} src="/img/order-detailsview.png" alt="Order Details View" />
+<img
+  style={{ boxShadow: '#a2a2a2 0px 0px 25px -8px', borderRadius: '5px' }}
+  src="/img/order-detailsview.png"
+  alt="Order Details View"
+/>
 
 ## Managing Orders via Pricing API
 
 Using our [Entity API](/docs/entities/entity-api) we can directly manage Orders, although very rapidly we realise that an Order has more to it than just a collection of Products and Prices. We needed to be able to manage the Order's lifecycle, and we needed to be able to manage the Order's state. We also needed to be able to recompute the order's product and price totals, along with the order price and product relations. Using just our Entity API would not suffice here since there is additional logic required to fully manage an order.
 
-To fullfil this purpose we have designed the [Pricing API](/docs/pricing/pricing-api), which is a wrapper around the Entity API. The Pricing API allows us to manage Orders, and it also allows us to manage the Order's lifecycle and state. The Pricing API also allows us to recompute the order's product and price totals, along with the order price and product relations.
+To fullfil this purpose we have designed the [Pricing API](/api/pricing), which is a wrapper around the Entity API. The [Pricing API](/api/pricing) allows us to manage Orders, and it also allows us to manage the Order's lifecycle and state. The Pricing API also allows us to recompute the order's product and price totals, along with the order price and product relations.
 
+### Example: Updating an Order
 
-### Updating an Order using `epilot-sdk`
+For general cases, the Entity API can be used directly to deal with simple business entities. In the Orders case, which relies on the [Pricing API](/api/pricing) to ensure any changes over `line_items` will have all the line items and grand totals computed properly.
 
-**Authenticating using your [OAT](https://docs.epilot.io/docs/auth/access-tokens) (Org Access Token)**
+On both examples below API/SDK we authenticate using a [Org Access Token (OAT)](/docs/auth/access-tokens) thatn can be generated from our Epilot Portal:
 
-For general cases, the Entity API can be used directly to deal with simple business entities. In the Orders case, which relies on the PricingAPI to ensure any changes over `line_items` will have all the line items and grand totals computed properly.
+<Tabs lazy>
+  <TabItem value="api" label="API" default>
+    <GetOrderApiSample/>
+  </TabItem>
+  <TabItem value="sdk" label="SDK (Javascript)">
+    <GetOrderSample />
+  </TabItem>
+</Tabs>
 
-Below we use our SDK to authenticate using a Org Access Token (OAT) of a user on the epilot portal (production):
+After fetching the Order from the [Pricing API](/api/pricing) we can change the `line_items` and then call the [Pricing API](/api/pricing) to update the order. The update is done via PUT so it's a full update. We don't yet have a PATCH endpoint for upserting entity changes.
 
-
-```typescript
-import { authorizeWithToken } from 'epilot-sdk/auth'
-import entityClient from 'epilot-sdk/entity-client'
-import pricingClient from 'epilot-sdk/pricing-client'
-
-const accessToken = '<org-access-token>'
-
-entityClient.defaults.baseURL = 'https://entity.sls.epilot.io'
-pricingClient.defaults.baseURL = 'https://pricing-api.sls.epilot.io'
-
-// authorizing SDK clients
-authorizeWithToken(entityClient, accessToken)
-authorizeWithToken(pricingClient, accessToken)
-
-const targetOrderId = '<order-id>'
-
-// fetching the order from entity api
-const order = await entityClient
-    .getEntity({ slug: 'order', id: targetOrderId})
-    .then(({ data }) => data?.entity)
-```
-
-**Updating the Order on the Pricing API**
-
-After fetching the Order from the PricingAPI we can change the `line_items` and then call the Pricing API to update the order.
-The update is done via PUT so it's a full update. We don't yet have a PATCH endpoint for upserting entity changes.
-
-```typescript
-// pushing a new line item
-order.line_items.push({
-  description: 'individual adjustment',
-  _price: {
-    unit_amount: 1000,
-    unit_amount_decimal: '10.00',
-    unit_amount_currency: 'EUR'
-  }
-})
-
-// updating the order
-await pricingClient.putOrder({ id: targetOrderId }, order).then(({ data }) => data)
-```
+<Tabs lazy>
+  <TabItem value="api" label="API" default>
+    <UpdateOrderApiSample />
+  </TabItem>
+  <TabItem value="sdk" label="SDK (Javascript)">
+    <UpdateOrderSample />
+  </TabItem>
+</Tabs>
