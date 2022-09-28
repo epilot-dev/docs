@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 3
 ---
 
 import Tabs from '@theme/Tabs';
@@ -18,13 +18,13 @@ Our platform is build in a way such that [Business Entities](/docs/entities/flex
   alt="Order Details View"
 />
 
-## Managing Orders via Pricing API
+## Managing Orders via Pricing API {#managing-orders-via-pricing-api}
 
 Using our [Entity API](/docs/entities/entity-api) we can directly manage Orders, although very rapidly we realise that an Order has more to it than just a collection of Products and Prices. We needed to be able to manage the Order's lifecycle, and we needed to be able to manage the Order's state. We also needed to be able to recompute the order's product and price totals, along with the order price and product relations. Using just our Entity API would not suffice here since there is additional logic required to fully manage an order.
 
 To fullfil this purpose we have designed the [Pricing API](/api/pricing), which is a wrapper around the Entity API. The [Pricing API](/api/pricing) allows us to manage Orders, and it also allows us to manage the Order's lifecycle and state, recomputing the order's product and price totals, along with its price and product relations.
 
-### Example: Updating an Order
+### Example: Updating an Order {#example-updating-an-order}
 
 For general cases, the Entity API can be used directly to deal with simple business entities. In the Orders case, it relies on the [Pricing API](/api/pricing) to ensure any changes over `line_items` will have all the line items and grand totals computed properly.
 
