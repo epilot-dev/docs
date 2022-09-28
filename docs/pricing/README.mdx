@@ -10,6 +10,9 @@ Within our 360 Portal we have built a nice set of UIs to help our customers mode
 
 All our pricing entities are fully extendable, therefore, on top of our opinionated set of attributes and features you can easy craft and add your own. And if you feel limited in any way, through webhooks you can easily extend the functionality of our pricing entities and build your own custom pricing logic over your corporate backends.
 
-import TOCInline from '@theme/TOCInline';
+import DocCardList from '@theme/DocCardList';
+import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
 
-<TOCInline toc={toc} />
+In this section, we will introduce the following concepts:
+
+<DocCardList items={useCurrentSidebarCategory().items}/>
