@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkepilot_dev_handbook=self.webpackChunkepilot_dev_handbook||[]).push([[6675],{3531:(e,t,n)=>{n.r(t),n.d(t,{default:()=>c});var o=n(6775),a=n(7294);const c=function(){return a.createElement(o.l_,{to:"/api/access-token"})}}}]);
