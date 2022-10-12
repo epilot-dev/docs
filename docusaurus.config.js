@@ -79,6 +79,11 @@ const DOCS_URL = 'https://docs.epilot.io';
             specUrl: 'https://docs.api.epilot.io/permissions.yaml',
           },
           {
+            layout: { title: 'Message API' },
+            routePath: '/api/message',
+            specUrl: 'https://docs.api.epilot.io/message.yaml',
+          },
+          {
             layout: { title: 'File API' },
             routePath: '/api/file',
             specUrl: 'https://docs.api.epilot.io/file.yaml',
@@ -99,24 +104,9 @@ const DOCS_URL = 'https://docs.epilot.io';
             specUrl: 'https://docs.api.epilot.io/document.yaml',
           },
           {
-            layout: { title: 'Message API' },
-            routePath: '/api/message',
-            specUrl: 'https://docs.api.epilot.io/message.yaml',
-          },
-          {
-            layout: { title: 'Email Template API' },
-            routePath: '/api/email-template',
-            specUrl: 'https://docs.api.epilot.io/email-template.yaml',
-          },
-          {
             layout: { title: 'Template Variables API' },
             routePath: '/api/template-variables',
             specUrl: 'https://docs.api.epilot.io/template-variables.yaml',
-          },
-          {
-            layout: { title: 'Email Settings API' },
-            routePath: '/api/email-settings',
-            specUrl: 'https://docs.api.epilot.io/email-settings.yaml',
           },
           {
             layout: { title: 'Customer Portal API' },
