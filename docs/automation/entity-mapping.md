@@ -165,6 +165,41 @@ This is useful in cases where you don't want to merge target values together (de
 }
 ```
 
+### `_random`
+
+The `_random` operation can be used to generate a random number or id.
+
+Options for **type**:
+- Use `nanoid` or `uuid` to generate a random number.
+- Use `number` and optionally set the `min` (default 0) and `max` (default 1) value.
+
+```json
+{
+  "_random": {
+    "type": "nanoid",
+  }
+}
+
+{
+  "_random": {
+    "type": "number",
+    "min": 2,
+    "max": 6
+  }
+}
+```
+
+### `_template`
+
+The `_template` operation can be used to output a single string based on [handlebars](https://handlebarsjs.com/guide/expressions.html) expressions.
+
+This is useful when you want to manipulate fields e.g. through mathematical expressions and merge multiple fields into a single one.
+```json
+{
+  "_template": "{{contact.first_name}} {{contact.last_name}}",
+}
+```
+
 ### Nesting
 
 Operations can be nested to create complex mapping behaviour:
