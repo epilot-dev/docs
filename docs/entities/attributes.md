@@ -103,3 +103,44 @@ A `boolean` attribute defines a toggle selection with `true` or `false` values.
   "default": true
 }
 ```
+
+# Conditional Rendering
+
+As expected, when dealing with attributes, it's likely that depending on the present entity data, some attributes may not make sense to be visible. To accommodate this, entity attributes can be controlled by a conditional rendering expression. 
+
+An expression is composed by three parts:
+
+```
+<attribute_name> {operand} "<value>"
+```
+
+The following example, illustrates a simple expression:
+
+```
+type="electric"
+```
+
+Expressions can also be composed by multiple expressions with two conditional operators: OR and an AND.
+
+An example of a composed expression would look like:
+
+```
+type="electric" AND is_rechargeable="true"
+```
+
+The list of supported operators include:
+
+```
+=,!=,>=,<=,>,<
+```
+
+
+## Limitations
+
+### Attribute Values
+
+We support only comparisons using strings and numbers. You can't use arrays or objects.
+
+### Composed Expressions
+
+At the moment, a composed expression can only be combined by 1 type of logical operator. Which means, you can have a full expression composed by ANDs or by ORs.
