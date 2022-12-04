@@ -106,7 +106,7 @@ A `boolean` attribute defines a toggle selection with `true` or `false` values.
 
 # Conditional Rendering
 
-As expected, when dealing with attributes, it's likely that depending on the present entity data, some attributes may not make sense to be visible. To accommodate this, entity attributes can be controlled by a conditional rendering expression. 
+The Conditional Rendering feature, controls the visibility of Schema attributes inside of our Entity Details View. As expected, when dealing with attributes, it's likely that depending on the present entity data, some attributes may not be visible depending on a certain condition. To accommodate that, entity attributes can be controlled by a conditional rendering expression. 
 
 An expression is composed by three parts:
 
@@ -117,7 +117,7 @@ An expression is composed by three parts:
 The following example, illustrates a simple expression:
 
 ```
-type="electric"
+type = "electric"
 ```
 
 Expressions can also be composed by multiple expressions with two conditional operators: OR and an AND.
@@ -125,7 +125,7 @@ Expressions can also be composed by multiple expressions with two conditional op
 An example of a composed expression would look like:
 
 ```
-type="electric" AND is_rechargeable="true"
+type = "electric" AND is_rechargeable = "true"
 ```
 
 The list of supported operators include:
@@ -143,4 +143,10 @@ We support only comparisons using strings and numbers. You can't use arrays or o
 
 ### Composed Expressions
 
-At the moment, a composed expression can only be combined by 1 type of logical operator. Which means, you can have a full expression composed by ANDs or by ORs.
+At the moment, a composed expression can only be combined by one type of logical operator at a time. Which means, you can have a full expression composed by ANDs or by ORs, but not by both.
+
+Examples:
+
+✅ `type="electric" AND is_rechargeable="true"`
+
+❌ `type = "electric" AND is_rechargeable = "true" OR is_recharges_count > "1"`
