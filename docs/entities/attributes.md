@@ -208,4 +208,4 @@ Examples:
 
 ### Expression Builder
 
-The Entity Builder, doesn't support a good UI yet for building such expressions. Which means the only way to configured them is through the code edition mode on the Entity Builder.
+The Entity Builder, doesn't support a good UI yet for building such expressions. Which means the only way to configure them is by changing the (schema's) code on the Entity Builder.
