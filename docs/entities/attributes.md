@@ -188,7 +188,7 @@ The render condition is configured by using the property `render_condition`. Bel
   }
   ```
   
-When building `render_condition`s the user can access the full entity context, which means all attributes of the current entity will be available on the expression.
+When building `render_condition`'s the user can access the full entity context, which means all attributes of the current entity will be available on the expression.
 
 ## Limitations
 
