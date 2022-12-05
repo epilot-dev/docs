@@ -142,9 +142,7 @@ A render condition can be configured in 3 scenarios:
 - On attributes rendered inside of an Entity Details view
 - On attribute groups
 
-The render condition is configured by using the property `render_condition`.
-
-Below a set of examples illustrates each one of scenarios mentioned above.
+The render condition is configured by using the property `render_condition`. Below a set of examples illustrates each one of the scenarios mentioned above.
 
 - **Entity List Item lists**, displaying specific summary attributes depending on a given condition:
 
