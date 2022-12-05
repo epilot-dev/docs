@@ -194,7 +194,7 @@ When building `render_condition`'s the user can access the full entity context, 
 
 ### Attribute Values
 
-We only support comparisons using strings and numbers. You can't use arrays or objects.
+We only support comparisons using strings and numbers. Comparing two objects or arrays is not supported. However, nested properties of objects and arrays can be used to build the expression. For example: `price_components.value.$relation.length < "1"`
 
 ### Composed Expressions
 
