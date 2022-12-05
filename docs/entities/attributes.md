@@ -106,7 +106,7 @@ A `boolean` attribute defines a toggle selection with `true` or `false` values.
 
 # Conditional Rendering
 
-The Conditional Rendering feature, controls the visibility of Schema attributes inside of our Entity Details View. As expected, when dealing with attributes, it's likely that depending on the available entity data, some attributes may not be visible depending on a certain condition. To accommodate that, entity attributes can be controlled by a conditional rendering expression. 
+The Conditional Rendering feature, controls the visibility of Schema attributes inside of our Entity Details View. As expected, when dealing with attributes, it's likely that depending on the available entity data, some attribute(s) may need to be hidden depending upon certain logical condition. To accommodate that, entity attributes can be controlled by a conditional rendering expression. 
 
 An expression is composed by three parts:
 
