@@ -103,3 +103,109 @@ A `boolean` attribute defines a toggle selection with `true` or `false` values.
   "default": true
 }
 ```
+
+# Conditional Rendering
+
+The Conditional Rendering feature, controls the visibility of Schema attributes inside of our Entity Details View. As expected, when dealing with attributes, it's likely that depending on the available entity data, some attribute(s) may need to be hidden depending upon certain logical condition. To accommodate that, entity attributes can be controlled by a conditional rendering expression. 
+
+An expression is composed by three parts:
+
+```
+<attribute_name> {operand} "<value>"
+```
+
+The following example, illustrates a simple expression:
+
+```
+type = "electric"
+```
+
+Expressions can also be composed by multiple expressions with two conditional operators: `OR` and an `AND`.
+
+An example of a composed expression would look like:
+
+```
+type = "electric" AND is_rechargeable = "true"
+```
+
+The list of supported operators include:
+
+```
+=,!=,>=,<=,>,<
+```
+
+## Configuring a Render Condition
+
+A render condition can be configured in 3 scenarios:
+
+- Entity List Item lists
+- On attributes rendered inside of an Entity Details view
+- On attribute groups
+
+The render condition is configured by using the property `render_condition`. Below a set of examples illustrates each one of the scenarios mentioned above.
+
+- **Entity List Item lists**, displaying specific summary attributes depending on a given condition:
+
+  ```
+  {
+    "ui_config": {
+      "list_item": {
+        "summary_attributes": [
+          {
+            "label": "Variability",
+            "value": "{{t \"summary.Variable\" }}",
+            "show_as_tag": true,
+            "tag_color": "secondary",
+            "render_condition": 'is_composite_price = "false" & variable_price = "true"'
+          }
+        ]
+      }
+    }
+  }
+  ```
+  
+- **Attributes rendered on an Entity Details view**
+
+  ```
+  {
+    "name": "price_components",
+    "label": "Price Component",
+    "type": "relation",
+    "show_in_table": true,
+    "render_condition": 'is_composite_price = "true"'
+  }  
+  ```
+
+- **Attribute Groups**, displayed conditionally
+
+  ```
+  {
+    "id": "Payment Information",
+    "label": "Payment Information",
+    "expanded": true,
+    "order": 20,
+    "render_condition": 'is_composite_price = "false"'
+  }
+  ```
+  
+When building `render_condition`'s the user can access the full entity context, which means all attributes of the current entity will be available on the expression.
+
+## Limitations
+
+### Attribute Values
+
+We only support comparisons using strings and numbers. Comparing two objects or arrays is not supported. However, nested properties of objects and arrays can be used to build the expression. For example: `price_components.value.$relation.length < "1"`
+
+### Composed Expressions
+
+At the moment, a composed expression can only be combined by one type of logical operator at a time. Which means, you can have a full expression composed by ANDs or by ORs, but not by both.
+
+Examples:
+
+✅ `type="electric" AND is_rechargeable="true"`
+
+❌ `type = "electric" AND is_rechargeable = "true" OR is_recharges_count > "1"`
+
+### Expression Builder
+
+The Entity Builder, doesn't support a good UI yet for building such expressions. Which means the only way to configure them is by changing the (schema's) code on the Entity Builder.
