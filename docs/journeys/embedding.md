@@ -3,15 +3,14 @@ sidebar_position: 3
 ---
 
 # Embedding Journeys
-## Introduction
-What is the embed script?
-The embed script provides a simple, yet flexible way to place a journey into your website. It is a wrapper around the created iframe, where the journeys operate in. 
 
-It’s essentially initializing the journey in form of an iframe, based on the provided journeyId and exposes and interface to interact with it.
-epilot Journeys can easily be embedded into your website. All you have to do is copy the embed script of your journey to the appropriate place on your website and modify it slightly if necessary.
+Journeys can easily be embedded on any website by placing an embed script tag provided by epilot on your website, and then optionally customizing it for advanced use.
 
-### Aim of the article
-This article aims to guide you through the different options available to embed a Journey into your web page. 
+## Embed Script
+
+An embed script is a simple way to publish an epilot journey on your website. The script loads the journey using a Journey ID and a secure token to embed the journey securely on your website.
+
+This page guides you through the different options available to embed a Journey into your web page. 
 
 ## Embed Configurator
 Configure and copy the embed script via the Journey Builders' Embed Configurator after saving the Journey. You can choose whether the Journey should be shown in a full-screen overlay, or inline to your website.
