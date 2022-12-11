@@ -190,13 +190,13 @@ The render condition is configured by using the property `render_condition`. Bel
   
 When building `render_condition`'s the user can access the full entity context, which means all attributes of the current entity will be available on the expression.
 
-## Limitations
+### Limitations
 
-### Attribute Values
+#### Attribute Values
 
 We only support comparisons using strings and numbers. Comparing two objects or arrays is not supported. However, nested properties of objects and arrays can be used to build the expression. For example: `price_components.value.$relation.length < "1"`
 
-### Composed Expressions
+#### Composed Expressions
 
 At the moment, a composed expression can only be combined by one type of logical operator at a time. Which means, you can have a full expression composed by ANDs or by ORs, but not by both.
 
@@ -206,6 +206,6 @@ Examples:
 
 ❌ `type = "electric" AND is_rechargeable = "true" OR is_recharges_count > "1"`
 
-### Expression Builder
+#### Expression Builder
 
 The Entity Builder, doesn't support a good UI yet for building such expressions. Which means the only way to configure them is by changing the (schema's) code on the Entity Builder.
