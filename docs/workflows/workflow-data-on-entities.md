@@ -8,9 +8,9 @@ sidebar_position: 2
 [[API Docs](/api/workflow-execution)]
 
 
-## Current data structure
+## Workflow data structure
 
-The example below is the current data structure of how the workflow information presents itself inside the entity payload. The current workflow payload is more detailed than before and provides better overview.
+The example below is the workflow data structure of how the workflow information presents itself inside the entity payload. The workflow payload is detailed  provides a nice overview of the process.
 ```json
 {
     "_id": "11111111-1111-1111-1111-111111111111",
@@ -173,7 +173,7 @@ How to migrate from the old workflow structure to the new workflow structure. Ch
 }
 ```
 
-`current workflow structure`
+`workflow structure`
 ```json
 {
     "_id": "11111111-1111-1111-1111-111111111111",
@@ -235,13 +235,13 @@ How to migrate from the old workflow structure to the new workflow structure. Ch
 ```
 
 ### Changes
-- Updated from `workflows` Array ➡️ `workflows` Hashmap (`definition_id`: {...})
+Updated from `workflows` Array                      ➡️ `workflows` Hashmap (`definition_id`: {...})
 - Added `primary` key into `workflows` object
 - Added `duedate` key into `workflows` object
 - Added `last_update_time` key into `workflows` object
 - Added `task_assignees` key into `workflows` object
 - Added `task_execution_type` key into `workflows` object
-- Migrated `workflow_status` ➡️ `status`
+- Migrated `workflow_status`    ➡️ `status`
 - Migrated `workflow_assignees` ➡️ `assignees`
 - Migrated `workflow_definition_id` ➡️ `definition_id`
 - Migrated `next_open_step_id` ➡️ `task_id`
