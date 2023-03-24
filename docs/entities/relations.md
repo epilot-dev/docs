@@ -7,9 +7,13 @@ sidebar_position: 4
 [[API Docs](/api/entity/#tag/Relations)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
-Entities can store relations to each other using a special JSON object with a `$relation` property.
+Epilot entities can be linked with each other using Relations
 
-Relations are supported natively by Entity API, which also exposes a [decicated Relations API](/api/entity/#tag/Relations) to manage relations of entities.
+![Relation Attribute Example](../../static/img/entity-relation.png)
+
+A list of all related entities can be found on the Relations tab in the default entity view.
+
+Relations are stored on entities using a special JSON object with a `$relation` property.
 
 Example relation attribute value:
 
@@ -30,6 +34,4 @@ Example relation attribute value:
 }
 ```
 
-Relations are shown on entity views as list items:
-
-![Relation Attribute Example](../../static/img/entity-relation.png)
+Relations are supported natively by Entity API, which also exposes a [decicated Relations API](/api/entity/#tag/Relations) to manage relations of entities.

@@ -5,6 +5,11 @@ module.exports = [
       url: 'https://docs.api.epilot.io/graphql/customer-portal.graphql',
       homepage: 'static/graphql/customer-portal.md',
     },
+    {
+      id: 'sharing',
+      url: 'https://docs.api.epilot.io/graphql/sharing-api.graphql',
+      homepage: 'static/graphql/sharing.md',
+    },
   ].map((schema) => [
     '@edno/docusaurus2-graphql-doc-generator',
     {

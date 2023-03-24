@@ -26,7 +26,6 @@ const DOCS_URL = 'https://docs.epilot.io';
         docs: {
           id: 'default',
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
           editUrl: 'https://github.com/epilot-dev/docs/edit/main/',
         },
         theme: {
@@ -130,6 +129,11 @@ const DOCS_URL = 'https://docs.epilot.io';
             specUrl: 'https://docs.api.epilot.io/workflows-execution.yaml',
           },
           {
+            layout: { title: 'Partner API' },
+            routePath: '/api/partner',
+            specUrl: 'https://docs.api.epilot.io/partner-directory-api.yaml',
+          },
+          {
             layout: { title: 'Internal Auth API' },
             routePath: '/api/internal-auth',
             specUrl: 'https://docs.api.epilot.io/internal-auth.yaml',
@@ -185,7 +189,7 @@ const DOCS_URL = 'https://docs.epilot.io';
           {
             position: 'left',
             label: 'GraphQL',
-            to: '/graphql/customer-portal',
+            to: '/graphql/sharing',
           },
           {
             to: '/docs/architecture/sdk',
@@ -210,7 +214,7 @@ const DOCS_URL = 'https://docs.epilot.io';
               },
               {
                 label: 'Graphql API Docs',
-                to: '/graphql/customer-portal',
+                to: '/graphql/sharing',
               },
               {
                 label: 'SDK',

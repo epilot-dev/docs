@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 2
 ---
 
 # Entity Builder
@@ -7,6 +7,8 @@ sidebar_position: 11
 [[API Docs](/api/entity/#tag/Schemas)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
-```
-TODO
-```
+Configuring users in epilot can define the data model of their entities using an Entity Builder interface.
+
+Entity Builder uses the Entity Schema API to mutate schemas.
+
+![Entity Builder screenshot](../../static/img/entity-builder-example.png)

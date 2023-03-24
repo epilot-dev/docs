@@ -4,6 +4,6 @@ sidebar_position: 3
 
 # Email Templates
 
-```
-// TODO
-```
+:::note
+This article is missing content (TODO)
+:::

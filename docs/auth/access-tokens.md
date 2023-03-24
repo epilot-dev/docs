@@ -7,13 +7,47 @@ sidebar_position: 2
 [[API Docs](/api/access-token)]
 [[SDK](https://www.npmjs.com/package/@epilot/access-token-client)]
 
-To call epilot APIs from 3rd party applications, requests must be authorized using a valid _Access Token_.
+:::info
 
-The Bearer's Token is passed in the `Authorization` request header.
+To call epilot APIs, requests must be authorized using a valid _Access Token_.
+
+:::
+
+## Using Access Token Authorization
+
+The access token should be passed in the `Authorization` request header.
 
 ```
 Authorization: Bearer <your-access-token>
 ```
+
+## Creating Access Tokens
+
+Users logged into the epilot 360 portal can manage their Access Tokens from [Settings > Access Tokens](https://portal.epilot.cloud/app/tokens).
+
+Creating access tokens requires the `token:create` permission.
+
+![Access Token Link via Configuration Menu](../../static/img/access-token-menu.png)
+
+When creating an Access Token, the token inherits the roles and permissions of the logged in user.
+
+![Access Token create view](../../static/img/access-token-create.png)
+
+:::note
+The generated token is shown only once and must be saved by the user.
+:::
+
+## Revoking Access Tokens
+
+Access Tokens can be deleted from the management view to revoke them.
+
+After revoking a token, it cannot be used anymore to call epilot APIs.
+
+![Access Token management view](../../static/img/access-token-management.png)
+
+:::caution
+epilot doesn't store and cannot recover lost or revoked access tokens.
+:::
 
 ## Access Token API
 
@@ -53,8 +87,6 @@ Each Access Token generated via the API gets a generated a unique ID.
   "assignments": ["123:owner"]
 }
 ```
-
-## Revoking Access Tokens
 
 Access tokens may also be revoked using the `revokeAccessToken` operation
 

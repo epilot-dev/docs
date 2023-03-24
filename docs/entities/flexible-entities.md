@@ -7,7 +7,7 @@ sidebar_position: 1
 [[API Docs](/api/entity)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
-The epilot application uses a flexible *Entities* data layer to model business data on the platform.
+The epilot application uses a flexible _Entities_ data layer to model business data on the platform.
 
 ## Entities
 
@@ -24,6 +24,7 @@ Examples of Entity Schemas:
 - Contact
 - Account
 - Product
+- Price
 - Submission
 - Order
 - Opportunity
@@ -31,12 +32,6 @@ Examples of Entity Schemas:
 - Message
 
 The primary purpose of schemas is to control how the flexible entities are represented in the epilot 360 portal UI.
-
-## Entity Builder
-
-The epilot 360 potal provides a builder interface to modify the schemas defined in the organization.
-
-![](../../static/img/entity-builder.png)
 
 ## Attributes
 
@@ -55,12 +50,15 @@ Examples of Attributes:
 
 ## Capabilities
 
-Entity Schemas may also define capabilities for the entities, which define extra functionality for that entity.
+Entity Schemas define Capabilities for the entities, which add extra functionality in the entity views.
 
-Examples of capabilities:
+Some examples of entity capabilities:
 
+- Email Messages
 - File Attachments
-- Comments
+- Order Item Table
+- Workflow Overview
+- Automation Actions
 
 ## Relations
 
@@ -70,22 +68,7 @@ Relations are stored as Relation attributes, containing a reference to the relat
 
 Example relation attribute value:
 
-```json
-{
-  "contacts": {
-    "$relation": [
-      {
-        "entity_id": "48e9432b-05e9-44fb-a8c2-8d29d9ceade8",
-        "_tags": ["CEO", "primary"]
-      },
-      {
-        "entity_id": "c0f7ad05-f03d-4d6a-a36a-c85281da28bb",
-        "_tags": ["Head of sales"]
-      }
-    ]
-  }
-}
-```
+![Relation Attribute Example](../../static/img/entity-relation.png)
 
 See [Relations](/docs/entities/relations) for more info.
 

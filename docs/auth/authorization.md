@@ -4,7 +4,19 @@ sidebar_position: 2
 
 # Authorization
 
-The epilot application uses standard [OAuth 2.0](https://oauth.net/2/) JWT tokens for authorization.
+:::info
+
+The epilot application uses standard [OAuth 2.0](https://oauth.net/2/) tokens (JWT) for authorization.
+
+:::
+
+## Authorization Header
+
+A valid bearer token should be passed in the `Authorization` request header to authorize API requests.
+
+```
+Authorization: Bearer <your-access-token>
+```
 
 ## API Gateway Authorizer
 
@@ -17,9 +29,9 @@ While the JWT token contains basic information about the identity of the authori
 Example:
 
 ```js
-import { tokenIsPermitted } from "@epilot/permissions";
+import { tokenIsPermitted } from '@epilot/permissions'
 
-const isPermitted = await tokenIsPermitted(context.token, "myaction");
+const isPermitted = await tokenIsPermitted(context.token, 'myaction')
 ```
 
 [Permissions Documentation](/docs/auth/permissions)

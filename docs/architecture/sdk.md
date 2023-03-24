@@ -7,7 +7,11 @@ sidebar_position: 3
 [[GitHub](https://github.com/epilot-dev/sdk-js)]
 [[NPM](https://www.npmjs.com/package/epilot-sdk)]
 
-We provide a JavaScript / TypeScript SDK library for developers interacting with epilot APIs.
+:::tip
+
+We provide a JavaScript / TypeScript SDK with types and Intellisense support for developers building with epilot APIs.
+
+:::
 
 ## Getting Started
 
@@ -17,43 +21,31 @@ Install the SDK
 npm install --save epilot-sdk
 ```
 
-Authenticate and call epilot APIs:
+Authorize a client module with an [Access Token](/docs/auth/access-tokens) and call epilot APIs:
 
 ```typescript
-import { authorizeWithToken } from 'epilot-sdk/auth';
-import entityClient from 'epilot-sdk/entity-client';
+import { authorizeWithToken } from 'epilot-sdk/auth'
+import entityClient from 'epilot-sdk/entity-client'
 
-authorizeWithToken(entityClient, '<my_access_token>');
+// See https://docs.epilot.io/api/access-token
+authorizeWithToken(entityClient, '<my_access_token>')
 
-await entityClient.createEntity('contact', { first_name: 'Example', last_name: 'Contact' });
+// See https://docs.epilot.io/api/entity/
+await entityClient.createEntity('contact', {
+  first_name: 'Example',
+  last_name: 'Contact',
+})
 ```
 
-## Importing
+## SDK packages
 
-The full SDK library is available both as a single package [`epilot-sdk`](https://www.npmjs.com/package/epilot-sdk) and as separate dependencies:
+The full SDK library is available both as a single package [`epilot-sdk`](https://www.npmjs.com/package/epilot-sdk) for convenience, but also as separate dependencies:
 
 ```typescript
-import entityClient from 'epilot-sdk/entity-client' // recommended way
-import { getClient } from '@epilot/entity-client' // granular way
+import entityClient from 'epilot-sdk/entity-client'
+import { getClient } from '@epilot/entity-client' // latest
 ```
 
-## SDK Packages
+You can view the full list of available API clients in our public GitHub repository:
 
-> TODO: some packages are still private
-
-- [@epilot/auth](https://www.npmjs.com/package/@epilot/auth)
-- [@epilot/entity-client](https://www.npmjs.com/package/@epilot/entity-client)
-- [@epilot/user-client](https://www.npmjs.com/package/@epilot/user-client)
-- [@epilot/organization-client](https://www.npmjs.com/package/@epilot/organization-client)
-- [@epilot/submission-client](https://www.npmjs.com/package/@epilot/submission-client)
-- [@epilot/pricing-client](https://www.npmjs.com/package/@epilot/pricing-client)
-- [@epilot/file-client](https://www.npmjs.com/package/@epilot/file-client)
-- [@epilot/document-client](https://www.npmjs.com/package/@epilot/document-client)
-- [@epilot/automation-client](https://www.npmjs.com/package/@epilot/automation-client)
-- [@epilot/message-client](https://www.npmjs.com/package/@epilot/message-client)
-- [@epilot/notification-client](https://www.npmjs.com/package/@epilot/notification-client)
-- [@epilot/template-variables-client](https://www.npmjs.com/package/@epilot/template-variables-client)
-- [@epilot/design-builder-api-client](https://www.npmjs.com/package/@epilot/design-builder-api-client)
-- [@epilot/customer-portal-client](https://www.npmjs.com/package/@epilot-sdk/customer-portal-client)
-- [@epilot/journey-client](https://www.npmjs.com/package/@epilot-sdk/journey-client)
-- [@epilot/workflow-client](https://www.npmjs.com/package/@epilot-sdk/workflow-client)
+https://github.com/epilot-dev/sdk-js/tree/main/clients
