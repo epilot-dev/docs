@@ -1,0 +1,182 @@
+---
+sidebar_position: 5
+title: Pricing Models
+---
+
+Pricing Models are a way to define how your customers will be charged for your products. The `Price` entity has a `pricing_model` field that defines the pricing model to be used. It can be one of the following:
+
+1. `per_unit`
+2. `tiered_cumulative`
+3. `tiered_volume`
+4. `tiered_flatfee`
+
+Each model is specified bellow.
+
+## Standard
+
+It's the most common pricing model. It's used when you want to charge your customers for each unit of your product.
+If `variable_price=true`, the amount to be paid by the customer will be calculated based the user input, ex: consumption.
+
+Example:
+
+```json
+{
+  "name": "Standard",
+  "pricing_model": "per_unit",
+  "variable_price": true,
+  "unit_amount_decimal": "0.055",
+  "unit_amount": 6,
+  "unit_amount_currency": "EUR"
+}
+```
+
+```js
+Consumption = 2000 kWh
+Amount to pay = 2000 kWh * €0.055/kWh = 110 €
+```
+
+## Tiered Volume
+
+It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on `Price` entity.
+The amount to be paid by the customer will consider unit price of the tier according to the quantity consumed and the same unit price is applied for all the consumed units.
+
+Example:
+
+```json
+{
+  "name": "Standard",
+  "pricing_model": "tiered_cumulative",
+  "variable_price": true,
+  "unit_amount_currency": "EUR",
+  "tiers": [
+    {
+      "unit_amount_decimal": "0.055",
+      "unit_amount": 6,
+      "up_to": 1000
+    },
+    {
+      "unit_amount_decimal": "0.054",
+      "unit_amount": 5,
+      "up_to": 2000
+    },
+    {
+      "unit_amount_decimal": "0.053",
+      "unit_amount": 5,
+      "up_to": 3000
+    },
+    {
+      "unit_amount_decimal": "0.05",
+      "unit_amount": 5,
+    }
+  ]
+}
+```
+
+<img
+  style={{ width: '500px', borderRadius: '5px' }}
+  src="/img/price-tiers-1.png"
+  alt="Price Tiers"
+/>
+
+```js
+Consumption = 2000 kWh
+Amount to pay = 2000 kWh * €0.054/kWh = 108 €
+```
+
+
+## Tiered Cumulative
+
+It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on `Price` entity.
+While similar to tiered volume, graduated pricing charges for the usage in each tier instead of applying a single price to all usage.
+
+
+Example:
+
+```json
+{
+  "name": "Standard",
+  "pricing_model": "tiered_cumulative",
+  "variable_price": true,
+  "unit_amount_currency": "EUR",
+  "tiers": [
+    {
+      "unit_amount_decimal": "0.055",
+      "unit_amount": 6,
+      "up_to": 1000
+    },
+    {
+      "unit_amount_decimal": "0.054",
+      "unit_amount": 5,
+      "up_to": 2000
+    },
+    {
+      "unit_amount_decimal": "0.053",
+      "unit_amount": 5,
+      "up_to": 3000
+    },
+    {
+      "unit_amount_decimal": "0.05",
+      "unit_amount": 5,
+    }
+  ]
+}
+```
+
+<img
+  style={{ width: '500px', borderRadius: '5px' }}
+  src="/img/price-tiers-1.png"
+  alt="Price Tiers"
+/>
+
+```js
+Consumption = 2000 kWh
+Amount to pay = 1000 kWh * €0.055/kWh + 1000 kWh * €0.054/kWh = 109 €
+```
+
+## Tiered Flat Fee
+
+It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on `Price` entity.
+While similar to tiered volume, tiered flat fee charges for the same quantity for the entire range instead using the unit price to multiply the quantity.
+
+Example:
+
+```json
+{
+  "name": "Standard",
+  "pricing_model": "tiered_flatfee",
+  "variable_price": true,
+  "unit_amount_currency": "EUR",
+  "tiers": [
+    {
+      "flat_fee_amount_decimal": "50.00",
+      "flat_fee_amount": 5000,
+      "up_to": 5
+    },
+    {
+      "flat_fee_amount_decimal": "100.00",
+      "flat_fee_amount": 10000,
+      "up_to": 7
+    },
+    {
+      "flat_fee_amount_decimal": "150.00",
+      "flat_fee_amount": 15000,
+      "up_to": 3000
+    },
+    {
+      "flat_fee_amount_decimal": "200.00",
+      "flat_fee_amount": 20000,
+    }
+  ]
+}
+```
+
+<img
+  style={{ width: '500px', borderRadius: '5px' }}
+  src="/img/price-tiers-2.png"
+  alt="Price Tiers"
+/>
+
+```js
+Max peak power = 7 kW
+Amount to pay = 100 €
+```
