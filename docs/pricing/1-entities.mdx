@@ -1,0 +1,32 @@
+---
+sidebar_position: 1
+title: Entities
+---
+
+The epilot platform defines 3 cores entities that are used to model the data and the business logic around all our pricing features.
+
+## [Product](/api/pricing#tag/product_schema) {#product}
+
+Products are the core of your pricing model. They are the items you sell to your customers. They can be physical or digital goods, services, subscriptions, or any other item you want to sell.
+
+A product can be sold in many ways, with different billing cycles, and with different price tags. To configure different ways of selling a product, you can create multiple price options.
+
+A product can have 2 types of prices listed under their price options: simples prices or composite prices, to model more complex pricing models.
+
+## [Price](/api/pricing#tag/simple_price_schema) {#price}
+
+A price defines the price of a product, and can be of one of the following types:
+
+- **[Simple](/api/pricing#tag/simple_price_schema)**: A simple price is a single price that is applied to the product, with a fixed amount, paid upfront or in installments (recurrently).
+
+- **[Composite](/api/pricing#tag/dynamic_price_schema)**: A composite price is a price that is calculated based on a set of prices. These prices often belong to the same product, but they can also belong to other products. For example, a product can have a composite price that is calculated based on the price of a physical good and the price of a service (e.g, wallbox + fast charging station service fee paid recurrently).
+
+## [Tax](/api/pricing#tag/tax_schema) {#tax}
+
+A tax is a percentage that is applied to a price. Taxes can behave in two different ways:
+
+- Inclusive: The tax is included in the price. For example, a price of 100€ with a 20% tax will be displayed as 100€, since the tax is already included in the price.
+
+- Exclusive: The tax is not included in the price. For example, a price of 100€ with a 20% tax will be displayed as 120€, since the tax is not included in the price.
+
+Taxes can also be bound to their corresponding jurisdiction by specifying the Tax Region in the Tax definition.
