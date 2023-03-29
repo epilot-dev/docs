@@ -20,7 +20,7 @@ Principle: [Rent over build](https://github.com/epilot-dev/engineering-principle
 
 The majority of backend microservices are built using serverless AWS services such as Lambda, Step Functions, API Gateway, DynamoDB, S3 and EventBridge.
 
-We also utilise Fargate for of serverless containers and Redshift Serverless + Firehose for our data lake on S3.
+We also utilise Fargate for serverless containers and Redshift Serverless + Firehose for our data lake on S3.
 
 Other notable 3rd party cloud services we use include Elastic Cloud for search, Datadog for observability and GitLab for CI, feature flags and package registry.
 
