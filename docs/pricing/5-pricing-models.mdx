@@ -6,16 +6,22 @@ title: Pricing Models
 Pricing Models are a way to define how your customers will be charged for your products. The `Price` entity has a `pricing_model` field that defines the pricing model to be used. It can be one of the following:
 
 1. `per_unit`
-2. `tiered_cumulative`
-3. `tiered_volume`
+2. `tiered_volume`
+3. `tiered_cumulative`
 4. `tiered_flatfee`
 
-Each model is specified bellow.
+The models can be unit based or flat-fee based as shown in the following image:
+
+<div style={{ width: '100%', textAlign: 'center', padding: '20px 30px 20px 60px', border: '1px solid #dad2d2' }}>
+  <img src="/img/pricing-models.jpg" alt="Pricing Models" />
+</div>
+<br />
+
+Each model is specified in detail below.
 
 ## Standard
 
-It's the most common pricing model. It's used when you want to charge your customers for each unit of your product.
-If `variable_price=true`, the amount to be paid by the customer will be calculated based the user input, ex: consumption.
+It's the most common pricing model. It's used when you want to charge your customers for each unit of your product. If `variable_price=true`, the amount to be paid by the customer will be calculated based the user input, ex: consumption.
 
 Example:
 
@@ -37,8 +43,7 @@ Amount to pay = 2000 kWh * €0.055/kWh = 110 €
 
 ## Tiered Volume
 
-It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on the `Price` entity.
-The amount to be paid by the customer will consider the unit price of the tier according to the quantity consumed and the same unit price is applied for all the consumed units.
+It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on the `Price` entity. The amount to be paid by the customer will consider the unit price of the tier according to the quantity consumed and the same unit price is applied for all the consumed units.
 
 Example:
 
@@ -66,29 +71,22 @@ Example:
     },
     {
       "unit_amount_decimal": "0.05",
-      "unit_amount": 5,
+      "unit_amount": 5
     }
   ]
 }
 ```
 
-<img
-  style={{ width: '500px', borderRadius: '5px' }}
-  src="/img/price-tiers-1.png"
-  alt="Price Tiers"
-/>
+<img style={{ width: '500px', borderRadius: '5px' }} src="/img/price-tiers-1.png" alt="Price Tiers" />
 
 ```js
 Consumption = 2000 kWh
 Amount to pay = 2000 kWh * €0.054/kWh = 108 €
 ```
 
-
 ## Tiered Cumulative
 
-It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on the `Price` entity.
-While similar to volume pricing, cumulative pricing charges for the usage in each tier instead of applying a single price to the tier in which the user lands on.
-
+It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on the `Price` entity. While similar to volume pricing, cumulative pricing charges for the usage in each tier instead of applying a single price to the tier in which the user lands on.
 
 Example:
 
@@ -116,17 +114,13 @@ Example:
     },
     {
       "unit_amount_decimal": "0.05",
-      "unit_amount": 5,
+      "unit_amount": 5
     }
   ]
 }
 ```
 
-<img
-  style={{ width: '500px', borderRadius: '5px' }}
-  src="/img/price-tiers-1.png"
-  alt="Price Tiers"
-/>
+<img style={{ width: '500px', borderRadius: '5px' }} src="/img/price-tiers-1.png" alt="Price Tiers" />
 
 ```js
 Consumption = 2000 kWh
@@ -135,8 +129,7 @@ Amount to pay = 1000 kWh * €0.055/kWh + 1000 kWh * €0.054/kWh = 109 €
 
 ## Tiered Flat Fee
 
-It's used when you want to charge your customers for a product based on a flat-fee applicable to a given amount of units consumed. It's necessary to define the price tiers on the `Price` entity.
-While similar to tiered volume, tiered flat fee charges for the same price (flat) for the entire range instead using the unit price to multiply the quantity.
+It's used when you want to charge your customers for a product based on a flat-fee applicable to a given amount of units consumed. It's necessary to define the price tiers on the `Price` entity. While similar to tiered volume, tiered flat fee charges for the same price (flat) for the entire range instead using the unit price to multiply the quantity.
 
 Example:
 
@@ -164,17 +157,13 @@ Example:
     },
     {
       "flat_fee_amount_decimal": "200.00",
-      "flat_fee_amount": 20000,
+      "flat_fee_amount": 20000
     }
   ]
 }
 ```
 
-<img
-  style={{ width: '500px', borderRadius: '5px' }}
-  src="/img/price-tiers-2.png"
-  alt="Price Tiers"
-/>
+<img style={{ width: '500px', borderRadius: '5px' }} src="/img/price-tiers-2.png" alt="Price Tiers" />
 
 ```js
 Max peak power = 7 kW
