@@ -1,0 +1,95 @@
+---
+sidebar_position: 5
+---
+
+# Capabilities
+
+[[API Docs](/entities/flexible-entities#capabilities)]
+[[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
+
+## Native Capabilities
+
+Native capabilities are capabilities that are built into the platform and are available to all entities. These capabilities are configurable and are always available. The following capabilities are available:
+
+### Order Table
+
+The order table capability provides the ability to manage line items within the Order and Contract entities. These line items are made of products and prices and describe an item to be sold or quoted to an end-customer.
+For further details on the structure of a `line_item`, please refer to our [Pricing API](/api/pricing) and check the Order Schema.
+
+![order table capability](/img/order-table-capability.png)
+
+Order Capability basic structure:
+
+```json
+  {
+    "name": "order_items",
+    "title": "Ordered Items",
+    "ui_hooks": [
+      {
+        "hook": "EntityAttributes:Group",
+        "order": 1,
+        "title": "Ordered Items",
+        "component": "PricingItems"
+      }
+    ],
+  }
+```
+
+Capability configuration to support hidding columns:
+
+```json
+  {
+    "name": "order_items",
+    "title": "Ordered Items",
+    "ui_hooks": [
+      {
+        "hook": "EntityAttributes:Group",
+        "order": 1,
+        "title": "Ordered Items",
+        "component": "PricingItems",
+        "settings": {
+          "columns": [
+            {
+              "field": "amount_subtotal",
+              "visible": true
+            }
+          ]
+        }
+      }
+    ],
+  }
+```
+
+The property `settings.columns` enables us to control which columns shoube be visible or hidden.
+
+### Quoting
+
+The quoting capability provides the ability to manage quotes and orders (`items`) within the Opportunity entity. These quotes & orders are made of Order entities essentially and describe a set of items to be sold or quoted to an end-customer.
+
+For further details on the structure of the `items` field, please refer to our [Pricing API](/api/pricing#tag/opportunity_schema) and check the Opportunity Schema.
+
+![Quoting Capability](/img/quoting-capability.png)
+
+Capability configuration to support hidding columns:
+
+```json
+  {
+    "name": "quoting_relations",
+    "title": "Quotes & Orders",
+    "ui_hooks": [
+      {
+        "hook": "EntityAttributes:Group",
+        "order": 6,
+        "title": "Quotes & Orders",
+        "component": "QuotingItems",
+        "expanded": false,
+        "isCapability": true,
+        "settings": {
+          "display_grand_totals": true
+        }
+      }
+    ]
+  }
+```
+
+The property `settings.display_grand_totals` enables us to control whether the grand totals should be displayed or not. When Grand Totals are display, all other recurrence based totals are hidden.
