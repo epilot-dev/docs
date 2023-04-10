@@ -226,8 +226,10 @@ curl --location --request POST 'https://journey-config.staging.sls.epilot.io/v1/
             }
         }
     ],
-    "journeyId": "9f9c3dd0-d76c-11ed-851f-2d32904d4a8c",
+    "journeyId": "<launcher journey id>",
     "revisions": 0,
     "lastModifiedAt": "2023-04-10T06:55:08.931Z"
 }'
 ```
+
+With this, the launcher journey has been created using a launcher template. It also has been assigned a design and the linked child journeys are mapped. The launcher journey is now ready to be used.
