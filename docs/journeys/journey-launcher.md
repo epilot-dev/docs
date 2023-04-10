@@ -30,7 +30,7 @@ The journey launcher is a special type of journey that is created from a templat
 - Brand id
 - Style id
 
-TO get the brand and style IDs, use the following request:
+To get the brand and style IDs, use the following request:
 
 ```
 curl --location --request GET 'https://design-builder-api.staging.sls.epilot.io/v1/brands' \
@@ -48,7 +48,7 @@ curl --location --request GET 'https://design-builder-api.staging.sls.epilot.io/
 
 Make a note of the `id` field in the from one of the `designs` in the response. This is the style ID. Also, ensure that the selected design has the same `brand_id` as the brand ID identified previously.
 
-# 2. Create a launcher journey using the template ID
+# 3. Create a launcher journey using the template ID
 
 With the template ID from Step 1, create a launcher journey using the following request:
 
@@ -116,7 +116,7 @@ curl --location --request POST 'https://journey-config.staging.sls.epilot.io/v1/
 
 The response object contains the journey ID for the newly created launcher journey. Take a note of this journey ID as it will be needed when linking journeys to this journey ID.
 
-# 3. Get the journey IDs for the (child) journeys that have to be linked
+# 4. Get the journey IDs for the (child) journeys that have to be linked
 
 To search for a journey using the title of the journey, use the following request:
 
@@ -136,7 +136,7 @@ curl --location --request POST 'https://entity.dev.sls.epilot.io/v1/entity:searc
 
 Do this and take note of the `journeyId` for each child journey that is to be linked to the launcher journey.
 
-# 4. Link journeys to the launcher journey
+# 5. Link journeys to the launcher journey
 
 Now the child journeys can be linked to the launcher journey. Create an array `linkedJourneys` of the following form:
 
