@@ -13,7 +13,7 @@ In order to setup a journey launcher, follow the steps below:
 You need to have access to a Journey launcher tamplate in order to create a Launcher Journey. To get the templateId of the launcher template, use the following request:
 
 ```
-curl --location --request POST 'https://journey-config.staging.sls.epilot.io/v1/journey/templates/search' \
+curl --location --request POST 'https://journey-config.sls.epilot.io/v1/journey/templates/search' \
 --header 'Authorization: Bearer <your-auth-token-here>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -33,7 +33,7 @@ The journey launcher is a special type of journey that is created from a templat
 To get the brand and style IDs, use the following request:
 
 ```
-curl --location --request GET 'https://design-builder-api.staging.sls.epilot.io/v1/brands' \
+curl --location --request GET 'https://design-builder-api.sls.epilot.io/v1/brands' \
 --header 'Authorization: Bearer <your-auth-token-here>'
 ```
 
@@ -42,7 +42,7 @@ Make a note of the `id` field in the from one of the `brands` in the response. T
 To get the style ID, use the following request:
 
 ```
-curl --location --request GET 'https://design-builder-api.staging.sls.epilot.io/v1/designs' \
+curl --location --request GET 'https://design-builder-api.sls.epilot.io/v1/designs' \
 --header 'Authorization: Bearer <your-auth-token-here>'
 ```
 
@@ -53,7 +53,7 @@ Make a note of the `id` field in the from one of the `designs` in the response. 
 With the template ID from Step 1, create a launcher journey using the following request:
 
 ```
-curl --location --request POST 'https://journey-config.staging.sls.epilot.io/v1/journey/configuration' \
+curl --location --request POST 'https://journey-config.sls.epilot.io/v1/journey/configuration' \
 --header 'Authorization: Bearer <your-auth-token-here>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -121,7 +121,7 @@ The response object contains the journey ID for the newly created launcher journ
 To search for a journey using the title of the journey, use the following request:
 
 ```
-curl --location --request POST 'https://entity.dev.sls.epilot.io/v1/entity:search' \
+curl --location --request POST 'https://entity.sls.epilot.io/v1/entity/v1/entity:search' \
 --header 'Authorization: Bearer <your-auth-token-here>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -160,7 +160,7 @@ Now the child journeys can be linked to the launcher journey. Create an array `l
 Add the `linkedJourneys` array to the key `steps[0].uischema.elements][0][0].options.linkedJourneys` to the response of the launcher journey creation step. Here is a sample request:
 
 ```
-curl --location --request POST 'https://journey-config.staging.sls.epilot.io/v1/journey/configuration' \
+curl --location --request PUT 'https://journey-config.sls.epilot.io/v1/journey/configuration' \
 --header 'Authorization: Bearer <your-auth-token-here>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
