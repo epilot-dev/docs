@@ -6,11 +6,11 @@ sidebar_position: 5
 
 The Journey Launcher allows journeys to share a common start screen. When embedded in a client web page, the journey launcher allows the user to select from various journeys shown as tabs. The first step of each journey is shown whenever the corresponding journey tab is selected.
 
-In order to setup a journey launcher, follow the steps below:
+To set up a journey launcher, follow the steps below:
 
-# 1. Get the ID for the Journey Launcher template
+# 1. Get the Id for the Journey Launcher template
 
-You need to have access to a Journey launcher tamplate in order to create a Launcher Journey. To get the templateId of the launcher template, use the following request:
+You need to have access to a Journey launcher template to create a Launcher Journey. To get the `templateId` of the launcher template, use the following request:
 
 ```
 curl --location --request POST 'https://journey-config.sls.epilot.io/v1/journey/templates/search' \
@@ -21,32 +21,32 @@ curl --location --request POST 'https://journey-config.sls.epilot.io/v1/journey/
 }'
 ```
 
-The response will return with a list of all launcher templates (ideally only one). Take note of the `templateId` from `results[0].templateId` as this is needed in the following steps.
+The response will return with a list of all launcher templates (ideally, only one). Take note of the `templateId` from `results[0].templateId` given it will be needed in the following steps.
 
 # 2. Get the IDs for the Brand and Style
 
-The journey launcher is a special type of journey that is created from a template. In addition to the journey template, the journey launcher also requires:
+The journey launcher is a special type of journey that is created from a template. In addition to the journey template, the journey launcher also requires the following:
 
-- Brand id
-- Style id
+- Brand Id
+- Style Id
 
-To get the brand and style IDs, use the following request:
+To get the brand and style identifiers, use the following request:
 
 ```
 curl --location --request GET 'https://design-builder-api.sls.epilot.io/v1/brands' \
 --header 'Authorization: Bearer <your-auth-token-here>'
 ```
 
-Make a note of the `id` field in the from one of the `brands` in the response. This is the brand ID.
+Take note of the `id` field from one of the `brands` in the response; that will be the brand Id.
 
-To get the style ID, use the following request:
+To get the style Id, use the following request:
 
 ```
 curl --location --request GET 'https://design-builder-api.sls.epilot.io/v1/designs' \
 --header 'Authorization: Bearer <your-auth-token-here>'
 ```
 
-Make a note of the `id` field in the from one of the `designs` in the response. This is the style ID. Also, ensure that the selected design has the same `brand_id` as the brand ID identified previously.
+Take note of the `id` field from one of the `designs` in the response; that will be the style Id. Also, ensure that the selected design has the same `brand_id` as the brand Id identified previously.
 
 # 3. Create a launcher journey using the template ID
 
@@ -114,9 +114,9 @@ curl --location --request POST 'https://journey-config.sls.epilot.io/v1/journey/
 }'
 ```
 
-The response object contains the journey ID for the newly created launcher journey. Take a note of this journey ID as it will be needed when linking journeys to this journey ID.
+The response object contains the journey Id for the newly created launcher journey. Take note of this journey Id, as it will be needed when linking journeys to this journey Id.
 
-# 4. Get the journey IDs for the (child) journeys that have to be linked
+# 4. Get the journey Ids for the (child) journeys that will have to be linked
 
 To search for a journey using the title of the journey, use the following request:
 
@@ -136,7 +136,7 @@ curl --location --request POST 'https://entity.sls.epilot.io/v1/entity/v1/entity
 
 Do this and take note of the `journeyId` for each child journey that is to be linked to the launcher journey.
 
-# 5. Link journeys to the launcher journey
+# 5. Linking Journeys to the Launcher Journey
 
 Now the child journeys can be linked to the launcher journey. Create an array `linkedJourneys` of the following form:
 
@@ -157,7 +157,7 @@ Now the child journeys can be linked to the launcher journey. Create an array `l
 ]
 ```
 
-Add the `linkedJourneys` array to the key `steps[0].uischema.elements][0][0].options.linkedJourneys` to the response of the launcher journey creation step. Here is a sample request:
+Add the `linkedJourneys` array to the key `steps[0].uischema.elements[0].options.linkedJourneys` to the response of the launcher journey creation step. Here is a sample request:
 
 ```
 curl --location --request PUT 'https://journey-config.sls.epilot.io/v1/journey/configuration' \
@@ -232,4 +232,4 @@ curl --location --request PUT 'https://journey-config.sls.epilot.io/v1/journey/c
 }'
 ```
 
-With this, the launcher journey has been created using a launcher template. It also has been assigned a design and the linked child journeys are mapped. The launcher journey is now ready to be used.
+With this, the Launcher Journey has been created using a launcher template. It also has been assigned a design, and the linked child journeys are mapped. The launcher journey is now ready to be used.
