@@ -1,6 +1,6 @@
-# Epilot Developer Portal
+# Developer Portal
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+![landing](./static/img/jumbo-splash.png)
 
 ## Quick Start
 
@@ -15,7 +15,7 @@ The start command starts a local development server and opens up a browser windo
 
 The documentation website is hosted by AWS Amplify. All changes merged to the `main` branch are automatically deployed to [docs.epilot.io](https://docs.epilot.io/)
 
-## Documenting APIs Locally
+## Local Development
 
 When documenting your APIs, it's possible to perform changes and eval how they look within the docs portal while running locally.
 
