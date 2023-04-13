@@ -6,6 +6,8 @@ sidebar_position: 5
 
 The Journey Launcher allows journeys to share a common start screen. When embedded in a client web page, the journey launcher allows the user to select from various journeys shown as tabs. The first step of each journey is shown whenever the corresponding journey tab is selected.
 
+<iframe src="https://scribehow.com/embed/How_to_Create_and_Embed_a_Journey_Launcher_on_a_Website__ZvO-QnR7R0mVi-sHQjLrPw" width="100%" height="640" allowfullscreen frameborder="0"></iframe>
+
 ---
 
 ## HowTo: Create a Journey Launcher (for developers)
