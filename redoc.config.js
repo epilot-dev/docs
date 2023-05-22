@@ -30,6 +30,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/pricing-api.yaml',
   },
   {
+    layout: { title: 'Dashboard API' },
+    routePath: '/api/dashboard',
+    specUrl: 'https://docs.api.epilot.io/dashboard.yaml',
+  },
+  {
     layout: { title: 'Query API' },
     routePath: '/api/query',
     specUrl: 'https://docs.api.epilot.io/query.yaml',
@@ -60,14 +65,19 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/journey-config.yaml',
   },
   {
+    layout: { title: 'Document API' },
+    routePath: '/api/document',
+    specUrl: 'https://docs.api.epilot.io/document.yaml',
+  },
+  {
     layout: { title: 'Automation API' },
     routePath: '/api/automation',
     specUrl: 'https://docs.api.epilot.io/automation.yaml',
   },
   {
-    layout: { title: 'Document API' },
-    routePath: '/api/document',
-    specUrl: 'https://docs.api.epilot.io/document.yaml',
+    layout: { title: 'Entity Mapping API' },
+    routePath: '/api/entity-mapping',
+    specUrl: 'https://docs.api.epilot.io/entity-mapping-api.yaml',
   },
   {
     layout: { title: 'Template Variables API' },
@@ -75,14 +85,9 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/template-variables.yaml',
   },
   {
-    layout: { title: 'Customer Portal API' },
-    routePath: '/api/customer-portal',
-    specUrl: 'https://docs.api.epilot.io/customer-portal.yaml',
-  },
-  {
-    layout: { title: 'Notification API' },
-    routePath: '/api/notification',
-    specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
+    layout: { title: 'Email Template API' },
+    routePath: '/api/email-template',
+    specUrl: 'https://docs.api.epilot.io/email-template.yaml',
   },
   {
     layout: { title: 'Workflow Definition API' },
@@ -95,13 +100,23 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/workflows-execution.yaml',
   },
   {
+    layout: { title: 'Discussion API' },
+    routePath: '/api/discussion',
+    specUrl: 'https://docs.api.epilot.io/discussion.yaml',
+  },
+  {
+    layout: { title: 'Consent API' },
+    routePath: '/api/consent',
+    specUrl: 'https://docs.api.epilot.io/consent.yaml',
+  },
+  {
     layout: { title: 'Partner API' },
     routePath: '/api/partner',
     specUrl: 'https://docs.api.epilot.io/partner-directory-api.yaml',
   },
   {
-    layout: { title: 'Internal Auth API' },
-    routePath: '/api/internal-auth',
-    specUrl: 'https://docs.api.epilot.io/internal-auth.yaml',
+    layout: { title: 'Notification API' },
+    routePath: '/api/notification',
+    specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
   },
 ]
