@@ -36,14 +36,6 @@ const isPermitted = await tokenIsPermitted(context.token, 'myaction')
 
 [Permissions Documentation](/docs/auth/permissions)
 
-## Internal Auth
-
-Sometimes backend microservices need to make internal calls as no specific user.
-
-For this purpose we use a special internal auth service as identity provider, which translates the caller's IAM role to a JWT token accepted by the API Gateway Authorizer.
-
-See [documentation](/docs/auth/internal-auth) for the internal auth service for details.
-
 ## Links
 
 - API Gateway Authorizer project: https://gitlab.com/e-pilot/product/auth/custom-authorizer
