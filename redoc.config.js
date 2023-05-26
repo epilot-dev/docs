@@ -85,6 +85,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/template-variables.yaml',
   },
   {
+    layout: { title: 'Customer Portal API' },
+    routePath: '/api/customer-portal',
+    specUrl: 'https://docs.api.epilot.io/customer-portal.yaml',
+  },
+  {
     layout: { title: 'Email Template API' },
     routePath: '/api/email-template',
     specUrl: 'https://docs.api.epilot.io/email-template.yaml',
