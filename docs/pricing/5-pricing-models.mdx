@@ -12,10 +12,15 @@ Pricing Models are a way to define how your customers will be charged for your p
 
 These models can be unit based or flat-fee based as shown in the following image:
 
-<table width="600px" style={{ marginTop: '20px', marginBottom: '30px', backgroundColor: '#fff'  }}>
+<table
+  width="600px"
+  style={{ marginTop: '20px', marginBottom: '30px', backgroundColor: '#fff' }}
+>
   <thead>
     <tr>
-      <th><div style={{ width: '110px' }}></div></th>
+      <th>
+        <div style={{ width: '110px' }}></div>
+      </th>
       <th>Unit Based</th>
       <th>Flat-fee Based</th>
     </tr>
@@ -28,9 +33,7 @@ These models can be unit based or flat-fee based as shown in the following image
     </tr>
     <tr>
       <td colspan="3">
-        <div style={{ fontWeight: 'bold', color: 'gray' }}>
-          Tiered Pricing
-        </div>
+        <div style={{ fontWeight: 'bold', color: 'gray' }}>Tiered Pricing</div>
       </td>
     </tr>
     <tr>
@@ -113,7 +116,11 @@ Example:
 }
 ```
 
-<img style={{ width: '500px', borderRadius: '5px' }} src="/img/price-tiers-1.png" alt="Price Tiers" />
+<img
+  style={{ width: '500px', borderRadius: '5px' }}
+  src="/img/price-tiers-1.png"
+  alt="Price Tiers"
+/>
 
 ```js
 Consumption = 2000 kWh
@@ -156,7 +163,11 @@ Example:
 }
 ```
 
-<img style={{ width: '500px', borderRadius: '5px' }} src="/img/price-tiers-1.png" alt="Price Tiers" />
+<img
+  style={{ width: '500px', borderRadius: '5px' }}
+  src="/img/price-tiers-1.png"
+  alt="Price Tiers"
+/>
 
 ```js
 Consumption = 2000 kWh
@@ -199,9 +210,26 @@ Example:
 }
 ```
 
-<img style={{ width: '500px', borderRadius: '5px' }} src="/img/price-tiers-2.png" alt="Price Tiers" />
+<img
+  style={{ width: '500px', borderRadius: '5px' }}
+  src="/img/price-tiers-2.png"
+  alt="Price Tiers"
+/>
 
 ```js
 Max peak power = 7 kW
 Amount to pay = 100 €
 ```
+
+## Tier based pricing models caveats
+
+The tier that will be used to calculate the amount to be paid by the customer is the one that the customer lands on. The tiers ranges are defined by the `up_to` field.
+
+For example, if the customer consumes 2000 kWh, the tier that will be used is the one that goes up to 2000 kWh, or when the tier is graduated, all the ones until the landed tier.
+
+That consumption can either be requested via a mapping input or via a quantity input. Since both could be used at the same time, the following rules apply:
+
+1. If the mapping input is used, the consumption will be the value of the mapping input.
+2. If the quantity input is used, the consumption will be the value of the quantity input.
+3. If both inputs are used, the consumption will be the value of the mapping input, ignoring the quantity input.
+4. If none of the inputs are used, the consumption will be assumed as 1.
