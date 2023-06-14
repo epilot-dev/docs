@@ -13,7 +13,12 @@ An embed script is a simple way to publish an epilot journey on your website. Th
 This page guides you through the different options available to embed a Journey into your web page. 
 
 ## Embed Configurator
-Configure and copy the embed script via the Journey Builders' Embed Configurator after saving the Journey. You can choose whether the Journey should be shown in a full-screen overlay, or inline to your website.
+Configure and copy the embed script via the Journey Builders' Embed Configurator after saving the Journey. You can choose:
+* Whether the Journey should be shown in a full-screen overlay, or inline to your website (Default: Fullscreen)
+* The language of the journey (Default: German DE)
+* The label of the button that suppose to open the journey (Default: Inhalt anzeigen)
+* The alignment of the button, left, right, or center (Default: Left)
+* Overwride the journey option to scroll the user to the top of the new step once the end user clicks on the next button in any step (Default: ON)
 
 Depending on the embedding type, you can change additional settings.
 
