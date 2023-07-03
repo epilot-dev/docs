@@ -65,6 +65,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/journey-config.yaml',
   },
   {
+    layout: { title: 'Addresss Suggestions API' },
+    routePath: '/api/address-suggestions',
+    specUrl: 'https://docs.api.epilot.io/address-suggestions.yaml',
+  },
+  {
     layout: { title: 'Document API' },
     routePath: '/api/document',
     specUrl: 'https://docs.api.epilot.io/document.yaml',
@@ -129,4 +134,4 @@ module.exports.specs = [
     routePath: '/api/notification',
     specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
   },
-]
+];
