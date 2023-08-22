@@ -50,6 +50,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/permissions.yaml',
   },
   {
+    layout: { title: 'Email Settings API' },
+    routePath: '/api/email-settings',
+    specUrl: 'https://docs.api.epilot.io/email-settings.yaml',
+  },
+  {
     layout: { title: 'Message API' },
     routePath: '/api/message',
     specUrl: 'https://docs.api.epilot.io/message.yaml',
