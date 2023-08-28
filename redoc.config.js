@@ -72,7 +72,7 @@ module.exports.specs = [
   {
     layout: { title: 'Addresss Suggestions API' },
     routePath: '/api/address-suggestions',
-    specUrl: 'https://docs.api.epilot.io/address-suggestions.yaml',
+    specUrl: 'https://docs.api.epilot.io/address-suggestions-api.yaml',
   },
   {
     layout: { title: 'Document API' },
