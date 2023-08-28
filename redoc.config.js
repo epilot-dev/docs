@@ -70,7 +70,7 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/journey-config.yaml',
   },
   {
-    layout: { title: 'Addresss Suggestions API' },
+    layout: { title: 'Address Suggestions API' },
     routePath: '/api/address-suggestions',
     specUrl: 'https://docs.api.epilot.io/address-suggestions-api.yaml',
   },
