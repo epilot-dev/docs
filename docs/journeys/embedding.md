@@ -24,6 +24,26 @@ Depending on the embedding type, you can change additional settings.
 
 ![Embedding Configuration](../../static/img/journey-builder-embed.png)
 
+## Journey Data Injection
+It is possible by using the Embed Script to modify the initial state of the journey. There are the following posibilities:
+1. Setting an intial data for the journey: doing this will prefill the blocks with data.
+2. Starting the journey from a specific step: doing this will start the journey from the specified step if it was combined with the initial data, one can achieve a case when a product is selection is done in an external website, injected into the journey, then the in journey selection step skipped.
+3. Set display options for the journey fields (for now disabling fields)
+
+The following DataInjectionOptions type shows what is possible. However we ask devs to go to our [epilot Journey SDK](https://github.com/epilot-dev/epilot-journey-sdk) project which includes more documentation supported with examples.
+
+**Type Definition**
+```typescript
+export type DataInjectionOptions = {
+  /** the initial step index of the journey. aka, where to start the journey from */
+  initialStepIndex?: number
+  /** the initial state of the journey. aka, what data to prefill the journey with */
+  initialState?: Record<string, unknown>[]
+  /** the display options to be passed to the journey, for now it is used to disable some fields */
+  blocksDisplaySettings?: BlockDisplaySetting[]
+}
+``````
+
 ## Configuration Possibilities
 For more advanced configuration options, you can modify the embed script yourself, as it adds an interface to your website to interact with the journey: `__epilot`
 Below we explain all possibile configuration options
@@ -65,6 +85,8 @@ type OptionsInit = {
   contextData?: Record<string, unknown>
   /** the language the journey should be initialised in */
   lang?: string
+  /** the data injext options that will be passed to the journey */
+  dataInjectionOptions?: DataInjectionOptions
 }
 ```
 
