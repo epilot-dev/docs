@@ -16,11 +16,11 @@ Our tenants sell complex products online and collaborate with partners to delive
 
 The epilot application consists of:
 
-- [The 360 portal app](/docs/portal/microfrontends)
-- [Embeddable journey frontends](/docs/journeys/journey-builder)
-- End customer portal app
+- [The 360 Portal](/docs/portal/microfrontends)
+- [Embeddable Journey Frontends](/docs/journeys/journey-builder)
+- [Customer & Installer Portals](https://docs.epilot.io/docs/portals/customer-portal)
 - Serverless microservices with [APIs](/api)
-- Internal admin area
+- Internal Admin Portal
 
 ## Tech Stack
 
@@ -33,3 +33,7 @@ The epilot application backend consists of serverless microservices written most
 ![Tech Stack](../../static/img/epilot-tech-stack.png)
 
 Check out our [Tech Radar](https://docs.epilot.io/techradar/) for a more detailed view of our tech stack!
+
+## System Architecture Diagram
+
+![System Architecture Diagram](../../static/img/system-architecture.png)
