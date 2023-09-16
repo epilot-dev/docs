@@ -69,7 +69,7 @@ Response (201):
 ### Step 3: Call saveFile to persist the file and create a File entity
 
 ```
-POST https://file.sls.epilot.io/v1/files/upload
+POST https://file.sls.epilot.io/v1/files
 ```
 
 Body (application/json):
