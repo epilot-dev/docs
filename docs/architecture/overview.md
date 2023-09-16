@@ -36,4 +36,4 @@ Check out our [Tech Radar](https://docs.epilot.io/techradar/) for a more detaile
 
 ## System Architecture Diagram
 
-![System Architecture Diagram](../../static/img/system-architecture.png)
+![System Architecture Diagram](../../static/img/system-architecture.jpg)
