@@ -30,10 +30,10 @@ Most of our frontend codebase is written in React and Typescript but other frame
 
 The epilot application backend consists of serverless microservices written mostly in Typescript and Python leveraging serverless AWS services such as Lambda, Step Functions, API Gateway, S3, DynamoDB, EventBridge.
 
-![Tech Stack](../../static/img/epilot-tech-stack.png)
+[![Tech Stack](../../static/img/epilot-tech-stack.png)](../../static/img/epilot-tech-stack.png)
 
 Check out our [Tech Radar](https://docs.epilot.io/techradar/) for a more detailed view of our tech stack!
 
 ## System Architecture Diagram
 
-![System Architecture Diagram](../../static/img/system-architecture.jpg)
+[![System Architecture Diagram](../../static/img/system-architecture.jpg)](../../static/img/system-architecture.jpg)
