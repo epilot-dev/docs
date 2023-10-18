@@ -44,7 +44,8 @@ Example of the webhook message for the activity "DocDownloadedFromPortal":
         "payload": {
             "caller": {
                 "portal_user_id": "bed23253-b00b-4a09-8815-2bc87c69ae97",
-                "email": "j.siivola+ecptest@epilot.cloud",
+                "contact_entity_id": "78794089-343c-4bcd-97a1-9b307c3ac040",
+                "email": "portal.user@example.com",
                 "portal_origin": "END_CUSTOMER_PORTAL"
             },
             "entity": {
