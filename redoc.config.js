@@ -20,6 +20,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/entity.yaml',
   },
   {
+    layout: { title: 'Entity Viewers API' },
+    routePath: '/api/entity-viewers',
+    specUrl: 'https://docs.api.epilot.io/entity-viewers.yaml',
+  },
+  {
     layout: { title: 'Submission API' },
     routePath: '/api/submission',
     specUrl: 'https://docs.api.epilot.io/submission-api.yaml',
