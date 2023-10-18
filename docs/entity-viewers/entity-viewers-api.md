@@ -27,7 +27,7 @@ The entity schame must have the `entity_viewers` capability configured:
 }
 ```
 
-After that the view actions can be tracked to different entities.
+Once the `entity_viewers` capability is configured, you can start tracking view actions for different entities.
 
 To mark file as downloaded:
 ```
