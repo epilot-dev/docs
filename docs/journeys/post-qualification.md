@@ -61,7 +61,7 @@ const epilotData = Object.fromEntries(epilotUrlSearchParams.entries())
 Then, we need to pass the epilotData variable to the journeys option key contextData like:
 
 ```html
-__epilot.init([{journeyId: "<your-journey-id>", mode: "full-screen", scrollToTop: true, topBar: true, lang: "en", contextData: epilotData}])
+__epilot.init([{contextData: epilotData, journeyId: "<your-journey-id>", mode: "full-screen", scrollToTop: true, topBar: true, lang: "en"}])
 ```
 
 **Full example code:**
@@ -73,7 +73,7 @@ __epilot.init([{journeyId: "<your-journey-id>", mode: "full-screen", scrollToTop
     const epilotQueryString = window.location.search
     const epilotUrlSearchParams = new URLSearchParams(epilotQueryString)
     const epilotData = Object.fromEntries(epilotUrlSearchParams.entries())
-    __epilot.init([{journeyId: "<your-journey-id>", mode: "full-screen", scrollToTop: true, topBar: true, lang: "en", contextData: epilotData}])
+    __epilot.init([{contextData: epilotData, journeyId: "<your-journey-id>", mode: "full-screen", scrollToTop: true, topBar: true, lang: "en"}])
 </script>
 ```
 
