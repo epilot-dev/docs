@@ -32,7 +32,7 @@ The schema for entity operations is as follows:
     "activity_id": "string",   // ID for the individual entity operation/activity
     "entity_id": "string",     // ID of the entity being mutated
     "detail": "string",         // Stringified JSON payload containing entity data
-    "schma": "string",          // Schema of the entity
+    "schema": "string",          // Schema of the entity
     "month":"string",          // Month of the entity operation
     "year": "string"          // Year of the entity operation
 }
@@ -75,10 +75,11 @@ This table records data regarding the reasons for workflow execution cancellatio
 
 - **WorkflowContexts**
 Contains information about related entities associated with a workflow execution.
+<div>
+<iframe  title="Workflows DB Schema" width="100%" height="600px" src="https://drawsql.app/teams/epilot/diagrams/workflows/embed"></iframe>
+</div>
 
-![Workflow Executions DB Schema Design](/img/datalake/workflow-executions-db-schema.png)
 
-For interactive DB design, please refer [here](https://drawsql.app/teams/epilot/diagrams/workflows/embed).
 To know more about workflow execution details, please refer [here](/api/workflow-execution#tag/Workflows/operation/getExecution)
 
 
@@ -187,9 +188,9 @@ Steps to Create a Power BI Report:
 
 
 ## Interactive PowerBI report using Epilot Datalake
-
-<iframe title="raven bi" width="800" height="486" src="https://app.powerbi.com/view?r=eyJrIjoiZDQ4MmQzNzAtODVlYy00MjdiLTg5ODMtNzVhNmMxOTU4OGUzIiwidCI6IjMzZDRmM2U1LTNkZjItNDIxZS1iOTJlLWE2M2NmYTY4MGE4OCJ9" frameborder="0" allowFullScreen="true"></iframe>
-
+<div>
+<iframe title="raven bi" width="100%" height="600" src="https://app.powerbi.com/view?r=eyJrIjoiZDQ4MmQzNzAtODVlYy00MjdiLTg5ODMtNzVhNmMxOTU4OGUzIiwidCI6IjMzZDRmM2U1LTNkZjItNDIxZS1iOTJlLWE2M2NmYTY4MGE4OCJ9" frameborder="0" allowFullScreen="true"></iframe>
+</div>
 
 Our Data Lake feature provides a powerful way to capture and analyze real-time entity operations, enabling you to gain valuable insights from your data. By understanding the data schema and following the steps to set up credentials, you can leverage this feature to build reports, perform analytics, and make data-driven decisions for your organization.
 
