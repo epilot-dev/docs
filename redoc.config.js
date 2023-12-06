@@ -47,7 +47,7 @@ module.exports.specs = [
   {
     layout: { title: 'Webhooks API' },
     routePath: '/api/webhooks',
-    specUrl: 'https://docs.api.epilot.io/webhooks-howto.yaml',
+    specUrl: 'https://docs.api.epilot.io/webhooks.yaml',
   },
   {
     layout: { title: 'Permissions API' },
