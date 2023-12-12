@@ -31,7 +31,7 @@ Customizing the payload of an incoming webhook request is entirely feasible. The
    entity: {} // always present,
    relations: {} // optional,
    activity: {} // optional,
-   changedAttributes: {
+   changed_attributes: {
       added: {},
       deleted: {},
       updated: {}
@@ -40,6 +40,7 @@ Customizing the payload of an incoming webhook request is entirely feasible. The
 ```
 - Include Changed Attributes
   - shows the ***changed*** added|deleted|updated attributes ***after*** the event
+  - important note: this will only be included if the event is a change event e.g. an `Entity update: Opportunity` automation trigger. Manual trigger will not fill changed attribures.
 - Include Activity
 - Include Relations
   - **hydrated** relations to other entities
