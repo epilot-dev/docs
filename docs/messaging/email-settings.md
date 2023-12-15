@@ -10,15 +10,25 @@ sidebar_position: 1
 [[SDK](https://www.npmjs.com/package/@epilot/email-settings-client)]
 [[Setup Docs](https://help.epilot.cloud/hc/de/articles/5573710208412-E-Mail-Konfigurationsmen%C3%BC-im-Detail-epilot-360-#h_01GA1JYMPGHRE0XDCHW9N61G57)]
 
-Epilot not only provides the capability to send emails using our domain but also allows clients to bring their own subdomains. This enables messages to be sent and received via epilot, acting on behalf of your own organization. It is highly recommended that an IT professional from your company, who is well-versed with DNS records, handle this integration.
+Epilot not only provides the capability to send emails using our domain but also allows customers to bring their own subdomains. This enables messages to be sent and received via epilot, acting on behalf of your own organization. It is highly recommended that an IT professional from your company, who is well-versed with DNS records, handle this integration.
 
 ### Subdomain Delegation:
 While setting up the subdomain, a process known as 'subdomain delegation' is required. With this setup:
 
-- The subdomain will be managed by epilot.
+- The subdomain will be managed by epilot by giving complete control.
 - Its primary role will be to enable the sending and receiving of emails.
 - This subdomain can be further configured to serve as a dedicated portal for end customers or installers.
 - More on the portal domain setup [here](https://help.epilot.cloud/hc/de/articles/4417739340050-Kundenportal-einrichten-epilot-360-#h_01GC9GHGN6788D2GDVE6H0BVVQ).
+
+### Optional: Managing the subdomain yourself
+
+During the initial subdomain setup we require the subdomain to be delegated to epilot nameservers for provisioning, however after the initial setup is complete customers may opt to manage the subdomain using their own DNS.
+
+Get in touch with [epilot support](support@epilot.cloud) if you would like to transfer the nameservers for your own subdomain, and we will provide the required DNS setup to manage your own epilot subdomains.
+
+:::note
+For customers managing their own subdomain, you may be asked to manually change DNS records from time to time to ensure epilot works correctly and securely. This is not needed when the subdomain is delegated to epilot.
+:::
 
 ### SPF, DMARC, and DKIM Implementation:
 - After the domain is delegated to us, we handle the creation of all the necessary MX & TXT records in our AWS hosted zone. This includes:
