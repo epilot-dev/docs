@@ -24,7 +24,7 @@ While setting up the subdomain, a process known as 'subdomain delegation' is req
 
 During the initial subdomain setup we require the subdomain to be delegated to epilot nameservers for provisioning, however after the initial setup is complete customers may opt to manage the subdomain using their own DNS.
 
-Get in touch with [epilot support](support@epilot.cloud) if you would like to transfer the nameservers for your own subdomain, and we will provide the required DNS setup to manage your own epilot subdomains.
+Get in touch with [epilot support](mailto:support@epilot.cloud) if you would like to transfer the nameservers for your own subdomain, and we will provide the required DNS setup to manage your own epilot subdomains.
 
 :::note
 For customers managing their own subdomain, you may be asked to manually change DNS records from time to time to ensure epilot works correctly and securely. This is not needed when the subdomain is delegated to epilot.
