@@ -20,7 +20,15 @@ While setting up the subdomain, a process known as 'subdomain delegation' is req
 - This subdomain can be further configured to serve as a dedicated portal for end customers or installers.
 - More on the portal domain setup [here](https://help.epilot.cloud/hc/de/articles/4417739340050-Kundenportal-einrichten-epilot-360-#h_01GC9GHGN6788D2GDVE6H0BVVQ).
 
-Customers who prefer limited Epilot control over their subdomain can request to revert name server settings. Instead, we'll provide CNAME + MX records, allowing customers to independently manage email functionalities on their subdomain. However, initial setup still requires subdomain delegation to Epilot.
+### Optional: Managing the subdomain yourself
+
+During the initial subdomain setup we require the subdomain to be delegated to epilot nameservers for provisioning, however after the initial setup is complete customers may opt to manage the subdomain using their own DNS.
+
+Get in touch with [epilot support](support@epilot.cloud) if you would like to transfer the nameservers for your own subdomain, and we will provide the required DNS setup to manage your own epilot subdomains.
+
+:::note
+For customers managing their own subdomain, you may be asked to manually change DNS records from time to time to ensure epilot works correctly and securely. This is not needed when the subdomain is delegated to epilot.
+:::
 
 ### SPF, DMARC, and DKIM Implementation:
 - After the domain is delegated to us, we handle the creation of all the necessary MX & TXT records in our AWS hosted zone. This includes:
