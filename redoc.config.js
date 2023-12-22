@@ -144,4 +144,9 @@ module.exports.specs = [
     routePath: '/api/notification',
     specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
   },
+    {
+    layout: { title: 'Product API' },
+    routePath: '/api/product',
+    specUrl: 'https://docs.api.epilot.io/product.yaml',
+  },
 ];
