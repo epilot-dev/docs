@@ -5,6 +5,8 @@ sidebar_position: 3
 
 # Workflow Notes
 
+[[API Docs](/api/workflow-execution)]
+[[SDK](https://www.npmjs.com/package/@epilot/workflow-client)]
 [[Notes Docs](https://docs.api.dev.epilot.io/discussion)]
 
 
