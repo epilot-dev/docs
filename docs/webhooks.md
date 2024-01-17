@@ -58,4 +58,4 @@ Custom OAuth parameters can be seamlessly integrated into the webhook configurat
 # Limitations
 
 ## Timeout
-The maximum allowable duration for a request is 5 seconds. Should the request exceed this time limit, it will be automatically aborted, prompting the webhook to retry the request up to 2 times. If, after these retries, the request continues to fail, the webhook will be flagged as unsuccessful.
+The maximum allowable duration for a request is 30 seconds. Should the request exceed this time limit, it will be automatically aborted, prompting the webhook to retry the request up to 2 times. If, after these retries, the request continues to fail, the webhook will be flagged as unsuccessful.

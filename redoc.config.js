@@ -149,9 +149,14 @@ module.exports.specs = [
     routePath: '/api/product',
     specUrl: 'https://docs.api.epilot.io/product.yaml',
   },
-    {
+  {
     layout: { title: 'Customer API' },
     routePath: '/api/customer',
     specUrl: 'https://docs.api.epilot.io/customer.yaml',
+  },
+  {
+    layout: { title: 'Opportunity API' },
+    routePath: '/api/opportunity',
+    specUrl: 'https://docs.api.epilot.io/opportunity.yaml',
   },
 ];
