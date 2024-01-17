@@ -57,11 +57,11 @@ You can also configure closing reasons for the Workflow.
 
 A workflow can be started in 2 ways:
 
-### With an Automation
+#### With an Automation
 
-You can manually define a workflow to be triggered in an [automation action](/docs/automation/automation-flows).
+You can define a workflow to be triggered in an [automation action](/docs/automation/automation-flows).
 
-### Manually
+#### Manually
 
 You can open the sidebar on an entity and click on `Trigger new Workflow` and select the workflow from the list of all your defined workflows.
 
