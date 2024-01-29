@@ -15,6 +15,12 @@ Webhooks can be comfortably configured and managed by admin users in epilot port
 
 [Webhooks API Documentation](/api/webhooks)
 
+# Synchronous invocation
+To get immediate feedback on the success of a webhook request, the webhook can be configured to be invoked synchronously. This will cause the webhook to wait for the response of the request before proceeding. If the request fails, the webhook will be flagged as unsuccessful. This feature has to be enabled in the webhook action of the automation configuration.
+![Option to enable sync webhooks](../static/img/automation-sync-webhook.png)
+
+### Limitations
+Sync webhooks are limited to a maximum duration of 30 seconds. If the request exceeds this time limit, it will be automatically aborted, prompting the webhook to retry the request up to 2 times. If, after these retries, the request continues to fail, the webhook will be flagged as unsuccessful.
 
 # Customization
 
@@ -58,4 +64,4 @@ Custom OAuth parameters can be seamlessly integrated into the webhook configurat
 # Limitations
 
 ## Timeout
-The maximum allowable duration for a request is 30 seconds. Should the request exceed this time limit, it will be automatically aborted, prompting the webhook to retry the request up to 2 times. If, after these retries, the request continues to fail, the webhook will be flagged as unsuccessful.
+As previously mentioned, the webhook request times out after 30 seconds for synchronous webhooks. For asynchronous webhooks, the request will not time out, but the webhook will be flagged as unsuccessful if the request takes longer than 2 minutes to complete. This is to prevent the webhook from being stuck in a pending state indefinitely. Contact support if you need to increase this timeout. Keep in mind that for long running requests, it is recommend to handle them asynchronously on the 3rd party side and return a 202 Accepted response to the webhook request.
