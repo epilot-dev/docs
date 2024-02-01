@@ -110,6 +110,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/metering.yaml',
   },
   {
+    layout: { title: 'Billing API' },
+    routePath: '/api/billing',
+    specUrl: 'https://docs.api.epilot.io/billing.yaml',
+  },
+  {
     layout: { title: 'Email Template API' },
     routePath: '/api/email-template',
     specUrl: 'https://docs.api.epilot.io/email-template.yaml',
