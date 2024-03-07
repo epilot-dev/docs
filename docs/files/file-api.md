@@ -10,15 +10,50 @@ sidebar_position: 2
 
 Files in epilot are uploaded and managed through the [File API](/api/file).
 
+## Downloading Files
+
+The [`downloadFile` operation](/api/file#tag/files/operation/downloadFile) returns a temporary presigned S3 URL, which the client uses to download a file using the `GET` method.
+
+```
+GET https://file.sls.epilot.io/v1/files/4ffdc191-f32c-404a-8520-c403b7408afa/download
+```
+
+```json
+{
+  "download_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/66/3fe52f11-89d8-4482-a102-b060e9c4b328/Snapshot_202205147_140500.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA5AGXFWQOZC655PER%2F20240307%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20240307T130430Z&X-Amz-Expires=900&X-Amz-Security-Token=IQoJb3JpZ2..."
+}
+```
+
+The `download_url` in the response is valid for 15 minutes and can be used to download the file using the `GET` method.
+
+:::info
+
+The `downloadFile` operation requires a valid access token to be present in the request.
+
+:::
+
+:::note
+
+The `public_url` property of a file entity may also be used to download a file directly if the file is public. However the `downloadFile` operation works for both public and private files and is the recommended way to download files.
+
+:::
+
+
 ## Uploading Files
 
-The `uploadFile` operation returns a temporary presigned S3 URL, which the client uses to upload a file using the `PUT` or `POST` method.
+The [`uploadFile` operation](/api/file#tag/files/operation/uploadFile) returns a temporary presigned S3 URL, which the client uses to upload a file using the `PUT` or `POST` method.
 
-After uploading, the client should call the `saveFile` operation to save the uploaded file as an entity make it permanent.
+After uploading, the client should call the [`saveFile` operation](/api/file#tag/files/operation/saveFile) to save the uploaded file as an entity make it permanent.
 
 Files that are uploaded but not saved expire and are deleted within 24 hours.
 
-## Example Flow
+:::info
+
+The `uploadFile` operation requires a valid access token to be present in the request. Use the `uploadFilePublic` operation to upload files for Submissions of public journeys.
+
+:::
+
+## Example Upload Flow
 
 ### Step 1: Call uploadFile to receive s3ref
 
@@ -118,8 +153,9 @@ You can now attach the returned file entity to any business entity as a relation
 
 ## Updating Files
 
-Modifying or saving new versions of File entities happens via the `saveFile` operation.
+Modifying or saving new versions of File entities happens via the [`saveFile` operation](/api/file#tag/files/operation/saveFile).
+
 
 ## Deleting Files
 
-Deleting files is done using the `deleteFile` operation. When the file entity is deleted, the underyling S3 object is deleted permanently.
+Deleting files is done using the [`deleteFile` operation](/api/file#tag/files/operation/saveFile). When the file entity is deleted, the underyling S3 object is deleted permanently.
