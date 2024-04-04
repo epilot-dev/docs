@@ -1,0 +1,47 @@
+---
+sidebar_position: 1
+---
+
+# Single Sign On
+
+In today's digital age, managing multiple usernames and passwords for various applications can be cumbersome. To enhance your experience and security, Epilot 360 is equipped with a Single Sign-On (SSO) feature. SSO simplifies this process by allowing you to access multiple services with a single set of credentials. This means less time spent managing accounts and more time focusing on what's important - your work.
+
+## Steps to configure SSO in Epilot 360
+
+We support OIDC authentication right now with our SSO configurations.
+
+### Getting started
+
+Navigate to the <b>Settings</b> menu on the top right in your organization's portal. Then locate the <b>Single Sign On</b> section from the drop down menu. If you cannot locate the option, please reach out to our customer success team to have it enabled for your organization.
+
+![SSO menu](/img/sso/sso-menu.png)
+
+
+It will take you to the SSO page which will display list of all the available SSO configurations. Now click on the <b>Create new provider</b> button on the top right as shown in the picture below.
+
+![SSO page](/img/sso/sso-page.png)
+
+### Attribute mappings
+
+Now, fill in the details in the SSO configuration form as specified in the picture. Choose the provider type as "OIDC" and configure the attribute mappings for `email`, `display name`, `phone number`, and `language` from the token payload.
+
+![SSO attribute mappings](/img/sso/sso-add-new.png)
+
+### Role mappings
+
+Now, you can configure the role mappings for the authenticated user based on the claims from the token payload. You can also choose the default role, which will be assigned to the user if none of the role mappings match.
+
+![SSO role mappings](/img/sso/sso-role-mapping.png)
+
+### OIDC configurations
+
+You can create a new app registration in Azure Active Directory and add the corresponding platform as <b>Single Page Application</b> with the redirect URL as `https://portal.epilot.cloud/sso`.
+
+![SSO redirect](/img/sso/sso-redirect.png)
+
+
+Once the app registration is complete, create a new secret and fill in the details such as `OIDC Issuer URL`, `Client ID`, `Client Secret`, and `Scope` as shown in the picture below.
+
+![SSO OIDC](/img/sso/sso-oidc.png)
+
+Now click on <b>save</b>. You can directly login using the SSO, by copying the url from the saved configuration. If you have any further questions or need assistance with setting up SSO, please reach out to our team.

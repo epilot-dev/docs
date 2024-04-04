@@ -110,6 +110,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/metering.yaml',
   },
   {
+    layout: { title: 'Billing API' },
+    routePath: '/api/billing',
+    specUrl: 'https://docs.api.epilot.io/billing.yaml',
+  },
+  {
     layout: { title: 'Email Template API' },
     routePath: '/api/email-template',
     specUrl: 'https://docs.api.epilot.io/email-template.yaml',
@@ -143,5 +148,30 @@ module.exports.specs = [
     layout: { title: 'Notification API' },
     routePath: '/api/notification',
     specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
+  },
+  {
+    layout: { title: 'Blueprints API' },
+    routePath: '/api/blueprints',
+    specUrl: 'https://docs.api.epilot.io/tf-blueprint.yaml',
+  },
+  {
+    layout: { title: 'Product API' },
+    routePath: '/api/product',
+    specUrl: 'https://docs.api.epilot.io/product.yaml',
+  },
+  {
+    layout: { title: 'Customer API' },
+    routePath: '/api/customer',
+    specUrl: 'https://docs.api.epilot.io/customer.yaml',
+  },
+  {
+    layout: { title: 'Opportunity API' },
+    routePath: '/api/opportunity',
+    specUrl: 'https://docs.api.epilot.io/opportunity.yaml',
+  },
+  {
+    layout: { title: 'Order API' },
+    routePath: '/api/order',
+    specUrl: 'https://docs.api.epilot.io/order.yaml',
   },
 ];
