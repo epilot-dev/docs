@@ -22,9 +22,12 @@ While setting up the subdomain, a process known as 'subdomain delegation' is req
 
 ### Optional: Managing the subdomain yourself
 
-During the initial subdomain setup we require the subdomain to be delegated to epilot nameservers for provisioning, however after the initial setup is complete customers may opt to manage the subdomain using their own DNS.
+Customers who choose not to provide Epilot with full domain access can request a DNS configuration from us. We will supply a file that includes 8 crucial DNS records necessary for activating email services on their subdomain. These include:
+- 3 CNAME records for DKIM,
+- 2 MX records for Mail Exchange,
+- 3 TXT records (2 for SPF and 1 for DMARC).
 
-Get in touch with [epilot support](mailto:support@epilot.cloud) if you would like to transfer the nameservers for your own subdomain, and we will provide the required DNS setup to manage your own epilot subdomains.
+Get in touch with [epilot support](mailto:support@epilot.cloud) for assistance in owning your own subdomain and obtaining the necessary DNS configuration to leverage the email functionality.
 
 :::note
 For customers managing their own subdomain, you may be asked to manually change DNS records from time to time to ensure epilot works correctly and securely. This is not needed when the subdomain is delegated to epilot.
