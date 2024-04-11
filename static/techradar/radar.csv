@@ -63,7 +63,7 @@ AWS SAM,adopt,languages and frameworks,false,The AWS Serverless Application Mode
 "Zod",adopt,tools,true,"We are using Zod for TypeScript-first schema validation with static type inference"
 "Tailwind CSS",adopt,languages and frameworks,false,"Tailwind CSS is an open-source CSS framework that allows users to rapidly build custom user interfaces."
 "CSS Modules",explore,languages and frameworks,true,"CSS modules are a CSS framework that allows you to write CSS classes and animations that are locally scoped by default."
-"TanStack Table",explore,tools,true,"Headless UI for building powerful tables."
+"TanStack Table",adopt,tools,true,"Headless UI for building powerful tables."
 "React Hook Form",adopt,tools,false,"We use this tool in some Micro Frontends to build flexible forms with easy-to-use validation."
 "Handlebars",adopt,languages and frameworks,false,"Handlebars is extensively used on multiple projects to perform dynamic variable replacements on Document and Email Templates."
 "Sockette",adopt,languages and frameworks,false,"Sockette is a streamlined WebSocket wrapper employed in several of our Micro Frontends (MFEs) to showcase real-time data."
