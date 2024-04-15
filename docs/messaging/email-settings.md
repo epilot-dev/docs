@@ -60,14 +60,6 @@ For customers managing their own subdomain, you may be asked to manually change 
 - These rules are configured to direct the emails to separate S3 buckets, organized by tenant. 
 - Subsequently, these emails are processed and structured as message entities along with attachments, which are then organized under their respective parent threads.
 
-### Email Tracking
-- We leverage the engagement and deliverability metrics offered by AWS` SES to enhance the email visibility.
-- To track open events, SES incorporates a transparent GIF image, measuring 1 pixel by 1 pixel, into each email dispatched. This invisible image allows to capture the opening event without altering the appearance of the email.
-- To monitor click-through rates, SES modifies the hyperlinks within your emails to redirect through an SES-operated server. This process ensures seamless redirection to the intended URLs while capturing valuable click data.
-  - The SES` hyperlinks looks like https://xxxxxxxx.r.eu-west-1.awstrack.me/xx/ACTUAL_LINK
-- Our policy ensures that no additional data is retained beyond the click and open event information, along with the precise timestamps of when these events occur.
-![open & click events](../../static/img/open-click.png)
-
 ## Email Addresses
 
 [[API Docs](/api/email-settings#tag/Settings)]
