@@ -19,7 +19,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'For Developers',
-    image: '/img/unicorn.png',
+    image: '/img/devs.webp',
     description: (
       <>
         This developer center is intended for all developers building and working with epilot platform. All resources
@@ -29,7 +29,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'API First',
-    image: '/img/openapi-logo.png',
+    image: '/img/cogwheel.webp',
     description: (
       <>
         All our platform features are available and documented with industry standard <Link to="/api">API specs</Link>{' '}
@@ -39,7 +39,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'SDK',
-    image: '/img/npm-logo.png',
+    image: '/img/epilot.png',
     description: (
       <>
         Use <Link to="/docs/architecture/sdk">our SDK</Link> for TypeScript and JavaScript to build faster. All our APIs

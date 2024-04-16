@@ -17,7 +17,7 @@ function HomepageHeader() {
         <div className={clsx(styles.mainLogoContainer)}>
           <img src="/img/logo-white.svg" alt="epilot-log" />
         </div>
-        <h1 className={clsx('hero__title', styles.heroBannerTitle)}>&lt;{siteConfig.title} /&gt;</h1>
+        <h1 className={clsx('hero__title', styles.heroBannerTitle)}>{siteConfig.title}</h1>
         <p className={clsx('hero__subtitle', styles.heroBannerSubtitle)}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link className="button button--primary button--lg" to="/docs/intro">

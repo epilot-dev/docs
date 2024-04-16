@@ -15,9 +15,8 @@
   justify-content: center;
 }
 
-.featureImage > * {
+.featureImage>* {
   display: block;
   object-fit: contain;
-  width: 200px;
-  height: 175px;
+  width: 100px;
 }
