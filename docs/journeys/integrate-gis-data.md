@@ -1,14 +1,7 @@
 ---
 sidebar_position: 6
 ---
-
-# Automate Processes
-## Introduction
-Automation is key to enhancing efficiency and reducing manual effort in any workflow. At epilot, we provide robust APIs that allow our customers to automate various processes within their operations. This documentation outlines different automation processes that can be implemented using the epilot platform, helping you to streamline tasks and improve productivity.
-
-In this section, we will cover a range of automated processes, starting with the integration of GIS (Geo Information System) data with the epilot platform. The following example will guide you through the steps required to upload and validate address information from a CSV file into epilot and configure your journey settings accordingly.
-
-## Example Process: Integrating GIS Data with epilot
+# Integrating GIS Data
 While usually updating the availability file from the Journey Builder UI there might be cases to automate this by utilising our APIs.
 This example provides guidelines for integrating the GIS (Geo Information System) with the epilot. The integration focuses on automating the process of uploading address information within a CSV file into epilot and using this data for address auto-complete functionality within journey blocks.
 
@@ -19,14 +12,14 @@ The process involves:
 
 Follow the steps outlined in the detailed instructions below to implement this integration.
 
-### Prerequisites
+## Prerequisites
 Please make sure to have the following parts set up already:
 - The CSV template downloaded. You can find it [here](https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/shared/address-suggestions-file-template.csv)
 - A Journey with an initial CSV file attached and an Address or Availability Block configured to use that CSV file
 - An Access Token setup with the permissions to work with the [File API](https://docs.epilot.io/api/file/#tag/files), [Address Suggestions API](https://docs.epilot.io/api/address-suggestions), and [Journey API](https://docs.epilot.io/api/journey)
 
-### Steps to Integrate GIS data with epilot
-#### 1. Upload the CSV File
+## Steps to Integrate GIS data with epilot
+### 1. Upload the CSV File
 To automate the uploading of a CSV file containing address information, use the [File API](https://docs.epilot.io/api/file/#tag/files). This API allows the CSV file to be uploaded programmatically without manual intervention. 
 
 **Tip:**
@@ -65,7 +58,7 @@ curl --location --request POST 'https://file.sls.epilot.io/v1/files' \
 }'
 ```
 
-#### 2. Validate the CSV File
+### 2. Validate the CSV File
 After uploading the CSV file, use the [Address Suggestions API](https://docs.epilot.io/api/address-suggestions#tag/Addresses-API/operation/validateAddresses) to validate the address data contained within the file.
 
 This ensures that we provide correct address suggestions in Address or Availability Blocks.
@@ -80,7 +73,7 @@ curl --location --request GET 'https://address-suggestions-api.sls.epilot.io/v1/
 --header 'Authorization: Bearer <AUTH-TOKEN>'
 ```
 
-#### 3. Attach the file to the Journey
+### 3. Attach the file to the Journey
 Finally, link the validated CSV file to your journey using the Journey API.
 
 **Required Steps:**
@@ -99,7 +92,7 @@ curl --location --request PATCH 'https://journey-config.sls.epilot.io/v1/journey
 **Tip**
 You can get the journey id by opening the journey in a new tab from the Journey Builder
 
-### Additional Resources
+## Additional Resources
 For more detailed information on each API and additional configuration options, please refer to the [epilot dev center](https://docs.epilot.io/docs/intro).
 
 
