@@ -2,8 +2,8 @@
 sidebar_position: 6
 ---
 # Integrating GIS Data
-While usually updating the availability file from the Journey Builder UI there might be cases to automate this by utilising our APIs.
-This example provides guidelines for integrating the GIS (Geo Information System) with the epilot. The integration focuses on automating the process of uploading address information within a CSV file into epilot and using this data for address auto-complete functionality within journey blocks.
+While usually updating the address suggestions file from the Journey Builder UI there might be cases to automate this by utilising our APIs.
+This example provides guidelines for integrating the GIS (Geo Information System) data with the epilot. The integration focuses on automating the process of uploading address information within a CSV file into epilot and using this data for address auto-complete functionality within journey blocks.
 
 The process involves:
 1. **Uploading a CSV File**: Upload a CSV file containing the new address information.
