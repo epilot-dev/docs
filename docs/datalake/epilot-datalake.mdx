@@ -51,19 +51,19 @@ Fields of interest in this schema include:
 
 In addition to entity operations, we ingest real-time updates from workflow executions, allowing users to access current snapshots of workflow data. This dataset comprises five tables:
 
-- **WorkflowExecution**
+- **{org_id}_workflow_executions_final**
 This table contains all the attributes of workflow execution data.
 
-- **WorkflowTasks**
-This table stores attributes related to individual steps or tasks within a workflow execution.
-
-- **WorkflowPhases**
+- **{org_id}_workflow_phases_final**
 Here, you can find attributes of the various phases involved in a workflow execution.
 
-- **WorkflowCancellations**
+- **{org_id}_workflow_tasks_final**
+This table stores attributes related to individual steps or tasks within a workflow execution.
+
+- **{org_id}_workflow_cancellations_final**
 This table records data regarding the reasons for workflow execution cancellations.
 
-- **WorkflowContexts**
+- **{org_id}_workflow_contexts_final**
 Contains information about related entities associated with a workflow execution.
 <div>
 <iframe  title="Workflows DB Schema" width="100%" height="600px" src="https://drawsql.app/teams/epilot/diagrams/workflows/embed"></iframe>
@@ -142,7 +142,7 @@ Example ODBC Connection String -  ```Driver={ClickHouse ODBC Driver (ANSI)};Serv
 
 ![Power BI Connection](/img/datalake/powerbi-connection.png)
 
-- **Select Data**: Once connected, Power BI will display the available schemas and tables. You can easily locate the "{org_id}_entity_operations" table within the "datawarehouse" schema, along with the "{org_id}_current_entities_final" simplified view for easier data access.
+- **Select Data**: Once connected, Power BI will display the available schemas and tables. You can easily locate the "entity_operations" table within the "datawarehouse" schema, along with the "{org_id}_current_entities_final" simplified view for easier data access.
 
 ![Power BI Entity Operations](/img/datalake/powerbi-entity-operations.png)
 
