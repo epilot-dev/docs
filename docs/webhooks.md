@@ -54,6 +54,12 @@ Customizing the payload of an incoming webhook request is entirely feasible. The
 
 ![Custom Webhook Payload Configuration](../static/img/webhook-custom-payload.png)
 
+### Entity schemas
+
+You can use the Entity API to get a full [JSON schema](http://localhost:3000/api/entity#tag/Schemas/operation/getJsonSchema) and a [JSON example](/api/entity#tag/Schemas/operation/getSchemaExample) of an entity part of your webhook. Alternatively, you can download these from the 360 Portal for each of your entities from the entity builder UI.
+
+![Export Entity Schema](../static/img/export-entity-schema.png)
+
 ### Custom oauth parameter
 
 Custom OAuth parameters can be seamlessly integrated into the webhook configuration process. These parameters can be included as part of the OAuth request, appended as body, query, or header parameters. This feature empowers users to augment the OAuth request with supplementary information as needed, enhancing the flexibility and customization options within the authentication flow.
