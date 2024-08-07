@@ -155,6 +155,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/tf-blueprint.yaml',
   },
   {
+    layout: { title: 'Batch API' },
+    routePath: '/api/batch',
+    specUrl: 'https://docs.api.epilot.io/batch.yaml',
+  },
+  {
     layout: { title: 'Product API' },
     routePath: '/api/product',
     specUrl: 'https://docs.api.epilot.io/product.yaml',
