@@ -15,6 +15,31 @@ Webhooks can be comfortably configured and managed by admin users in epilot port
 
 [Webhooks API Documentation](/api/webhooks)
 
+# Data Transmission
+Webhooks do use the `Transfer-Encoding: chunked` mechanism when sending HTTP requests. This applies to webhook payloads triggered by various events in the system, ensuring that data is efficiently transmitted to your server.
+
+### What is Transfer-Encoding: chunked?
+The Transfer-Encoding: chunked header is used in HTTP/1.1 to send data in small, manageable chunks rather than all at once. With this method, the total size of the content doesn’t need to be known in advance, and data can be sent progressively.
+
+### Why is This Important?
+When receiving webhook events from our system:
+
+- Chunked Data Transfer: The HTTP request body will arrive in parts (or "chunks"), each sent with its own size indicator. This means your server will need to handle and process the data as it arrives.
+- Streaming Efficiency: This method allows us to stream data efficiently, especially for large payloads, ensuring that your server gets the data without needing to wait for the entire payload to be generated.
+- Completion Signal: The transfer is complete when a zero-length chunk is sent, signaling the end of the payload.
+How to Handle Chunked Webhook Requests
+To ensure proper handling of our webhook payloads, your server must:
+
+- Support chunked transfer encoding: Most modern web servers handle this automatically, but ensure your environment does not reject or misinterpret chunked data.
+- Process Data in Chunks: If necessary, ensure your application processes the incoming data incrementally as it arrives.
+- End-of-Transfer Detection: Be aware that the payload transmission is complete when a final, empty chunk is received.
+
+### Limitation
+The chunked transfer encoding mechanism is not supported by all servers. If your server does not support this feature, please contact our support team for assistance.
+
+Already known services which do not support chunked transfer encoding are:
+- [Microsoft Power Automate](https://www.microsoft.com/de-de/power-platform/products/power-automate?market=de)
+
 # Synchronous invocation
 To get immediate feedback on the success of a webhook request, the webhook can be configured to be invoked synchronously. This will cause the webhook to wait for the response of the request before proceeding. If the request fails, the webhook will be flagged as unsuccessful. This feature has to be enabled in the webhook action of the automation configuration.
 ![Option to enable sync webhooks](../static/img/automation-sync-webhook.png)
