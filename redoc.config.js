@@ -20,9 +20,9 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/entity.yaml',
   },
   {
-    layout: { title: 'Entity Viewers API' },
-    routePath: '/api/entity-viewers',
-    specUrl: 'https://docs.api.epilot.io/entity-viewers.yaml',
+    layout: { title: 'Batch API' },
+    routePath: '/api/batch',
+    specUrl: 'https://docs.api.epilot.io/batch.yaml',
   },
   {
     layout: { title: 'Submission API' },
@@ -100,7 +100,7 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/template-variables.yaml',
   },
   {
-    layout: { title: 'Customer Portal API' },
+    layout: { title: 'Portal API' },
     routePath: '/api/customer-portal',
     specUrl: 'https://docs.api.epilot.io/customer-portal.yaml',
   },
@@ -150,14 +150,14 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
   },
   {
-    layout: { title: 'Blueprints API' },
+    layout: { title: 'Blueprint Manifest API' },
     routePath: '/api/blueprints',
-    specUrl: 'https://docs.api.epilot.io/tf-blueprint.yaml',
+    specUrl: 'https://docs.api.epilot.io/blueprint-manifest.yaml',
   },
   {
-    layout: { title: 'Batch API' },
-    routePath: '/api/batch',
-    specUrl: 'https://docs.api.epilot.io/batch.yaml',
+    layout: { title: 'Design API' },
+    routePath: '/api/design',
+    specUrl: 'https://docs.api.epilot.io/design-builder-api.yaml',
   },
   {
     layout: { title: 'Product API' },
