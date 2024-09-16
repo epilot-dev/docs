@@ -46,6 +46,15 @@ You can use the Entity API to get a full [JSON schema](/api/entity#tag/Schemas/o
 
 ![Export Entity Schema](../static/img/export-entity-schema.png)
 
+## Webhook Events
+You can view and filter failed and succesful events and its details. Every event can be replayed. The replay will send the same payload and creates a new event afterwards. By default, all events are persisted for 4 weeks. 
+
+![Webhook Events](../static/img/webhooks/events.gif)
+
+
+## Testing Webhook Configurations
+The webhook configuration can be tested by sending a test request to the configured URL. This feature allows users to verify the webhook configuration and ensure that the request is being sent to the correct endpoint. The test request will include a sample payload, allowing users to verify that the webhook is functioning as expected. This sample payload can be either customized or a entity schema can be used.
+
 
 ## Synchronous invocation
 To get immediate feedback on the success of a webhook request, the webhook can be configured to be invoked synchronously. This will cause the webhook to wait for the response of the request before proceeding. If the request fails, the webhook will be flagged as unsuccessful. This feature has to be enabled in the webhook action of the automation configuration.
@@ -84,13 +93,67 @@ Customizing the payload of an incoming webhook request is entirely feasible. The
   - **hydrated** relations to other entities
   - important note: including this can increase the payload size significantly
 
-![Custom Webhook Payload Configuration](../static/img/webhook-custom-payload.png)
+![Custom Webhook Payload Configuration](../static/img/webhooks/custom-payload.png)
+
+### Custom header
+
+Custom headers can be added to the webhook request to provide additional information or authentication. This feature allows users to include custom headers in the webhook request, enhancing the security and customization options available for webhook configurations.
+
+![Custom Webhook Header](../static/img/webhooks/custom-header.png)
+
+The following headers are forbidden and will be removed from the request:
+```
+    'x-epilot-org-id',
+    'x-ivy-org-id',
+    'Authorization',
+    'A-IM',
+    'Accept-Charset',
+    'Accept-Datetime',
+    'Accept-Encoding',
+    'Cache-Control',
+    'Connection',
+    'Content-Length',
+    'Content-Encoding',
+    'Transfer-Encoding',
+    'Host',
+    'Content-Type',
+    'Content-Range',
+    'Content-MD5',
+    'Range',
+    'User-Agent',
+    'Date',
+    'Expect',
+    'Forwarded',
+    'From',
+    'Host',
+    'HTTP2-Settings',
+    'If-Match',
+    'If-Modified-Since',
+    'If-None-Match',
+    'If-Range',
+    'If-Unmodified-Since',
+    'Max-Forwards',
+    'Origin',
+    'Pragma',
+    'Proxy-Authorization',
+    'Referer',
+    'Server',
+    'TE',
+    'Trailer',
+    'Transfer-Encoding',
+    'Upgrade',
+    'Via',
+    'Warning',
+    'x-forwarded-*',
+    'x-amz-*',
+    'x-amzn-*'
+```
 
 ### Custom oauth parameter
 
 Custom OAuth parameters can be seamlessly integrated into the webhook configuration process. These parameters can be included as part of the OAuth request, appended as body, query, or header parameters. This feature empowers users to augment the OAuth request with supplementary information as needed, enhancing the flexibility and customization options within the authentication flow.
 
-![Custom Webhook Ouath Parameter](../static/img/webhook-custom-oauth.png)
+![Custom Webhook Ouath Parameter](../static/img/webhooks/custom-oauth.png)
 
 ## Limitations
 
