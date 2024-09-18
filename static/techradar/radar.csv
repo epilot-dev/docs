@@ -16,6 +16,7 @@ AWS SAM,adopt,languages and frameworks,false,The AWS Serverless Application Mode
 "Elastic Cloud",adopt,tools,false,"We use elastic.cloud as our managed solution for search functionality in our app"
 "Terraform",adopt,languages and frameworks,false,"Terraform is the IaC solution of choice to manage the AWS environments. Re-usability is the central argument for adoption due to modular nature."
 "jest",adopt,tools,false,"Jest is a delightful JavaScript Testing Framework with a focus on simplicity."
+"vitest",adopt,tools,false,"A fast Vite-native testing framework. Only reruns the related changes, just like HMR for tests!"
 "Slack",adopt,tools,false,"Slack is used extensively as the communication tool, with experimental extensions for ChatOps."
 "SDK",adopt,techniques,true,"We're building a public-facing SDK to help partners build on epilot"
 "Webhooks",explore,techniques,true,"We provide configurable webhooks to allow 3rd parties to subscribe to most epilot business events"
