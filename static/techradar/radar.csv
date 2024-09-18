@@ -71,4 +71,3 @@ AWS SAM,adopt,languages and frameworks,false,The AWS Serverless Application Mode
 "Zustand",explore,languages and frameworks,false,"Zustand offers a robust and efficient state-management solution that simplifies setup by eliminating unnecessary boilerplate."
 "speakeasy",adopt,tools,true,"API tooling for robust SDKs, Terraform Providers and End to End Testing. OpenAPI Native."
 "OpenAPI Stack",adopt,tools,false,"Collection of open source libraries and tools for full stack Typescript development inspired by modern alternatives like GraphQL and tRPC."
-"Lambda Server Timing",adopt,tools,false,"Enables Lambdas to return responses with Server Timings"
