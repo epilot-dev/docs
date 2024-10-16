@@ -10,7 +10,7 @@ sidebar_position: 1
 
 <h1 align="center">Documentation</h1>
 
-<p align="center">Learn the basics of using epilot developer tools and APIs to unlock the potential of the epilot 360 platform.</p>
+<p align="center">Learn the basics of using epilot developer tools and APIs to unlock the potential of the epilot platform.</p>
 
 ## Architecture
 

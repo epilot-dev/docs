@@ -8,7 +8,7 @@ sidebar_position: 2
 yarn add @epilot360/auth-service
 ```
 
-Access current user's auth information in epilot 360 portal.
+Access current user's auth information in epilot portal.
 
 ## Usage
 

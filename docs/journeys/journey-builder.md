@@ -14,7 +14,7 @@ The Journey Builder is a WYSIWYG editor interface that allows you to build and e
 
 ## Embedding Journeys
 
-Journeys can be shared within the epilot 360 portal to other users or embedded to 3rd party websites using a script snippet.
+Journeys can be shared within the epilot portal to other users or embedded to 3rd party websites using a script snippet.
 
 Script snippets for embedding can be generated directly from the Journey Builder:
 

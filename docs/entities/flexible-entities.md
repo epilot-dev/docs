@@ -31,7 +31,7 @@ Examples of Entity Schemas:
 - File
 - Message
 
-The primary purpose of schemas is to control how the flexible entities are represented in the epilot 360 portal UI.
+The primary purpose of schemas is to control how the flexible entities are represented in the epilot portal UI.
 
 ## Attributes
 

@@ -16,7 +16,7 @@ Our tenants sell complex products online and collaborate with partners to delive
 
 The epilot application consists of:
 
-- [The 360 Portal](/docs/portal/microfrontends)
+- [The epilot portal](/docs/portal/microfrontends)
 - [Embeddable Journey Frontends](/docs/journeys/journey-builder)
 - [Customer & Installer Portals](https://docs.epilot.io/docs/portals/customer-portal)
 - Serverless microservices with [APIs](/api)

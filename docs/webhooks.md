@@ -42,7 +42,7 @@ Already known services which do not support chunked transfer encoding are:
 
 ## Webhook Payload Structure
 
-You can use the Entity API to get a full [JSON schema](/api/entity#tag/Schemas/operation/getJsonSchema) and a [JSON example](/api/entity#tag/Schemas/operation/getSchemaExample) of an entity part of your webhook. Alternatively, you can download these from the 360 Portal for each of your entities from the entity builder UI.
+You can use the Entity API to get a full [JSON schema](/api/entity#tag/Schemas/operation/getJsonSchema) and a [JSON example](/api/entity#tag/Schemas/operation/getSchemaExample) of an entity part of your webhook. Alternatively, you can download these from the epilot portal for each of your entities from the entity builder UI.
 
 ![Export Entity Schema](../static/img/export-entity-schema.png)
 

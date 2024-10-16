@@ -30,7 +30,7 @@ See our [Tech Radar](https://docs.epilot.io/techradar/) for more info on the ser
 
 We offer internal boilerplate projects to bootstrap projects on popular frameworks and get started quickly:
 
-- [create-mfe-app](https://gitlab.com/e-pilot/product/360-portal/epilot360-dev-utils/-/tree/main/packages/create-mfe-app)
+- [create-mfe-app](https://gitlab.com/e-pilot/product/epilot-portal/epilot360-dev-utils/-/tree/main/packages/create-mfe-app)
 - [AWS SAM](https://gitlab.com/e-pilot/platform/cookie-cutter/ts-sam)
 - [AWS CDK](https://gitlab.com/e-pilot/platform/cookie-cutter/ts-cdk)
 - [Fargate](https://gitlab.com/e-pilot/platform/cookie-cutter/docker-fargate)

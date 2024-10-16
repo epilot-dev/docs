@@ -8,7 +8,7 @@ sidebar_position: 4
 yarn add @epilot360/snackbar-service
 ```
 
-Create snackbar alerts in epilot 360 portal
+Create snackbar alerts in epilot portal
 
 ## Usage
 

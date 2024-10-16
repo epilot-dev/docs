@@ -8,7 +8,7 @@ sidebar_position: 3
 yarn add @epilot360/feature-flag-service
 ```
 
-Use feature flags in epilot 360 portal.
+Use feature flags in epilot portal.
 
 ## Usage
 

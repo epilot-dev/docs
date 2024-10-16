@@ -6,7 +6,7 @@ sidebar_position: 2
 
 :::info
 
-The 360 portal application consists of multiple frontend microservices orchestrated by [single-spa](https://single-spa.js.org/).
+The epilot portal application consists of multiple frontend microservices orchestrated by [single-spa](https://single-spa.js.org/).
 
 :::
 
@@ -34,4 +34,4 @@ The basic layout consists of the following parts:
 
 ## Links
 
-- Internal list of 360 microfrontends: https://gitlab.com/e-pilot/product/360-portal/epilot360-root-config#microfrontends
+- Internal list of 360 microfrontends: https://gitlab.com/e-pilot/product/epilot-portal/epilot360-root-config#microfrontends

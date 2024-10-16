@@ -7,7 +7,7 @@ sidebar_position: 3
 
 Customer and installer portals specific webbhooks allow to integrate applications with the activities emitted within portal.
 
-In the Epilot 360 portal you can configure a webhook which includes the activity:
+In the epilot portal you can configure a webhook which includes the activity:
 
 ![Doc Downloaded Webhook](../../static/img/portals/doc-downloaded-webhook.png)
 

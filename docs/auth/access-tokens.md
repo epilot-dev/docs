@@ -23,7 +23,7 @@ Authorization: Bearer <your-access-token>
 
 ## Creating Access Tokens
 
-Users logged into the epilot 360 portal can manage their Access Tokens from [Settings > Access Tokens](https://portal.epilot.cloud/app/tokens).
+Users logged into the epilot portal can manage their Access Tokens from [Settings > Access Tokens](https://portal.epilot.cloud/app/tokens).
 
 Creating access tokens requires the `token:create` permission.
 
