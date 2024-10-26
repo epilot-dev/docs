@@ -101,6 +101,7 @@ Fields of interest in this schema include:
   - `colorDepth`: The color depth of the user's display (e.g., 24).
   - `languagePreference`: The preferred language set in the user's browser (e.g., en-US, fr-FR).
   - `ip`: The IP address of the user's device when the event was recorded.
+  - `embeddedIn`: The website or platform on which the journey is embedded.
 
 
 The schema for journey events is as follows:
@@ -111,7 +112,7 @@ The schema for journey events is as follows:
     "org_id": "string",  // Unique identifier for the organization associated with the event (UUID)
     "session_id": "string",  // Unique identifier for the session in which the event occurred (UUID)
     "journey_id": "string",  // Unique identifier for the user journey to which the event belongs (UUID)
-    "type": "string",  // Type of event (e.g., "page_navigation", "journey_submit", "journey_exit")
+    "type": "string",  // Type of event (e.g., "step_navigation", "journey_submit", "journey_exit")
     "details": "string",  // Additional details about the event, typically in JSON format
     "created_at": "datetime"  // Timestamp indicating when the event was recorded
 }
@@ -121,12 +122,11 @@ Fields of interest in this schema include:
 
 **type**: This field contains the type of user interaction or event that occurs on the session
   - `journey_load_time`: The time it takes for the journey to load, typically measured from journey API response time.
-  - `page_navigation`: The event triggered when a user navigates from one page to another within the journey..
-  - `journey_reset`: The event triggered when a user resets the journey, potentially clearing previous inputs or starting the journey over.
-  - `journey_submit`: The event triggered when a user completes and submits the journey, often marking the end of the user interaction.
-  - `journey_exit`: The event triggered when a user exits the journey, possibly by closing the journey tab in the browser.
+  - `step_navigation`: The event triggered when a user navigates from one step to another within the journey.
+  - `journey_submit`: The event triggered when a user completes and submits the journey.
+  - `journey_exit`: The event triggered when a user exits the journey, possibly by closing or refreshing the journey tab in the browser.
 
-**details**: This field contains additional details about the type of event that occurs. Basically from and to pages on page navigation event, the step on which journey reset occurs, the time of journey submission and exit, time taken for journeys to load etc.
+**details**: This field contains additional details about the type of event that occurs. Basically `fromStepName`, `fromStepNumber`, `toStepName` and `toStepNumber` on a `step_navigation` event, `stepNumber` and `stepName` on which the `journey_exit` occurred and time taken for journeys to load.
 
 
 - **{org_id}_journey_sessions_final**
@@ -261,7 +261,7 @@ Our Data Lake feature provides a powerful way to capture and analyze real-time e
 
 
 
-Our Journey Analytics Data lake feature offers a comprehensive solution to track and analyze user journeys in real-time, providing you with deep insights into how users interact with your journeys. By capturing detailed event data, such as page navigations, form submissions, and user exits, you can gain a clear understanding of user behavior and identify opportunities for optimization.
+Our Journey Analytics Data lake feature offers a comprehensive solution to track and analyze user journeys in real-time, providing you with deep insights into how users interact with your journeys. By capturing detailed event data, such as step navigations, form submissions, and user exits, you can gain a clear understanding of user behavior and identify opportunities for optimization.
 
 
 You can also refer to the following link to establish connection to [different BI tools.](https://clickhouse.com/docs/en/integrations/data-visualization)
