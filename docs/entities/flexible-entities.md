@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 0
 ---
 
 # Flexible Entities
@@ -17,21 +17,9 @@ Each entity can contain arbitrary JSON data, which is made accessible via the En
 
 ## Schemas
 
-Schemas represent different types of entities in epilot.
+Schemas are used to define the structure of entities and how they are represented in the UI.
 
-Examples of Entity Schemas:
-
-- Contact
-- Account
-- Product
-- Price
-- Submission
-- Order
-- Opportunity
-- File
-- Message
-
-The primary purpose of schemas is to control how the flexible entities are represented in the epilot portal UI.
+View full [List of Schemas](/docs/entities/schemas-list) page for more info.
 
 ## Attributes
 

@@ -24,6 +24,7 @@
     "@docusaurus/plugin-content-docs": "2.0.0-beta.15",
     "@docusaurus/preset-classic": "2.0.0-beta.15",
     "@edno/docusaurus2-graphql-doc-generator": "^1.9.0",
+    "@epilot360/icons": "^1.16.7",
     "@graphql-tools/url-loader": "^7.9.1",
     "@mdx-js/react": "^1.6.21",
     "@svgr/webpack": "^5.5.0",
