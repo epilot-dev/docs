@@ -21,7 +21,7 @@ Blueprints are currently in closed **BETA** only available to selected customers
 
 Blueprints are intended to simplify the setup of epilot and radically reduce the time and effort required to go to market with specific industry use cases using the latest epilot features and best practices.
 
-These packages can include a wide variety of connected epilot resources such as *[Products](/docs/entities/schemas-list#product), [Journeys](/docs/journeys/journey-builder), [Automations](/docs/automations/overview), [Workflows](/docs/workflows/overview), [Entity Attributes](/docs/entities/attributes), [Purposes](#), [Labels](#), [Email templates](/docs/entities/schemas-list#email_template) and [Document templates](/docs/files/document-generation)*.
+These packages can include a wide variety of connected epilot resources such as *[Products](/docs/entities/schemas-list#product), [Journeys](/docs/journeys/journey-builder), [Automations](/docs/automation/intro), [Workflows](/docs/workflows/intro), [Entity Attributes](/docs/entities/attributes), [Purposes](#), [Labels](#), [Email templates](/docs/entities/schemas-list#email_template) and [Document templates](/docs/files/document-generation)*.
 
 Pre-made Blueprints incorporating latest industry best practices can be installed from the epilot Marketplace. Some examples:
 
