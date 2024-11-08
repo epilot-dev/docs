@@ -1,114 +1,57 @@
 ---
-sidebar_position: 1
+sidebar_position: 3
+title: Sandbox
 ---
 
-# Blueprint Pipelines (Sandbox Solution)
-
-A Sandbox solution for customers who wish to safely test epilot configuration in a sandbox environment and promote their changes to their production organization in a controlled fashion using an automated Pipeline.
-This solution introduces easy-to-use *Pipelines*, built on the technical foundation of our currently being developed Blueprints Self Service Solution, which provides a way to export and import configurations between epilot organizations.
+# Sandbox
 
 :::info
 
-This feature is currently in **beta** and fully functional. Expect ongoing improvements and new capabilities in upcoming updates.
+Sandboxes are currently in closed **BETA** only available to selected customers.
 
 :::
 
+Sandboxes are a way to safely test epilot configuration in a sandbox environment and promote configuration changes to production using a Blueprint Pipeline.
 
-![Blueprint Pipelines](/img/blueprints/pipelines.png)
-<p align="center">
-  <i>Figure 1: Blueprint Pipelines</i>
-</p>
+## Connecting a Sandbox
+
+To easily promote configurations such as a journey with its connected resources to production, you should connect your sandbox to your production organization.
+
+To do this, you need to generate an [API Token](/docs/auth/access-tokens) for your sandbox organization and add it to your production organization.
+
+![Create Access Token](/img/create-access-token.png)
+
+Once you have an API token for your sandbox organization, you should log in to your production organization and navigate to [Blueprints > Pipelines to other Organizations](https://portal.epilot.cloud/app/blueprints/pipelines) and select [Connect Organization](https://portal.epilot.cloud/app/blueprints/pipelines/create).
+
+Here you can copy your Sandbox API token to connect your sandbox to your production organization.
+
+![Connect Organization](/img/blueprints/connect-organization.png)
+
+## Switching Between Organizations
+
+To make switching between organizations easier, make sure to invite your user to both organizations, and use the organization switcher in the bottom left corner of the portal.
+
+![Organization Switcher](/img/org-switcher.png)
 
 
-![Create Pipeline](/img/blueprints/connect-pipeline.png)
-<p align="center">
-  <i>Figure 2: Create a Pipeline by connecting an organisation</i>
-</p>
+## Syncing Configurations
 
-### Supported Resources
+Log in to the organization you want to update. If you wish to start by copying existing configuration from production to your sandbox, you should log in to your Sandbox organization. If you want to promote changes from sandox to production, switch to your production organization.
 
-The following resource configurations are supported currently:
+To import configurations via sandbox pipeline, navigate to [Configuration > Blueprints](https://portal.epilot.cloud/app/blueprints) and select [Install Blueprint > Sandbox](https://portal.epilot.cloud/app/blueprints/pipelines/import).
 
-- **Journeys**
-  - Journey Launcher
+![Sandbox Step 1](/img/blueprints/sandbox-step-1.png)
 
-- **Automations**
-  - Webhooks*
-  - Workflows
-  - Email Templates
-  - Document Templates
+If the sandbox is already connected to your production organization, you can pick the source organization from the list.
 
-- **Products**
-  - Prices
-  - Taxes
-  - Cross Sellable Products
-  - Files (Images, Downloads, Availability)
+Next, select the resources you want to import from your source organization. You can choose multiple resources here and preview the list of resources that will be imported.
 
-- **Entity Mappings**
-- **Entity Schemas***
-  - Attributes
-  - Groups
-  - Capabilities
-  - Headlines*
+Click on *Select Resources* once you're happy with your selection.
 
-- **Taxonomies** (Purposes are included here)
-  - Purposes
-    - in Schema attributes
-    - in Schema groups
-    - in Schema root
-    - Purposes assigned to entities
-      - Email templates
-      - Files
-      - Products, prices, taxes
-      - Automation action / Entity mapping
+**Note that at this point, no changes will be made to your organization and you can still review the changes before applying!**
 
-- **Workflows**
-  - Closing Reasons
-  - Automations
-  - Journeys
-  - Portal related configuration
+You will now see a preview of changes that will be made after applying:
 
-- **Email Templates**
-  - Files (Attachments) 
-  - Journeys Linked in Template (Post Qualification Journey)
-  - Custom Variables*
+![Sandbox Step 3](/img/blueprints/sandbox-step-3.png)
 
-- **Files**
-  - Document Templates  
-  - Product Images
-  - Email Attachments
-  - Product Downloads 
-  - Availability Files 
-  - Address Suggestions on Journeys 
-
-- **Designs***
-
----
-
-### A Preview of installing supported resources
-
-![Tree of resources being installed](/img/blueprints/import-resources-tree.png)
-<p align="center">
-  <i>Figure 3: List of resources being installed by the blueprint</i>
-</p>
-
-### Not Supported Resources (Upcoming)
-
-- **Email Templates**
-  - Custom Variables 
-
-### Later
-
-- [ ] Dashboards
-- [ ] Saved Views (Table & Inbox)
-- [ ] Portals
-- [ ] Roles
-- [ ] Families (Labels)
-
-### Known Limitations*
-
-1. Webhooks are included as part of automations, but created in incomplete state, waiting for the user to add a URL and auth configuration.
-2. Installing full schemas can sometimes take a very long time.
-3. Email Templates currently don’t include Custom Variables and cannot be exported independently.
-4. Designs can be copied standalone, but the target organization’s default design is applied for installed Journeys.
-5. Capabilities and Headlines are currently only exported when exporting full schema.
+If you're happy with the changes. Click Approve & Install, and the changes will be applied to the organization you're logged into.

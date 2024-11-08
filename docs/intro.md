@@ -24,12 +24,6 @@ Explore and learn to use our APIs to build your own solutions on epilot.
 
 [Overview](/docs/architecture/api-first) - [Docs](/api)
 
-## Blueprints
-
-Explore Blueprint pipelines (Sandbox solution) and the upcoming Epilot Marketplace.
-
-[Overview](/docs/blueprints/sandbox)
-
 ## SDK
 
 Explore our developer tools and get started with the epilot SDK
