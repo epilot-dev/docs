@@ -34,7 +34,7 @@ To make switching between organizations easier, make sure to invite your user to
 ![Organization Switcher](/img/org-switcher.png)
 
 
-## Syncing Configurations
+## Importing Between Organizations
 
 Log in to the organization you want to update. If you wish to start by copying existing configuration from production to your sandbox, you should log in to your Sandbox organization. If you want to promote changes from sandox to production, switch to your production organization.
 
