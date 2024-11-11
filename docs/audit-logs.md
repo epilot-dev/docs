@@ -12,9 +12,12 @@ Audit logs are a record of all the events which modified resources in your accou
 
 :::info
 
-Audit logs are an Enterprise pricing feature.
+Audit logs are a pricing feature for professional and enterprise tiers.
 
 :::
+
+## Permission
+To access the audit logs, you need to have the `audit_log:view` permission. This permission is only available to admin users or as a dedicated permission, which can be assigned to any user in the access management.
 
 ## Services being audited
 As epilot covers a variety of services, the audit logging is added incrementally. The following services are currently being audited. Contact our support team if you need audit logs for a service not listed here.
@@ -27,7 +30,11 @@ As epilot covers a variety of services, the audit logging is added incrementally
 | Webhook  	| ✅      	|
 | Automation| ✅      	|
 | Journey  	| ❌       	|
-| User     	| ❌       	|
-| Permission     	| ❌       	|
+| User     	| ✅    	|
+| Permission     	| ✅       	|
 | Blueprint     	| ❌       	|
 | Messaging     	| ❌       	|
+
+
+## Facade apis
+Our generic entity api is audited. More specific wrappers for this apis (facade apis) are not audited to avoid duplication.
