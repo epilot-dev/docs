@@ -69,7 +69,6 @@ The following resource configurations are supported for blueprints and sandbox p
 ### Known Limitations*
 
 1. Webhooks are included as part of automations, but created in incomplete state, waiting for the user to add a URL and auth configuration
-1. Importing schemas can sometimes take a very long time.
 1. Only Purpose Taxonomies are currently supported
 1. Designs can be copied standalone now, but the target organization’s default design is applied for imported Journeys
 1. Capabilities and Headlines are currently only exported when exporting full schema
