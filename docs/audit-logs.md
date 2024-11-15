@@ -12,9 +12,11 @@ Audit logs are a record of all the events which modified resources in your accou
 
 :::info
 
-Audit logs are a pricing feature for professional and enterprise tiers.
+Audit logs are a pricing feature for enterprise tiers. Contact our sales team to learn more about the pricing.
 
 :::
+
+![Audit log table](../static/img/audit-log-table.png)
 
 ## Permission
 To access the audit logs, you need to have the `audit_log:view` permission. This permission is only available to admin users or as a dedicated permission, which can be assigned to any user in the access management.
