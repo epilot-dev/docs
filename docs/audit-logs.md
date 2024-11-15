@@ -36,6 +36,7 @@ As epilot covers a variety of services, the audit logging is added incrementally
 | Permission     	| ✅       	|
 | Blueprint     	| ❌       	|
 | Messaging     	| ❌       	|
+| Email Settings    	| ✅      	|
 
 
 ## Facade apis
