@@ -4,7 +4,6 @@ sidebar_position: 14
 
 # Audit logs
 
-[[API Docs](/api/audit-logs)]
 [[SDK](https://www.npmjs.com/package/@epilot/audit-logs-client)]
 
 Audit logs are a record of all the events which modified resources in your account. This includes changes to entities, automations, webhooks, and more. The audit logs are immutable and can be accessed by admin users in the epilot portal.
