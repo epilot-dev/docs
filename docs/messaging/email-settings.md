@@ -30,6 +30,10 @@ Customers who choose not to provide Epilot with full domain access can request a
 Get in touch with [epilot support](mailto:support@epilot.cloud) for assistance in owning your own subdomain and obtaining the necessary DNS configuration to leverage the email functionality.
 
 :::note
+Regardless of the chosen option, the DNS records must not be removed; otherwise, we risk losing the ability to manage email communications effectively going forward.
+:::
+
+:::note
 For customers managing their own subdomain, you may be asked to manually change DNS records from time to time to ensure epilot works correctly and securely. This is not needed when the subdomain is delegated to epilot.
 :::
 
