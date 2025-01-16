@@ -11,6 +11,6 @@ To get to know how to build a custom block for journeys. Check the docs here: [C
 ## Useful resources
 ### Journey UI Library (React)
 - [Source Code](https://github.com/epilot-dev/concorde-elements)
-- [Storybook](https://66437b5b4b88b4448919780e-jfmblwtofq.chromatic.com/)
+- [Storybook](https://portal.epilot.cloud/concorde-elements)
 
 
