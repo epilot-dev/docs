@@ -153,7 +153,7 @@ You can now attach the returned file entity id to your business entity as a rela
 
 ## Updating Files
 
-Modifying or saving new versions of File entities happens via the [`saveFile` operation](/api/file#tag/files/operation/saveFile).
+Modifying or saving new versions of File entities happens via the [`saveFileV2` operation](/api/file#tag/files/operation/saveFileV2).
 
 
 ## Deleting Files
