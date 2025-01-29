@@ -41,15 +41,15 @@ The `public_url` property of a file entity may also be used to download a file d
 
 ## Uploading Files
 
-The [`uploadFile` operation](/api/file#tag/files/operation/uploadFile) returns a temporary presigned S3 URL, which the client uses to upload a file using the `PUT` or `POST` method.
+The [`uploadFile` operation](/api/file#tag/files/operation/uploadFileV2) returns a temporary presigned S3 URL, which the client uses to upload a file using the `PUT` or `POST` method.
 
-After uploading, the client should call the [`saveFile` operation](/api/file#tag/files/operation/saveFile) to save the uploaded file as an entity make it permanent.
+After uploading, the client should call the [`saveFileV2` operation](/api/file#tag/files/operation/saveFileV2) to save the uploaded file as an entity make it permanent.
 
 Files that are uploaded but not saved expire and are deleted within 24 hours.
 
 :::info
 
-The `uploadFile` operation requires a valid access token to be present in the request. Use the `uploadFilePublic` operation to upload files for Submissions of public journeys.
+The `uploadFileV2` operation requires a valid access token to be present in the request. Use the `uploadFilePublic` operation to upload files for Submissions of public journeys.
 
 :::
 
@@ -58,7 +58,7 @@ The `uploadFile` operation requires a valid access token to be present in the re
 ### Step 1: Call uploadFile to receive s3ref
 
 ```
-POST https://file.sls.epilot.io/v1/files/upload
+POST https://file.sls.epilot.io/v2/files/upload
 ```
 
 Body (application/json):
@@ -69,7 +69,7 @@ Body (application/json):
 }
 ```
 
-Response (200):
+Response (201):
 ```json
 {
   "s3ref": {
@@ -101,10 +101,10 @@ Response (201):
 (empty)
 ```
 
-### Step 3: Call saveFile to persist the file and create a File entity
+### Step 3: Call saveFileV2 to persist the file and create a File entity
 
 ```
-POST https://file.sls.epilot.io/v1/files
+POST https://file.sls.epilot.io/v2/files
 ```
 
 Body (application/json):
@@ -137,7 +137,7 @@ Response (201):
 
 Note that the `public_url` property of the File entity is still present in the response, even if the entity has `access_control` set to `private`. For `private` the public URL is simply not accessible and will return a 403 response.
 
-You can now attach the returned file entity to any business entity as a relation using the `_id`:
+You can now attach the returned file entity id to your business entity as a relation to any attribute of type `file`, or the default `_files` attribute:
 
 ```json
 {
