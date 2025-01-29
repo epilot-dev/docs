@@ -126,7 +126,7 @@ const DOCS_URL = 'https://docs.epilot.io';
             title: 'Links',
             items: [
               {
-                label: 'epilot portal',
+                label: 'Portal login',
                 href: 'https://portal.epilot.cloud',
               },
               {
