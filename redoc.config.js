@@ -130,9 +130,9 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/workflows-execution.yaml',
   },
   {
-    layout: { title: 'Discussion API' },
-    routePath: '/api/discussion',
-    specUrl: 'https://docs.api.epilot.io/discussion.yaml',
+    layout: { title: 'Notes API' },
+    routePath: '/api/notes',
+    specUrl: 'https://docs.api.epilot.io/notes.yaml',
   },
   {
     layout: { title: 'Consent API' },
