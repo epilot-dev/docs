@@ -6,9 +6,11 @@ sidebar_position: 1
 
 :::info
 
-_epilot_ is a multi-tenant SaaS platform for collaborative ecommerce.
+_epilot_ is a multi-tenant vertical SaaS built for energy suppliers, municipal utilities, grid operators & solution providers, all collaborating on one platform and ecosystem.
 
-Our tenants sell complex products online and collaborate with partners to deliver great ecommerce experiences to their end customers.
+We offer a 360° energy XRM – an extended relationship management platform to digitize sales, service & grid processes from initial customer inquiries to ongoing support. For efficient processes, flexible market launches and happy customers.
+
+[What is an energy XRM?](https://www.epilot.cloud/en/blog/what-is-an-energy-xrm)
 
 :::
 

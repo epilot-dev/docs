@@ -11,7 +11,7 @@ const DOCS_URL = 'https://docs.epilot.io';
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
   title: 'epilot dev center',
-  tagline: 'The platform to simplify your business - for developers.',
+  tagline: 'The Energy XRM - for developers.',
   url: DOCS_URL,
   baseUrl: '/',
   onBrokenLinks: 'throw',
