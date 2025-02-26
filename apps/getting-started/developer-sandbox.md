@@ -21,7 +21,7 @@ This is why epilot offers dedicated sandbox accounts. These environments are spe
 
 Sandbox accounts serve as the perfect starting point for creating your first app in the epilot ecosystem. The general workflow is straightforward:
 
-1. Request a sandbox account by submitting a request here: 
+1. Request a sandbox account by submitting a request [here:](https://portal.dev.epilot.cloud/request-sandbox)
 2. Once your request has been reviewed and approved, sign up with the credentials provided
 3. Navigate to the app creation page at https://portal.epilot.cloud/app/apps/configuration/new to begin building your first private app
 
