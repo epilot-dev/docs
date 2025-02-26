@@ -17,8 +17,9 @@ const DOCS_URL = 'https://docs.epilot.io';
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.svg',
-  organizationName: 'epilot-dev', // Usually your GitHub org/user name.
-  projectName: 'docs', // Usually your repo name.
+
+  organizationName: 'epilot-dev',
+  projectName: 'docs', 
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -63,11 +64,23 @@ const DOCS_URL = 'https://docs.epilot.io';
         sidebarPath: require.resolve('./sidebars.js'),
       },
     ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'apps',
+        path: 'apps',
+        routeBasePath: 'apps',
+        sidebarPath: require.resolve('./sidebars.js'),
+      },
+    ],
   ],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      colorMode: {
+        respectPrefersColorScheme: true
+      },
       navbar: {
         title: 'Dev Center',
         logo: {
@@ -96,6 +109,14 @@ const DOCS_URL = 'https://docs.epilot.io';
             label: 'SDK',
             position: 'left',
           },
+          // {
+          //   position: 'left',
+          //   type: 'docSidebar',
+          //   to: '/apps',
+          //   sidebarId: 'appsSidebar',
+          //   label: 'Apps',
+          //   docsPluginId: 'apps',
+          // },
         ],
       },
       footer: {
