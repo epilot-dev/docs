@@ -29,7 +29,7 @@ This modular approach offers several key advantages:
 
 epilot currently supports these component types:
 
-### [Custom Journey Blocks](/docs/components/journey-blocks)
+### [Custom Journey Blocks](/apps/components/custom-journey-block)
 
 These web components integrate directly into epilot's Journey Builder, allowing you to create specialized elements for data collection, visualization, or process automation. Journey Blocks appear in the Journey Builder palette and can be placed anywhere in a customer journey flow.
 
@@ -37,7 +37,7 @@ These web components integrate directly into epilot's Journey Builder, allowing 
 Use cases: Data collection forms, calculators, visualizations, third-party integrations
 ```
 
-### [Portal Extensions](/docs/components/portal-extensions)
+### [Portal Extensions](/apps/components/portal-extension)
 
 Portal Extensions enhance epilot's customer and installer portals with new sections, tools, or visualizations. They can be added to dashboards or specific sections to extend the portal's functionality with custom features.
 

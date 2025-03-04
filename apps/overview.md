@@ -22,7 +22,7 @@ description: "Welcome to the epilot Developer Platform documentation!"
       <div className="card__body">
         <h3>🧩 App Capabilities</h3>
         <p>Discover what you can build with epilot apps, from custom journey blocks that streamline workflows to portal extensions that enhance customer experiences. Learn how apps can integrate with existing epilot features and extend platform functionality.</p>
-        <a href="/docs/capabilities/overview">Explore capabilities →</a>
+        <a href="/apps/components/overview">Explore capabilities →</a>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@ description: "Welcome to the epilot Developer Platform documentation!"
       <div className="card__body">
         <h3>⚙️ Technical Architecture</h3>
         <p>Understand the technical foundation of epilot apps, including components, API integration, data models, and security practices. Learn how apps are structured, how they communicate with epilot's core services, and best practices for robust implementation.</p>
-        <a href="/docs/architecture/overview">Learn the architecture →</a>
+        <a href="/apps/architecture/behind-the-scenes">Learn the architecture →</a>
       </div>
     </div>
   </div>
@@ -42,7 +42,7 @@ description: "Welcome to the epilot Developer Platform documentation!"
       <div className="card__body">
         <h3>📦 Publishing & Versioning</h3>
         <p>Master the app lifecycle from development to distribution. Learn how to create, test, and publish your app to the epilot marketplace, implement semantic versioning, and iterate on your app while maintaining compatibility for existing users.</p>
-        <a href="/docs/publishing/overview">Understand the process →</a>
+        <a href="/apps/publishing/how-to">Understand the process →</a>
       </div>
     </div>
   </div>
@@ -51,7 +51,6 @@ description: "Welcome to the epilot Developer Platform documentation!"
       <div className="card__body">
         <h3>🚀 Examples & Templates</h3>
         <p>Jumpstart your development with ready-to-use examples, templates, and sample applications. Explore reference implementations for common scenarios like data integration, UI extensions, and workflow automation that you can adapt for your specific needs.</p>
-        <a href="/docs/examples/overview">See examples →</a>
       </div>
     </div>
   </div>
