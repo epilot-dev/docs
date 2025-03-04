@@ -6,17 +6,20 @@ sidebar_position: 2
 
 <p>&nbsp;</p>
 
-
 <h1 align="center">Portal Extensions</h1>
 
-<p align="center">Learn the basics of using epilot developer tools and APIs to unlock the potential of the epilot platform.</p>
+<p align="center">Enhance epilot portals with custom functionality and integrations</p>
 
-## Use Case 
+## 🚧 Documentation Coming Soon
 
-## Links
+We're currently developing comprehensive documentation for Portal Extensions. This section will include detailed guides on creating Links and Hooks components for both customer and installer portals.
 
-## Hooks
+### Future Content
 
+This documentation will cover:
 
-https://github.com/epilot-dev/epilot-journey-sdk/blob/main/custom-block.md
+- **Use Cases**: Learn how Portal Extensions can solve real business needs
+- **Links**: Add custom navigation and external integrations
+- **Hooks**: Create responsive components that enhance the portal experience
 
+Please check back soon, or [contact our developer support team](https://developers.epilot.cloud/contact) for early access information.
