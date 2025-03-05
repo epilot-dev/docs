@@ -1,7 +1,7 @@
 ---
 title: Portal Extensions
 hide_title: true
-sidebar_position: 2
+sidebar_position: 4
 ---
 
 <p>&nbsp;</p>
