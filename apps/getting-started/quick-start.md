@@ -69,7 +69,7 @@ Once public, you can continue developing new versions with enhanced features whi
 Ready to start your app development journey? Explore these resources:
 
 - [Developer Sandbox Guide](/apps/getting-started/developer-sandbox) - Learn more about setting up your development environment
-- [Component Types](/apps/components/overview) - Understand the different ways to extend epilot
+- [Component Types](/apps/building-apps/components/overview) - Understand the different ways to extend epilot
 - [Publishing Verification Process](/apps/publishing/verification-process) - Learn about the review process for publishing apps
 
 By following this streamlined process, you'll be able to contribute valuable solutions to the epilot ecosystem and reach organizations throughout the energy industry.
