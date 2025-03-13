@@ -14,51 +14,21 @@ description: "Welcome to the epilot Developer Platform documentation!"
 
 <p align="center">Welcome to the epilot Developer Platform! This comprehensive guide will help you create, publish, and maintain powerful integrations that extend the capabilities of the epilot platform—whether you're a new developer or an experienced partner.</p>
 
-## What You'll Find Here
+## What are Apps?
+Apps on epilot are customizable extensions that enhance and expand the platform's core functionality. They serve as building blocks that allow developers to create tailored solutions for energy and utility companies without modifying the underlying platform.
 
-<div className="row margin-bottom--lg">
-  <div className="col">
-    <div className="card">
-      <div className="card__body">
-        <h3>🧩 App Capabilities</h3>
-        <p>Discover what you can build with epilot apps, from custom journey blocks that streamline workflows to portal extensions that enhance customer experiences. Learn how apps can integrate with existing epilot features and extend platform functionality.</p>
-        <a href="/apps/components/overview">Explore capabilities →</a>
-      </div>
-    </div>
-  </div>
-  <div className="col">
-    <div className="card">
-      <div className="card__body">
-        <h3>⚙️ Technical Architecture</h3>
-        <p>Understand the technical foundation of epilot apps, including components, API integration, data models, and security practices. Learn how apps are structured, how they communicate with epilot's core services, and best practices for robust implementation.</p>
-        <a href="/apps/architecture/behind-the-scenes">Learn the architecture →</a>
-      </div>
-    </div>
-  </div>
-</div>
-<div className="row">
-  <div className="col">
-    <div className="card">
-      <div className="card__body">
-        <h3>📦 Publishing & Versioning</h3>
-        <p>Master the app lifecycle from development to distribution. Learn how to create, test, and publish your app to the epilot marketplace, implement semantic versioning, and iterate on your app while maintaining compatibility for existing users.</p>
-        <a href="/apps/publishing/how-to">Understand the process →</a>
-      </div>
-    </div>
-  </div>
-  <div className="col">
-    <div className="card">
-      <div className="card__body">
-        <h3>🚀 Examples & Templates</h3>
-        <p>Jumpstart your development with ready-to-use examples, templates, and sample applications. Explore reference implementations for common scenarios like data integration, UI extensions, and workflow automation that you can adapt for your specific needs.</p>
-      </div>
-    </div>
-  </div>
-</div>
+At their core, epilot apps are modular integrations that can be developed, published, and installed by customers through the marketplace. Apps can include various components like custom journey blocks that guide users through specific processes, portal extensions that enhance user interfaces, and integrations with third-party services.
+Each app functions as a self-contained package that can be versioned, updated, and configured by users based on their specific needs. 
+
+Apps follow a standardized development and publication workflow, making it possible for both epilot's team and external partners to extend the platform's capabilities in consistent and maintainable ways.
+
+Whether you're looking to create a simple integration or build a comprehensive solution, the epilot app framework provides the tools, APIs, and infrastructure needed to develop professional-grade extensions that solve real business problems in the energy and utility space.
 
 ## App Components on epilot
 
 Apps on epilot consist of modular components that extend platform functionality in specific ways. Each component type addresses different integration needs and can be combined within a single app to create comprehensive solutions.
+
+See the [App Components](/apps/building-apps/components/overview) section for detailed information on each component type.
 
 ### Current Component Types
 

@@ -4,11 +4,9 @@ hide_title: true
 sidebar_position: 3
 ---
 
-<p>&nbsp;</p>
+# Custom Journey Blocks
 
-<h1 align="center">Journey Blocks</h1>
-
-<p align="center">Create custom interactive components for epilot's Journey Builder</p>
+Create custom interactive components for epilot's Journey Builder
 
 ## What Are Journey Blocks?
 
@@ -87,7 +85,7 @@ Example mapping types:
 
 ### Component Arguments
 
-![Component Arguments](../../static/img/apps/journey-component-args.png)
+![Component Arguments](../../../static/img/apps/journey-component-args.png)
 
 
 Journey Blocks can be made configurable through component arguments, which allow:
@@ -116,37 +114,9 @@ This configurability makes your custom blocks more versatile and valuable across
 
 ### Bundling Your Component
 
-Your component should be bundled into a single JavaScript file that can be loaded by the Journey Builder. We recommend:
+Your component should be bundled into a single JavaScript file that can be loaded by the Journey Builder. Right now we only support a single `bundle.js` file.
+This should include all relevant styles and assets, as well as the component itself. 
 
-- **Webpack** or **Rollup** for bundling
-- **Babel** for transpiling modern JavaScript
-- Setting the correct output format (ES modules preferred)
-
-Example webpack configuration:
-
-```javascript
-module.exports = {
-  entry: './src/index.js',
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      }
-    ]
-  }
-};
-```
 
 ### UI Design Guidelines
 

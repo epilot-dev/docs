@@ -6,9 +6,7 @@ sidebar_position: 1
 
 <p>&nbsp;</p>
 
-<h1 align="center">What Are Components?</h1>
-
-<p align="center">Understanding the building blocks of epilot apps</p>
+# What Are Components?
 
 ## The Foundation of epilot Apps
 
@@ -65,7 +63,7 @@ Have an idea for a new component type that would enhance the epilot platform? We
 1. **Evaluate Your Need**: Consider if existing component types could address your use case
 2. **Define the Integration Point**: Identify where in epilot your component would integrate
 3. **Describe the Value**: Outline the problems it would solve for epilot users
-4. **Submit a Request**: Contact us through the [Developer Portal](https://developers.epilot.cloud/contact) with your proposal
+4. **Submit a Request**: Contact us with your proposal
 
 Our product team regularly reviews component requests and prioritizes them based on community interest and strategic alignment.
 

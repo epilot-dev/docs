@@ -4,11 +4,10 @@ hide_title: true
 sidebar_position: 2
 ---
 
-<p>&nbsp;</p>
 
-<h1 align="center">Developer Sandbox</h1>
+# Getting Started with App Development
 
-<p align="center">Your safe space to experiment, build, and perfect your epilot App</p>
+Your safe space to experiment, build, and perfect your epilot App
 
 <div className="container">
   <div className="row">
@@ -111,7 +110,7 @@ Your initial app development takes place in a protected environment:
 2. **Review Process**: When ready, submit your app for a formal review
 3. **Public Launch**: After approval, your app becomes available to the entire epilot community
 
-To learn more about transitioning from development to publication, visit our detailed guide in the [Publishing](/apps/publishing/how-to) section.
+To learn more about transitioning from development to publication, visit our detailed guide in the [Publishing](/apps/publishing/verification-process) section.
 
 <div className="cta-container">
   <h3>Ready to start building?</h3>

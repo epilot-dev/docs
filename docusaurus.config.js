@@ -109,14 +109,14 @@ const DOCS_URL = 'https://docs.epilot.io';
             label: 'SDK',
             position: 'left',
           },
-          // {
-          //   position: 'left',
-          //   type: 'docSidebar',
-          //   to: '/apps',
-          //   sidebarId: 'appsSidebar',
-          //   label: 'Apps',
-          //   docsPluginId: 'apps',
-          // },
+          {
+            position: 'left',
+            type: 'docSidebar',
+            to: '/apps',
+            sidebarId: 'appsSidebar',
+            label: 'Apps',
+            docsPluginId: 'apps',
+          },
         ],
       },
       footer: {

@@ -1,5 +1,5 @@
 ---
-title: How To
+title: Quick Start
 sidebar_position: 1
 description: "Your journey from developer account to published app"
 ---
@@ -9,20 +9,6 @@ description: "Your journey from developer account to published app"
 Building and publishing an app on the epilot platform follows a straightforward process designed to help you move efficiently from initial setup to marketplace presence. This guide outlines the core steps you'll take on your journey to becoming an epilot app developer.
 
 ## The App Development Journey
-
-The path from idea to published app consists of four essential phases:
-
-```mermaid
-flowchart LR
-    A[1. Request Developer Account] --> B[2. Build Private App]
-    B --> C[3. Request Review]
-    C --> D[4. Publish Public Version]
-    
-    style A fill:#e1f5fe,stroke:#01579b
-    style B fill:#e8f5e9,stroke:#1b5e20
-    style C fill:#fff8e1,stroke:#ff6f00
-    style D fill:#f3e5f5,stroke:#6a1b9a
-```
 
 ## 1. Request Developer Account
 
@@ -44,7 +30,11 @@ With your developer account activated, you can begin building:
 - Test your app thoroughly within your sandbox environment
 - Make iterative improvements based on your testing
 
+:::info
+
 During this phase, your app remains private and is only visible within your organization. Take advantage of this isolation to perfect your app's functionality.
+
+:::
 
 ## 3. Request Review
 
@@ -60,14 +50,17 @@ When your app is ready for the spotlight:
 
 The review process helps maintain high standards in the epilot marketplace and ensures all apps provide value to users.
 
-## 4. First Public Version
+## 4. First Public Version: Beta Release
 
 Upon approval of your review request:
 
-- Your app becomes visible in the epilot marketplace
+- Your app becomes visible in the epilot marketplace with a "Beta" label
 - Other organizations can discover and install your solution
 - You'll receive notifications when your app is installed
 - This version becomes immutable to ensure stability for users
+
+During the beta phase, you can gather feedback from users and make necessary adjustments to improve your app's performance and usability. 
+You also get in touch with our team to discuss your app's promotion and marketing.
 
 Once public, you can continue developing new versions with enhanced features while users benefit from your current release.
 
@@ -77,6 +70,6 @@ Ready to start your app development journey? Explore these resources:
 
 - [Developer Sandbox Guide](/apps/getting-started/developer-sandbox) - Learn more about setting up your development environment
 - [Component Types](/apps/components/overview) - Understand the different ways to extend epilot
-- [Publishing Best Practices](/apps/publishing/how-to) - Tips for successful app submissions
+- [Publishing Verification Process](/apps/publishing/verification-process) - Learn about the review process for publishing apps
 
 By following this streamlined process, you'll be able to contribute valuable solutions to the epilot ecosystem and reach organizations throughout the energy industry.

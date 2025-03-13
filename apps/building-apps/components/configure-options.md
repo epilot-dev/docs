@@ -4,11 +4,9 @@ hide_title: true
 sidebar_position: 2
 ---
 
-<p>&nbsp;</p>
+# Component Options
 
-<h1 align="center">Component Options</h1>
-
-<p align="center">Define options that users can configure when installing your component</p>
+Learn how to configure options for your components and access them in your app.
 
 ## What Are Component Options?
 
@@ -16,11 +14,11 @@ Component Options are the settings that users can configure when installing your
 
 When you create a component for the epilot platform, you can define a set of options that users can adjust during the installation process. These options can include things like colors, text labels, data sources, and more, depending on the requirements of your component.
 
-![Component options](../../static//img//apps/component-options.png)
+![Component options](../../../static//img/apps/component-options.png)
 
 this configuration will be translated into the following UI for the installing user:
 
-![Component options usage](../../static//img//apps/component-options-usage.png)
+![Component options usage](../../../static/img//apps/component-options-usage.png)
 
 ## Required Options
 
@@ -28,7 +26,7 @@ If you want to ensure that users provide specific information when installing yo
 
 They can still install the App, but it will be marked as `partially successful` in the App installation. The user is not able to use the App until the required options are filled.
 
-![Partial installation](../../static//img//apps/component-option-partially-installed.png)
+![Partial installation](../../../static//img//apps/component-option-partially-installed.png)
 
 
 ## How can you access the options in your component?
