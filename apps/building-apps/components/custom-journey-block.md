@@ -136,6 +136,15 @@ Before submitting your block:
 3. Ensure accessibility standards are met
 4. Check for memory leaks during repeated use
 
+
+## Journey Block Usage
+
+Once your App with a custom Journey Block is installed, you can use it in the Journey Builder and configure it according to your needs:
+
+![Block Usage](../../../static/img/apps/component-journey-installed.png)
+
+
+
 ## Useful Resources
 
 ### Journey UI Library Concorde (React)
