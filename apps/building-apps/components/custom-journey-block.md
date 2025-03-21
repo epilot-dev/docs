@@ -82,6 +82,7 @@ Example mapping types:
 - `boolean`: For checkboxes and toggle switches
 - `date`: For date picker components
 - `datetime`: For date and time selection components
+- `link`: For link components
 
 ### Component Arguments
 
