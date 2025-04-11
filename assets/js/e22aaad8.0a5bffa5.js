@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkepilot_dev_handbook=self.webpackChunkepilot_dev_handbook||[]).push([[4348],{84383:o=>{o.exports=JSON.parse('{"specUrl":"https://docs.api.epilot.io/automation.yaml","type":"url","content":"https://docs.api.epilot.io/automation.yaml"}')}}]);
