@@ -142,12 +142,6 @@ Use the live preview feature to ensure that your CSS does not conflict with the 
 **Q: Can I get help if my CSS isn’t working as expected?**  
 **A:** Yes! Our support documentation is available to help you troubleshoot and optimize your custom CSS.
 
-## Conclusion
-
-Custom CSS in Project Concorde provides a powerful way to create unique, branded experiences. With the ability to apply global, journey, step, and block-level styles, you have the flexibility to fully control your design without compromising the integrity of the base system.
-
-For further questions or feedback, please reach out to our support team or visit our community forum.
-
 ## Examples
 
 ### Increase Text Sizes
@@ -220,29 +214,51 @@ This snippet below will only change the colors of Primary Buttons on the journey
 
 ### Change DatePicker Background
 
+<img src="/img/custom-css/colored-datepicker.png" alt="Colored Datepicker" style={{ maxWidth: '300px', width: '100%', marginBottom: '20px' }} />
+
 This snippet below will only change the background of the Datepicker on the journey using CSS variables
 
 ```css
 :root {
   --concorde-datepicker-calendar-bg-color: gray;
 }
+
 /* OR */
+
 .Concorde-DatePicker {
   .Concorde-DatePicker__Calendar {
     background-color: gray;
+  }
+}
+
+/* OR */
+
+/* Colored DatePicker */
+.Concorde-DatePicker {
+  --concorde-primary-color: white;
+  .Concorde-DatePicker__Calendar {
+    background-color: tomato;
+  }
+  .Concorde-DatePicker__Header-Button,
+  .Concorde-DatePicker__Header-Icon-Button {
+    color: white;
   }
 }
 ```
 
 ### Change ZipCode Background in Availability Block
 
+<img src="/img/custom-css/availability-block-colored.png" alt="Colored Availability Check Menu" style={{ maxWidth: '600px', width: '100%', marginBottom: '20px' }} />
+
 This snippet below will only change the background colors of the zip code dropdown in the Availability block on journeys
 
 ```css
 .Concorde-AvailabilityCheck-Block {
-  --concorde-menu-bg-color: gray;
-  --concorde-menu-item-hover-bg-color: white;
-  --concorde-menu-item-selected-bg-color: red;
+  --concorde-menu-bg-color: rgb(230, 230, 230);
+  --concorde-menu-item-hover-color: black;
+  --concorde-menu-item-hover-bg-color: rgba(0, 0, 0, 0.3);
+  --concorde-menu-item-selected-color: white;
+  --concorde-menu-item-selected-bg-color: black;
 }
 ```
 
@@ -277,3 +293,207 @@ The snippet will set the color of the text in all product tile features to the -
   }
 }
 ```
+
+### Change the background of all Inputs
+
+<img src="/img/custom-css/white-input-background.png" alt="White Input background" style={{ maxWidth: '600px', width: '100%', marginBottom: '20px' }} />
+
+The snippet below will change the background of all inputs on the journey to white
+
+```css
+:root {
+  --concorde-input-background-color: white;
+}
+```
+
+### Change the background of Block Cards
+
+<img src="/img/custom-css/colored-block-card.png" alt="Colored Block Card" style={{ maxWidth: '600px', width: '100%', marginBottom: '20px' }} />
+
+The snippet will set the background color of journey blocks when placed on a card
+
+```css
+:root {
+  --concorde-card-background-color: lightblue;
+}
+
+/* OR */
+
+/* Remove the shadow of the card */
+:root {
+  --concorde-card-custom-shadow: none;
+}
+```
+
+### Modify the Switch appearance (colors and border)
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px'}}>
+<img src="/img/custom-css/modified-binary-input-switch.png" alt="Custom Switch" style={{ maxWidth: '300px', width: '100%' }} />
+<img src="/img/custom-css/active-modified-binary-input-switch.png" alt="Custom Active Switch" style={{ maxWidth: '300px', width: '100%' }} />
+</div>
+
+The snippet below customizes the unchecked and checked state of a Concorde Switch used in the Binary Input block
+
+```css
+.Concorde-Switch {
+  --concorde-switch-unchecked-color: gray;
+  --concorde-switch-unchecked-background-color: rgba(56, 56, 56, 0.1);
+  --concorde-switch-checked-color: red;
+  --concorde-primary-color: red;
+
+  .Concorde-Switch__Root {
+    border: none;
+  }
+}
+```
+
+### Custom Input style
+
+<img src="/img/custom-css/custom-input.png" alt="Custom Input" style={{ maxWidth: '600px', width: '100%', marginBottom: '20px' }} />
+
+The snippet below changes the default state of the inputs on a journey to only have a bottom border and colored background
+
+```css
+.Concorde-Input {
+  --concorde-input-border-radius: 0;
+
+  fieldset {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background-color: rgba(40, 40, 40, 0.05);
+  }
+}
+```
+
+### Custom Single Choice Button style
+
+<img src="/img/custom-css/custom-single-choice-buttons.png" alt="Custom Single Choice Button" style={{ maxWidth: '600px', width: '100%', marginBottom: '20px' }} />
+
+The snippet below ensures that the Single Choice buttons do not have background colors when hovered, and have no visible borders
+
+```css
+.Concorde-SingleChoice-Block {
+  .Concorde-Button {
+    --concorde-button-background-color: white;
+    --concorde-button-label-color: black;
+    --concorde-button-hover-bg-color: white;
+    --concorde-button-active-bg-color: white;
+
+    outline: none;
+    border-color: transparent;
+
+    &.Concorde-SingleChoice-Button__Selected {
+      color: white;
+      background: black;
+    }
+  }
+}
+```
+
+### Custom Toggle Group style
+
+<img src="/img/custom-css/custom-toggle-group.png" alt="Custom Toggle Group" style={{ maxWidth: '600px', width: '100%', marginBottom: '20px' }} />
+
+The snippet below modifies the button group component used in the Personal Information / Contact / Account Blocks
+
+```css
+.Concorde-ToggleGroup {
+  --concorde-button-label-color: black;
+  --concorde-button-background-color: white;
+  --concorde-button-hover-bg-color: white;
+  --concorde-button-active-bg-color: white;
+
+  .Concorde-ToggleGroupItem {
+    border-width: 2px;
+    --concorde-border-radius: 0;
+
+    &[aria-checked='true'] {
+      --concorde-button-label-color: white;
+      --concorde-button-background-color: black;
+      --concorde-button-hover-bg-color: black;
+    }
+  }
+}
+```
+
+### Modify Headings style
+
+<img src="/img/custom-css/colored-headings.png" alt="Custom headings" style={{ maxWidth: '600px', width: '100%', marginBottom: '20px' }} />
+
+The snippet below modifies the colors of the headings used on the journey
+
+```css
+/* Gradient titles */
+.Concorde-Typography__Heading {
+  background: linear-gradient(to left, blue 50%, red);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* OR */
+
+/* Change header colors */
+:root {
+  --concorde-accent-color: red;
+}
+```
+
+### Fun journey background
+
+<img src="/img/custom-css/fun-journey-background.png" alt="Fun background" style={{ maxWidth: '400px', width: '100%', marginBottom: '20px' }} />
+
+The snippet below is an interesting example of what's possible with custom CSS. It creates a slanted background that fades into the journey content
+
+```css
+body {
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+
+    background-color: oklch(from var(--concorde-primary-color) 0.7 0.15 h);
+
+    clip-path: polygon(0 0, 100% 0, 160% calc(50% - 110px), 0px 430px);
+  }
+}
+```
+
+### Change Summary block background
+
+<img src="/img/custom-css/custom-summary-block-background.png" alt="Custom summary background" style={{ maxWidth: '400px', width: '100%', marginBottom: '20px' }} />
+
+The snippet below will change the background color of the Summary block on the journey
+
+```css
+:root {
+  --concorde-summary-block-bg-color: rgba(240, 40, 40, 0.2);
+}
+```
+
+### Modify the maximum width of the journey content
+
+<img src="/img/custom-css/custom-journey-width.png" alt="Custom journey width" style={{ maxWidth: '400px', width: '100%', marginBottom: '20px' }} />
+
+The snippet below will change the maximum width of the journey content to 600px
+
+```css
+:root {
+  --concorde-custom-layout-max-width: 600px;
+}
+```
+
+## Conclusion
+
+Custom CSS in Project Concorde provides a powerful way to create unique, branded experiences. With the ability to apply global, journey, step, and block-level styles, you have the flexibility to fully control your design without compromising the integrity of the base system.
+
+For further questions or feedback, please reach out to our support team or visit our community forum.
+
+Further reading:
+
+- [Concorde Design tokens](/docs/ui-design/concorde-design-tokens)
+- [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure)
