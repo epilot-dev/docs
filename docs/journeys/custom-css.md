@@ -489,11 +489,11 @@ The snippet below will change the maximum width of the journey content to 600px
 
 ### Use multiple fonts on a journey
 
-To do this, you can either use a standard font (provided on the Design builder) or a custom font (that has been uploaded).
+To do this, you can either use a standard font (provided on the Design builder) or a custom font (that has been uploaded). To use a custom font, you can either upload it on the design builder or use a hosted font.
 
 The former is visible only in the list of options in the Font selector, while the latter is visible in the Font selector and on the list of Fonts below the Fonts selector in the Design Builder.
 
-The snippet below will use a standard and custom font on the Journey. Things to note:
+The snippet below will use a standard and custom font (uploaded) on the Journey. Things to note:
 
 - There is a difference between the two font urls below.
 - The organization ID is used in the custom font URL. Replace `{ORGANIZATION_ID}` with your organization ID. Please contact support if you don't know your organization ID.
