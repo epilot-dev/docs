@@ -487,6 +487,44 @@ The snippet below will change the maximum width of the journey content to 600px
 }
 ```
 
+### Use multiple fonts on a journey
+
+To do this, you can either use a standard font (provided on the Design builder) or a custom font (that has been uploaded). To use a custom font, you can either upload it on the design builder or use a hosted font.
+
+The former is visible only in the list of options in the Font selector, while the latter is visible in the Font selector and on the list of Fonts below the Fonts selector in the Design Builder.
+
+The snippet below will use a standard and custom font (uploaded) on the Journey. Things to note:
+
+- There is a difference between the two font urls below.
+- The organization ID is used in the custom font URL. Replace `{ORGANIZATION_ID}` with your organization ID. Please contact support if you don't know your organization ID.
+
+```css
+/* Standard font */
+@font-face {
+  font-family: 'NotoSans-Regular';
+  src: url('https://go.epilot.cloud/element-static/fonts/NotoSans-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Custom font */
+@font-face {
+  font-family: 'TitilliumWeb-Bold';
+  src: url('https://go.epilot.cloud/designs/{ORGANIZATION_ID}/font/TitilliumWeb-Bold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Examples of usages */
+.Concorde-BlockHeading__Title {
+  font-family: 'NotoSans-Regular', sans-serif;
+}
+
+.Concorde-BlockHeading__Title {
+  font-family: 'TitilliumWeb-Bold', sans-serif;
+}
+```
+
 ## Conclusion
 
 Custom CSS in Project Concorde provides a powerful way to create unique, branded experiences. With the ability to apply global, journey, step, and block-level styles, you have the flexibility to fully control your design without compromising the integrity of the base system.
