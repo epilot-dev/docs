@@ -87,6 +87,8 @@ sidebar_position: 3
 | CSS Variable                         | Default                         | Description                                                                   |
 | ------------------------------------ | ------------------------------- | ----------------------------------------------------------------------------- |
 | `--concorde-custom-layout-max-width` | `1256px`                        | The maximum width of the journey.                                             |
+| `--concorde-two-columns-content-width` | `calc(7 / 12 * 100%)`         | For Two column layouts, the percentage of the width assigned to the Content section |
+| `--concorde-two-columns-sidebar-width` | `calc(5 / 12 * 100%)`         | For Two column layouts, the percentage of the width assigned to the Sidebar section |
 | `--concorde-topbar-background`       | `var(--concorde-primary-color)` | The background color of the navigation bar.                                   |
 | `--concorde-topbar-logo-alignment`   | `center`                        | Changes the alignment of the header logo. Can be `flex-start` and `flex-end`. |
 
