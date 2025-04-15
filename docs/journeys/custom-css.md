@@ -2,23 +2,23 @@
 sidebar_position: 9
 ---
 
-# Custom CSS (BETA)
+# Custom CSS
 
-This guide will help you understand and use Custom CSS to further personalize your journeys and branding beyond the default Design Builder settings.
+Custom CSS empowers you to personalize your journeys and branding beyond the standard Design Builder settings. Easily change the look and feel to match your brand and create engaging experiences for your end users. This guide will help you understand how to get started with the feature.
 
 ![Custom CSS](../../static/img/design-builder-custom-css.png)
 
-## Introduction
+## Why use Custom CSS?
 
 Custom CSS gives you the power to:
 
-- **Enhance your brand’s look:** Customize buttons, links, cards, and more with your own CSS rules.
+- **Enhance your journey's look to match your brand:** Customize buttons, inputs, links, cards, and more with your own CSS rules.
 - **Apply detailed styling:** Make adjustments at a global theme level, journey level, step level, or even block level.
 - **Stand out:** Create unique, visually appealing designs that resonate with your end customers.
 
-**Note:** This feature is part of our new Concorde design migration. Custom CSS applies only to journeys, and not the End Customer Portal. We’re continuously improving support for this feature, so please refer to the latest documentation for updates – release notes will include updates.
+**Note:** This feature is part of our new Concorde design migration. Custom CSS applies only to journeys (not the End Customer Portal). We’re continuously improving support for this feature, so refer to the latest release notes for newer updates.
 
-**Pricing:** This feature is only available from the Professional pricing plan.
+**Pricing:** This feature is available exclusively from the Professional pricing plan.
 
 ## Styling Structure
 
@@ -26,26 +26,26 @@ Custom CSS gives you the power to:
 
 The new journey design (Concorde Journey) consists of the following building blocks:
 
-- **Layout:** Controls how the journey looks. E.g., Stack, Two Columns, Grid (beta).
-- **Steps:** E.g., New Step, New Step 1, etc.
-- **Blocks:** E.g., Text Input, Number Input, Products, etc.
-- **Components:** E.g., Autocomplete, Input, Switch, Radio, Checkbox, etc.
+- **Layout:** Determines the journey structure. E.g., Stack, Two Columns, Grid (beta).
+- **Steps:** Individual steps E.g., New Step, New Step 1, etc.
+- **Blocks:** Journey blocks E.g., Text Input, Number Input, Products, etc.
+- **Components:** Reusable components from our concorde component library - [concorde-elements](https://github.com/epilot-dev/concorde-elements) E.g., Autocomplete, Input, Switch, Radio, Checkbox, etc.
 
-Specific HTML Classes and IDs have been added and prefixed with `Concorde` for consistency to aid with targeting HTML elements properly through custom CSS.
-
-The HTML structure of the journey based on these building blocks will be maintained using this guide: [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure).
+> **Technical Details:** The HTML classes and IDs used are prefixed with `Concorde` to ensure consistency. Refer to the [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure) for a comprehensive list.
 
 ### Concorde Design Tokens
 
-Since custom CSS is scoped to the new design, we have created a list of design tokens (CSS variables) that can be modified to create the desired effect.
+Customize your journey further using design tokens (CSS variables) that apply across all components:
 
-The design tokens that are supported for the journey building blocks (mentioned above) can be found in this guide: [Concorde Design tokens](/docs/ui-design/concorde-design-tokens). This guide will be kept up to date to account for changes that could improve the usage of custom CSS.
+> **Technical Details:** Supported design tokens can be modified to control various layouts, steps, blocks or components. See the [Concorde Design tokens](/docs/ui-design/concorde-design-tokens) guide for more information. This guide will be kept up to date to account for changes that could improve the usage of custom CSS.
 
 ## How Custom CSS Works
 
 ### CSS Structure Overview
 
-When you add custom CSS, the system generates a single stylesheet that’s applied to your journey. This stylesheet is built from the CSS rules you write in the custom CSS editor in the Design Builder.
+When you add custom CSS using the Design Builder, a single stylesheet is generated and applied to your journey.
+
+> **Technical Note:** Custom CSS is inserted as a `<style>` tag in your journey’s `<head>` with a unique ID, usually your journey ID (e.g., `custom-css-journey123`).
 
 **Example of the CSS structure:**
 
@@ -76,71 +76,32 @@ As seen above, there are some things to note:
 
 - The use of **Concorde design tokens** is mentioned above. To view the full list: [Concorde Design tokens](/docs/ui-design/concorde-design-tokens).
 - The use of maintained **HTML classes and IDs** is also mentioned above. To view the full list: [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure).
-- The final CSS is inserted into your journey’s `<head>` as a `<style>` tag with a unique ID (e.g., `custom-css-journey123`).
 
 ## Unsupported Rules
 
 To avoid modifying the core layout and overall security of the journey, support for certain CSS properties has been removed:
 
 - **Certain position rules:** `position: relative;` and `position: absolute;`
-- **Hiding blocks completely:** `display: none;`
+- **Hiding elements completely:** `display: none;`
 - **Background images:** `background: url(*);` and `background-image: url(*)`
 
-## Custom CSS Configuration
+## How to Configure Custom CSS
 
-In the Design Builder:
-
-1. **Access the Advanced Configurator Panel.**
-2. **Write or paste your CSS rules.** For example:
+1. **Open the Design Builder** Use the default journey or select your journey from the journey preview dropdown.
+2. **Turn on the new design.** By default, this toggle is turned on. However, if you switch to a journey using the old design, you will need to turn it on to see the new design.
+3. **Access the Advanced Configurator Panel.**
+4. **Write or paste your CSS rules.** For example:
 
    ```css
    .Concorde-Button {
-     background-color: var(--concorde-primary-color);
+     background-color: red;
      color: #fff;
      border-radius: 4px;
    }
    ```
 
-3. **Preview and Save:** As you type, a live preview shows how the styles affect your journeys. Once satisfied, save your changes.
-4. **Test your live journey:** After saving your changes, you can check if your journey looks as expected by opening it in a new tab.
-
-## Guidelines and Best Practices
-
-### Use Supported Classes
-
-We provide a public list of supported class names for components, blocks, steps and layouts (e.g., `Concorde-Button`, `Concorde-Link`, `Concorde-Topbar`). Please use these classes to ensure long-term compatibility.  
-_Custom CSS: Maintained HTML Classes & HTML ID format_
-
-### Design Tokens (CSS Variables)
-
-Leverage our design tokens (CSS variables) to keep your custom styles consistent with your global theme. (e.g., `var(--concorde-primary-color)`)
-[Concorde Design tokens](/docs/ui-design/concorde-design-tokens)
-
-### Avoid Overriding Core Layouts
-
-For stability, avoid using properties that could break the layout (e.g., `display`, `position`, or `z-index`). We may restrict these in the future for security and consistency.
-
-### Keep It Concise
-
-This helps maintain performance and manageability.
-
-### Test Your CSS
-
-Use the live preview feature to ensure that your CSS does not conflict with the core design. Errors will be highlighted so you can correct them before saving.
-
-## FAQs
-
-**Q: Will my custom CSS changes be maintained with future updates?**  
-**A:** If you’re using the new Concorde design, your custom CSS will remain effective as long as you adhere to the supported class and variable guidelines. We are committed to maintaining backward compatibility, but changes to the core design may require adjustments. We will communicate any necessary changes in advance.
-
-**Q: What if I want to apply changes only to a specific journey?**  
-**A:** You can add style rules that apply to all Journeys. If not, feel free to use the specific block or step IDs to target sections that are scoped only to that journey. This ensures your styles won’t affect other journeys. We strongly recommend you use id selectors as little as possible to avoud conflicts across multiple journeys.
-
-**Q: What happens if I delete a step or block?**  
-**A:** When a step or block is deleted, the associated CSS rules should be removed from the final stylesheet, ensuring a clean and updated style application.
-
-**Q: Can I get help if my CSS isn’t working as expected?**  
-**A:** Yes! Our support documentation is available to help you troubleshoot and optimize your custom CSS.
+5. **Preview and Save:** Use the live preview to see changes as you type, then save your work.
+6. **Test your live journey:** Open your journey in a new tab to confirm that the design looks as expected.
 
 ## Examples
 
@@ -525,11 +486,51 @@ The snippet below will use a standard and custom font (uploaded) on the Journey.
 }
 ```
 
+## Guidelines and Best Practices
+
+- Use Supported Classes: We provide a public list of supported class names for components, blocks, steps and layouts (e.g., `Concorde-Button`, `Concorde-Link`, `Concorde-Topbar`). Please use these classes to ensure long-term compatibility - [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure). However, feel free to write any rules you need.
+- Design Tokens (CSS Variables): Leverage our design tokens (CSS variables) to keep your custom styles consistent with your global theme. (e.g., `var(--concorde-primary-color)`). The comprehensive list of design tokens can be found in the [Concorde Design tokens](/docs/ui-design/concorde-design-tokens) and contain all tokens with adequate descriptions.
+- Avoid Overriding Core Layouts: For stability, avoid using properties that could break the layout (e.g., `display`, `position`, or `z-index`) or `!important`.
+- Keep It Concise: This helps maintain performance and manageability.
+- Test Your CSS: Always preview your changes to avoid conflicts. Errors will be highlighted so you can correct them before saving.
+
+## FAQs
+
+**Q: How does this differ from the current Custom theme editor?**  
+**A:** The Custom theme editor is connected to the Material UI theme which we used to style the old journeys, while Custom CSS is purely CSS. Custom CSS overrides every theme setting and is only available for journeys using the new design.
+
+**Q: What happens if my journey is using the old design with a custom theme?**  
+**A:** Custom CSS isn’t applied to journeys using the old design. That’s because the old Custom Theme Editor isn’t compatible with the new design system (Concorde).
+
+To ensure some level of backward compatibility, a few custom theme properties are still supported in the new design. However, not all customizations can be carried over. This is where Custom CSS comes in—to help bridge those gaps during migration.
+
+We’ve started supporting this migration process and recommend moving your journeys to the new design. Use Custom CSS to style them going forward.
+**Please note: support for the Custom Theme Editor will be phased out in the future.**
+
+**Q: Will my custom CSS changes be maintained with future updates?**  
+**A:** Custom CSS rules will remain effective as long as you adhere to the supported class and variable guidelines. We are committed to maintaining backward compatibility, but changes to the core design may require adjustments. We will communicate any necessary changes in advance.
+
+**Q: (Advanced) What if I want to apply changes only to a specific journey?**  
+**A:** It is currently possible to apply styles that apply to a specific step or block in a journey by using the HTML id selectors to target sections on a journey. Review the [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure) to understand how to find these IDs. This ensures your styles won’t affect other journeys. We strongly recommend you use HTML id selectors as little as possible to avoid conflicts across multiple journeys.
+
+```css
+#Concorde-Step---123456789 {
+  background-color: #f0f0f0;
+}
+
+#Concorde-Block---987654321 {
+  border: 2px solid var(--concorde-secondary-color);
+}
+```
+
+**Q: Can I get help if my CSS isn’t working as expected?**  
+**A:** Yes! Our support team is available to help you.
+
 ## Conclusion
 
-Custom CSS in Project Concorde provides a powerful way to create unique, branded experiences. With the ability to apply global, journey, step, and block-level styles, you have the flexibility to fully control your design without compromising the integrity of the base system.
+With the ability to apply global, journey, step, and block-level styles, you have the flexibility to fully control your design without compromising the integrity of the base system.
 
-For further questions or feedback, please reach out to our support team or visit our community forum.
+For further questions or feedback, please reach out to our support team.
 
 Further reading:
 
