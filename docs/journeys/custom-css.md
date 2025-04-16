@@ -448,6 +448,17 @@ The snippet below will change the maximum width of the journey content to 600px
 }
 ```
 
+### Modify the ratio between the content and sidebar of Two Column Layout
+
+The snippet below will change the ratio between the content and sidebar of Two Column Layout to 1:1.
+
+```css
+:root {
+  --concorde-two-columns-content-width: 50%;
+  --concorde-two-columns-sidebar-width: 50%;
+}
+```
+
 ### Use multiple fonts on a journey
 
 To do this, you can either use a standard font (provided on the Design builder) or a custom font (that has been uploaded). To use a custom font, you can either upload it on the design builder or use a hosted font.
