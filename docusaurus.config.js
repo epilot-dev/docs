@@ -7,6 +7,30 @@ const graphqlMarkdownConfig = require('./graphql-markdown.config');
 const { specs } = require('./redoc.config');
 const DOCS_URL = 'https://docs.epilot.io';
 
+const apiChangelogPlugins = specs
+  .filter((spec) => spec.specUrl) // Filter only items with a specUrl
+  .map((spec) => [
+    require.resolve('./src/plugins/changelog/index.js'), // First item: plugin path
+    {
+      id: `changelog-${spec.routePath.replace('/api/', '')}`, // Unique ID for each API changelog
+      blogTitle: `${spec.layout.title} Changelog`,
+      blogDescription: `Changelog for ${spec.layout.title}`,
+      blogSidebarCount: 'ALL',
+      blogSidebarTitle: 'Changelog',
+      routeBasePath: `${spec.routePath}/changelog`, // Changelog route under the API route
+      showReadingTime: false,
+      postsPerPage: 20,
+      archiveBasePath: null,
+      authorsMapPath: 'authors.json',
+      feedOptions: {
+        type: 'all',
+        title: `${spec.layout.title} Changelog`,
+        description: `Changelog for ${spec.layout.title}`,
+        language: 'en',
+      },
+    },
+  ]);
+
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
@@ -73,30 +97,30 @@ const DOCS_URL = 'https://docs.epilot.io';
         sidebarPath: require.resolve('./sidebars.js'),
       },
     ],
-    [
-      require.resolve('./src/plugins/changelog/index.js'),
-      {
-        id: "changelog-blog",
-        blogTitle: 'Changelog',
-        blogDescription:
-          'Keep yourself up-to-date about new features in every release',
-        blogSidebarCount: 'ALL',
-        blogSidebarTitle: 'Changelog',
-        routeBasePath: '/changelog',
-        showReadingTime: false,
-        postsPerPage: 20,
-        archiveBasePath: null,
-        authorsMapPath: 'authors.json',
-        feedOptions: {
-          type: 'all',
-          title: 'Changelog',
-          description:
-            'Keep yourself up-to-date about new features in every release',
-          // copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc.`,
-          language: 'en',
-        },
-      },
-    ],
+    // [
+    //   require.resolve('./src/plugins/changelog/index.js'),
+    //   {
+    //     id: "changelog-blog",
+    //     blogTitle: 'Changelog',
+    //     blogDescription:
+    //       'Keep yourself up-to-date about new features in every release',
+    //     blogSidebarCount: 'ALL',
+    //     blogSidebarTitle: 'Changelog',
+    //     routeBasePath: '/changelog',
+    //     showReadingTime: false,
+    //     postsPerPage: 20,
+    //     archiveBasePath: null,
+    //     authorsMapPath: 'authors.json',
+    //     feedOptions: {
+    //       type: 'all',
+    //       title: 'Changelog',
+    //       description:
+    //         'Keep yourself up-to-date about new features in every release',
+    //       language: 'en',
+    //     },
+    //   },
+    // ],
+    ...apiChangelogPlugins, // Spread the dynamically generated changelog plugins
   ],
 
   themeConfig:
@@ -169,6 +193,10 @@ const DOCS_URL = 'https://docs.epilot.io';
               {
                 label: 'SDK',
                 to: '/docs/architecture/sdk',
+              },
+              {
+                to: '/changelog',
+                label: 'Changelogs',
               },
             ],
           },

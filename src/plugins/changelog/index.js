@@ -85,11 +85,10 @@ ${content.replace(/####/g, '##')}`,
  * @returns {import('@docusaurus/types').Plugin}
  */
 async function ChangelogPlugin(context, options) {
-  const generateDir = path.join(context.siteDir, 'changelog/source');
+  const generateDir = path.join(context.siteDir, 'changelog', options.id, 'source');
   const blogPlugin = await pluginContentBlog.default(context, {
     ...options,
     path: generateDir,
-    id: 'changelog',
     blogListComponent: '@theme/ChangelogList',
     blogPostComponent: '@theme/ChangelogPage',
   });
@@ -123,8 +122,12 @@ async function ChangelogPlugin(context, options) {
     },
     configureWebpack(...args) {
       const config = blogPlugin.configureWebpack(...args);
-      const pluginDataDirRoot = path.join(context.generatedFilesDir, 'changelog-plugin', 'default');
-      // Redirect the metadata path to our folder
+      const pluginDataDirRoot = path.join(
+        context.generatedFilesDir,
+        'changelog-plugin',
+        options.id, // Use the dynamically provided id
+      );
+      // Redirect the metadata path to the correct folder
       config.module.rules[0].use[1].options.metadataPath = (mdxPath) => {
         // Note that metadataPath must be the same/in-sync as
         // the path from createData for each MDX.
