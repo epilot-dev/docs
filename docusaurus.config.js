@@ -97,29 +97,6 @@ const apiChangelogPlugins = specs
         sidebarPath: require.resolve('./sidebars.js'),
       },
     ],
-    // [
-    //   require.resolve('./src/plugins/changelog/index.js'),
-    //   {
-    //     id: "changelog-blog",
-    //     blogTitle: 'Changelog',
-    //     blogDescription:
-    //       'Keep yourself up-to-date about new features in every release',
-    //     blogSidebarCount: 'ALL',
-    //     blogSidebarTitle: 'Changelog',
-    //     routeBasePath: '/changelog',
-    //     showReadingTime: false,
-    //     postsPerPage: 20,
-    //     archiveBasePath: null,
-    //     authorsMapPath: 'authors.json',
-    //     feedOptions: {
-    //       type: 'all',
-    //       title: 'Changelog',
-    //       description:
-    //         'Keep yourself up-to-date about new features in every release',
-    //       language: 'en',
-    //     },
-    //   },
-    // ],
     ...apiChangelogPlugins, // Spread the dynamically generated changelog plugins
   ],
 
@@ -164,11 +141,6 @@ const apiChangelogPlugins = specs
             sidebarId: 'appsSidebar',
             label: 'Apps',
             docsPluginId: 'apps',
-          },
-          {
-            to: '/changelog',
-            label: 'Changelogs',
-            position: 'left',
           },
         ],
       },

@@ -7,11 +7,15 @@
 
 import { ThemeClassNames } from '@docusaurus/theme-common';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import ApiSidebar from '@site/src/components/ApiSidebar';
 import BlogLayout from '@theme/BlogLayout';
 import type { Props } from '@theme/BlogListPage';
 import BlogListPaginator from '@theme/BlogListPaginator';
 import BlogPostItem from '@theme/BlogPostItem';
+import Layout from '@theme/Layout';
 import React from 'react';
+
+import styles from './styles.module.css';
 
 function ChangelogList(props: Props): JSX.Element {
   const { metadata, items, sidebar } = props;
@@ -23,34 +27,49 @@ function ChangelogList(props: Props): JSX.Element {
   const title = isBlogOnlyMode ? siteTitle : blogTitle;
 
   return (
-    <BlogLayout
+    <Layout
       title={title}
       description={blogDescription}
       wrapperClassName={ThemeClassNames.wrapper.blogPages}
       pageClassName={ThemeClassNames.page.blogListPage}
-      searchMetadata={{
-        // assign unique search tag to exclude this page from search results!
-        tag: 'blog_posts_list',
-      }}
-      sidebar={sidebar}
     >
-      {items.map(({ content: BlogPostContent }) => (
-        <BlogPostItem
-          key={BlogPostContent.metadata.permalink}
-          frontMatter={BlogPostContent.frontMatter}
-          assets={BlogPostContent.assets}
-          metadata={BlogPostContent.metadata}
-          truncated={BlogPostContent.metadata.truncated}
+      <ApiSidebar />
+      <main className={styles.changelogBlogContainer}>
+        <BlogLayout
+          title={title}
+          description={blogDescription}
+          wrapperClassName={ThemeClassNames.wrapper.blogPages}
+          pageClassName={ThemeClassNames.page.blogListPage}
+          searchMetadata={{ tag: 'blog_posts_list' }}
+          sidebar={sidebar}
+          hideNavBar
+          noFooter
         >
-          <header>
-            <h2>{BlogPostContent.metadata.title}</h2>
-            <p>{BlogPostContent.metadata.date}</p>
-          </header>
-          <BlogPostContent />
-        </BlogPostItem>
-      ))}
-      <BlogListPaginator metadata={metadata} />
-    </BlogLayout>
+          <h1>{title}</h1>
+          {items.map(({ content: BlogPostContent }) => {
+            const meta = BlogPostContent.metadata;
+            if (!meta) return null;
+
+            return (
+              <BlogPostItem
+                key={meta.permalink}
+                frontMatter={BlogPostContent.frontMatter}
+                assets={BlogPostContent.assets}
+                metadata={meta}
+                truncated={meta.truncated}
+              >
+                <header>
+                  <h2>{meta.title}</h2>
+                  <p>{meta.date}</p>
+                </header>
+                <BlogPostContent />
+              </BlogPostItem>
+            );
+          })}
+          <BlogListPaginator metadata={metadata} />
+        </BlogLayout>
+      </main>
+    </Layout>
   );
 }
 
