@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const path = require('path');
+import path from 'path';
 
-const pluginContentBlog = require('@docusaurus/plugin-content-blog');
-const { aliasedSitePath, docuHash, normalizeUrl } = require('@docusaurus/utils');
-const fs = require('fs-extra');
+import pluginContentBlog from '@docusaurus/plugin-content-blog';
+import { aliasedSitePath, docuHash, normalizeUrl } from '@docusaurus/utils';
+import fs from 'fs-extra';
 
 /**
  * Multiple versions may be published on the same day, causing the order to be

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Link from '@docusaurus/Link';
 import { ThemeClassNames } from '@docusaurus/theme-common';
 import ApiSidebar from '@site/src/components/ApiSidebar';
 import BlogLayout from '@theme/BlogLayout';
@@ -70,6 +71,12 @@ function ChangelogPage(props: Props): JSX.Element {
             )}
             {tags.length > 0 && <meta property="article:tag" content={tags.map((tag) => tag.label).join(',')} />}
           </Seo>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <Link to={metadata.listPageLink || metadata.permalink || '/'}>
+              ← Back to {metadata.blogTitle || 'Changelog Index'}
+            </Link>
+          </div>
 
           <ChangelogItem frontMatter={frontMatter} assets={assets} metadata={metadata} isBlogPostPage>
             <ChangelogContent />
