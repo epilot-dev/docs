@@ -14,13 +14,3 @@ declare module '@theme/ChangelogItem/Header/Authors';
 
 declare module '@theme/ChangelogList';
 declare module '@theme/ChangelogList/Header';
-
-declare module '@theme/Icon/Expand' {
-  import type {ComponentProps} from 'react';
-
-  export interface Props extends ComponentProps<'svg'> {
-    expanded?: boolean;
-  }
-
-  export default function IconExpand(props: Props): JSX.Element;
-}
