@@ -16,10 +16,6 @@ const fs = require('fs-extra');
  * the reverse. Therefore, our publish time has a "fake hour" to order them.
  */
 const publishTimes = new Set();
-/**
- * @type {Record<string, {name: string, url: string,alias: string, imageURL: string}>}
- */
-const authorsMap = {};
 
 /**
  * @param {string} section
@@ -37,22 +33,6 @@ function processSection(section) {
     .trim()
     .replace('running_woman', 'running');
 
-  let authors = content.match(/## Committers: \d.*/s);
-  if (authors) {
-    authors = authors[0]
-      .match(/- .*/g)
-      .map((line) => line.match(/- (?:(?<name>.*?) \()?\[@(?<alias>.*)\]\((?<url>.*?)\)\)?/).groups)
-      .map((author) => ({
-        ...author,
-        name: author.name ?? author.alias,
-        imageURL: `https://github.com/${author.alias}.png`,
-      }))
-      .sort((a, b) => a.url.localeCompare(b.url));
-
-    authors.forEach((author) => {
-      authorsMap[author.alias] = author;
-    });
-  }
   let hour = 20;
   const date = title.match(/ \((?<date>.*)\)/)?.groups.date;
   while (publishTimes.has(`${date}T${hour}:00`)) {
@@ -63,13 +43,7 @@ function processSection(section) {
   return {
     title: title.replace(/ \(.*\)/, ''),
     content: `---
-date: ${`${date}T${hour}:00`}${
-      authors
-        ? `
-authors:
-${authors.map((author) => `  - '${author.alias}'`).join('\n')}`
-        : ''
-    }
+date: ${`${date}T${hour}:00`}
 ---
 
 # ${title.replace(/ \(.*\)/, '')}
@@ -106,8 +80,6 @@ async function ChangelogPlugin(context, options) {
       await Promise.all(
         sections.map((section) => fs.outputFile(path.join(generateDir, `${section.title}.md`), section.content)),
       );
-      const authorsPath = path.join(generateDir, 'authors.json');
-      await fs.outputFile(authorsPath, JSON.stringify(authorsMap, null, 2));
       const content = await blogPlugin.loadContent();
       content.blogPosts.forEach((post, index) => {
         const pageIndex = Math.floor(index / options.postsPerPage);

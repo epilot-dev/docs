@@ -45,7 +45,6 @@ function ChangelogList(props: Props): JSX.Element {
           hideNavBar
           noFooter
         >
-          {/* Back to API definition link */}
           <a href={permalink.replace(/\/changelog.*/, '')} style={{ display: 'inline-block', marginBottom: 16 }}>
             ← Back to API definition
           </a>
@@ -64,9 +63,8 @@ function ChangelogList(props: Props): JSX.Element {
               >
                 <header>
                   <h2>{meta.title}</h2>
-                  <p>{meta.date}</p>
                 </header>
-                <BlogPostContent />
+                <BlogPostContent truncated />
               </BlogPostItem>
             );
           })}
