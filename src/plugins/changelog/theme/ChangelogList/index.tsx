@@ -45,6 +45,10 @@ function ChangelogList(props: Props): JSX.Element {
           hideNavBar
           noFooter
         >
+          {/* Back to API definition link */}
+          <a href={permalink.replace(/\/changelog.*/, '')} style={{ display: 'inline-block', marginBottom: 16 }}>
+            ← Back to API definition
+          </a>
           <h1>{title}</h1>
           {items.map(({ content: BlogPostContent }) => {
             const meta = BlogPostContent.metadata;
