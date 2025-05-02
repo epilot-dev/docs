@@ -179,4 +179,9 @@ module.exports.specs = [
     routePath: '/api/order',
     specUrl: 'https://docs.api.epilot.io/order.yaml',
   },
+  {
+    layout: { title: 'Kanban API' },
+    routePath: '/api/kanban',
+    specUrl: 'https://docs.api.epilot.io/kanban.yaml',
+  },
 ];
