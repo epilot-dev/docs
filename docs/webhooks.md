@@ -155,6 +155,15 @@ Custom OAuth parameters can be seamlessly integrated into the webhook configurat
 
 ![Custom Webhook Ouath Parameter](../static/img/webhooks/custom-oauth.png)
 
+## Static IPs
+Enterprise customers have the option to configure their webhook integrations to send requests from a predefined list of static IP addresses. This feature enables organizations to introduce stricter network-level security controls, such as firewall rules or IP whitelisting, to ensure that only trusted requests are allowed to access internal systems.
+
+This can be particularly valuable for customers operating in secure environments or requiring compliance with internal or regulatory data protection standards.
+
+:::info
+This feature is only available upon request for enterprise plans. Please contact support to enable static IPs for your webhook configuration.
+:::
+
 ## Limitations
 
 ### Timeout
