@@ -83,7 +83,6 @@ To avoid modifying the core layout and overall security of the journey, support 
 
 - **Certain position rules:** `position: relative;` and `position: absolute;`
 - **Hiding elements completely:** `display: none;`
-- **Background images:** `background: url(*);` and `background-image: url(*)`
 
 ## How to Configure Custom CSS
 
@@ -501,7 +500,7 @@ The snippet below will use a standard and custom font (uploaded) on the Journey.
 
 - Use Supported Classes: We provide a public list of supported class names for components, blocks, steps and layouts (e.g., `Concorde-Button`, `Concorde-Link`, `Concorde-Topbar`). Please use these classes to ensure long-term compatibility - [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure). However, feel free to write any rules you need.
 - Design Tokens (CSS Variables): Leverage our design tokens (CSS variables) to keep your custom styles consistent with your global theme. (e.g., `var(--concorde-primary-color)`). The comprehensive list of design tokens can be found in the [Concorde Design tokens](/docs/ui-design/concorde-design-tokens) and contain all tokens with adequate descriptions.
-- Avoid Overriding Core Layouts: For stability, avoid using properties that could break the layout (e.g., `display`, `position`, or `z-index`) or `!important`.
+- Avoid Overriding Core Layouts: For stability, avoid using properties that could break the layout (e.g., `display`, `position`) or `!important`.
 - Keep It Concise: This helps maintain performance and manageability.
 - Test Your CSS: Always preview your changes to avoid conflicts. Errors will be highlighted so you can correct them before saving.
 
