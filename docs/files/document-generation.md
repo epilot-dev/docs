@@ -11,6 +11,6 @@ sidebar_position: 3
 This article is missing content (TODO)
 :::
 
-Epilot supports generating PDF documents from docx template files containing [template variables](/docs/messaging/template-variables).
+Epilot supports generating PDF documents from docx template files containing [template variables](/docs/templates/template-variables).
 
 The Document Generation API uses references compatible with the [File API](/docs/files/file-api).

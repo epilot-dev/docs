@@ -75,7 +75,7 @@ The mapping JSON syntax supports a list of operations, which can be combined and
 
 The `_copy` operation copies a value from the trigger entity context. Both the trigger entity and its relations are available as source data.
 
-The operation uses the same path format as [Template Variables](/docs/messaging/template-variables) used in email and document templates.
+The operation uses the same path format as [Template Variables](/docs/templates/template-variables) used in email and document templates.
 
 ```json
 // copy contact first_name

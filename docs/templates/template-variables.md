@@ -192,7 +192,7 @@ Converts a table configuration object into a CSS style string by mapping non-obj
 {{makeStyle table_config.style}}
 ```
 
-### <schema>.<property>
+### ```<schema>.<property>```
 
 Dynamically registered based on schema attributes (e.g., `main.email`, `contact.name`). Retrieves a specific property value from the context data, prioritizing items tagged as "primary" or the first item in an array. If the property is an address identifier (e.g., `street`, `city`), it formats it as a full address using `buildFullAddress`. Supports nested attributes for repeatable or relational schemas.
 
