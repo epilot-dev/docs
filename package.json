@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "npm run graphql:generate && docusaurus start",
-    "build": "npm run graphql:generate && docusaurus build",
+    "start": "npm run graphql:generate && npm run fetch-changelogs && docusaurus start",
+    "build": "npm run graphql:generate && npm run fetch-changelogs && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "npm run graphql:generate && docusaurus deploy",
     "clear": "docusaurus clear",
@@ -16,7 +16,8 @@
     "lint": "eslint src --ext js,jsx,ts,tsx,json",
     "lint:fix": "eslint src --ext js,jsx,ts,tsx,json --fix",
     "pdf": "./scripts/build-pdf.sh",
-    "graphql:generate": "./scripts/generate-graphql.sh"
+    "graphql:generate": "./scripts/generate-graphql.sh",
+    "fetch-changelogs": "./scripts/get-changelogs.sh"
   },
   "dependencies": {
     "@cmfcmf/docusaurus-search-local": "^0.10.0",
