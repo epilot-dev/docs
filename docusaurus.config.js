@@ -1,5 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-var-requires */
+const fs = require('fs');
+const path = require('path');
+
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
@@ -7,29 +10,42 @@ const graphqlMarkdownConfig = require('./graphql-markdown.config');
 const { specs } = require('./redoc.config');
 const DOCS_URL = 'https://docs.epilot.io';
 
+const changelogProcessingDir = path.join(__dirname, 'changelog-processing');
+
 const apiChangelogPlugins = specs
-  .filter((spec) => spec.specUrl) // Filter only items with a specUrl
-  .map((spec) => [
-    require.resolve('./src/plugins/changelog/index.js'), // First item: plugin path
-    {
-      id: `changelog-${spec.routePath.replace('/api/', '')}`, // Unique ID for each API changelog
-      blogTitle: `${spec.layout.title} Changelog`,
-      blogDescription: `Changelog for ${spec.layout.title}`,
-      blogSidebarCount: 'ALL',
-      blogSidebarTitle: 'Changelog',
-      routeBasePath: `${spec.routePath}/changelog`, // Changelog route under the API route
-      showReadingTime: false,
-      postsPerPage: 20,
-      archiveBasePath: null,
-      authorsMapPath: 'authors.json',
-      feedOptions: {
-        type: 'all',
-        title: `${spec.layout.title} Changelog`,
-        description: `Changelog for ${spec.layout.title}`,
-        language: 'en',
+  .filter((spec) => {
+    // Use the last segment after the last slash as the id, e.g. access-token
+    const id = spec.routePath.replace('/api/', '').replace(/\/$/, '');
+    const changelogFile = path.join(changelogProcessingDir, `${id}.md`);
+
+    return spec.specUrl && fs.existsSync(changelogFile);
+  })
+  .map((spec) => {
+    const id = `${spec.routePath.replace('/api/', '').replace(/\/$/, '')}`;
+    const changelogFilename = path.join(changelogProcessingDir, `${id}.md`);
+
+    return [
+      require.resolve('./src/plugins/changelog/index.js'),
+      {
+        id: id,
+        blogTitle: `${spec.layout.title} Changelog`,
+        blogDescription: `Changelog for ${spec.layout.title}`,
+        blogSidebarCount: 'ALL',
+        blogSidebarTitle: 'Changelog',
+        routeBasePath: `${spec.routePath}/changelog`,
+        changelogFilename: changelogFilename,
+        showReadingTime: false,
+        postsPerPage: 20,
+        archiveBasePath: null,
+        feedOptions: {
+          type: 'all',
+          title: `${spec.layout.title} Changelog`,
+          description: `Changelog for ${spec.layout.title}`,
+          language: 'en',
+        },
       },
-    },
-  ]);
+    ];
+  });
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
@@ -165,10 +181,6 @@ const apiChangelogPlugins = specs
               {
                 label: 'SDK',
                 to: '/docs/architecture/sdk',
-              },
-              {
-                to: '/changelog',
-                label: 'Changelogs',
               },
             ],
           },
