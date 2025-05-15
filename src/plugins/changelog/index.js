@@ -8,7 +8,6 @@
  */
 
 const path = require('path');
-const semver = require('semver');
 
 const pluginContentBlog = require('@docusaurus/plugin-content-blog');
 const { aliasedSitePath, docuHash, normalizeUrl } = require('@docusaurus/utils');
