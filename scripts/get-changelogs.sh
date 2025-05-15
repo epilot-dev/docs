@@ -8,7 +8,7 @@ LOCAL_DIR="./downloaded-changelogs"
 PROCESSING_DIR="./changelog-processing"
 
 if [ -z "$S3_BUCKET" ]; then
-  echo 'error: $S3_BUCKS3_BUCKETET_DOCS is not set' >&2
+  echo 'error: $S3_BUCKET is not set' >&2
   exit 1
 fi
 
