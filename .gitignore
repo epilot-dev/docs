@@ -7,6 +7,9 @@
 # Generated files
 .docusaurus
 .cache-loader
+/changelog
+/downloaded-changelogs
+/changelog-processing
 
 # Generated Graphql Docs
 /graphql
