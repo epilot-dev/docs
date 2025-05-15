@@ -1,13 +1,14 @@
 #!/bin/sh
 set -e
 
+# This needs to be set via variable during build process
 # S3_BUCKET="api-docs-changelog-demo"
 S3_PREFIX="changelogs/"
 LOCAL_DIR="./downloaded-changelogs"
 PROCESSING_DIR="./changelog-processing"
 
-if [ -z "$S3_BUCKET_DOCS" ]; then
-  echo 'error: $S3_BUCKET_DOCS is not set' >&2
+if [ -z "$S3_BUCKET" ]; then
+  echo 'error: $S3_BUCKS3_BUCKETET_DOCS is not set' >&2
   exit 1
 fi
 
