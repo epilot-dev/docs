@@ -49,6 +49,13 @@ function ChangelogList(props: Props): JSX.Element {
             ← Back to API definition
           </a>
           <h1>{title}</h1>
+          <a
+            href={permalink.replace(/\/$/, '') + '/rss.xml'}
+            style={{ display: 'inline-block', marginBottom: 16 }}
+            target="_blank"
+          >
+            Get changelog updates via RSS Feed
+          </a>
           {items.map(({ content: BlogPostContent }) => {
             const meta = BlogPostContent.metadata;
             if (!meta) return null;
