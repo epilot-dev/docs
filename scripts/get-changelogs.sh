@@ -19,7 +19,10 @@ mkdir -p "$PROCESSING_DIR"
 # Download only .md files from S3
 aws s3 sync "s3://$S3_BUCKET/$S3_PREFIX" "$LOCAL_DIR" --exclude "*" --include "*.md"
 
-cp "$LOCAL_DIR"/*.md "$PROCESSING_DIR"
+# Only copy if there are .md files
+if ls "$LOCAL_DIR"/*.md 1> /dev/null 2>&1; then
+  cp "$LOCAL_DIR"/*.md "$PROCESSING_DIR"
+fi
 
 # Process downloaded files: update H1 header to only the last semantic version after "vs. "
 for file in "$PROCESSING_DIR"/*.md; do
