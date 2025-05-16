@@ -1,11 +1,51 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-var-requires */
+const fs = require('fs');
+const path = require('path');
+
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
 const graphqlMarkdownConfig = require('./graphql-markdown.config');
 const { specs } = require('./redoc.config');
 const DOCS_URL = 'https://docs.epilot.io';
+
+const changelogProcessingDir = path.join(__dirname, 'changelog-processing');
+
+const apiChangelogPlugins = specs
+  .filter((spec) => {
+    // Use the last segment after the last slash as the id, e.g. access-token
+    const id = spec.routePath.replace('/api/', '').replace(/\/$/, '');
+    const changelogFile = path.join(changelogProcessingDir, `${id}.md`);
+
+    return spec.specUrl && fs.existsSync(changelogFile);
+  })
+  .map((spec) => {
+    const id = `${spec.routePath.replace('/api/', '').replace(/\/$/, '')}`;
+    const changelogFilename = path.join(changelogProcessingDir, `${id}.md`);
+
+    return [
+      require.resolve('./src/plugins/changelog/index.js'),
+      {
+        id: id,
+        blogTitle: `${spec.layout.title} Changelog`,
+        blogDescription: `Changelog for ${spec.layout.title}`,
+        blogSidebarCount: 'ALL',
+        blogSidebarTitle: 'Changelog',
+        routeBasePath: `${spec.routePath}/changelog`,
+        changelogFilename: changelogFilename,
+        showReadingTime: false,
+        postsPerPage: 20,
+        archiveBasePath: null,
+        feedOptions: {
+          type: 'all',
+          title: `${spec.layout.title} Changelog`,
+          description: `Changelog for ${spec.layout.title}`,
+          language: 'en',
+        },
+      },
+    ];
+  });
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
@@ -19,7 +59,7 @@ const DOCS_URL = 'https://docs.epilot.io';
   favicon: 'img/favicon.svg',
 
   organizationName: 'epilot-dev',
-  projectName: 'docs', 
+  projectName: 'docs',
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -73,6 +113,7 @@ const DOCS_URL = 'https://docs.epilot.io';
         sidebarPath: require.resolve('./sidebars.js'),
       },
     ],
+    ...apiChangelogPlugins, // Spread the dynamically generated changelog plugins
   ],
 
   themeConfig:
