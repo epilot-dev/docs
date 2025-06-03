@@ -186,9 +186,33 @@ The API can also be used to retrieve the related entities using the `?hydrate=tr
 
 ## Search API
 
-[[API Docs](/api/entity#operation/searchEntities)]
-
 The Entity Search API provides list and search functionality for entity documents.
+
+### Listing Entities
+
+[[API Docs](/api/entity#operation/listEntities)]
+
+Simple listing of entities without a need for loose matching can be done using a subset of [Elastic DSL](https://www.elastic.co/docs/explore-analyze/query-filter/languages/querydsl) with convenience combination operators.
+
+```json
+// listEntities
+// POST /v1/entity:list
+{
+  "filter": [
+    { "term": { "_schema": "exampleSchema" } },
+    { "term": { "hello": "world" } }
+  ],
+  "sort": "_created_at:desc",
+  "from": 0,
+  "size": 10,
+  "hydrate": false,
+  "fields": ["_id", "_title", "first_name"]
+}
+```
+
+### Searching Entities
+
+[[API Docs](/api/entity#operation/searchEntities)]
 
 Elasticsearch (Lucene) query syntax is supported for complex querying.
 
@@ -204,6 +228,29 @@ Elasticsearch (Lucene) query syntax is supported for complex querying.
   "fields": ["_id", "_title", "first_name"]
 }
 ```
+
+### Stable Queries
+
+Stable Queries are designed to allow paginating through large and changing datasets without missing or duplicating records or perform multiple queries on the same changing dataset. They provide consistency guarantees over a short window of time, making them suitable for automation, bulk processing, exports, and similar tasks where precision matters.
+
+To use stable queries, pass `stable_for` (available both on `listEntities` or `searchEntities`), which denotes for how many seconds to maintain a stable search context.
+Then, always use the latest returned `stable_query_id` — each subsequent search request can return different identifiers.
+
+It is recommended to use `search_after` with Stable Queries as it allows doing precise deep pagination.
+
+Avoid extending the TTL unnecessarily — stable windows are short by design to reduce server-side resource usage.
+
+#### When to use Stable Queries?
+
+- When you need to retrieve more than a few pages in one go.
+- When you need to paginate more than 25 000 records deep (from + size).
+- When you cannot tolerate missing or duplicate items during pagination.
+- When you need to perform multiple queries within the same context.
+
+#### When not to use Stable Queries?
+
+- If you are performing just one query with no pagination (<=1000 items - max size).
+- If your next related query is waiting for user input. For example, you do not know when the user will visit the next page and stable windows are limited in time by design. It is better to give the user tools to find the relevant record using filters or search rather than to require them to scan pages of results manually.
 
 ## Relations API
 
