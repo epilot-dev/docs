@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
+    "dev": "npm run graphql:generate && docusaurus start",
     "start": "npm run graphql:generate && npm run fetch-changelogs && docusaurus start",
     "build": "npm run graphql:generate && npm run fetch-changelogs && docusaurus build",
     "swizzle": "docusaurus swizzle",
