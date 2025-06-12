@@ -1,7 +1,7 @@
 ---
 title: Journey Blocks
 hide_title: true
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Custom Journey Blocks
