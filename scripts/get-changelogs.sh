@@ -8,8 +8,8 @@ LOCAL_DIR="./downloaded-changelogs"
 PROCESSING_DIR="./changelog-processing"
 
 if [ -z "$S3_BUCKET" ]; then
-  echo 'error: $S3_BUCKET is not set' >&2
-  exit 1
+  echo 'warn: $S3_BUCKET is not set, skipping fetching changelogs...' >&2
+  exit 0
 fi
 
 # Ensure local directory exists
@@ -44,6 +44,6 @@ for type in $(ls "$PROCESSING_DIR" | grep -oP '^.*(?=-[0-9]+\.[0-9]+\.[0-9]+\.md
   done
   echo "Concatenated $type changelogs into $out_file"
   # Delete the numbered markdown files after processing
-  rm -f $files
+  rm $files
   echo "Deleted processed files: $files"
 done
