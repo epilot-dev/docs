@@ -151,6 +151,50 @@ You can now attach the returned file entity id to your business entity as a rela
 }
 ```
 
+## External Files
+
+In some cases, storing files on the epilot side is undesirable. For instance, when it would mean migrating a large document archive. In such scenarios, it is possible to skip the upload steps and utilize the `custom_download_url` property when saving a File entity.
+
+```
+POST https://file.sls.epilot.io/v2/files
+```
+
+Body (application/json):
+```json
+{
+  "custom_download_url": "https://external-url.io?fileID=42",
+  "filename": "example.pdf",
+  "access_control": "private"
+}
+```
+
+Response (201):
+```json
+{
+  "_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8",
+  "filename": "example.pdf",
+  "access_control": "private",
+  "custom_download_url": "https://external-url.io?fileID=42",
+  "type": "unknown",
+  "size_bytes": 0,
+  "versions": [
+    ...
+  ]
+}
+```
+
+External files are then retrieved on the fly from epilot with a short-lived signature and streamed directly to the end user.
+To verify the request is coming from epilot, use the [`verifyCustomDownloadUrl` operation](/api/file#tag/files/operation/verifyCustomDownloadUrl).
+
+![External file download flow](../../static/img/file-custom-url-flow.png)
+
+:::info
+
+Requests to download external files come from the user's browser. All data from the response (including headers) can be viewed by the end user and as such should not contain any sensitive data, like internal tokens, apart from the file.
+
+:::
+
+
 ## Updating Files
 
 Modifying or saving new versions of File entities happens via the [`saveFileV2` operation](/api/file#tag/files/operation/saveFileV2).
