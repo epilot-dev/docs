@@ -124,29 +124,82 @@ To use JSONata in your webhook configuration, follow these steps:
 3. **Define the Transformation Expression**: Enter the JSONata expression that defines how the data should be transformed. You can use the provided example as a starting point and modify it according to your needs.
 4. **Test the Configuration**: Use the test feature to verify that the JSONata expression produces the desired payload structure. You can adjust the expression as needed based on the test results.
 ### Example JSONata Expression
+
+Imagine the following webhook payload structure for an opportunity. Most of the time we are only interested in a sub-set of this data structure. By using JSONata we can simplify the payload and even use its utilities to parse and transform data to your needs.
+
 ```json
 {
   "metadata": {
-    "organization_id": metadata.organization_id,
-    "event_type": metadata.event_type,
-    "timestamp": metadata.timestamp
+    "webhook_id": "kT5iDYx373p6v6hWGJVn9j",
+    "organization_id": "739224",
+    "webhook_name": "Wewbhook",
+    "automation_name": "FLOW#wfjV8L8-fD#TASK#25bdd4ec-4335-434b-938e-9afd91cdc9d5",
+    "organization_name": "Epilot Dev",
+    "correlation_id": "d7fc4288-381c-41cc-ba74-535e3ae84a0b",
+    "creation_timestamp": "2025-07-09T11:50:25.933Z",
+    "execution_id": "5cc9432c-a2ae-4649-93e5-ec528eb4e1e4",
+    "action_id": "64ec83d2-fa59-44ab-9d27-8dbcbdfde2a9"
   },
   "entity": {
-    "_id": entity._id,
-    "_schema_": entity._schema_,
-    "name": entity.name,
-    "status": entity.status
+    "status": "open",
+    "source": {
+      "title": "manual",
+      "href": null
+    },
+    "source_type": "manual",
+    "_schema": "opportunity",
+    "_id": "21e2c48f-ec99-4cd3-8552-b776c0c0aec5",
+    "_org": "739224",
+    "_owners": [
+      {
+        "org_id": "739224",
+        "user_id": "10010729"
+      }
+    ],
+    "_created_at": "2025-07-03T06:15:39.776Z",
+    "_updated_at": "2025-07-08T13:43:11.069Z",
+    "opportunity_number": "OP-6376",
+    "_title": "OP-6376",
+    "_acl": {
+      "view": [
+        "org_739224"
+      ],
+      "edit": [
+        "org_739224"
+      ],
+      "delete": [
+        "org_739224"
+      ]
+    }
   },
-  "relations": relations ? relations : {},
-  "activity": activity ? activity : {},
-  "changed_attributes": {
-    "added": changed_attributes.added ? changed_attributes.added : {},
-    "deleted": changed_attributes.deleted ? changed_attributes.deleted : {},
-    "updated": changed_attributes.updated ? changed_attributes.updated : {}
+  "relations": []
   }
 }
 ```
-This example JSONata expression extracts the `organization_id`, `event_type`, and `timestamp` from the `metadata` object, and includes the `entity`, `relations`, `activity`, and `changed_attributes` objects in the payload. You can modify this expression to include or exclude specific fields based on your requirements.
+
+by using this JSONata query:
+
+```jsonata
+{
+    "org_id": metadata.organization_id,
+    "user_id": $number(entity._owners.user_id),
+    "lead_nr": entity.opportunity_number,
+    "status": entity.status
+}
+```
+
+This will result in the following payload:
+
+```json
+{
+    "org_id": "739224",
+    "user_id": 10010729,
+    "lead_nr": "OP-6376",
+    "status": "open"
+}
+```
+This example demonstrates how to extract specific fields from the webhook payload and transform them into a simplified structure. You can adjust the JSONata expression to include or exclude fields, apply transformations, or filter data as needed.
+
 
 ### Get Additional Attributes
 
