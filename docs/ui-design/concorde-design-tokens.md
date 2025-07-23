@@ -46,6 +46,7 @@ sidebar_position: 3
 | `--concorde-loading-background`     | `#e0e0e0`       | The background color of the loaders.                                                                                                              |
 | `--concorde-neutral-surface`        | `#e0e2ec`       | The neutral surface background. Used in Layout & Blocks (Desktop Navigation Stepper, PV Rooftop Navigator).                                       |
 | `--concorde-default-background-rgb` | `255, 255, 255` | The rgb tuple version of `--concorde-default-background`. Used to create transparent variations of the default background color.                  |
+| `--concorde-disabled-background`    | `#e6eef7`       | The disabled background color used to for the Mobile Stepper only.                                                                                |
 
 ### 🔠 Typography
 

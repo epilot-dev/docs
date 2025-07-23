@@ -76,13 +76,16 @@ The following classes will be maintained for Concorde Blocks:
   - Concorde-ActionBar\_\_BackButton
   - Concorde-ActionBar\_\_CTAButton
 - Concorde-Address-Block
+- Concorde-AttributeEditor-Block
 - Concorde-App-Block
 - Concorde-AvailabilityCheck-Block
 - Concorde-BinaryInput-Block
 - Concorde-Consents-Block
 - Concorde-Contact-Block
+- Concorde-Custom-Block
 - Concorde-Date-Block
 - Concorde-DigitalSignature-Block
+- Concorde-EntityFinder-Block
 - Concorde-HyperlinkButton-Block
 - Concorde-Image-Block
 - Concorde-InputCalculator-Block
@@ -108,6 +111,7 @@ The following classes will be maintained for Concorde Blocks:
   - Concorde-ProductTile
   - Concorde-ProductTile\_\_Featured
 - Concorde-ProductCategories-Block
+- Concorde-ProductsRecommendations-Block
 - Concorde-PVRooftopNavigator-Block
 - Concorde-SingleChoice-Block
   - Concorde-SingleChoice-Button-Block
