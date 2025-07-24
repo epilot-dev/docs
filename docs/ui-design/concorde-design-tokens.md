@@ -357,6 +357,16 @@ None
 | `--concorde-switch-unchecked-background-color` | `string`      | The background color of the unchecked switch | `var(--concorde-neutral-surface)` |
 | `--concorde-switch-border-radius`              | `string`      | The border radius of the switch              | `9999px`                          |
 
+### Tab
+
+Refer also to Icon tokens.
+
+| CSS Variable                             | Expected Type | Description                                 | Default                           |
+| ---------------------------------------- | ------------- | ------------------------------------------- | --------------------------------- |
+| `--concorde-tab-button-color`            | `string`      | The color of the tab button                 | `var(--concorde-primary-color)`   |
+| `--concorde-tab-button-hover-bg-color`   | `string`      | The hover background color of tab button    | `9999px`                          |
+| `-concorde-tab-button-selected-bg-color` | `string`      | The selected background color of tab button | `var(--concorde-neutral-surface)` |
+
 ### Textarea
 
 Refer to Input tokens.
