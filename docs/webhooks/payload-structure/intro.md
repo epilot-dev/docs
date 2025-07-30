@@ -54,4 +54,8 @@ The flow can be nailed down to a simple overview with the following steps:
 
 ![Simple Overview](../../../static/img/webhooks/intro.png)
 
+# Main Entity
+There is always a main entity in the webhook payload. This is the entity that the webhook is triggered on. The `entity` object contains the data of this main entity, which can be a contact, opportunity, or any other entity type.
+If you select the `Portal Access Entity Access` event, the `entity` object will contain the contat entity of the user who accessed the resource. If you select the `Automation Trigger Webhook` event, the `entity` object will contain the entity data related to the automation trigger.
+
 Read the following pages to learn more about the different webhook trigger types.
