@@ -58,4 +58,27 @@ The flow can be nailed down to a simple overview with the following steps:
 There is always a main entity in the webhook payload. This is the entity that the webhook is triggered on. The `entity` object contains the data of this main entity, which can be a contact, opportunity, or any other entity type.
 If you select the `Portal Access Entity Access` event, the `entity` object will contain the contat entity of the user who accessed the resource. If you select the `Automation Trigger Webhook` event, the `entity` object will contain the entity data related to the automation trigger.
 
-Read the following pages to learn more about the different webhook trigger types.
+
+
+# Webhook fields
+
+The payload sent to the webhook URL contains the following fields (prerequisite is the input is not transformed with a JSONata query):
+
+| Field                                        | Type       | Description                                           |
+| -------------------------------------------- | ---------  | ----------------------------------------------------- |
+| `metadata`                                   | object     | Contains metadata about the configured event          |
+| `metadata.action`                            | string?    | Action that triggered the event                       |
+| `metadata.origin`                            | string?    | Origin of the event                                   |
+| `metadata.creation_timestamp`                | string     | Time of event creation                                |
+| `metadata.webhook_id`                        | string     | The ID of the webhook configuration                   |
+| `metadata.webhook_name`                      | string?    | The name of the webhook configuration                 |
+| `metadata.automation_name`                   | string?    | The name of the automation that triggered the event   |
+| `metadata.organization_id`                   | string     | The ID of the given organization                      |
+| `metadata.user_id`                           | string?    | The ID of the user for manual triggered events        |
+| `metadata.correlation_id`                    | string     | ID used to track the event                                   |
+| `metadata.execution_id`                      | string?    | When triggered by an automation this is its execution id     |
+| `metadata.action_id`                         | string?    | When triggered by an automation this is the id of the action |
+| `entity`                                     | object     | The main entity data relevant to the event            |
+| `relations`                                  | array?     | Optional relations to other entities                  |
+| `activity`                                   | object?    | Optional activity data                                |
+| `changed_attributes`                         | object?    | The attributes that were added, deleted, or updated   |
