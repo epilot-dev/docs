@@ -31,7 +31,7 @@ The new journey design (Concorde Journey) consists of the following building blo
 - **Blocks:** Journey blocks E.g., Text Input, Number Input, Products, etc.
 - **Components:** Reusable components from our concorde component library - [concorde-elements](https://github.com/epilot-dev/concorde-elements) E.g., Autocomplete, Input, Switch, Radio, Checkbox, etc.
 
-> **Technical Details:** The HTML classes and IDs used are prefixed with `Concorde` to ensure consistency. Refer to the [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure) for a comprehensive list.
+> **Technical Details:** The HTML classes and IDs used are prefixed with `Concorde` to ensure consistency. Refer to the [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure) for a comprehensive list. **Note**: Do not use auto-generated class names in your custom CSS e.g `._edit-button_ge242f24`, `._circle_2342for` as these are subject to change quite often.
 
 ### Concorde Design Tokens
 
@@ -519,6 +519,7 @@ We’ve started supporting this migration process and recommend moving your jour
 
 **Q: Will my custom CSS changes be maintained with future updates?**  
 **A:** Custom CSS rules will remain effective as long as you adhere to the supported class and variable guidelines. We are committed to maintaining backward compatibility, but changes to the core design may require adjustments. We will communicate any necessary changes in advance.
+**Note**: Do not use auto-generated class names in your custom CSS e.g `._edit-button_ge242f24`, `._circle_2342for` as these are subject to change quite often.
 
 **Q: (Advanced) What if I want to apply changes only to a specific journey?**  
 **A:** It is currently possible to apply styles that apply to a specific step or block in a journey by using the HTML id selectors to target sections on a journey. Review the [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure) to understand how to find these IDs. This ensures your styles won’t affect other journeys. We strongly recommend you use HTML id selectors as little as possible to avoid conflicts across multiple journeys.
