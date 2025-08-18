@@ -184,4 +184,9 @@ module.exports.specs = [
     routePath: '/api/kanban',
     specUrl: 'https://docs.api.epilot.io/kanban.yaml',
   },
+  {
+    layout: { title: 'Validation Rules API' },
+    routePath: '/api/validation-rules',
+    specUrl: 'https://docs.api.epilot.io/validation-rules.yaml',
+  },
 ];
