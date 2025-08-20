@@ -34,7 +34,7 @@ It is possible by using the Embed Script to modify the initial state of the jour
 2. Starting the journey from a specific step: doing this will start the journey from the specified step if it was combined with the initial data, one can achieve a case when a product is selection is done in an external website, injected into the journey, then the in journey selection step skipped.
 3. Set display options for the journey fields (for now disabling fields)
 
-The following DataInjectionOptions type shows what is possible. However we ask devs to go to our [epilot Journey SDK](https://github.com/epilot-dev/epilot-journey-sdk) project which includes more documentation supported with examples.
+The following DataInjectionOptions type shows what is possible. However we ask devs to go to our [Embed Script Docs](https://github.com/epilot-dev/epilot-journey-sdk/tree/main/examples/embed-script) to view some examples.
 
 **Type Definition**
 
@@ -42,10 +42,41 @@ The following DataInjectionOptions type shows what is possible. However we ask d
 export type DataInjectionOptions = {
   /** the initial step index of the journey. aka, where to start the journey from */
   initialStepIndex?: number
-  /** the initial state of the journey. aka, what data to prefill the journey with */
+  /** 
+   * the initial state of the journey. aka, what data to prefill the journey with 
+   * Read section below to understand how to populate this
+   * */
   initialState?: Record<string, unknown>[]
   /** the display options to be passed to the journey, for now it is used to disable some fields */
   blocksDisplaySettings?: BlockDisplaySetting[]
+}
+```
+
+To populate `intialState` in `DataInjectionOptions` properly, open the journey in **debug mode** (see video below) and copy the journey state per step.
+
+![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
+
+**Note**: `initialState` must be filled sequentially based on the order of steps; steps that are not injected into must be an **empty object**.
+See example below to inject data into Step 2 and Step 3. Notice that Step 1 needs to be empty for this to work properly
+
+```typescript
+  initialState: [
+    {},
+    {
+      "Binary Input": false,
+    },
+    {
+      "Personal Data Input": {
+        "salutation": "Ms. / Mrs.",
+        "firstName": "Test Name",
+        "lastName": "",
+        "email": "",
+        "telephone": "",
+        "_isValid": false
+      }
+    },
+    {}
+  ]
 }
 ```
 
