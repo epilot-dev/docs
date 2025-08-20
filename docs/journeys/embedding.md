@@ -34,7 +34,7 @@ It is possible by using the Embed Script to modify the initial state of the jour
 2. Starting the journey from a specific step: doing this will start the journey from the specified step if it was combined with the initial data, one can achieve a case when a product is selection is done in an external website, injected into the journey, then the in journey selection step skipped.
 3. Set display options for the journey fields (for now disabling fields)
 
-The following DataInjectionOptions type shows what is possible. However we ask devs to go to our [epilot Journey SDK](https://github.com/epilot-dev/epilot-journey-sdk/tree/main/examples/embed-script) to view some examples.
+The following DataInjectionOptions type shows what is possible. However we ask devs to go to our [Embed Script Docs](https://github.com/epilot-dev/epilot-journey-sdk/tree/main/examples/embed-script) to view some examples.
 
 **Type Definition**
 
