@@ -153,6 +153,11 @@ type OptionsUpdate = Omit<OptionsInit, 'journeyId'>
 
 **Usage**
 
+The update method updates a journey's embed configuration.  
+Note: This does not update the initial state set by `dataInjectionOptions`.
+
+
+
 ```typescript
 __epilot.update('123', { journeyId: '123', mode: 'full-screen', topBar: false })
 ```
@@ -175,7 +180,6 @@ type JourneyEvent =
   | 'enterFullScreen'
   | 'exitFullScreen'
   | 'closeJourney'
-  | 'formChange'
 
 type On = (
   eventName: JourneyEvent,
