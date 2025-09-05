@@ -219,7 +219,7 @@ To add a component argument, you can use the `args` provided via the container. 
 
 The component arguments are available via `props.container.args` in the custom block.
 
-### Step 6: Map output back to the journey submission
+### Step 6: Map the generaed lat/lng output back to the journey submission
 
 To submit data from your custom block, call `setValue` with your output. For example, after geocoding the address, you can expose the coordinates:
 
@@ -230,6 +230,12 @@ useEffect(() => {
     props.setValue(JSON.stringify({ lat, lng }))
   })
 }, [address])
+
+// or 
+
+const addCoordsToMapping = useCallback((coords: [number, number] | null) => {
+    props.container.setValue(JSON.stringify({ lat: coords?.[0], lng: coords?.[1] }))
+  }, [args, props.container.setValue])
 ```
 
 This value can then be mapped using component mapping so it becomes part of the journey submission payload.
