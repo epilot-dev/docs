@@ -27,7 +27,7 @@ This modular approach offers several key advantages:
 
 epilot currently supports these component types:
 
-### [Custom Journey Blocks](/apps/building-apps/components/custom-journey-block)
+### [Custom Journey Blocks](/apps/about-apps/components/custom-journey-block)
 
 These web components integrate directly into epilot's Journey Builder, allowing you to create specialized elements for data collection, visualization, or process automation. Journey Blocks appear in the Journey Builder palette and can be placed anywhere in a customer journey flow.
 
@@ -35,7 +35,7 @@ These web components integrate directly into epilot's Journey Builder, allowing 
 Use cases: Data collection forms, calculators, visualizations, third-party integrations
 ```
 
-### [Portal Extensions](/apps/building-apps/components/portal-extension)
+### [Portal Extensions](/apps/about-apps/components/portal-extension)
 
 Portal Extensions enhance epilot's customer and installer portals with new sections, tools, or visualizations. They can be added to dashboards or specific sections to extend the portal's functionality with custom features.
 
@@ -78,7 +78,7 @@ Ready to create your own component? Each component type has specific requirement
         <div className="card__body">
           <h3>Journey Blocks</h3>
           <p>Create interactive elements for epilot's Journey Builder</p>
-          <a href="/apps/building-apps/components/custom-journey-block" className="button button--primary button--block">Start Building</a>
+          <a href="/apps/about-apps/components/custom-journey-block" className="button button--primary button--block">Start Building</a>
         </div>
       </div>
     </div>
@@ -87,7 +87,7 @@ Ready to create your own component? Each component type has specific requirement
         <div className="card__body">
           <h3>Portal Extensions</h3>
           <p>Extend epilot's portals with custom functionality</p>
-          <a href="/apps/building-apps/components/portal-extension" className="button button--primary button--block">Start Building</a>
+          <a href="/apps/about-apps/components/portal-extension" className="button button--primary button--block">Start Building</a>
         </div>
       </div>
     </div>

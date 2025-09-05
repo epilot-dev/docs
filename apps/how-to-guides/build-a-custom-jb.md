@@ -11,7 +11,7 @@ sidebar_position: 1
 
 - Basic understanding about the concept of an App inside the epilot platform. See the [App documentation](/apps) for more information.
 
-- Understand what a custom journey block is and how it works. See the [Custom Journey Block documentation](/apps/about-apps/components/custom-journey-block.md) for more information.
+- Understand what a custom journey block is and how it works. See the [Custom Journey Block documentation](/apps/about-apps/components/custom-journey-block) for more information.
 
 ### What we are building
 
@@ -119,7 +119,7 @@ npm run dev
 ### Step 2: Create the custom block in the App configuration
 The business logic/internals of the App do not matter for now. We start to focus on the actual development mode. In order to create your first App go to the App configuration and click on the `Add Component` button. Add the `bundle.js` file from the `dist` folder.
 
-After you created the component, install the App initially (by selecting the `See how your app looks in the installation view` link in the top right corner of the App configuration builder), then enable the [development mode](https://docs.epilot.io/apps/building-apps/development-mode). 
+After you created the component, install the App initially (by selecting the `See how your app looks in the installation view` link in the top right corner of the App configuration builder), then enable the [development mode](https://docs.epilot.io/apps/about-apps/development-mode). 
 
 **Why development mode?** If you don't enable this during development, you always need to create a new version and update the current installation to the newest version with your changes. This is tedious and takes a lot of time. The development mode always pushes the latest changes to the current installation.
 
