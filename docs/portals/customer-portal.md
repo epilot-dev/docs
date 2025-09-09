@@ -2,16 +2,19 @@
 sidebar_position: 1
 ---
 
-# Customer / Installer Portal
+# Overview
 
 [[API Docs](/api/customer-portal)]
 [[SDK](https://www.npmjs.com/package/@epilot/customer-portal-client)]
 [[Setup Docs](https://help.epilot.cloud/hc/de/articles/4417739340050-Kundenportal-einrichten-epilot-360-)]
 
-The portals enable seamless interaction between administrators and customers, offering a tailored and collaborative experience. Administrators have the power to configure the portal, including portal design, domain settings, email templates, customer permissions, and a lot others. End Customers & Installers, on the other hand, can access their entities, perform actions, and even search their entities based on configured entity identifiers.
+White-label Portals offering from epilot enables seamless interaction between administrators and customers, offering a tailored and collaborative experience. Administrators have the power to build the portal from generic and purpose-built blocks with a custom logic, own branding, company domain, personalized email communication, and secure granular permissions. End-users (like end customers and installers), on the other hand, can easily access their data and perform pre-configured actions.
 
 - [Administrator Actions](#administrator-actions)
-- [Customer / Installer Actions](#customer--installer-actions)
+- [End-user Actions](#end-user-actions)
+- [Architecture](/docs/portals/architecture)
+- [Metering](/docs/portals/metering)
+- [Webhooks](/docs/portals/portal-webhooks)
 
 ## Administrator Actions
 
@@ -23,7 +26,7 @@ Additionally, administrators can define granular permissions for the portals ind
 
 Furthermore, administrators can configure entity identifiers, allowing customers to search for specific entities based on the configured fields. This empowers administrators to tailor the portal to their business needs, providing customers with efficient ways to access and retrieve information. Additionally, administrators can set up entity actions, granting customers/installers the ability to participate in journeys and provide updates and information related to entities like opportunities, contracts, and orders. This enhances collaboration and streamlines service processes within the portal.
 
-## Customer / Installer Actions
+## End-user Actions
 
 [[API Docs](/api/customer-portal/#tag/ECP)]
 
