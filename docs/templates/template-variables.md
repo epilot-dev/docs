@@ -361,3 +361,54 @@ Uses [@epilot/pricing](https://github.com/epilot-dev/pricing) to format the amou
 ```handlebars
 {{asCurrency 100.50 "EUR"}}
 ```
+
+## Excel-like Formulas
+
+You can also use Excel-like formulas in your templates with the `calc` helper.
+
+Examples:
+
+```handlebars
+Price: {{price}}
+Qty: {{qty}}
+
+Total (rounded 2): {{ calc "ROUND(price * qty, 2)" }}
+Discounted: {{ calc "ROUND((price * qty) * (1 - discount), 2)" }}
+
+Caps with IF: {{ calc "IF(qty > 10, 10, qty)" }}
+
+Using named args override:
+{{ calc "ROUND(a + b, 0)" a=fee b=shipping }}
+
+Min/Max:
+{{ calc "MAX(price1, price2, price3)" }}
+```
+
+## Available formulas
+
+### Arithmetic operators
+
+- `+` - Addition
+- `-` - Subtraction
+- `*` - Multiplication
+- `/` - Division
+- `^` - Exponentiation
+- `%` - Modulus (remainder of division)
+- `()` - Parentheses for grouping expressions
+- `-number` - Negation (unary minus)
+
+### Formula functions
+
+- `ABS(number)` - Returns the absolute value of a number.
+- `AND(condition1, condition2, ...)` - Returns `true` if all conditions are truthy.
+- `AVERAGE(number1, number2, ...)` - Returns the average of a set of numbers.
+- `CEIL(number)` - Rounds a number up to the nearest integer.
+- `FLOOR(number)` - Rounds a number down to the nearest integer.
+- `IF(condition, value_if_true, value_if_false)` - Returns one value if condition is truthy and another value if it's falsey.
+- `MAX(number1, number2, ...)` - Returns the largest number in a set of numbers.
+- `MIN(number1, number2, ...)` - Returns the smallest number in a set of numbers.
+- `NOT(condition)` - Reverses the value of its argument. Returns `true` if its argument is truthy and `false` if its argument is falsey.
+- `OR(condition1, condition2, ...)` - Returns `true` if any condition is truthy.
+- `ROUND(number, [places])` - Rounds a number to a specified number of decimal places. If places is omitted, it defaults to 0.
+- `SUM(number1, number2, ...)` - Returns the sum of a set of numbers.
+- `RAND()` - Returns a random number between 0 (inclusive) and 1 (exclusive).
