@@ -20,9 +20,11 @@
 
 ## Interfaces
 
+- [CalendarProviderOptions](interfaces/CalendarProviderOptions.md)
 - [CalendarVersion](interfaces/CalendarVersion.md)
 - [CustomHolidayConfig](interfaces/CustomHolidayConfig.md)
 - [DayInfo](interfaces/DayInfo.md)
+- [DeadlineCalculatorOptions](interfaces/DeadlineCalculatorOptions.md)
 - [DeadlineRule](interfaces/DeadlineRule.md)
 - [Holiday](interfaces/Holiday.md)
 - [SwitchingCase](interfaces/SwitchingCase.md)

@@ -6,7 +6,7 @@
 
 # Class: CalendarProvider
 
-Defined in: [calendar-provider.ts:41](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L41)
+Defined in: [calendar-provider.ts:68](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L68)
 
 Calendar provider that manages holidays, working days, and date calculations.
 
@@ -39,7 +39,7 @@ const nextWorking = calendar.getNextWorkingDay('2024-12-25');
 
 > **new CalendarProvider**(`options?`): `CalendarProvider`
 
-Defined in: [calendar-provider.ts:81](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L81)
+Defined in: [calendar-provider.ts:104](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L104)
 
 Creates a new CalendarProvider instance.
 
@@ -47,31 +47,9 @@ Creates a new CalendarProvider instance.
 
 ##### options?
 
-Configuration options for the calendar
+[`CalendarProviderOptions`](../interfaces/CalendarProviderOptions.md)
 
-###### customCalendar?
-
-\{ `holidays?`: [`CustomHolidayConfig`](../interfaces/CustomHolidayConfig.md)[]; `version?`: [`CalendarVersion`](../interfaces/CalendarVersion.md); \}
-
-Custom calendar configuration
-
-###### customCalendar.holidays?
-
-[`CustomHolidayConfig`](../interfaces/CustomHolidayConfig.md)[]
-
-Array of custom holidays to include
-
-###### customCalendar.version?
-
-[`CalendarVersion`](../interfaces/CalendarVersion.md)
-
-Version information for custom calendar
-
-###### useSpecialHolidays?
-
-`boolean`
-
-Whether to include special holidays from the library (default: true)
+Optional configuration options for the calendar.
 
 #### Returns
 
@@ -85,14 +63,14 @@ const provider = new CalendarProvider({
     holidays: [
       {
         date: '2024-03-17',
-        name: 'St. Patrick\'s Day',
+        name: "St. Patrick's Day",
         type: HolidayType.SPECIAL_HOLIDAY,
-        description: 'Irish cultural celebration'
-      }
+        description: 'Irish cultural celebration',
+      },
     ],
-    version: { version: '1.0.0', year: 2024, lastUpdated: '2024-01-01T00:00:00Z' }
+    version: { version: '1.0.0', year: 2024, lastUpdated: '2024-01-01T00:00:00Z' },
   },
-  useSpecialHolidays: true
+  useSpecialHolidays: true,
 });
 ```
 
@@ -102,7 +80,7 @@ const provider = new CalendarProvider({
 
 > **addWorkingDays**(`startDate`, `workingDays`): `Date`
 
-Defined in: [calendar-provider.ts:278](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L278)
+Defined in: [calendar-provider.ts:295](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L295)
 
 Adds a specified number of working days to a date, skipping weekends and holidays.
 
@@ -143,7 +121,7 @@ const beforeHoliday = provider.addWorkingDays('2024-12-20', 3); // Skips Christm
 
 > **countWorkingDays**(`startDate`, `endDate`): `number`
 
-Defined in: [calendar-provider.ts:387](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L387)
+Defined in: [calendar-provider.ts:404](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L404)
 
 Counts the number of working days between two dates (inclusive).
 
@@ -183,7 +161,7 @@ const projectDays = provider.countWorkingDays('2024-01-15', '2024-03-15');
 
 > **getCalendarVersion**(): [`CalendarVersion`](../interfaces/CalendarVersion.md)
 
-Defined in: [calendar-provider.ts:460](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L460)
+Defined in: [calendar-provider.ts:477](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L477)
 
 Gets the current calendar version information.
 
@@ -207,7 +185,7 @@ console.log(`Last updated: ${version.lastUpdated}`);
 
 > **getDayInfo**(`date`): [`DayInfo`](../interfaces/DayInfo.md)
 
-Defined in: [calendar-provider.ts:235](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L235)
+Defined in: [calendar-provider.ts:252](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L252)
 
 Gets detailed information about a specific day including working day status and holiday information.
 
@@ -243,7 +221,7 @@ console.log(dayInfo);
 
 > **getNextWorkingDay**(`date`): `Date`
 
-Defined in: [calendar-provider.ts:410](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L410)
+Defined in: [calendar-provider.ts:427](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L427)
 
 Gets the next working day from a given date.
 
@@ -278,7 +256,7 @@ const afterChristmas = provider.getNextWorkingDay('2024-12-25');
 
 > **getNonWorkingDaysInRange**(`startDate`, `endDate`): [`DayInfo`](../interfaces/DayInfo.md)[]
 
-Defined in: [calendar-provider.ts:351](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L351)
+Defined in: [calendar-provider.ts:368](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L368)
 
 Gets all non-working days (weekends and holidays) between two dates (inclusive).
 
@@ -321,7 +299,7 @@ nonWorkingDays.forEach(day => {
 
 > **getPreviousWorkingDay**(`date`): `Date`
 
-Defined in: [calendar-provider.ts:437](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L437)
+Defined in: [calendar-provider.ts:454](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L454)
 
 Gets the previous working day from a given date.
 
@@ -356,7 +334,7 @@ const beforeNewYear = provider.getPreviousWorkingDay('2024-01-02');
 
 > **getWorkingDaysInRange**(`startDate`, `endDate`): [`DayInfo`](../interfaces/DayInfo.md)[]
 
-Defined in: [calendar-provider.ts:312](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L312)
+Defined in: [calendar-provider.ts:329](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L329)
 
 Gets all working days between two dates (inclusive).
 
@@ -397,7 +375,7 @@ workingDays.forEach(day => {
 
 > **isHoliday**(`date`): `false` \| [`Holiday`](../interfaces/Holiday.md)
 
-Defined in: [calendar-provider.ts:178](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L178)
+Defined in: [calendar-provider.ts:195](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L195)
 
 Checks if a specific date is a holiday.
 
@@ -432,7 +410,7 @@ const dateHoliday = provider.isHoliday(new Date('2024-01-01'));
 
 > **isWorkingDay**(`date`): `boolean`
 
-Defined in: [calendar-provider.ts:202](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L202)
+Defined in: [calendar-provider.ts:219](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L219)
 
 Checks if a specific date is a working day (not a weekend or holiday).
 
@@ -464,7 +442,7 @@ const isHoliday = provider.isWorkingDay('2024-12-25'); // false (Christmas)
 
 > **updateCustomHolidays**(`customHolidays`): `void`
 
-Defined in: [calendar-provider.ts:487](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/calendar-provider.ts#L487)
+Defined in: [calendar-provider.ts:504](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L504)
 
 Updates the custom holidays configuration and clears the holiday cache.
 

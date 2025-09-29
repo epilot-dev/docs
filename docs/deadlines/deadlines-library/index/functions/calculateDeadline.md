@@ -8,7 +8,7 @@
 
 > **calculateDeadline**(`__namedParameters`, `fromDate?`): `Date`
 
-Defined in: [helpers.ts:23](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/helpers.ts#L23)
+Defined in: [helpers.ts:23](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/helpers.ts#L23)
 
 Calculate the earliest start date for a contract using default settings
 
