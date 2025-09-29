@@ -7,11 +7,9 @@ sidebar_position: 4
 [[API Docs](/api/automation#tag/flows)]
 [[SDK](https://www.npmjs.com/package/@epilot/automation-client)]
 
-> Entity Mapping is an advanced feature available only for certain pricing tiers.
-> 
-> Please contact epilot support to enable advanced automation features
+> These docs describe the advanced, low code Entity Mapping Feature. If you are looking for the no code solution, you can check out the docs [here](https://help.epilot.cloud/automatisierungen-und-mapping/6304301252242-Mapping-Zuordnung-von-Journey-Daten-zu-Entit%25C3%25A4ten?from_search=202771407).
 
-The **Create/Edit Entity** action allows mapping data from one entity to create or update other entities.
+The **Create/Edit Entity (Advanced)** action allows mapping data from one entity to create or update other entities.
 
 ![MapEntityAction](../../static/img/MapEntityAction.png)
 
@@ -117,6 +115,16 @@ The `_append` operation adds new values to an array.
 }
 ```
 
+### `_prepend`
+
+The `_prepend` operation adds new values to *the start* of an array.
+
+```json
+// prepend strings "tag1", "tag2" to the beginning of an array
+{
+  "_prepend": ["tag1", "tag2"]
+}
+```
 
 ### `_uniq`
 
@@ -132,7 +140,7 @@ The `_uniq` operation makes sure all items in an array are unique.
 
 For arrays with objects, you can define a unique key to be used.
 
-Duplicate objects are deeply merged.
+Duplicate objects are deeply merged retaining the old values. If a matching object was found, and the values should overwrite the found element, we can additionally set `_retain_old_values` to `false`
 
 ```json
 // append addresses, make sure each item is unique
@@ -145,7 +153,8 @@ Duplicate objects are deeply merged.
       "city": { "_copy": "submission.city" }
     }
   ],
-  "_uniq": ["street", "street_number", "postal_code", "city"]
+  "_uniq": ["street", "street_number", "postal_code", "city"],
+  "_retain_old_values": false
 }
 ```
 
