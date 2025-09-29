@@ -8,7 +8,7 @@
 
 > **filterHolidaysForYear**(`holidays`, `year`): [`Holiday`](../interfaces/Holiday.md)[]
 
-Defined in: [holidays/utils.ts:3](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/holidays/utils.ts#L3)
+Defined in: [holidays/utils.ts:3](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/utils.ts#L3)
 
 ## Parameters
 

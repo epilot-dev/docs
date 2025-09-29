@@ -8,7 +8,7 @@
 
 > **validateDate**(`__namedParameters`, `proposedDate`, `fromDate?`): `boolean`
 
-Defined in: [helpers.ts:52](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/helpers.ts#L52)
+Defined in: [helpers.ts:52](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/helpers.ts#L52)
 
 Validate if a proposed start date is valid using default settings
 

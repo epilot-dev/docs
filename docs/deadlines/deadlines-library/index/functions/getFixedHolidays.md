@@ -8,7 +8,7 @@
 
 > **getFixedHolidays**(`year`): [`Holiday`](../interfaces/Holiday.md)[]
 
-Defined in: [holidays/fixed.ts:9](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/holidays/fixed.ts#L9)
+Defined in: [holidays/fixed.ts:9](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/fixed.ts#L9)
 
 Get all fixed-date holidays for a given year
 

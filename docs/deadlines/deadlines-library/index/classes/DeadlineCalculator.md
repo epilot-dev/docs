@@ -6,7 +6,7 @@
 
 # Class: DeadlineCalculator
 
-Defined in: [deadlines-calculator.ts:32](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/deadlines-calculator.ts#L32)
+Defined in: [deadlines-calculator.ts:47](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/deadlines-calculator.ts#L47)
 
 Calculator for determining deadline dates and validating start dates for utility switching cases.
 
@@ -35,7 +35,7 @@ console.log(result.earliestStartDate)
 
 > **new DeadlineCalculator**(`options?`): `DeadlineCalculator`
 
-Defined in: [deadlines-calculator.ts:43](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/deadlines-calculator.ts#L43)
+Defined in: [deadlines-calculator.ts:68](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/deadlines-calculator.ts#L68)
 
 Creates a new DeadlineCalculator instance.
 
@@ -43,23 +43,26 @@ Creates a new DeadlineCalculator instance.
 
 ##### options?
 
-Optional configuration options for the calculator
+[`DeadlineCalculatorOptions`](../interfaces/DeadlineCalculatorOptions.md)
 
-###### calendarProvider?
-
-[`CalendarProvider`](CalendarProvider.md)
-
-Custom holiday calendar provider
-
-###### customRules?
-
-[`DeadlineRule`](../interfaces/DeadlineRule.md)[]
-
-Override default deadline rules
+Optional configuration options for the calculator.
 
 #### Returns
 
 `DeadlineCalculator`
+
+#### Example
+
+```typescript
+// Default: built-in calendar + default rules
+const calc = new DeadlineCalculator();
+
+// With a custom calendar and rules
+const calcCustom = new DeadlineCalculator({
+  calendarProvider: new CalendarProvider(),
+  customRules: [], // custom DeadlineRule objects
+});
+```
 
 ## Methods
 
@@ -67,7 +70,7 @@ Override default deadline rules
 
 > **calculateEarliestStartDate**(`switchingCase`, `fromDate?`): `object`
 
-Defined in: [deadlines-calculator.ts:72](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/deadlines-calculator.ts#L72)
+Defined in: [deadlines-calculator.ts:91](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/deadlines-calculator.ts#L91)
 
 Calculate the earliest possible start date for a contract
 
@@ -139,7 +142,7 @@ When no applicable rule is found for the switching case
 
 > **getRule**(`switchingCase`): `undefined` \| [`DeadlineRule`](../interfaces/DeadlineRule.md)
 
-Defined in: [deadlines-calculator.ts:201](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/deadlines-calculator.ts#L201)
+Defined in: [deadlines-calculator.ts:220](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/deadlines-calculator.ts#L220)
 
 Get a specific rule for a switching case
 
@@ -166,7 +169,7 @@ The matching deadline rule or undefined if none found
 
 > **getRules**(): [`DeadlineRule`](../interfaces/DeadlineRule.md)[]
 
-Defined in: [deadlines-calculator.ts:185](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/deadlines-calculator.ts#L185)
+Defined in: [deadlines-calculator.ts:204](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/deadlines-calculator.ts#L204)
 
 Get all configured rules
 
@@ -185,7 +188,7 @@ Array of all configured deadline rules
 
 > **validateStartDate**(`switchingCase`, `proposedDate`, `fromDate?`): `object`
 
-Defined in: [deadlines-calculator.ts:148](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/deadlines-calculator.ts#L148)
+Defined in: [deadlines-calculator.ts:167](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/deadlines-calculator.ts#L167)
 
 Validate if a proposed start date is valid
 

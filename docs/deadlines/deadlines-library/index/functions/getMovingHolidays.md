@@ -8,7 +8,7 @@
 
 > **getMovingHolidays**(`year`): [`Holiday`](../interfaces/Holiday.md)[]
 
-Defined in: [holidays/moving.ts:30](https://github.com/epilot-dev/switching-deadlines/blob/6764c18ea2525d949c8b9824eea28bc98b53665e/src/holidays/moving.ts#L30)
+Defined in: [holidays/moving.ts:30](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/moving.ts#L30)
 
 Get all moving holidays (e.g. those based on Easter) for a given year
 
