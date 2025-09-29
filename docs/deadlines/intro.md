@@ -11,5 +11,5 @@ Both power and gas contract switching in the German energy market comes with str
 
 epilot provides several ways to reliably calculate and validate these deadlines:
 
-- The Switching Deadlines API provides a centralised, simple [REST API](/api/deadlines) to calculate and validate supplier switching deadlines for power and gas in the German energy market. It is available to all epilot customers to integrate into their own systems.
+- The Switching Deadlines API provides a centralised, simple [REST API](.) to calculate and validate supplier switching deadlines for power and gas in the German energy market. It is available to all epilot customers to integrate into their own systems.
 - As a contribution to the wider community, epilot has open-sourced the [Switching Deadlines library](https://github.com/epilot-dev/switching-deadlines) for NodeJS. This library serves as basis for our API implementation. You can find more information on how to use it in the [documentation](/docs/deadlines/deadlines-library/).
