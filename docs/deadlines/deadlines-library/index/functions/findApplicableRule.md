@@ -8,7 +8,7 @@
 
 > **findApplicableRule**(`commodity`, `useCase`, `requiresTermination`, `rules`): `undefined` \| [`DeadlineRule`](../interfaces/DeadlineRule.md)
 
-Defined in: [rules/utils.ts:7](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/rules/utils.ts#L7)
+Defined in: [rules/utils.ts:7](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/rules/utils.ts#L7)
 
 Get the applicable rule for a specific scenario
 

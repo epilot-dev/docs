@@ -8,7 +8,7 @@
 
 > **getVersion**(): [`CalendarVersion`](../interfaces/CalendarVersion.md)
 
-Defined in: [helpers.ts:80](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/helpers.ts#L80)
+Defined in: [helpers.ts:80](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/helpers.ts#L80)
 
 Get the calendar version information
 
