@@ -6,7 +6,7 @@
 
 # Interface: SwitchingCase
 
-Defined in: [types.ts:25](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/types.ts#L25)
+Defined in: [types.ts:25](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/types.ts#L25)
 
 Represents a switching case configuration.
 
@@ -18,7 +18,7 @@ Represents a switching case configuration.
 
 > **commodity**: [`Commodity`](../enumerations/Commodity.md)
 
-Defined in: [types.ts:26](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/types.ts#L26)
+Defined in: [types.ts:26](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/types.ts#L26)
 
 The commodity type (power or gas)
 
@@ -28,7 +28,7 @@ The commodity type (power or gas)
 
 > **requiresTermination**: `boolean`
 
-Defined in: [types.ts:28](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/types.ts#L28)
+Defined in: [types.ts:28](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/types.ts#L28)
 
 Whether termination of the previous contract is required
 
@@ -38,6 +38,6 @@ Whether termination of the previous contract is required
 
 > **useCase**: [`UseCase`](../enumerations/UseCase.md)
 
-Defined in: [types.ts:27](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/types.ts#L27)
+Defined in: [types.ts:27](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/types.ts#L27)
 
 The use case (relocation or supplier switch)

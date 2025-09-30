@@ -6,7 +6,7 @@
 
 # Enumeration: Bundesland
 
-Defined in: [holidays/types.ts:8](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L8)
+Defined in: [holidays/types.ts:8](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L8)
 
 ## Enumeration Members
 
@@ -14,7 +14,7 @@ Defined in: [holidays/types.ts:8](https://github.com/epilot-dev/switching-deadli
 
 > **BB**: `"Brandenburg"`
 
-Defined in: [holidays/types.ts:12](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L12)
+Defined in: [holidays/types.ts:12](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L12)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [holidays/types.ts:12](https://github.com/epilot-dev/switching-deadl
 
 > **BE**: `"Berlin"`
 
-Defined in: [holidays/types.ts:11](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L11)
+Defined in: [holidays/types.ts:11](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L11)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [holidays/types.ts:11](https://github.com/epilot-dev/switching-deadl
 
 > **BW**: `"Baden-Württemberg"`
 
-Defined in: [holidays/types.ts:9](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L9)
+Defined in: [holidays/types.ts:9](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L9)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [holidays/types.ts:9](https://github.com/epilot-dev/switching-deadli
 
 > **BY**: `"Bayern"`
 
-Defined in: [holidays/types.ts:10](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L10)
+Defined in: [holidays/types.ts:10](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L10)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [holidays/types.ts:10](https://github.com/epilot-dev/switching-deadl
 
 > **HB**: `"Bremen"`
 
-Defined in: [holidays/types.ts:13](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L13)
+Defined in: [holidays/types.ts:13](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L13)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [holidays/types.ts:13](https://github.com/epilot-dev/switching-deadl
 
 > **HE**: `"Hessen"`
 
-Defined in: [holidays/types.ts:15](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L15)
+Defined in: [holidays/types.ts:15](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L15)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [holidays/types.ts:15](https://github.com/epilot-dev/switching-deadl
 
 > **HH**: `"Hamburg"`
 
-Defined in: [holidays/types.ts:14](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L14)
+Defined in: [holidays/types.ts:14](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L14)
 
 ***
 
@@ -70,7 +70,7 @@ Defined in: [holidays/types.ts:14](https://github.com/epilot-dev/switching-deadl
 
 > **MV**: `"Mecklenburg-Vorpommern"`
 
-Defined in: [holidays/types.ts:16](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L16)
+Defined in: [holidays/types.ts:16](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L16)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: [holidays/types.ts:16](https://github.com/epilot-dev/switching-deadl
 
 > **NI**: `"Niedersachsen"`
 
-Defined in: [holidays/types.ts:17](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L17)
+Defined in: [holidays/types.ts:17](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L17)
 
 ***
 
@@ -86,7 +86,7 @@ Defined in: [holidays/types.ts:17](https://github.com/epilot-dev/switching-deadl
 
 > **NW**: `"Nordrhein-Westfalen"`
 
-Defined in: [holidays/types.ts:18](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L18)
+Defined in: [holidays/types.ts:18](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L18)
 
 ***
 
@@ -94,7 +94,7 @@ Defined in: [holidays/types.ts:18](https://github.com/epilot-dev/switching-deadl
 
 > **RP**: `"Rheinland-Pfalz"`
 
-Defined in: [holidays/types.ts:19](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L19)
+Defined in: [holidays/types.ts:19](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L19)
 
 ***
 
@@ -102,7 +102,7 @@ Defined in: [holidays/types.ts:19](https://github.com/epilot-dev/switching-deadl
 
 > **SH**: `"Schleswig-Holstein"`
 
-Defined in: [holidays/types.ts:23](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L23)
+Defined in: [holidays/types.ts:23](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L23)
 
 ***
 
@@ -110,7 +110,7 @@ Defined in: [holidays/types.ts:23](https://github.com/epilot-dev/switching-deadl
 
 > **SL**: `"Saarland"`
 
-Defined in: [holidays/types.ts:20](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L20)
+Defined in: [holidays/types.ts:20](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L20)
 
 ***
 
@@ -118,7 +118,7 @@ Defined in: [holidays/types.ts:20](https://github.com/epilot-dev/switching-deadl
 
 > **SN**: `"Sachsen"`
 
-Defined in: [holidays/types.ts:21](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L21)
+Defined in: [holidays/types.ts:21](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L21)
 
 ***
 
@@ -126,7 +126,7 @@ Defined in: [holidays/types.ts:21](https://github.com/epilot-dev/switching-deadl
 
 > **ST**: `"Sachsen-Anhalt"`
 
-Defined in: [holidays/types.ts:22](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L22)
+Defined in: [holidays/types.ts:22](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L22)
 
 ***
 
@@ -134,4 +134,4 @@ Defined in: [holidays/types.ts:22](https://github.com/epilot-dev/switching-deadl
 
 > **TH**: `"Thüringen"`
 
-Defined in: [holidays/types.ts:24](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/holidays/types.ts#L24)
+Defined in: [holidays/types.ts:24](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/holidays/types.ts#L24)

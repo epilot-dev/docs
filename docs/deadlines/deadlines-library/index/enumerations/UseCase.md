@@ -6,7 +6,7 @@
 
 # Enumeration: UseCase
 
-Defined in: [rules/types.ts:6](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/rules/types.ts#L6)
+Defined in: [rules/types.ts:6](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/rules/types.ts#L6)
 
 ## Enumeration Members
 
@@ -14,7 +14,7 @@ Defined in: [rules/types.ts:6](https://github.com/epilot-dev/switching-deadlines
 
 > **RELOCATION**: `"relocation"`
 
-Defined in: [rules/types.ts:7](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/rules/types.ts#L7)
+Defined in: [rules/types.ts:7](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/rules/types.ts#L7)
 
 ***
 
@@ -22,4 +22,4 @@ Defined in: [rules/types.ts:7](https://github.com/epilot-dev/switching-deadlines
 
 > **SWITCH**: `"switch"`
 
-Defined in: [rules/types.ts:8](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/rules/types.ts#L8)
+Defined in: [rules/types.ts:8](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/rules/types.ts#L8)

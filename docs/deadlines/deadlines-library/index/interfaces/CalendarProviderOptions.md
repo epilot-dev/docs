@@ -6,7 +6,7 @@
 
 # Interface: CalendarProviderOptions
 
-Defined in: [calendar-provider.ts:19](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L19)
+Defined in: [calendar-provider.ts:19](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/calendar-provider.ts#L19)
 
 Options for configuring a [CalendarProvider](../classes/CalendarProvider.md).
 
@@ -16,7 +16,7 @@ Options for configuring a [CalendarProvider](../classes/CalendarProvider.md).
 
 > `optional` **customCalendar**: `object`
 
-Defined in: [calendar-provider.ts:23](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L23)
+Defined in: [calendar-provider.ts:23](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/calendar-provider.ts#L23)
 
 Custom calendar configuration.
 
@@ -38,7 +38,7 @@ Version information for the custom calendar.
 
 > `optional` **useSpecialHolidays**: `boolean`
 
-Defined in: [calendar-provider.ts:40](https://github.com/epilot-dev/switching-deadlines/blob/3e728b5f762c5b978f43c05453d07a8b73878933/src/calendar-provider.ts#L40)
+Defined in: [calendar-provider.ts:40](https://github.com/epilot-dev/switching-deadlines/blob/399b2cc39d63ef20d5c31e06d92ee448511e691c/src/calendar-provider.ts#L40)
 
 Whether to include special holidays from the library.
 

@@ -89,7 +89,7 @@ Comprehensive documentation and background information are available in the 👉
 
 This library is provided as an open-source contribution to the community to support flexibility when building custom systems around the epilot Energy XRM. It is not intended as a standalone product. Support is only provided for epilot customers.
 
-If you are an active epilot contract, you can alternatively use our [Switching Deadlines REST API](https://docs.epilot.io/api/deadlines), which offers the same logic as a web service.
+If you are an active epilot customer, you can alternatively use our [Switching Deadlines REST API](https://docs.epilot.io/api/deadlines), which offers the same logic as a web service.
 
 For questions or feedback regarding this library, please reach out to the epilot team.
 
