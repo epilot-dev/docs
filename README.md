@@ -21,9 +21,8 @@ When documenting your APIs, it's possible to perform changes and eval how they l
 
 For that, all you need to do is follow the instructions below:
 
-1. Point your API spec on the file `docusaurus.config.js` to your localhost: `http://localhost:3001/openapi.json`
-2. `npm dev` to run the docs portal locally
-3. `npm run swagger-ui:watch` to serve your api docs locally on your API project
-4. Finally to bypass CORS you will want to get this Chrome [extension](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc)
+1. `DOCS_URL=http://localhost:3001/ npm run dev` to run the docs portal locally
+2. `npm run swagger-ui:watch` to serve your api docs locally on your API project
+3. Finally to bypass CORS you will want to get this Chrome [extension](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc)
 
 When you are done, just deploy your `openapi.yml` as you normally would. And don't forget to update your client sdk [here](https://github.com/epilot-dev/sdk-js).
