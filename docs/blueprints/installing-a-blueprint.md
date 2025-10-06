@@ -4,7 +4,9 @@ title: Installing a Blueprint
 hide_title: true
 ---
 
-## Installing a Blueprint
+
+
+## Installation from Marketplace
 
 :::info
 
@@ -12,28 +14,127 @@ Blueprints are currently in closed **BETA** only available to selected customers
 
 :::
 
-To manage and install Blueprints, navigate to the [Configuration > Blueprints](https://portal.epilot.cloud/app/blueprints) in the epilot portal.
+To install a blueprint from the Marketplace navigate to [Configuration → Blueprints → Marketplace tab](https://portal.epilot.cloud/app/blueprints).
 
-![Blueprints](/img/blueprints/installed-blueprints.png)
+Here you can search and discover blueprints tailored for common use cases, based on our experience in the energy market.
 
-To install a new Blueprint, click on "Install Blueprint" and choose the source for your Blueprint.
+After finding the one that fits your business, click on “Install now”.
 
-1. If you already have a Blueprint zip file, you can choose *Upload File*
-1. Choose "Marketplace" to pick a Blueprint from the [epilot Marketplace](https://marketplace.epilot.cloud).
-1. Or if you wish to copy resources from another epilot organization, you can choose *"Sandbox"*.
+:::info
 
-![Install Blueprint](/img/blueprints/install-blueprint.png)
+Installation of a Marketplace Blueprint is possible only in a Sandbox testing environment. If you don’t have a sandbox yet, check the [Sandbox documentation](/docs/blueprints/intro#sandbox).
 
-After picking a blueprint from your source, epilot will show a preview (plan) of what will get added or changed in your organization as part of the Blueprint. 
+:::
 
-**Note that at this point, no changes will be made to your organization and you can still review the Blueprint before installing it!**
 
-After you have reviewed the changes, click on *Import Resources* to start the Blueprint installation.
+![Portal Marketplace Page](/img/blueprints/2-portal-marketplace.png)
 
-![View Plan Step](/img/blueprints/view-plan.png)
 
-The installation will take up to a few minutes to complete. 
+You have two options of installation:
 
-After the installation is complete, you will see a list of all the resources that were installed, and can click on each one to view the details and edit the configuration.
+- [One-click Install](/docs/blueprints/installing-a-blueprint#one-click-install)
+- [Advanced Install](/docs/blueprints/installing-a-blueprint#advanced-install)
 
-We recommend that you test the Blueprint in a sandbox environment before installing it in your production organization.
+![Step 2](/img/blueprints/2-one-click-installation.png)
+
+---
+
+### One-click install
+
+After choosing “One-click install” the installation process will start automatically.
+
+Depending on the number of resources included in the chosen blueprint the installation may take up to 5 min.
+
+![Step 3](/img/blueprints/2-one-click-step-3.png)
+
+And that’s it! You successufuly installed a blueprint from the marketplace. Check out [Post-Installation Configuration](#post-installation-configuration) on how to configure the installed resources.
+
+
+Next, you can [edit it](/docs/blueprints/editing-and-synchronizing#editing-blueprints), or [synchronize with another organization](/docs/blueprints/editing-and-synchronizing#synchronize-with-another-organization)  — click on the relevant sections links for more details.
+
+![Installation Complete](/img/blueprints/2-one-click-complete.png)
+
+---
+
+### Advanced install
+
+If “Advanced Install” is chosen, you will have a fine control on which resources from a blueprint should be installed.
+
+To remove a resource, uncheck an item and click on “Update installation”.
+
+
+![Pick resources](/img/blueprints/2-advanced-pick-resources.png)
+
+When done selecting resources, click on “Install resources” to continue, the installation will proceed automatically from here.
+
+And that’s it! You successufuly installed a blueprint from the marketplace. Check out [Post-Installation Configuration](#post-installation-configuration) on how to configure the installed resources.
+
+Next, you can [edit it](/docs/blueprints/editing-and-synchronizing#editing-blueprints), or [synchronize with another organization](/docs/blueprints/editing-and-synchronizing#synchronize-with-another-organization)  — click on the relevant sections links for more details.
+
+![Installation Complete](/img/blueprints/2-advanced-complete.png)
+
+---
+
+## Post-Installation Configuration
+
+After a Blueprint is installed, some resources may still require additional setup before they can be fully used. In the list view, these resources appear with the **“Ready to use” toggle switched off**. You can also filter the list to quickly see which items are not yet marked as ready.
+
+- In the list view, click the link next to the toggle to open a resource in a new tab.
+
+- Define and save any changes needed for the resource.
+
+- Return to the Blueprint overview and toggle the resource as ready to use.
+
+- Marking a resource as ready is optional and is meant to help you keep track of configuration progress.
+
+
+![Resource toggle](/img/blueprints/2-resource-toggle.png)
+
+
+---
+
+## Creation of Custom Blueprint
+
+Besides installing a blueprint from marketplace, you are also able to create your own Blueprints.
+
+With **Custom Blueprints** you can combine available resources to create your own Blueprint. With that you are able to:
+
+- Organize use-cases
+
+- Test combination of resoures on a sandbox
+
+- Share your use-case with other orgs
+
+---
+
+To create a **Custom Blueprint**, go to Configuration → Blueprints and select the tab “Blueprints”.
+
+On the bottom you will see “Create Blueprint”, click on it to start the creation process.
+
+You will be presented with a screen that allows you to select Resources to include in your Custom Blueprint.
+
+Click on “Add resources” to continue.
+
+
+![Create blueprint](/img/blueprints/2-create-blueprint.png)
+
+
+You will be presented with a list of categories of resources, select one to continue.
+
+After, select the specific resources on that category you wish to include, here we are adding a single Product.
+
+:::info
+
+Note: A resource will be added together with any other resources linked to it.
+
+:::
+
+
+![Add resources](/img/blueprints/2-add-resource-side-panel.png)
+
+
+That’s it! You successfully created your own Blueprint! 
+
+You will be redirected to the resources view of this blueprint in there you are able to further edit it, [see more](/docs/blueprints/editing-and-synchronizing#editing-blueprints).
+
+---

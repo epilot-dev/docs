@@ -8,7 +8,7 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 
 const graphqlMarkdownConfig = require('./graphql-markdown.config');
 const { specs } = require('./redoc.config');
-const DOCS_URL = 'https://docs.epilot.io';
+const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
 
 const changelogProcessingDir = path.join(__dirname, 'changelog-processing');
 
