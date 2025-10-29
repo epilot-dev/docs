@@ -113,6 +113,17 @@ const apiChangelogPlugins = specs
         sidebarPath: require.resolve('./sidebars.js'),
       },
     ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/docs/entities/schemas-list',
+            to: '/docs/entities/core-entities',
+          },
+        ],
+      },
+    ],
     ...apiChangelogPlugins, // Spread the dynamically generated changelog plugins
   ],
 
