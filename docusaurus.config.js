@@ -69,6 +69,7 @@ const apiChangelogPlugins = specs
           id: 'default',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/epilot-dev/docs/edit/main/',
+          remarkPlugins: [require('mdx-mermaid')],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

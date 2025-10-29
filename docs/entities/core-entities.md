@@ -9,7 +9,77 @@ import EntitySchemaViewer from '@site/src/components/EntitySchemaViewer';
 
 This page provides an overview for epilot's core entity data model with all of the built-in entity schemas, including examples and schema definitions.
 
-## Customer Relations
+## Relationship Diagram
+
+```mermaid
+graph TB
+    %% Customer Relations
+    Account[Account]
+    Contact[Contact]
+
+    %% Sales
+    Opportunity[Opportunity]
+    Order[Order]
+
+    %% Products
+    Product[Product]
+    Price[Price]
+    Tax[Tax]
+
+    %% Contracts & Billing
+    Contract[Contract]
+    BillingAccount[Billing Account]
+    BillingEvent[Billing Event]
+
+    %% Metering
+    Meter[Meter]
+    MeterCounter[Meter Counter]
+
+    %% Sales Flow
+    Opportunity -->|has many| Order
+
+    %% Customer Relations
+    Contact -->|has many| Opportunity
+    Contact -->|has many| Order
+    Contact -->|has one| Account
+    Contact -->|has many| Contract
+    Contact -->|has many| Ticket
+    Contact -->|has many| BillingAccount
+
+    Order -->|has many| Product
+
+    %% Products
+    Product -->|has many| Price
+    Price -->|has one| Tax
+
+    %% Contracts & Billing
+    Contract -->|has one| BillingAccount
+    Contract -->|has one| Order
+    Contract -->|has many| Meter
+
+    BillingAccount -->|has many| BillingEvent
+
+    %% Metering
+    Meter -->|has many| MeterCounter
+
+    style Account fill:#e1f5ff
+    style Contact fill:#e1f5ff
+
+    style Opportunity fill:#fff4e1
+    style Order fill:#fff4e1
+
+    style Product fill:#f0e1ff
+    style Price fill:#f0e1ff
+    style Tax fill:#f0e1ff
+
+    style Contract fill:#e1ffe1
+    style BillingAccount fill:#e1ffe1
+    style BillingEvent fill:#e1ffe1
+```
+
+## Built-in Entity Schemas
+
+### Customer Relations
 
 <EntitySchemaViewer
   schema="contact"
@@ -32,7 +102,13 @@ This page provides an overview for epilot's core entity data model with all of t
   apiLink="/api/partner#tag/partner_schema"
 />
 
-## Sales
+<EntitySchemaViewer
+  schema="ticket"
+  displayName="Ticket"
+  description="Tickets store customer support requests and help desk inquiries."
+/>
+
+### Sales
 
 <EntitySchemaViewer
   schema="opportunity"
@@ -48,7 +124,7 @@ This page provides an overview for epilot's core entity data model with all of t
   apiLink="/api/order#tag/order_schema"
 />
 
-## Product Hub
+### Product Hub
 
 <EntitySchemaViewer
   schema="product"
@@ -78,7 +154,7 @@ This page provides an overview for epilot's core entity data model with all of t
   apiLink="/api/pricing#tag/coupon_schema"
 />
 
-## Contracts & Billing
+### Contracts & Billing
 
 <EntitySchemaViewer
   schema="contract"
@@ -102,7 +178,7 @@ This page provides an overview for epilot's core entity data model with all of t
 />
 
 
-## Metering
+### Metering
 
 <EntitySchemaViewer
   schema="meter"
@@ -118,7 +194,7 @@ This page provides an overview for epilot's core entity data model with all of t
   apiLink="/api/metering#tag/meter_counter_schema"
 />
 
-## Journeys
+### Journeys
 
 <EntitySchemaViewer
   schema="journey"
@@ -134,7 +210,7 @@ This page provides an overview for epilot's core entity data model with all of t
   apiLink="/api/submission#tag/submission_schema"
 />
 
-## Messaging
+### Messaging
 
 <EntitySchemaViewer
   schema="message"
@@ -150,7 +226,27 @@ This page provides an overview for epilot's core entity data model with all of t
   apiLink="/api/email-template#tag/email_template_schema"
 />
 
-## System
+### Marketing & Analytics
+
+<EntitySchemaViewer
+  schema="campaign"
+  displayName="Campaign"
+  description="Campaigns store marketing campaign information and configurations."
+/>
+
+<EntitySchemaViewer
+  schema="target"
+  displayName="Target"
+  description="Targets represent goals or milestones for sales and marketing activities."
+/>
+
+<EntitySchemaViewer
+  schema="product_recommendation"
+  displayName="Product Recommendation"
+  description="Product recommendations suggest products to customers based on their preferences and behavior."
+/>
+
+### System
 
 <EntitySchemaViewer
   schema="file"
@@ -171,30 +267,4 @@ This page provides an overview for epilot's core entity data model with all of t
   displayName="Portal User"
   description="Portal users are users registered to use end customer portals or installer portals."
   apiLink="/api/customer-portal#tag/portal_user_schema"
-/>
-
-<EntitySchemaViewer
-  schema="ticket"
-  displayName="Ticket"
-  description="Tickets store customer support requests and help desk inquiries."
-/>
-
-## Marketing & Analytics
-
-<EntitySchemaViewer
-  schema="campaign"
-  displayName="Campaign"
-  description="Campaigns store marketing campaign information and configurations."
-/>
-
-<EntitySchemaViewer
-  schema="target"
-  displayName="Target"
-  description="Targets represent goals or milestones for sales and marketing activities."
-/>
-
-<EntitySchemaViewer
-  schema="product_recommendation"
-  displayName="Product Recommendation"
-  description="Product recommendations suggest products to customers based on their preferences and behavior."
 />
