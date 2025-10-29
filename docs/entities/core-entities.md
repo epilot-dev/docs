@@ -7,7 +7,7 @@ import EntitySchemaViewer from '@site/src/components/EntitySchemaViewer';
 
 # Core Entities
 
-This page provides comprehensive documentation for epilot's core entity data models. Each entity includes a description, interactive example viewer, and the full JSON Schema definition.
+This page provides an overview for epilot's core entity data model with all of the built-in entity schemas, including examples and schema definitions.
 
 ## Customer Relations
 
@@ -198,24 +198,3 @@ This page provides comprehensive documentation for epilot's core entity data mod
   displayName="Product Recommendation"
   description="Product recommendations suggest products to customers based on their preferences and behavior."
 />
-
-## Common Entity Fields
-
-All entities share the following common fields:
-
-- `_id` - Unique identifier for the entity
-- `_org` - Organization ID that owns the entity
-- `_schema` - Schema slug identifying the entity type
-- `_title` - Human-readable title/name for the entity
-- `_created_at` - Timestamp when the entity was created
-- `_updated_at` - Timestamp when the entity was last updated
-- `_tags` - Array of tags for categorization
-- `_owners` - Array of user/org ownership information
-- `_acl` - Access control list defining view/edit/delete permissions
-- `_files` - Relations to associated file entities
-
-## Working with Entities
-
-To interact with these entities programmatically, use the [Entity API](/api/entity) or the [@epilot/entity-client](https://github.com/epilot-dev/sdk-js) SDK.
-
-For more information about entity schemas, see the [Schemas List](/docs/entities/schemas-list).
