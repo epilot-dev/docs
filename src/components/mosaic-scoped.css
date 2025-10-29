@@ -1,0 +1,9 @@
+/* Import Mosaic styles but reset them to not affect global Docusaurus styles */
+@import '@stoplight/mosaic/styles.css';
+@import '@stoplight/mosaic/themes/default.css';
+
+
+/* disable sticky elements like toolbars and sidebars */
+.sl-sticky {
+  display: none !important;
+}

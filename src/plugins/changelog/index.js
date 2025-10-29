@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *

@@ -1,0 +1,73 @@
+/* Stoplight JSON Schema Viewer Overrides */
+
+.sl-elements {
+  font-family: var(--ifm-font-family-base);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ifm-color-content);
+}
+
+.sl-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.sl-flex {
+  display: flex;
+}
+
+.sl-text-sm {
+  font-size: 0.875rem;
+}
+
+.sl-text-muted {
+  color: var(--ifm-color-emphasis-700);
+}
+
+.sl-font-mono {
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.sl-prose {
+  color: var(--ifm-color-content);
+}
+
+.sl-prose p {
+  margin: 0.5rem 0;
+}
+
+/* Property rows */
+.sl-flex[data-test="property-row"] {
+  padding: 0.5rem;
+  border-left: 2px solid var(--ifm-color-emphasis-300);
+  margin-left: 0.5rem;
+}
+
+/* Type badges */
+.sl-text-sm.sl-font-mono {
+  background: var(--ifm-code-background);
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+/* Required indicator */
+.sl-text-danger {
+  color: var(--ifm-color-danger);
+}
+
+/* Validation info */
+.sl-text-xs {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* Dark mode */
+html[data-theme='dark'] .sl-text-muted {
+  color: var(--ifm-color-emphasis-600);
+}
+
+html[data-theme='dark'] .sl-text-sm.sl-font-mono {
+  background: var(--ifm-code-background);
+}

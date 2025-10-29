@@ -1,0 +1,371 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "_schema",
+    "content",
+    "created_by"
+  ],
+  "properties": {
+    "_schema": {
+      "readOnly": true,
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "example": "contact",
+      "description": "URL-friendly identifier for the entity schema"
+    },
+    "_id": {
+      "readOnly": true,
+      "type": "string",
+      "format": "uuid",
+      "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "description": "Unique identifier for the entity"
+    },
+    "_org": {
+      "type": "string",
+      "description": "Organization Id the entity belongs to",
+      "readOnly": true,
+      "example": "123"
+    },
+    "_title": {
+      "readOnly": true,
+      "type": "string",
+      "nullable": true,
+      "example": "John Doe",
+      "description": "Generated title for the entity based on schema title_template"
+    },
+    "_tags": {
+      "type": "array",
+      "nullable": true,
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "family:label"
+      ],
+      "description": "Entity Labels"
+    },
+    "content": {
+      "type": "string",
+      "description": "Content"
+    },
+    "note_number": {
+      "type": "string",
+      "description": "Note Number"
+    },
+    "created_by": {
+      "$ref": "#/definitions/User",
+      "description": "Created by"
+    },
+    "context_entities": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Context Entity"
+    },
+    "parent": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Comment of"
+    },
+    "attachments": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Attachments"
+    },
+    "contexts": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Contexts"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "internal_communication",
+        "phone_protocol",
+        "onsite_visit",
+        "partner_communication",
+        "personal_consultation"
+      ],
+      "description": "Type: Note Type"
+    },
+    "onsite_visit_address": {
+      "type": "string",
+      "description": "Address"
+    },
+    "onsite_visit_date_and_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date & Time"
+    },
+    "phone_protocol_call_direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound"
+      ],
+      "description": "Call Direction"
+    },
+    "phone_protocol_call_type": {
+      "type": "string",
+      "enum": [
+        "cold_call",
+        "consultation",
+        "negotiation",
+        "partner_communication",
+        "post_qualification",
+        "others"
+      ],
+      "description": "Call Type"
+    },
+    "phone_protocol_call_outcome": {
+      "type": "string",
+      "enum": [
+        "busy",
+        "connected",
+        "left_voicemail",
+        "no_answer",
+        "wrong_number",
+        "final_call_attempt_unsuccessful"
+      ],
+      "description": "Call Outcome"
+    },
+    "phone_protocol_date_and_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date & Time"
+    },
+    "personal_consultation_duration": {
+      "type": "string",
+      "enum": [
+        "less_than_30_minutes",
+        "around_30_minutes",
+        "around_1_hour",
+        "around_90_minutes",
+        "around_2_hours",
+        "more_than_2_hours"
+      ],
+      "description": "Duration"
+    },
+    "personal_consultation_date_and_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date & Time"
+    },
+    "_files": {
+      "$ref": "#/definitions/BaseRelation"
+    },
+    "_created_at": {
+      "readOnly": true,
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Timestamp of entity creation"
+    },
+    "_updated_at": {
+      "readOnly": true,
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Timestamp of entity last update"
+    },
+    "_owners": {
+      "type": "array",
+      "readOnly": true,
+      "items": {
+        "description": "The user / organization owning this entity.\n\nNote: Owner implicitly has access to the entity regardless of ACLs.\n",
+        "type": "object",
+        "properties": {
+          "org_id": {
+            "type": "string",
+            "example": "123"
+          },
+          "user_id": {
+            "type": "string",
+            "example": "456"
+          }
+        },
+        "required": [
+          "org_id"
+        ]
+      }
+    },
+    "_acl": {
+      "readOnly": true,
+      "type": "object",
+      "description": "Access control list (ACL) for an entity. Defines sharing access to external orgs or users.",
+      "additionalProperties": true,
+      "properties": {
+        "view": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        },
+        "edit": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        },
+        "delete": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        }
+      }
+    },
+    "_manifest": {
+      "readOnly": true,
+      "type": "array",
+      "nullable": true,
+      "description": "Blueprint ID used to create/update the entity",
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "123e4567-e89b-12d3-a456-426614174000"
+      ]
+    }
+  },
+  "definitions": {
+    "BaseUUID": {
+      "type": "string",
+      "format": "uuid",
+      "example": "123e4567-e89b-12d3-a456-426614174000"
+    },
+    "BaseTags": {
+      "type": "array",
+      "nullable": true,
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "example"
+      ]
+    },
+    "BaseRelation": {
+      "type": "object",
+      "nullable": true,
+      "description": "Relation to another entity",
+      "properties": {
+        "$relation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "_tags": {
+                "$ref": "#/definitions/BaseTags"
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserId": {
+      "description": "User's unique identifier",
+      "type": "string",
+      "readOnly": true
+    },
+    "OrganizationId": {
+      "description": "Organization unique identifier",
+      "type": "string",
+      "readOnly": true,
+      "example": "123"
+    },
+    "User": {
+      "type": "object",
+      "description": "User information",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/UserId"
+        },
+        "organization_id": {
+          "$ref": "#/definitions/OrganizationId"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "user@example.com"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
+        },
+        "preferred_language": {
+          "type": "string",
+          "example": "de",
+          "description": "ISO 639-1 language code"
+        },
+        "signature": {
+          "type": "string",
+          "example": "<p>Best regards,<br/>John Doe</p>",
+          "description": "HTML email signature"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "Owner"
+          },
+          "deprecated": true,
+          "description": "Deprecated! Please use Permissions API instead"
+        },
+        "image_uri": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "original": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
+            },
+            "thumbnail_32": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
+            }
+          },
+          "nullable": true
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "profileImageName"
+              },
+              "value": {
+                "type": "string",
+                "example": "avatar.png"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          }
+        }
+      },
+      "required": [
+        "id",
+        "organization_id",
+        "email",
+        "name",
+        "preferred_language",
+        "roles",
+        "properties"
+      ]
+    }
+  }
+}

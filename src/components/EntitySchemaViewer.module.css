@@ -1,0 +1,270 @@
+.container {
+  margin-bottom: 2.5rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  padding: 1.5rem;
+  background: var(--ifm-background-surface-color);
+  transition: all 0.2s ease;
+}
+
+.container:hover {
+  border-color: var(--ifm-color-emphasis-300);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  margin-bottom: 1rem;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.entityTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ifm-heading-color);
+}
+
+.description {
+  margin: 0 0 0.75rem 0;
+  color: var(--ifm-color-content);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.apiLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--ifm-color-primary-lightest);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--ifm-color-primary);
+  transition: all 0.2s ease;
+}
+
+.apiLink:hover {
+  background: var(--ifm-color-primary-lighter);
+}
+
+.apiLink svg {
+  flex-shrink: 0;
+}
+
+.apiLinkText {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.apiLinkText:hover {
+  text-decoration: underline;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  flex-wrap: wrap;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border: 2px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-color-content);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--ifm-font-family-base);
+}
+
+.button:hover:not(:disabled) {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.buttonActive {
+  border-color: var(--ifm-color-primary);
+  background: var(--ifm-color-primary);
+  color: white;
+}
+
+.buttonActive:hover:not(:disabled) {
+  background: var(--ifm-color-primary-dark);
+  border-color: var(--ifm-color-primary-dark);
+  color: white;
+}
+
+.codeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--ifm-color-emphasis-100);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px 8px 0 0;
+}
+
+.codeTitle {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+  color: var(--ifm-color-content);
+  font-weight: 600;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-color-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.downloadButton:hover {
+  border-color: var(--ifm-color-primary);
+  background: var(--ifm-color-primary);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.downloadButton svg {
+  flex-shrink: 0;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  background: var(--ifm-color-danger-lightest);
+  border-left: 4px solid var(--ifm-color-danger);
+  border-radius: 6px;
+  color: var(--ifm-color-danger-darkest);
+  font-size: 0.9rem;
+}
+
+.error svg {
+  flex-shrink: 0;
+  color: var(--ifm-color-danger);
+}
+
+.codeContainer {
+  margin-top: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.codeContainer > div:not(.codeHeader) {
+  margin: 0;
+  border-radius: 0 0 8px 8px;
+  font-size: 0.85rem;
+}
+
+.visualContainer {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  background: var(--ifm-background-surface-color);
+  animation: slideDown 0.3s ease;
+  overflow: auto;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode adjustments */
+html[data-theme='dark'] .container {
+  background: var(--ifm-background-surface-color);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+html[data-theme='dark'] .container:hover {
+  border-color: var(--ifm-color-emphasis-400);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme='dark'] .apiLink {
+  background: rgba(87, 192, 255, 0.15);
+}
+
+html[data-theme='dark'] .apiLink:hover {
+  background: rgba(87, 192, 255, 0.25);
+}
+
+html[data-theme='dark'] .button {
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+html[data-theme='dark'] .downloadLink {
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buttonGroup,
+  .downloadGroup {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .button,
+  .downloadLink {
+    flex: 1;
+    justify-content: center;
+  }
+}

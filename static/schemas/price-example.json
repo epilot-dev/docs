@@ -1,0 +1,96 @@
+{
+  "_schema": "price",
+  "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_org": "123",
+  "_title": "John Doe",
+  "_tags": [
+    "family:label"
+  ],
+  "_purpose": [
+    "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+  ],
+  "description": "string",
+  "internal_description": "string",
+  "long_description": "string",
+  "pricing_model": "per_unit",
+  "unit_amount_currency": "EUR",
+  "unit_amount_decimal": "123.45",
+  "unit_amount": 0,
+  "is_tax_inclusive": true,
+  "price_display_in_journeys": "show_price",
+  "unit": "",
+  "active": true,
+  "variable_price": true,
+  "additional_information": "string",
+  "type": "one_time",
+  "billing_period": "weekly",
+  "billing_duration_amount": "string",
+  "billing_duration_unit": "weeks",
+  "notice_time_amount": "string",
+  "notice_time_unit": "weeks",
+  "termination_time_amount": "string",
+  "termination_time_unit": "weeks",
+  "renewal_duration_amount": "string",
+  "renewal_duration_unit": "weeks",
+  "price_components": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "is_composite_price": true,
+  "tax": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "tiers": {
+    "up_to": 100,
+    "flat_fee_amount": 1000,
+    "flat_fee_amount_decimal": "10.00",
+    "unit_amount": 500,
+    "unit_amount_decimal": "5.00",
+    "display_mode": "hidden"
+  },
+  "_files": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "_created_at": "1970-01-01T00:00:00.000Z",
+  "_updated_at": "1970-01-01T00:00:00.000Z",
+  "_owners": [
+    {
+      "org_id": "123",
+      "user_id": "456"
+    }
+  ],
+  "_acl": {
+    "view": [
+      "org:456"
+    ],
+    "edit": [
+      "org:456"
+    ],
+    "delete": [
+      "org:456"
+    ]
+  },
+  "_manifest": [
+    "123e4567-e89b-12d3-a456-426614174000"
+  ]
+}

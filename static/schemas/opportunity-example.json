@@ -1,0 +1,202 @@
+{
+  "_schema": "opportunity",
+  "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_org": "123",
+  "_title": "John Doe",
+  "_tags": [
+    "family:label"
+  ],
+  "_purpose": [
+    "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+  ],
+  "opportunity_title": "string",
+  "opportunity_number": "string",
+  "status": "open",
+  "due_date": "1970-01-01T00:00:00.000Z",
+  "description": "string",
+  "assignee": {
+    "id": "string",
+    "organization_id": "123",
+    "email": "user@example.com",
+    "display_name": "John Doe",
+    "name": "John Doe",
+    "preferred_language": "de",
+    "signature": "<p>Best regards,<br/>John Doe</p>",
+    "roles": [
+      "Owner"
+    ],
+    "image_uri": {
+      "original": "https://account-profile-images.epilot.cloud/1/avatar.png",
+      "thumbnail_32": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
+    },
+    "properties": [
+      {
+        "name": "profileImageName",
+        "value": "avatar.png"
+      }
+    ]
+  },
+  "source": {
+    "type": "link",
+    "title": "Visit Website",
+    "href": "https://example.com"
+  },
+  "customer": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "billing_address": {
+    "$relation_ref": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "path": "address",
+        "_tags": [
+          "example"
+        ],
+        "_id": "xHcOoJCa07eysJ1GaQeSb"
+      }
+    ]
+  },
+  "delivery_address": {
+    "$relation_ref": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "path": "address",
+        "_tags": [
+          "example"
+        ],
+        "_id": "xHcOoJCa07eysJ1GaQeSb"
+      }
+    ]
+  },
+  "address": {
+    "$relation_ref": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "path": "address",
+        "_tags": [
+          "example"
+        ],
+        "_id": "xHcOoJCa07eysJ1GaQeSb"
+      }
+    ]
+  },
+  "payment": {
+    "$relation_ref": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "path": "address",
+        "_tags": [
+          "example"
+        ],
+        "_id": "xHcOoJCa07eysJ1GaQeSb"
+      }
+    ]
+  },
+  "dates": [
+    {
+      "_tags": [
+        "string"
+      ],
+      "value": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "items": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "products": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "workflows": {
+    "primary": {
+      "id": "string",
+      "definition_id": "string",
+      "name": "string",
+      "status": "STARTED",
+      "assignees": [
+        "string"
+      ],
+      "progress": 0,
+      "phases_in_progress": [
+        {
+          "phase_id": "string",
+          "phase_name": "string",
+          "phase_progress": 0
+        }
+      ],
+      "last_update_time": "1970-01-01T00:00:00.000Z",
+      "upcoming_tasks_assignees": [
+        "string"
+      ],
+      "task_id": "string",
+      "task_name": "string",
+      "task_assignees": [
+        "string"
+      ],
+      "task_duedate": "1970-01-01T00:00:00.000Z",
+      "task_execution_type": "MANUAL",
+      "task_status": "UNASSIGNED",
+      "phase_id": "string",
+      "phase_name": "string",
+      "phase_assignees": [
+        "string"
+      ],
+      "phase_progress": 0
+    }
+  },
+  "consents": {
+    "_isValid": true
+  },
+  "_files": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "_created_at": "1970-01-01T00:00:00.000Z",
+  "_updated_at": "1970-01-01T00:00:00.000Z",
+  "_owners": [
+    {
+      "org_id": "123",
+      "user_id": "456"
+    }
+  ],
+  "_acl": {
+    "view": [
+      "org:456"
+    ],
+    "edit": [
+      "org:456"
+    ],
+    "delete": [
+      "org:456"
+    ]
+  },
+  "_manifest": [
+    "123e4567-e89b-12d3-a456-426614174000"
+  ]
+}
