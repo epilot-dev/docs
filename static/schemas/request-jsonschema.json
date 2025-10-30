@@ -437,7 +437,6 @@
         "name",
         "status",
         "assignees",
-        "phases_in_progress",
         "last_update_time"
       ]
     },

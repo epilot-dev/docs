@@ -38,8 +38,8 @@
       "coordinates": "50.948484, 6.943147",
       "plot_of_land": "string",
       "plot_area": "string",
-      "start_date": "string",
-      "end_date": "string"
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01"
     }
   ],
   "contract": {
