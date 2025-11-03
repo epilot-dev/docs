@@ -8,16 +8,307 @@ sidebar_position: 6
 
 <p align="center">Enhance epilot portals with custom functionality and integrations</p>
 
-## 🚧 Documentation Coming Soon
+## Configuration
 
-We're currently developing comprehensive documentation for Portal Extensions. This section will include detailed guides on creating Links and Hooks components for both customer and installer portals.
+All development is performed using the built-in configuration editor accessible from the component editor.
 
-### Future Content
+The editor provides you with autocomplete and validation of the configuration. That way you can start with the example provided in this documentation and fine-tune your portal extension without ever leaving the editor.
 
-This documentation will cover:
+![Portal Extension configuration editor](../../../static/img/apps/portal-extensions/editor.png)
 
-- **Use Cases**: Learn how Portal Extensions can solve real business needs
-- **Links**: Add custom navigation and external integrations
-- **Hooks**: Create responsive components that enhance the portal experience
+## Links
 
-Please check back soon, or [contact our developer support team](https://developers.epilot.cloud/contact) for early access information.
+The easiest way to extend the functionality of portals is to link to a third party system.
+This is possible using the "seamless link" concept.
+
+### What are Seamless Links?
+
+Seamless links enable portal users to access third-party systems directly without manual authentication. When a user clicks a seamless link in the portal, epilot handles the authentication process in the background according to your configured rules, then redirects the user to the specified page in the third-party system with the necessary credentials or tokens.
+
+This provides a smooth user experience where portal users can navigate to external systems without interruption, while you maintain control over the authentication mechanism and security policies.
+
+### How Seamless Links Work
+
+The seamless link flow consists of two main steps:
+
+1. **Authentication**: epilot makes a request to your authentication endpoint using the configured credentials and headers
+2. **Redirect**: epilot uses the authentication response to construct a redirect URL with the necessary parameters (such as tokens) and sends the user to the target page
+
+All of this happens automatically in the background, so the portal user experiences a seamless transition to the third-party system.
+
+### Configuration and Example
+
+Seamless links are configured in your app configuration. Each seamless link defines the authentication mechanism and the redirect behavior. The built-in component configuration editor will guide you through the available properties and their format. Here is an example hook configuration:
+
+```json
+{
+  "id": "third_party_seamless_link",
+  "type": "seamless",
+  "name": {
+    "en": "Dashboard",
+    "de": "Dashboard"
+  },
+  "description": {
+    "en": "Adds Third Party System as a Type for \"Seamless link\". Once configured, the system can be opened from Portal without a need to authenticate.",
+    "de": "Fügt Third Party System als Typ für \"Seamless Link\" hinzu. Sobald konfiguriert, kann das System von Portal aus geöffnet werden, ohne sich authentifizieren zu müssen."
+  },
+  "auth": {
+    "type": "token",
+    "url": "{{Options.api_url}}/token",
+    "method": "GET",
+    "headers": {
+      "API-Key": "{{Options.api_key}}",
+      "UID": "{{Contact.customer_number}}"
+    }
+  },
+  "redirect": {
+    "url": "{{Options.ui_url}}/dashboard",
+    "params": {
+      "token": "{{AuthResponse.data.data.token}}",
+      "contractId": "{{Contract.contract_number}}"
+    }
+  }
+}
+```
+
+The configuration above adds a new option for quick actions like this:
+
+![Seamless link used in quick action](../../../static/img/apps/portal-extensions/quick-action-seamless-link.png)
+
+### Template Variables
+
+You can use template variables throughout your seamless link configuration to dynamically inject values from various sources. Template variables use the `{{Variable.path}}` syntax.
+
+#### Available Variables
+
+- **`Options.*`**: Access values from the app options configured during installation
+  - Example: `{{Options.api_url}}`, `{{Options.api_key}}`
+
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+  - Example: `{{Contact.customer_number}}`, `{{Contact.email}}`
+
+- **`AuthResponse.*`**: Access data from the authentication response
+  - Example: `{{AuthResponse.data.data.token}}`, `{{AuthResponse.status}}`
+  - Use this to extract tokens or other authentication data returned by your auth endpoint
+
+- **`Entity.*`**: Access properties from the current context entities
+  - Example: `{{Contract.contract_number}}`, `{{Contract.id}}`
+
+
+### Example Use Cases
+
+1. **Billing Dashboard**: Redirect portal users to a third-party billing system to check details of their last bill
+2. **Document Management**: Provide direct access to a document repository
+3. **Service Portal**: Integrate with external service management systems
+
+### Security Considerations
+
+- **Credentials Storage**: Store sensitive credentials (like API keys) as app options rather than hardcoding them
+- **Token Expiration**: Ensure your authentication tokens have appropriate expiration times
+- **HTTPS**: Always use HTTPS URLs for authentication endpoints and redirects
+- **Access Control**: Implement proper authorization checks on your authentication endpoint to ensure only authorized portal users can obtain tokens
+
+## Hooks
+
+Hooks allow changing or adding functionality to portals.
+They typically rely on your API for the execution of any necessary logic and expect a certain response.
+
+There are currently three groups of hooks supported based on their use:
+
+- Time Series Data Retrieval
+- Data Existence Check/Retrieval
+- Data Validation
+
+### Time Series Data Retrieval Hooks
+
+Data retrieval hooks enable portals to fetch and display time-series data from third-party systems. These hooks are used to power data visualizations and charts in the portal interface, allowing portal users to view real-time or historical data from integrated systems.
+
+#### Types of Data Retrieval Hooks
+
+Portals support three types of data retrieval hooks:
+
+1. **Price Data Retrieval** (`priceDataRetrieval`): Fetches price information over time
+2. **Consumption Data Retrieval** (`consumptionDataRetrieval`): Retrieves consumption or usage data
+3. **Cost Data Retrieval** (`costDataRetrieval`): Fetches cost or billing data
+
+#### How Data Retrieval Hooks Work
+
+Data retrieval hooks follow a three-step process:
+
+1. **Authentication**: epilot authenticates with your third-party system to obtain a token or credentials
+2. **Data Retrieval**: Using the authentication token, epilot makes a request to your data API with the requested time range and interval
+3. **Data Resolution**: The response is processed and extracted using the configured data path, then displayed in the portal
+
+The authentication step supports caching to reduce API calls and improve performance. The data retrieval supports configurable time intervals (e.g., hourly, daily) and automatically handles time range queries based on the portal user's selected view.
+
+#### Configuration and Example
+
+Data retrieval hooks are configured in your app configuration. Each hook defines the authentication mechanism, the data retrieval endpoint, and how to process the response.
+
+Below are examples for all three data retrieval hook types.
+All of these enable configuring users to add a Dynamic Tariff block where your integration is pickable using the "Integration" dropdown.
+
+![Data retrieval integration in Dynamic Tariff block](../../../static/img/apps/portal-extensions/data-retrieval-integration-portal-builder.png)
+
+##### Price Data Retrieval
+
+```json
+{
+  "id": "price",
+  "type": "priceDataRetrieval",
+  "name": {
+    "en": "Price"
+  },
+  "intervals": ["PT1H"],
+  "auth": {
+    "type": "token",
+    "url": "{{Options.api_url}}/token",
+    "method": "GET",
+    "headers": {
+      "API-Key": "{{Options.api_key}}",
+      "UID": "{{Contact.customer_number}}"
+    },
+    "cache": {
+      "key": "{{Options.api_key}}-{{Contact.customer_number}}",
+      "ttl": 3600
+    }
+  },
+  "call": {
+    "url": "{{Options.api_url}}/price",
+    "headers": {
+      "Authorization": "Bearer {{AuthResponse.data.data.token}}"
+    },
+    "params": {
+      "from": "{{Scope.from}}",
+      "to": "{{Scope.to}}",
+      "interval": "{{Scope.interval}}"
+    }
+  },
+  "resolved": {
+    "dataPath": "prices"
+  }
+}
+```
+
+##### Consumption Data Retrieval
+
+```json
+{
+  "id": "consumption",
+  "type": "consumptionDataRetrieval",
+  "name": {
+    "en": "Consumption"
+  },
+  "intervals": ["PT1H"],
+  "auth": {
+    "type": "token",
+    "url": "{{Options.api_url}}/token",
+    "method": "GET",
+    "headers": {
+      "API-Key": "{{Options.api_key}}",
+      "UID": "{{Contact.customer_number}}"
+    },
+    "cache": {
+      "key": "{{Options.api_key}}-{{Contact.customer_number}}",
+      "ttl": 3600
+    }
+  },
+  "call": {
+    "url": "{{Options.api_url}}/consumption",
+    "headers": {
+      "Authorization": "Bearer {{AuthResponse.data.data.token}}"
+    },
+    "params": {
+      "from": "{{Scope.from}}",
+      "to": "{{Scope.to}}",
+      "interval": "{{Scope.interval}}"
+    }
+  },
+  "resolved": {
+    "dataPath": "consumptions"
+  }
+}
+```
+
+##### Cost Data Retrieval
+
+```json
+{
+  "id": "cost",
+  "type": "costDataRetrieval",
+  "name": {
+    "en": "Cost"
+  },
+  "intervals": ["PT1H"],
+  "auth": {
+    "type": "token",
+    "url": "{{Options.api_url}}/token",
+    "method": "GET",
+    "headers": {
+      "API-Key": "{{Options.api_key}}",
+      "UID": "{{Contact.customer_number}}"
+    },
+    "cache": {
+      "key": "{{Options.api_key}}-{{Contact.customer_number}}",
+      "ttl": 3600
+    }
+  },
+  "call": {
+    "url": "{{Options.api_url}}/cost",
+    "headers": {
+      "Authorization": "Bearer {{AuthResponse.data.data.token}}"
+    },
+    "params": {
+      "from": "{{Scope.from}}",
+      "to": "{{Scope.to}}",
+      "interval": "{{Scope.interval}}"
+    }
+  },
+  "resolved": {
+    "dataPath": "costs"
+  }
+}
+```
+
+#### Template Variables
+
+Data retrieval hooks support the same template variables as any other hook, plus additional scope variables:
+
+#### Standard Variables
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+- **`AuthResponse.*`**: Access data from the authentication response
+- **`Entity.*`**: Access data from the context entities like `Contract`.
+
+#### Scope Variables (for `call.params`)
+
+These variables are automatically provided by epilot based on the portal user's selected time range and interval:
+
+- **`Scope.from`**: Start timestamp of the requested time range (ISO 8601 format)
+- **`Scope.to`**: End timestamp of the requested time range (ISO 8601 format)
+- **`Scope.interval`**: Selected time interval (ISO 8601 duration format, e.g., `"PT1H"` for hourly)
+
+
+#### Best Practices
+
+- **Caching**: Use authentication token caching to reduce API load and improve response times
+- **Interval Support**: Support multiple intervals if your API allows it to give portal users flexibility
+- **Error Handling**: Ensure your API returns appropriate error responses that epilot can handle gracefully
+- **Time Zone Handling**: Take care when handling Time Zones and DSTs
+
+### Data Existence Check/Retrieval
+
+Sometimes it is desired to check against a third party system before allowing a user to register or self-assign business objects to their account.
+At the same time, it might be necessary to load business entities to epilot before allowing user to proceed in cases epilot does not have all data on non-portal users.
+
+#### Registration Hook
+
+#### Self-Assignment Hook
+
+### Data Validation
+
+
+#### Meter Reading Plausibility
+
+For additional help or questions about portal extensions, please [contact our developer support team](https://developers.epilot.cloud/contact).
