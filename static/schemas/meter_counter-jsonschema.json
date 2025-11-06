@@ -100,6 +100,10 @@
       "$ref": "#/definitions/BaseRelation",
       "description": "Meter"
     },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },

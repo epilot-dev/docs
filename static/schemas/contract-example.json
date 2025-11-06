@@ -160,6 +160,7 @@
     ]
   },
   "last_sync_at": "2025-01-01",
+  "external_id": "string",
   "workflows": {
     "primary": {
       "id": "string",

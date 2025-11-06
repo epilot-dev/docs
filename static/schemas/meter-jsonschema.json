@@ -234,6 +234,10 @@
       "$ref": "#/definitions/BaseRelation",
       "description": "Counters"
     },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
+    },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"
     },

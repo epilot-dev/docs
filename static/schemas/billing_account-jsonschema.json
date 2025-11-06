@@ -66,33 +66,56 @@
       "description": "Billing Contact"
     },
     "billing_address": {
-      "$ref": "#/definitions/BaseRelationRef",
+      "$ref": "#/definitions/AddressAttribute",
       "description": "Billing Address"
     },
     "payment_method": {
       "type": "array",
       "items": {
         "type": "object",
+        "description": "Payment method details",
         "properties": {
-          "_tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "type": {
+            "type": "string",
+            "enum": [
+              "payment_sepa",
+              "payment_invoice",
+              "payment_cash"
+            ],
+            "example": "payment_sepa"
           },
-          "value": {
-            "$ref": "#/definitions/BaseRelationRef"
+          "data": {
+            "type": "object",
+            "properties": {
+              "bank_name": {
+                "type": "string",
+                "example": "Deutsche Bank"
+              },
+              "iban": {
+                "type": "string",
+                "example": "DE89370400440532013000"
+              },
+              "bic_number": {
+                "type": "string",
+                "example": "DEUTDEFF"
+              },
+              "fullname": {
+                "type": "string",
+                "example": "John Doe"
+              }
+            }
           }
-        },
-        "required": [
-          "value"
-        ]
+        }
       },
       "description": "Payment Method"
     },
     "contracts": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Contracts"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
     },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"
@@ -178,6 +201,110 @@
     }
   },
   "definitions": {
+    "AddressAttribute": {
+      "type": "object",
+      "description": "Address attribute",
+      "additionalProperties": true,
+      "properties": {
+        "_tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "billing"
+          ]
+        },
+        "street": {
+          "type": "string",
+          "description": "The first line of the address. Typically the street address or PO Box number.",
+          "nullable": true,
+          "example": "Hauptstraße"
+        },
+        "street_number": {
+          "type": "string",
+          "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+          "nullable": true,
+          "example": "123"
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "The postal code for the address.",
+          "nullable": true,
+          "example": "50668"
+        },
+        "city": {
+          "type": "string",
+          "description": "The name of the city, district, village, or town.",
+          "nullable": true,
+          "example": "Cologne"
+        },
+        "country": {
+          "type": "string",
+          "description": "The two-letter code for the country of the address.",
+          "nullable": true,
+          "example": "DE"
+        },
+        "additional_info": {
+          "type": "string",
+          "description": "An additional description for the address",
+          "nullable": true
+        },
+        "company_name": {
+          "type": "string",
+          "description": "the company name, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "first_name": {
+          "type": "string",
+          "description": "the first name of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "last_name": {
+          "type": "string",
+          "description": "the last name of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "salutation": {
+          "type": "string",
+          "description": "the salutation of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "title": {
+          "type": "string",
+          "description": "the title of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "coordinates": {
+          "type": "string",
+          "description": "Geographical coordinates (latitude, longitude)",
+          "nullable": true,
+          "example": "50.948484, 6.943147"
+        },
+        "plot_of_land": {
+          "type": "string",
+          "description": "Plot of land information",
+          "nullable": true
+        },
+        "plot_area": {
+          "type": "string",
+          "description": "Area of the plot",
+          "nullable": true
+        },
+        "start_date": {
+          "type": "string",
+          "description": "Start date for the address",
+          "format": "date",
+          "nullable": true
+        },
+        "end_date": {
+          "type": "string",
+          "description": "End date for the address",
+          "format": "date",
+          "nullable": true
+        }
+      }
+    },
     "BaseUUID": {
       "type": "string",
       "format": "uuid",
@@ -208,36 +335,6 @@
               },
               "_tags": {
                 "$ref": "#/definitions/BaseTags"
-              }
-            }
-          }
-        }
-      }
-    },
-    "BaseRelationRef": {
-      "type": "object",
-      "nullable": true,
-      "description": "Reference to a specific property of another entity",
-      "properties": {
-        "$relation_ref": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "entity_id": {
-                "$ref": "#/definitions/BaseUUID"
-              },
-              "path": {
-                "type": "string",
-                "example": "address",
-                "description": "The property of the entity (pointed by entity_id) to be used as the reference"
-              },
-              "_tags": {
-                "$ref": "#/definitions/BaseTags"
-              },
-              "_id": {
-                "type": "string",
-                "example": "xHcOoJCa07eysJ1GaQeSb"
               }
             }
           }

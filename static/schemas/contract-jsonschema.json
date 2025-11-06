@@ -375,6 +375,10 @@
       "example": "2025-01-01",
       "description": "Last Sync At"
     },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
+    },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"
     },
