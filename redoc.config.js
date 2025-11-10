@@ -194,4 +194,9 @@ module.exports.specs = [
     routePath: '/api/validation-rules',
     specUrl: 'https://docs.api.epilot.io/validation-rules.yaml',
   },
+  {
+    layout: { title: 'ERP Integration API' },
+    routePath: '/api/erp-integration',
+    specUrl: 'https://docs.api.epilot.io/erp-integration.yaml',
+  },
 ];
