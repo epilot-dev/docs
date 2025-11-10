@@ -1,5 +1,5 @@
 ---
-title: ERP Toolkit Inbound
+title: ERP Toolkit Mappings
 sidebar_position: 20
 ---
 
