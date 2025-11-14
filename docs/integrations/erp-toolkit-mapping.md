@@ -21,8 +21,20 @@ The ERP Integration Mapping v2.0 provides a powerful and flexible way to transfo
   - [Multiple Relations](#multiple-relations)
   - [Dynamic Relations with JSONata](#dynamic-relations-with-jsonata)
   - [Relation Unique ID Options](#relation-unique-id-options)
+- [Meter Readings](#meter-readings)
+  - [Overview](#overview-2)
+  - [Basic Structure](#basic-structure-2)
+  - [Required Elements](#required-elements)
+  - [Unique Identifier Mappings](#unique-identifier-mappings)
+  - [Field Attributes](#field-attributes)
+  - [Example 1: Basic Meter Readings](#example-1-basic-meter-readings)
+  - [Example 2: Meter Readings with Counter](#example-2-meter-readings-with-counter)
+  - [Example 3: Combined Entity and Meter Readings](#example-3-combined-entity-and-meter-readings)
+  - [Validation](#validation)
+  - [Best Practices](#best-practices-1)
 - [Array Attribute Operations](#array-attribute-operations)
 - [Complete Examples](#complete-examples)
+- [Best Practices](#best-practices)
 
 ## Key Concepts
 
@@ -664,6 +676,620 @@ Relation unique IDs support three value sources, similar to field mappings:
 }
 ```
 
+## Meter Readings
+
+Meter readings are a special type of mapping that allows you to extract and transform meter reading data from ERP events. Unlike entity mappings, meter readings are stored as time-series data points associated with specific meters and optionally meter counters.
+
+### Overview
+
+Meter readings mappings enable you to:
+- Extract meter reading data from ERP events
+- Link readings to specific meters using unique identifiers
+- Optionally specify meter counters for multi-tariff meters
+- Transform and validate reading data before storage
+
+### Basic Structure
+
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "MeterReadingsChanged": {
+        "meter_readings": [
+          {
+            "jsonataExpression": "$.readings",
+            "meter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "meter_id"
+                }
+              ]
+            },
+            "meter_counter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "counter_id"
+                }
+              ]
+            },
+            "fields": [
+              {
+                "attribute": "external_id",
+                "field": "reading_id"
+              },
+              {
+                "attribute": "timestamp",
+                "field": "read_at"
+              },
+              {
+                "attribute": "source",
+                "constant": "ERP"
+              },
+              {
+                "attribute": "value",
+                "field": "reading_value"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+### Required Elements
+
+Each meter_readings configuration must include:
+
+1. **`meter`**: Configuration for identifying the meter
+  - **`unique_ids`**: Array of unique identifier mappings (at least one required)
+2. **`fields`**: Array of field mappings with these required attributes:
+  - **`external_id`**: Unique identifier for this specific reading
+  - **`timestamp`**: When the reading was taken (ISO 8601 format)
+  - **`source`**: Origin of the reading (e.g., "ERP", "ECP", "MANUAL")
+  - **`value`**: The actual meter reading value
+
+Optional elements:
+- **`jsonataExpression`**: JSONata expression to extract reading data from the payload. If not provided, the entire payload is used as the reading data. Useful when you need to extract an array of readings from a nested structure.
+- **`meter_counter`**: For multi-tariff meters, identifies the specific counter
+  - **`unique_ids`**: Array of unique identifier mappings (at least one if specified)
+
+### Unique Identifier Mappings
+
+Both meter and meter_counter unique identifiers support three value sources:
+
+**1. Field Mapping:**
+```json
+{
+  "attribute": "external_id",
+  "field": "meter_id"
+}
+```
+
+**2. JSONata Expression:**
+```json
+{
+  "attribute": "external_id",
+  "jsonataExpression": "$string(meter_number)"
+}
+```
+
+**3. Constant Value:**
+```json
+{
+  "attribute": "meter_type",
+  "constant": "electricity"
+}
+```
+
+### Field Attributes
+
+The `fields` array supports the same mapping types as entity fields:
+
+**Simple Field:**
+```json
+{
+  "attribute": "value",
+  "field": "reading_value"
+}
+```
+
+**JSONata Expression:**
+```json
+{
+  "attribute": "reason",
+  "jsonataExpression": "reading_type = 'REGULAR' ? 'regular' : 'irregular'"
+}
+```
+
+**Constant Value:**
+```json
+{
+  "attribute": "source",
+  "constant": "ERP"
+}
+```
+
+### Example 1: Basic Meter Readings
+
+Extract meter readings from an array in the event payload.
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "MeterReadingsChanged": {
+        "meter_readings": [
+          {
+            "jsonataExpression": "$.readings",
+            "meter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "meter_id"
+                }
+              ]
+            },
+            "fields": [
+              {
+                "attribute": "external_id",
+                "field": "reading_id"
+              },
+              {
+                "attribute": "timestamp",
+                "field": "read_at"
+              },
+              {
+                "attribute": "source",
+                "constant": "ERP"
+              },
+              {
+                "attribute": "value",
+                "field": "reading_value"
+              },
+              {
+                "attribute": "direction",
+                "constant": "feed-in"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input Event:**
+```json
+{
+  "readings": [
+    {
+      "meter_id": "M-001",
+      "reading_id": "R-001",
+      "read_at": "2025-01-15T10:00:00Z",
+      "reading_value": 12345.6
+    },
+    {
+      "meter_id": "M-001",
+      "reading_id": "R-002",
+      "read_at": "2025-01-15T11:00:00Z",
+      "reading_value": 12346.2
+    }
+  ]
+}
+```
+
+**Output:**
+```json
+{
+  "meter_readings_updates": [
+    {
+      "meter": {
+        "$entity_unique_ids": {
+          "external_id": "M-001"
+        }
+      },
+      "attributes": {
+        "external_id": "R-001",
+        "timestamp": "2025-01-15T10:00:00Z",
+        "source": "ERP",
+        "value": 12345.6,
+        "direction": "feed-in"
+      }
+    },
+    {
+      "meter": {
+        "$entity_unique_ids": {
+          "external_id": "M-001"
+        }
+      },
+      "attributes": {
+        "external_id": "R-002",
+        "timestamp": "2025-01-15T11:00:00Z",
+        "source": "ERP",
+        "value": 12346.2,
+        "direction": "feed-in"
+      }
+    }
+  ]
+}
+```
+
+### Example 2: Meter Readings with Counter
+
+For multi-tariff meters where each reading belongs to a specific counter (e.g., day/night tariffs).
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "MeterReadingsChanged": {
+        "meter_readings": [
+          {
+            "jsonataExpression": "$.readings",
+            "meter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "meter_id"
+                }
+              ]
+            },
+            "meter_counter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "tariff_id"
+                }
+              ]
+            },
+            "fields": [
+              {
+                "attribute": "external_id",
+                "jsonataExpression": "$string(meter_id) & '-' & $string(tariff_id) & '-' & $string(reading_id)"
+              },
+              {
+                "attribute": "timestamp",
+                "field": "read_at"
+              },
+              {
+                "attribute": "source",
+                "constant": "ERP"
+              },
+              {
+                "attribute": "value",
+                "field": "reading_value"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input Event:**
+```json
+{
+  "readings": [
+    {
+      "meter_id": "M-001",
+      "tariff_id": "T1",
+      "reading_id": 1,
+      "read_at": "2025-01-15T10:00:00Z",
+      "reading_value": 5000.5
+    },
+    {
+      "meter_id": "M-001",
+      "tariff_id": "T2",
+      "reading_id": 2,
+      "read_at": "2025-01-15T10:00:00Z",
+      "reading_value": 7345.1
+    }
+  ]
+}
+```
+
+**Output:**
+```json
+{
+  "meter_readings_updates": [
+    {
+      "meter": {
+        "$entity_unique_ids": {
+          "external_id": "M-001"
+        }
+      },
+      "meter_counter": {
+        "$entity_unique_ids": {
+          "tariff_id": "T1"
+        }
+      },
+      "attributes": {
+        "external_id": "M-001-T1-1",
+        "timestamp": "2025-01-15T10:00:00Z",
+        "source": "ERP",
+        "value": 5000.5
+      }
+    },
+    {
+      "meter": {
+        "$entity_unique_ids": {
+          "external_id": "M-001"
+        }
+      },
+      "meter_counter": {
+        "$entity_unique_ids": {
+          "tariff_id": "T2"
+        }
+      },
+      "attributes": {
+        "external_id": "M-001-T2-2",
+        "timestamp": "2025-01-15T10:00:00Z",
+        "source": "ERP",
+        "value": 7345.1
+      }
+    }
+  ]
+}
+```
+
+### Example 3: Combined Entity and Meter Readings
+
+A single event can map to both entities and meter readings.
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "ContractWithReadings": {
+        "entities": [
+          {
+            "entity_schema": "contract",
+            "unique_ids": ["contract_number"],
+            "fields": [
+              {
+                "attribute": "contract_number",
+                "field": "number"
+              },
+              {
+                "attribute": "display_name",
+                "field": "name"
+              }
+            ]
+          }
+        ],
+        "meter_readings": [
+          {
+            "jsonataExpression": "$.readings",
+            "meter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "meter_id"
+                }
+              ]
+            },
+            "fields": [
+              {
+                "attribute": "external_id",
+                "field": "reading_id"
+              },
+              {
+                "attribute": "timestamp",
+                "field": "read_at"
+              },
+              {
+                "attribute": "source",
+                "constant": "ERP"
+              },
+              {
+                "attribute": "value",
+                "field": "value"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input Event:**
+```json
+{
+  "number": "CTR-001",
+  "name": "Main Contract",
+  "readings": [
+    {
+      "meter_id": "M-001",
+      "reading_id": "R-001",
+      "read_at": "2025-01-15T10:00:00Z",
+      "value": 12345.6
+    }
+  ]
+}
+```
+
+**Output:**
+```json
+{
+  "entity_updates": [
+    {
+      "entity_slug": "contract",
+      "unique_identifiers": {
+        "contract_number": "CTR-001"
+      },
+      "attributes": {
+        "contract_number": "CTR-001",
+        "display_name": "Main Contract"
+      }
+    }
+  ],
+  "meter_readings_updates": [
+    {
+      "meter": {
+        "$entity_unique_ids": {
+          "external_id": "M-001"
+        }
+      },
+      "attributes": {
+        "external_id": "R-001",
+        "timestamp": "2025-01-15T10:00:00Z",
+        "source": "ERP",
+        "value": 12345.6
+      }
+    }
+  ]
+}
+```
+
+#### Example 4: Single Meter Reading Without JSONata Expression
+
+When the event payload represents a single meter reading (not an array), you can omit the `jsonataExpression` field. The entire payload will be used as the reading data.
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "MeterReadingUpdated": {
+        "meter_readings": [
+          {
+            "meter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "meter_id"
+                }
+              ]
+            },
+            "fields": [
+              {
+                "attribute": "external_id",
+                "field": "reading_id"
+              },
+              {
+                "attribute": "timestamp",
+                "field": "timestamp"
+              },
+              {
+                "attribute": "source",
+                "constant": "ERP"
+              },
+              {
+                "attribute": "value",
+                "field": "value"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input Event:**
+```json
+{
+  "meter_id": "M-123",
+  "reading_id": "R-456",
+  "timestamp": "2025-01-15T14:30:00Z",
+  "value": 5678.9
+}
+```
+
+**Output:**
+```json
+{
+  "meter_readings_updates": [
+    {
+      "meter": {
+        "$entity_unique_ids": {
+          "external_id": "M-123"
+        }
+      },
+      "attributes": {
+        "external_id": "R-456",
+        "timestamp": "2025-01-15T14:30:00Z",
+        "source": "ERP",
+        "value": 5678.9
+      }
+    }
+  ]
+}
+```
+
+### Validation
+
+The system validates meter readings configurations at runtime:
+
+1. **Meter Configuration**: Each meter_readings item must include a `meter` definition
+2. **Meter Unique IDs**: The `meter.unique_ids` array must contain at least one unique identifier
+3. **Required Fields**: All meter_readings must include field mappings for:
+  - `external_id`
+  - `timestamp`
+  - `source`
+  - `value`
+4. **Meter Counter Validation**: If `meter_counter` is specified, it must have at least one unique identifier in its `unique_ids` array
+
+**Validation Error Example:**
+```
+Meter readings configuration for "MeterReadingsChanged" (item 0) is missing required field attributes: timestamp, source, value
+```
+
+The error message includes the item index to help identify which specific meter_readings configuration has the issue when multiple configurations are present.
+
+### Best Practices
+
+1. **Use Descriptive External IDs**: Ensure reading `external_id` values are unique and traceable
+   ```json
+   {
+     "attribute": "external_id",
+     "jsonataExpression": "$string(meter_id) & '-' & $string(timestamp) & '-' & $string(reading_type)"
+   }
+   ```
+
+2. **Standardize Timestamps**: Always use ISO 8601 format for timestamps
+   We use the full timestamp for deduplication purposes, so in the case of multiple readings per day use a full timestamp.
+   ```json
+   {
+     "attribute": "timestamp",
+     "jsonataExpression": "$fromMillis(unix_timestamp * 1000)"
+   }
+   ```
+
+3. **Specify Source Clearly**: Use consistent source values across your integration
+   ```json
+   {
+     "attribute": "source",
+     "constant": "ERP"
+   }
+   ```
+
+4**Validate Data Quality**: Use JSONata expressions to ensure data quality
+   ```json
+   {
+     "attribute": "value",
+     "jsonataExpression": "$number(reading_value) >= 0 ? $number(reading_value) : 0"
+   }
+   ```
+
 ## Array Attribute Operations
 
 Regular array attributes (like `_tags`, custom array fields, etc.) also support `_set` and `_append` operations. These work similarly to relation operations but for simple array values.
@@ -835,7 +1461,7 @@ Maps a customer change event to a contact entity with billing account relation.
     "source": "ERP",
     "billing_account": {
       "$relation": [{
-        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8", 
+        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8",
         "_schema": "billing_account",
         "_tags": ["PRIMARY"]
       }]
@@ -1127,8 +1753,8 @@ Add source information or fixed values:
   "constant": "SAP_ERP"
 },
 {
-  "attribute": "_imported_at",
-  "jsonataExpression": "$now()"
+"attribute": "_imported_at",
+"jsonataExpression": "$now()"
 }
 ```
 
