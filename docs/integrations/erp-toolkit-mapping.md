@@ -16,22 +16,22 @@ The ERP Integration Mapping v2.0 provides a powerful and flexible way to transfo
 - [Field Mapping Types](#field-mapping-types)
 - [Entity-Level Processing](#entity-level-processing)
 - [Relations](#relations)
-  - [Relation Operations](#relation-operations)
-  - [Basic Relation with Items](#basic-relation-with-items)
-  - [Multiple Relations](#multiple-relations)
-  - [Dynamic Relations with JSONata](#dynamic-relations-with-jsonata)
-  - [Relation Unique ID Options](#relation-unique-id-options)
+    - [Relation Operations](#relation-operations)
+    - [Basic Relation with Items](#basic-relation-with-items)
+    - [Multiple Relations](#multiple-relations)
+    - [Dynamic Relations with JSONata](#dynamic-relations-with-jsonata)
+    - [Relation Unique ID Options](#relation-unique-id-options)
 - [Meter Readings](#meter-readings)
-  - [Overview](#overview-2)
-  - [Basic Structure](#basic-structure-2)
-  - [Required Elements](#required-elements)
-  - [Unique Identifier Mappings](#unique-identifier-mappings)
-  - [Field Attributes](#field-attributes)
-  - [Example 1: Basic Meter Readings](#example-1-basic-meter-readings)
-  - [Example 2: Meter Readings with Counter](#example-2-meter-readings-with-counter)
-  - [Example 3: Combined Entity and Meter Readings](#example-3-combined-entity-and-meter-readings)
-  - [Validation](#validation)
-  - [Best Practices](#best-practices-1)
+    - [Overview](#overview)
+    - [Basic Structure](#basic-structure)
+    - [Required Elements](#required-elements)
+    - [Unique Identifier Mappings](#unique-identifier-mappings)
+    - [Field Attributes](#field-attributes)
+    - [Example 1: Basic Meter Readings](#example-1-basic-meter-readings)
+    - [Example 2: Meter Readings with Counter](#example-2-meter-readings-with-counter)
+    - [Example 3: Combined Entity and Meter Readings](#example-3-combined-entity-and-meter-readings)
+    - [Validation](#validation)
+    - [Best Practices](#best-practices-1)
 - [Array Attribute Operations](#array-attribute-operations)
 - [Complete Examples](#complete-examples)
 - [Best Practices](#best-practices)
@@ -205,6 +205,333 @@ Set a fixed value regardless of input data. Useful for setting tags, purposes, e
   }
 }
 ```
+
+## Field-Level Processing Control
+
+### Using `enabled` for Conditional Fields
+
+The `enabled` property allows you to conditionally include or exclude individual field mappings based on runtime conditions. This provides fine-grained control over which attributes are mapped without modifying your configuration structure.
+
+**Use Cases:**
+- Enable/disable specific fields without removing the configuration
+- Conditionally map fields based on data presence or values
+- Test or gradually roll out new field mappings
+- Skip optional fields when data is missing or invalid
+
+**Value Types:**
+- **Boolean** (`true`/`false`): Directly control whether the field is processed
+- **String (JSONata expression)**: Dynamic evaluation based on the input data
+- **Undefined/omitted**: Defaults to `true` (field is always processed)
+
+**Important Notes:**
+- The `enabled` property is evaluated for each field independently
+- When `enabled` evaluates to `false`, the field value is never extracted or evaluated
+- Works with all field types: simple fields, JSONata expressions, constants, and relations
+
+### Example 1: Static Enable/Disable
+
+Control field processing with boolean values.
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "CustomerChanged": {
+        "entities": [
+          {
+            "entity_schema": "contact",
+            "unique_ids": ["customer_number"],
+            "fields": [
+              {
+                "attribute": "customer_number",
+                "field": "customerId"
+                // No enabled - defaults to true
+              },
+              {
+                "attribute": "email",
+                "field": "email",
+                "enabled": true
+                // Explicitly enabled
+              },
+              {
+                "attribute": "internal_notes",
+                "field": "notes",
+                "enabled": false
+                // Disabled - will be skipped
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input:**
+```json
+{
+  "customerId": "12345",
+  "email": "user@example.com",
+  "notes": "Internal only"
+}
+```
+
+**Result:**
+```json
+{
+  "entity_slug": "contact",
+  "uniqueIdentifiers": {
+    "customer_number": "12345"
+  },
+  "attributes": {
+    "customer_number": "12345",
+    "email": "user@example.com"
+    // internal_notes is NOT included (disabled)
+  }
+}
+```
+
+### Example 2: Conditional with JSONata
+
+Use JSONata expressions to dynamically enable fields based on the input data.
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "CustomerChanged": {
+        "entities": [
+          {
+            "entity_schema": "contact",
+            "unique_ids": ["customer_number"],
+            "fields": [
+              {
+                "attribute": "customer_number",
+                "field": "customerId"
+              },
+              {
+                "attribute": "phone",
+                "field": "phone",
+                "enabled": "$exists(phone) and phone != ''"
+                // Only map if phone exists and is not empty
+              },
+              {
+                "attribute": "mobile",
+                "field": "mobile",
+                "enabled": "$exists(mobile)"
+                // Only map if mobile field exists
+              },
+              {
+                "attribute": "vip_status",
+                "constant": "VIP",
+                "enabled": "vipFlag = true"
+                // Only set VIP status if vipFlag is true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input:**
+```json
+{
+  "customerId": "12345",
+  "phone": "",
+  "mobile": "555-1234",
+  "vipFlag": true
+}
+```
+
+**Result:**
+```json
+{
+  "entity_slug": "contact",
+  "uniqueIdentifiers": {
+    "customer_number": "12345"
+  },
+  "attributes": {
+    "customer_number": "12345",
+    "mobile": "555-1234",
+    "vip_status": "VIP"
+    // phone is NOT included (empty string)
+  }
+}
+```
+
+**Explanation:**
+- `customer_number`: No `enabled` specified → defaults to `true` → mapped
+- `phone`: `enabled` evaluates to `false` (empty string) → not mapped
+- `mobile`: `enabled` evaluates to `true` (field exists) → mapped
+- `vip_status`: `enabled` evaluates to `true` (vipFlag is true) → mapped
+
+### Example 3: Conditional Relations
+
+Field-level `enabled` also works with relation mappings, allowing you to conditionally create entity relationships.
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "ContractChanged": {
+        "entities": [
+          {
+            "entity_schema": "contract",
+            "unique_ids": ["contract_number"],
+            "fields": [
+              {
+                "attribute": "contract_number",
+                "field": "number"
+              },
+              {
+                "attribute": "billing_account",
+                "enabled": "$exists(billingAccountId) and billingAccountId != ''",
+                "relations": {
+                  "operation": "_set",
+                  "items": [
+                    {
+                      "entity_schema": "billing_account",
+                      "unique_ids": [
+                        {
+                          "attribute": "external_id",
+                          "field": "billingAccountId"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "attribute": "primary_contact",
+                "enabled": false,
+                "relations": {
+                  "operation": "_set",
+                  "items": [
+                    {
+                      "entity_schema": "contact",
+                      "unique_ids": [
+                        {
+                          "attribute": "email",
+                          "field": "contactEmail"
+                        }
+                      ]
+                    }
+                  ]
+                }
+                // This relation is disabled - won't be created
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input with billing account:**
+```json
+{
+  "number": "CTR-001",
+  "billingAccountId": "ACC-999",
+  "contactEmail": "john@example.com"
+}
+```
+
+**Result:**
+```json
+{
+  "entity_slug": "contract",
+  "uniqueIdentifiers": {
+    "contract_number": "CTR-001"
+  },
+  "attributes": {
+    "contract_number": "CTR-001",
+    "billing_account": {
+      "$relation": {
+        "_set": [
+          {
+            "$entity_unique_ids": {
+              "external_id": "ACC-999"
+            },
+            "_schema": "billing_account"
+          }
+        ]
+      }
+    }
+    // primary_contact is NOT included (explicitly disabled)
+  }
+}
+```
+
+**Input without billing account:**
+```json
+{
+  "number": "CTR-002",
+  "billingAccountId": "",
+  "contactEmail": "jane@example.com"
+}
+```
+
+**Result:**
+```json
+{
+  "entity_slug": "contract",
+  "uniqueIdentifiers": {
+    "contract_number": "CTR-002"
+  },
+  "attributes": {
+    "contract_number": "CTR-002"
+    // billing_account is NOT included (enabled evaluated to false)
+    // primary_contact is NOT included (explicitly disabled)
+  }
+}
+```
+
+### Combining Field-Level and Entity-Level `enabled`
+
+Both entity-level and field-level `enabled` properties work together. The entity must be enabled first, then individual fields within that entity are evaluated.
+
+**Evaluation Order:**
+1. Entity-level `enabled` is checked → if `false`, entire entity is skipped
+2. Entity-level `jsonataExpression` is applied (if present)
+3. For each field:
+    - Field-level `enabled` is checked → if `false`, field is skipped
+    - Field value is extracted/evaluated (if enabled)
+
+**Configuration:**
+```json
+{
+  "entity_schema": "contact",
+  "unique_ids": ["customer_number"],
+  "enabled": "$exists(customerId)",
+  "fields": [
+    {
+      "attribute": "customer_number",
+      "field": "customerId"
+    },
+    {
+      "attribute": "email",
+      "field": "email",
+      "enabled": "$exists(email)"
+    }
+  ]
+}
+```
+
+In this example:
+- If `customerId` doesn't exist → entire entity is skipped (entity-level `enabled`)
+- If `customerId` exists but `email` doesn't → entity is created with just `customer_number`
 
 ## Entity-Level Processing
 
@@ -746,17 +1073,17 @@ Meter readings mappings enable you to:
 Each meter_readings configuration must include:
 
 1. **`meter`**: Configuration for identifying the meter
-  - **`unique_ids`**: Array of unique identifier mappings (at least one required)
+    - **`unique_ids`**: Array of unique identifier mappings (at least one required)
 2. **`fields`**: Array of field mappings with these required attributes:
-  - **`external_id`**: Unique identifier for this specific reading
-  - **`timestamp`**: When the reading was taken (ISO 8601 format)
-  - **`source`**: Origin of the reading (e.g., "ERP", "ECP", "MANUAL")
-  - **`value`**: The actual meter reading value
+    - **`external_id`**: Unique identifier for this specific reading
+    - **`timestamp`**: When the reading was taken (ISO 8601 format)
+    - **`source`**: Origin of the reading (e.g., "ERP", "ECP", "MANUAL")
+    - **`value`**: The actual meter reading value
 
 Optional elements:
 - **`jsonataExpression`**: JSONata expression to extract reading data from the payload. If not provided, the entire payload is used as the reading data. Useful when you need to extract an array of readings from a nested structure.
 - **`meter_counter`**: For multi-tariff meters, identifies the specific counter
-  - **`unique_ids`**: Array of unique identifier mappings (at least one if specified)
+    - **`unique_ids`**: Array of unique identifier mappings (at least one if specified)
 
 ### Unique Identifier Mappings
 
@@ -1242,10 +1569,10 @@ The system validates meter readings configurations at runtime:
 1. **Meter Configuration**: Each meter_readings item must include a `meter` definition
 2. **Meter Unique IDs**: The `meter.unique_ids` array must contain at least one unique identifier
 3. **Required Fields**: All meter_readings must include field mappings for:
-  - `external_id`
-  - `timestamp`
-  - `source`
-  - `value`
+    - `external_id`
+    - `timestamp`
+    - `source`
+    - `value`
 4. **Meter Counter Validation**: If `meter_counter` is specified, it must have at least one unique identifier in its `unique_ids` array
 
 **Validation Error Example:**
@@ -1461,7 +1788,7 @@ Maps a customer change event to a contact entity with billing account relation.
     "source": "ERP",
     "billing_account": {
       "$relation": [{
-        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8",
+        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8", 
         "_schema": "billing_account",
         "_tags": ["PRIMARY"]
       }]
@@ -1720,6 +2047,223 @@ A comprehensive example showing contract with customer, billing account, and dyn
 }
 ```
 
+### Example 4: Conditional Field Processing with `enabled`
+
+A comprehensive example demonstrating field-level conditional processing using both boolean and JSONata `enabled` expressions.
+
+**Mapping Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "CustomerChanged": {
+        "entities": [
+          {
+            "entity_schema": "contact",
+            "unique_ids": ["customer_number"],
+            "fields": [
+              {
+                "attribute": "customer_number",
+                "field": "customerId"
+              },
+              {
+                "attribute": "first_name",
+                "field": "firstName"
+              },
+              {
+                "attribute": "last_name",
+                "field": "lastName"
+              },
+              {
+                "attribute": "email",
+                "field": "email",
+                "enabled": "$exists(email) and email != ''"
+              },
+              {
+                "attribute": "phone",
+                "field": "phone",
+                "enabled": "$exists(phone) and phone != ''"
+              },
+              {
+                "attribute": "mobile",
+                "field": "mobile",
+                "enabled": "$exists(mobile) and mobile != ''"
+              },
+              {
+                "attribute": "vip_status",
+                "constant": "VIP",
+                "enabled": "isVip = true"
+              },
+              {
+                "attribute": "customer_type",
+                "jsonataExpression": "customerType = 'B' ? 'BUSINESS' : 'PRIVATE'",
+                "enabled": "$exists(customerType)"
+              },
+              {
+                "attribute": "internal_notes",
+                "field": "internalNotes",
+                "enabled": false
+              },
+              {
+                "attribute": "marketing_consent",
+                "field": "marketingConsent",
+                "enabled": "$exists(marketingConsent)"
+              },
+              {
+                "attribute": "billing_account",
+                "enabled": "$exists(billingAccountId) and billingAccountId != ''",
+                "relations": {
+                  "operation": "_set",
+                  "items": [
+                    {
+                      "entity_schema": "billing_account",
+                      "_tags": ["PRIMARY"],
+                      "unique_ids": [
+                        {
+                          "attribute": "external_id",
+                          "field": "billingAccountId"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "attribute": "contract",
+                "enabled": "$exists(contractNumber)",
+                "relations": {
+                  "operation": "_set",
+                  "items": [
+                    {
+                      "entity_schema": "contract",
+                      "unique_ids": [
+                        {
+                          "attribute": "contract_number",
+                          "field": "contractNumber"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input Event (with all optional data):**
+```json
+{
+  "customerId": "CUST-2024-001",
+  "firstName": "Maria",
+  "lastName": "Garcia",
+  "email": "maria.garcia@example.com",
+  "phone": "+49-123-456789",
+  "mobile": "",
+  "isVip": true,
+  "customerType": "B",
+  "internalNotes": "High value customer - handle with care",
+  "marketingConsent": true,
+  "billingAccountId": "BA-12345",
+  "contractNumber": "CTR-2024-999"
+}
+```
+
+**Output Entity (with all optional data):**
+```json
+{
+  "entity_slug": "contact",
+  "uniqueIdentifiers": {
+    "customer_number": "CUST-2024-001"
+  },
+  "attributes": {
+    "customer_number": "CUST-2024-001",
+    "first_name": "Maria",
+    "last_name": "Garcia",
+    "email": "maria.garcia@example.com",
+    "phone": "+49-123-456789",
+    "vip_status": "VIP",
+    "customer_type": "BUSINESS",
+    "marketing_consent": true,
+    "billing_account": {
+      "$relation": {
+        "_set": [
+          {
+            "$entity_unique_ids": {
+              "external_id": "BA-12345"
+            },
+            "_schema": "billing_account",
+            "_tags": ["PRIMARY"]
+          }
+        ]
+      }
+    },
+    "contract": {
+      "$relation": {
+        "_set": [
+          {
+            "$entity_unique_ids": {
+              "contract_number": "CTR-2024-999"
+            },
+            "_schema": "contract"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Note:** Fields excluded from output:
+- `mobile`: Empty string (enabled condition failed)
+- `internal_notes`: Explicitly disabled with `enabled: false`
+
+**Input Event (minimal data - many fields disabled):**
+```json
+{
+  "customerId": "CUST-2024-002",
+  "firstName": "John",
+  "lastName": "Smith",
+  "email": "",
+  "phone": "+49-987-654321",
+  "isVip": false,
+  "billingAccountId": ""
+}
+```
+
+**Output Entity (minimal data):**
+```json
+{
+  "entity_slug": "contact",
+  "uniqueIdentifiers": {
+    "customer_number": "CUST-2024-002"
+  },
+  "attributes": {
+    "customer_number": "CUST-2024-002",
+    "first_name": "John",
+    "last_name": "Smith",
+    "phone": "+49-987-654321"
+  }
+}
+```
+
+**Note:** Fields excluded from output:
+- `email`: Empty string (enabled condition failed)
+- `mobile`: Field doesn't exist in input (enabled condition failed)
+- `vip_status`: isVip is false (enabled condition failed)
+- `customer_type`: customerType field doesn't exist (enabled condition failed)
+- `internal_notes`: Explicitly disabled with `enabled: false`
+- `marketing_consent`: Field doesn't exist in input (enabled condition failed)
+- `billing_account`: billingAccountId is empty string (enabled condition failed)
+- `contract`: contractNumber field doesn't exist (enabled condition failed)
+
+This example demonstrates how the `enabled` property allows the same mapping configuration to handle various data completeness scenarios gracefully, including only the fields that have valid data.
+
 ## Best Practices
 
 ### 1. Use Unique Identifiers Wisely
@@ -1753,8 +2297,8 @@ Add source information or fixed values:
   "constant": "SAP_ERP"
 },
 {
-"attribute": "_imported_at",
-"jsonataExpression": "$now()"
+  "attribute": "_imported_at",
+  "jsonataExpression": "$now()"
 }
 ```
 
