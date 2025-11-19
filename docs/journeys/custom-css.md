@@ -18,6 +18,8 @@ Custom CSS gives you the power to:
 
 **Note:** This feature is part of our new Concorde design migration. Custom CSS applies only to journeys (not the End Customer Portal). We’re continuously improving support for this feature, so refer to the latest release notes for newer updates.
 
+If you plan to use this feature with dark mode, refer to the dark mode section below.
+
 **Pricing:** This feature is available exclusively from the Professional pricing plan.
 
 ## Styling Structure
@@ -101,6 +103,12 @@ To avoid modifying the core layout and overall security of the journey, support 
 
 5. **Preview and Save:** Use the live preview to see changes as you type, then save your work.
 6. **Test your live journey:** Open your journey in a new tab to confirm that the design looks as expected.
+
+## Dark Mode
+
+Journeys with dark mode enabled require additional custom CSS updates. Please make sure to preview the journey in dark mode so you can apply the necessary adjustments.
+
+Refer to [Concorde Dark mode Design tokens](/docs/ui-design/concorde-design-tokens#dark-mode) for more information about the specific design tokens related to dark mode.
 
 ## Examples
 
