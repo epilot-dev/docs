@@ -30,6 +30,7 @@
     "@epilot360/icons": "^1.17.35",
     "@graphql-tools/url-loader": "^7.9.1",
     "@mdx-js/react": "^1.6.21",
+    "@monaco-editor/react": "^4.7.0",
     "@stoplight/json-schema-viewer": "^4.16.4",
     "@svgr/webpack": "^5.5.0",
     "clsx": "^1.1.1",

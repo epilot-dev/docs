@@ -1,5 +1,3 @@
-import { IconComponentsMap } from '@epilot360/icons';
-import Icon from '@site/src/components/Icon';
 import { JsonSchemaViewer } from '@stoplight/json-schema-viewer';
 import { Provider as MosaicProvider } from '@stoplight/mosaic';
 import React, { useState } from 'react';
@@ -8,30 +6,31 @@ import CollapsibleJsonViewer from './CollapsibleJsonViewer';
 import styles from './EntitySchemaViewer.module.css';
 import './mosaic-scoped.css';
 
-interface EntitySchemaViewerProps {
-  schema: string;
+interface EventSchemaViewerProps {
+  event: string;
   displayName: string;
   description: string;
   apiLink?: string;
 }
 
-const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, displayName, description, apiLink }) => {
-  const [exampleData, setExampleData] = useState<string>('');
+const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({ event, displayName, description, apiLink }) => {
+  const [sampleData, setSampleData] = useState<string>('');
+  const [configData, setConfigData] = useState<string>('');
   const [schemaData, setSchemaData] = useState<string>('');
   const [schemaObject, setSchemaObject] = useState<unknown>(null);
-  const [activeTab, setActiveTab] = useState<'none' | 'example' | 'schema' | 'visual'>('none');
+  const [activeTab, setActiveTab] = useState<'none' | 'sample' | 'config' | 'schema' | 'visual'>('none');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadExample = async () => {
-    if (activeTab === 'example') {
+  const loadSample = async () => {
+    if (activeTab === 'sample') {
       setActiveTab('none');
 
       return;
     }
 
-    if (exampleData) {
-      setActiveTab('example');
+    if (sampleData) {
+      setActiveTab('sample');
 
       return;
     }
@@ -39,11 +38,39 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/schemas/${schema}-example.json`);
-      if (!response.ok) throw new Error('Failed to load example');
+      const response = await fetch(`/events/${event}.sample.json`);
+      if (!response.ok) throw new Error('Failed to load sample');
       const json = await response.json();
-      setExampleData(JSON.stringify(json, null, 2));
-      setActiveTab('example');
+      setSampleData(JSON.stringify(json, null, 2));
+      setActiveTab('sample');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadConfig = async () => {
+    if (activeTab === 'config') {
+      setActiveTab('none');
+
+      return;
+    }
+
+    if (configData) {
+      setActiveTab('config');
+
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/events/${event}.config.json`);
+      if (!response.ok) throw new Error('Failed to load config');
+      const json = await response.json();
+      setConfigData(JSON.stringify(json, null, 2));
+      setActiveTab('config');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -67,7 +94,7 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/schemas/${schema}-jsonschema.json`);
+      const response = await fetch(`/events/${event}.schema.json`);
       if (!response.ok) throw new Error('Failed to load schema');
       const json = await response.json();
       setSchemaData(JSON.stringify(json, null, 2));
@@ -96,7 +123,7 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/schemas/${schema}-jsonschema.json`);
+      const response = await fetch(`/events/${event}.schema.json`);
       if (!response.ok) throw new Error('Failed to load schema');
       const json = await response.json();
       setSchemaObject(json);
@@ -111,13 +138,13 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
     }
   };
 
-  const icon = schema in IconComponentsMap ? schema : 'entity';
-
   return (
     <div className={`${styles.container} entitySchemaViewer`}>
       <div className={styles.header}>
         <div className={styles.titleRow}>
-          {icon && <Icon name={icon as keyof typeof IconComponentsMap} size={24} />}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
           <h4 className={styles.entityTitle}>{displayName}</h4>
         </div>
         <p className={styles.description}>{description}</p>
@@ -138,8 +165,8 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
         <div className={styles.buttonGroup}>
           <button
             type="button"
-            onClick={loadExample}
-            className={`${styles.button} ${activeTab === 'example' ? styles.buttonActive : ''}`}
+            onClick={loadSample}
+            className={`${styles.button} ${activeTab === 'sample' ? styles.buttonActive : ''}`}
             disabled={loading}
           >
             <svg
@@ -216,11 +243,20 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
         </div>
       )}
 
-      {activeTab === 'example' && exampleData && (
+      {activeTab === 'sample' && sampleData && (
         <CollapsibleJsonViewer
-          data={exampleData}
-          fileName={`${schema}-example.json`}
-          downloadUrl={`/schemas/${schema}-example.json`}
+          data={sampleData}
+          fileName={`${event}.sample.json`}
+          downloadUrl={`/events/${event}.sample.json`}
+          defaultFoldLevel={1}
+        />
+      )}
+
+      {activeTab === 'config' && configData && (
+        <CollapsibleJsonViewer
+          data={configData}
+          fileName={`${event}.config.json`}
+          downloadUrl={`/events/${event}.config.json`}
           defaultFoldLevel={1}
         />
       )}
@@ -228,8 +264,8 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
       {activeTab === 'schema' && schemaData && (
         <CollapsibleJsonViewer
           data={schemaData}
-          fileName={`${schema}-jsonschema.json`}
-          downloadUrl={`/schemas/${schema}-jsonschema.json`}
+          fileName={`${event}.schema.json`}
+          downloadUrl={`/events/${event}.schema.json`}
           defaultFoldLevel={Infinity}
         />
       )}
@@ -245,4 +281,4 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
   );
 };
 
-export default EntitySchemaViewer;
+export default EventSchemaViewer;
