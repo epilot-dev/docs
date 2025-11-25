@@ -553,7 +553,6 @@ async function pollAutomationStatusWithTimeout(executionId, timeoutMs = 300000) 
 
 ## Related Documentation
 
-- [Workflows API Reference](/api-reference/workflows)
-- [Automation API Reference](/api-reference/automation)
-- [Entity API Reference](/api-reference/entities)
-- [Workflow Execution Types](/workflows/execution-types)
+- [Workflows API Reference](/api/workflow-execution))
+- [Automation API Reference](/api/automation)
+- [Entity API Reference](/api/entity)
