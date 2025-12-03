@@ -95,12 +95,12 @@ The system includes predefined relation labels for common entity types:
 
 ## File Collections
 
-File collections provide a way to organize and group documents and files within epilot, supporting both global collections and entity-specific collections.
+File collections provide a way to organize and group documents and files within epilot, supporting both global collections and user-specific collections.
 
 ### Structure
 ```typescript
-type FileCollectionSystemFamilySlug = `_system_files_collection_schema_${string}`
-type FileCollectionSystemFamilyLabelSlug = `_system_files_collection_schema_${string}:${string}`
+type FileGlobalCollectionSystemSlug = `_system_files_collection_schema_${schemaSlug}:${collectionName}`
+type FileUserCollectionSystemSlug = `_system_files_collection_schema_${schemaSlug}_${userID}:${collectionName}`
 ```
 
 ### Types of File Collections
@@ -110,8 +110,8 @@ type FileCollectionSystemFamilyLabelSlug = `_system_files_collection_schema_${st
 - Used for shared documents, templates, and resources
 - Examples: Company policies, standard contracts, marketing materials
 
-#### Per-Entity Collections (also called User Collections, since they are personal to each user)
-- Collections specific to individual entity schemas
+#### Per-User-Schema Collections (also called User Collections, since they are personal to each user)
+- Collections specific to user and a specific schema
 - Organize documents related to specific entity types
 - Examples: Customer contracts, project documentation, compliance certificates
 
