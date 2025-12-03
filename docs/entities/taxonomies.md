@@ -99,8 +99,8 @@ File collections provide a way to organize and group documents and files within 
 
 ### Structure
 ```typescript
-type FileCollectionSystemFamilyLabelSlug = `_system_files_collection_schema_${string}:${string}`
-type FileUserCollectionSystemFamilyLabelSlug = `_system_files_collection_schema_${string}_${string}:${string}`
+type FileGlobalCollectionSystemSlug = `_system_files_collection_schema_${schemaSlug}:${collectionName}`
+type FileUserCollectionSystemSlug = `_system_files_collection_schema_${schemaSlug}_${userID}:${collectionName}`
 ```
 
 ### Types of File Collections
