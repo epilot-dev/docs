@@ -20,6 +20,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/entity.yaml',
   },
   {
+    layout: { title: 'Purpose API' },
+    routePath: '/api/purpose',
+    specUrl: 'https://docs.api.epilot.io/purpose.yaml',
+  },
+  {
     layout: { title: 'Batch API' },
     routePath: '/api/batch',
     specUrl: 'https://docs.api.epilot.io/batch.yaml',

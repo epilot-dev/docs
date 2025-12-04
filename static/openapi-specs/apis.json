@@ -44,6 +44,16 @@
       ]
     },
     {
+      "name": "Purpose API",
+      "baseURL": "https://purpose.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/purpose.yaml"
+        }
+      ]
+    },
+    {
       "name": "Batch API",
       "baseURL": "https://batch.sls.epilot.io",
       "properties": [
