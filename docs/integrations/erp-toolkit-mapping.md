@@ -763,11 +763,11 @@ The `_set` operation **replaces** the entire relation attribute with the specifi
 
 #### `_append` Operation
 
-The `_append` operation **adds** new relation items to the end of existing ones. This is useful for incremental updates where you want to preserve existing relations while adding new ones.
+The `_append` operation **adds** new unique relation items to the end of existing ones (with automatic deduplication). This is useful for incremental updates where you want to preserve existing relations while adding new ones.
 
 **Behavior:**
 - Fetches the existing entity to retrieve current relation values
-- Appends the new items to the end of the existing relation array
+- Appends only NEW items to the end of the existing relation array (duplicates by `entity_id` are filtered out)
 - If the entity doesn't exist, behaves the same as `_set` (creates new entity with specified relations)
 - Preserves the order of existing items
 
@@ -799,7 +799,7 @@ Initial entity state:
   }
 }
 
-After applying _append operation:
+After applying _append operation with entity_id "existing-1" and "new-1":
 {
   "contacts": {
     "$relation": [
@@ -809,6 +809,7 @@ After applying _append operation:
   }
 }
 ```
+Note: If "existing-1" was in the append list, it would be filtered out as a duplicate.
 
 **Use Cases:**
 - Adding additional contacts or billing accounts to an existing contract
@@ -817,8 +818,68 @@ After applying _append operation:
 
 **Important Notes:**
 - `_append` requires an additional database lookup to fetch the existing entity
-- If duplicate relations are appended, they will appear multiple times (no automatic deduplication)
+- **Automatic deduplication** - relations with the same `entity_id` are NOT added again
 - The operation applies to both relation attributes and regular array attributes (like `_tags`)
+
+#### `_append_all` Operation
+
+The `_append_all` operation **adds** all relation items to the end of existing ones (without deduplication). Use this when you explicitly want to allow duplicate relations.
+
+**Behavior:**
+- Fetches the existing entity to retrieve current relation values
+- Appends ALL items to the end of the existing relation array (duplicates ARE allowed)
+- If the entity doesn't exist, behaves the same as `_set` (creates new entity with specified relations)
+- Preserves the order of existing items
+
+**Example:**
+```json
+{
+  "attribute": "contacts",
+  "relations": {
+    "operation": "_append_all",
+    "items": [
+      {
+        "entity_schema": "contact",
+        "_tags": ["NEW_CONTACT"],
+        "unique_ids": [...]
+      }
+    ]
+  }
+}
+```
+
+**Example Scenario:**
+```
+Initial entity state:
+{
+  "contacts": {
+    "$relation": [
+      { "entity_id": "existing-1", "_schema": "contact", "_tags": ["EXISTING"] }
+    ]
+  }
+}
+
+After applying _append_all operation with entity_id "existing-1" and "new-1":
+{
+  "contacts": {
+    "$relation": [
+      { "entity_id": "existing-1", "_schema": "contact", "_tags": ["EXISTING"] },
+      { "entity_id": "existing-1", "_schema": "contact", "_tags": ["DUPLICATE"] },
+      { "entity_id": "new-1", "_schema": "contact", "_tags": ["NEW_CONTACT"] }
+    ]
+  }
+}
+```
+Note: "existing-1" IS duplicated because `_append_all` skips deduplication.
+
+**Use Cases:**
+- When you explicitly need duplicate relations (rare use case)
+- When deduplication behavior is not desired
+
+**Important Notes:**
+- `_append_all` requires an additional database lookup to fetch the existing entity
+- **No deduplication** - duplicate relations ARE added
+- Use `_append` instead if you want to prevent duplicate relations
 
 ### Basic Relation with Items
 
@@ -1000,6 +1061,286 @@ Relation unique IDs support three value sources, similar to field mappings:
 {
   "attribute": "source",
   "constant": "ERP"
+}
+```
+
+## Relation References
+
+Relation references (`$relation_ref`) allow you to link to a specific item within a repeatable attribute on a related entity. This is commonly used for addresses, where you want to reference not just a contact entity, but a specific address within that contact's address list.
+
+### Basic Concept
+
+While `$relation` links to an entity, `$relation_ref` links to:
+1. A related entity (by its `entity_id`)
+2. A specific attribute path on that entity (e.g., `"address"`)
+3. Optionally, a specific item within a repeatable attribute (by its `_id`)
+
+### Configuration Structure
+
+```json
+{
+  "attribute": "billing_address",
+  "relation_refs": {
+    "operation": "_set",  // or "_append"
+    "items": [
+      {
+        "entity_schema": "contact",
+        "unique_ids": [
+          {
+            "attribute": "customer_number",
+            "field": "CustomerNumber"
+          }
+        ],
+        "path": "address",  // Attribute path on the related entity
+        "value": {
+          "attribute": "address",
+          "operation": "_append",  // Optional: operation for the attribute value
+          "jsonataExpression": "{\n  \"street\": BillingStreet,\n  \"city\": BillingCity,\n  \"country\": 'DE',\n  \"postal_code\": BillingPostalCode,\n  \"street_number\": $string(BillingStreetNumber)\n}"
+        }
+      }
+    ]
+  }
+}
+```
+
+### How It Works
+
+1. **Find or create the related entity**: Uses `unique_ids` to find/create the contact
+2. **Set the attribute value**: Upserts the `address` attribute on the contact with the provided value
+3. **Preserve `_id` values**: Automatically matches existing address items by their content and preserves their `_id` to avoid regeneration
+4. **Create the reference**: Links the main entity to the specific address item using `$relation_ref`
+
+### Example: Billing Address Reference
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "object_type": "Invoice",
+  "entities": [
+    {
+      "entity_schema": "opportunity",
+      "unique_ids": ["invoice_number"],
+      "fields": [
+        {
+          "attribute": "invoice_number",
+          "field": "InvoiceNumber"
+        },
+        {
+          "attribute": "billing_address",
+          "relation_refs": {
+            "operation": "_set",
+            "items": [
+              {
+                "entity_schema": "contact",
+                "unique_ids": [
+                  {
+                    "attribute": "customer_number",
+                    "field": "CustomerNumber"
+                  }
+                ],
+                "path": "address",
+                "value": {
+                  "attribute": "address",
+                  "operation": "_append",
+                  "jsonataExpression": "{\n  \"street\": BillingStreet,\n  \"city\": BillingCity,\n  \"country\": 'DE',\n  \"postal_code\": BillingPostalCode,\n  \"street_number\": $string(BillingStreetNumber)\n}"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Input:**
+```json
+{
+  "InvoiceNumber": "INV-001",
+  "CustomerNumber": "CUST-123",
+  "BillingStreet": "Main Street",
+  "BillingStreetNumber": 42,
+  "BillingCity": "Berlin",
+  "BillingPostalCode": "10115"
+}
+```
+
+**Processing Flow:**
+
+1. System finds or creates contact with `customer_number: "CUST-123"`
+2. Appends the address to the contact's address attribute:
+   ```json
+   {
+     "customer_number": "CUST-123",
+     "address": [
+       {
+         "_id": "abc123",  // Auto-generated by Entity API
+         "street": "Main Street",
+         "street_number": "42",
+         "city": "Berlin",
+         "postal_code": "10115",
+         "country": "DE"
+       }
+     ]
+   }
+   ```
+3. Creates the relation_ref on the opportunity:
+   ```json
+   {
+     "invoice_number": "INV-001",
+     "billing_address": {
+       "$relation_ref": [
+         {
+           "entity_id": "019a0c06-1234-5678-9abc-def012345678",  // Contact entity ID
+           "path": "address",
+           "_id": "abc123"  // Specific address item ID
+         }
+       ]
+     }
+   }
+   ```
+
+### _id Preservation
+
+The system automatically preserves `_id` values when updating repeatable attributes to avoid regenerating them:
+
+- When setting or appending values, the system fetches the existing entity
+- It matches new items with existing items using deep equality (excluding `_id`)
+- If a match is found, the existing `_id` is preserved
+- This ensures stable references even when data is updated
+
+**Example:**
+
+If the contact already has an address:
+```json
+{
+  "address": [
+    {
+      "_id": "xyz789",
+      "street": "Old Street",
+      "city": "Munich"
+    }
+  ]
+}
+```
+
+And you update it with matching content:
+```json
+{
+  "street": "Old Street",
+  "city": "Munich"
+}
+```
+
+The system will preserve `_id: "xyz789"` instead of generating a new one.
+
+### Operations
+
+Relation references support three operations:
+
+#### _set Operation
+Replaces all existing relation_refs with new ones:
+
+```json
+{
+  "relation_refs": {
+    "operation": "_set",
+    "items": [...]
+  }
+}
+```
+
+#### _append Operation
+Adds new unique relation_refs to existing ones (with automatic deduplication by `entity_id + _id`):
+
+```json
+{
+  "relation_refs": {
+    "operation": "_append",
+    "items": [...]
+  }
+}
+```
+
+**Note:** If a relation_ref with the same `entity_id` and `_id` combination already exists, it will NOT be added again.
+
+#### _append_all Operation
+Adds all relation_refs to existing ones (without deduplication):
+
+```json
+{
+  "relation_refs": {
+    "operation": "_append_all",
+    "items": [...]
+  }
+}
+```
+
+**Note:** Duplicate relation_refs ARE allowed with `_append_all`. Use this when you explicitly need to allow duplicates.
+
+### Value Configuration
+
+The `value` field supports the same configuration options as regular field mappings:
+
+**Field Reference:**
+```json
+{
+  "attribute": "address",
+  "field": "AddressData"
+}
+```
+
+**JSONata Expression:**
+```json
+{
+  "attribute": "address",
+  "jsonataExpression": "{\n  \"street\": street,\n  \"city\": city\n}"
+}
+```
+
+**Constant:**
+```json
+{
+  "attribute": "type",
+  "constant": "BILLING"
+}
+```
+
+### All-or-Nothing Strategy
+
+Like regular relations, relation_refs use an all-or-nothing strategy:
+
+- If ANY related entity in a relation_ref attribute cannot be found, the ENTIRE attribute is deferred to post_actions
+- Post_actions will create the missing entities first
+- Then the system retries the update with all entities available
+- This ensures data integrity and proper ordering of entity creation
+
+### Multiple Relation References
+
+You can reference multiple items in a single attribute:
+
+```json
+{
+  "attribute": "addresses",
+  "relation_refs": {
+    "operation": "_set",
+    "items": [
+      {
+        "entity_schema": "contact",
+        "unique_ids": [...],
+        "path": "address",
+        "value": {...}
+      },
+      {
+        "entity_schema": "contact",
+        "unique_ids": [...],
+        "path": "address",
+        "value": {...}
+      }
+    ]
+  }
 }
 ```
 
@@ -1619,7 +1960,7 @@ The error message includes the item index to help identify which specific meter_
 
 ## Array Attribute Operations
 
-Regular array attributes (like `_tags`, custom array fields, etc.) also support `_set` and `_append` operations. These work similarly to relation operations but for simple array values.
+Regular array attributes (like `_tags`, custom array fields, etc.) support `_set`, `_append`, and `_append_all` operations. These work similarly to relation operations but for simple array values.
 
 ### `_set` for Array Attributes
 
@@ -1650,7 +1991,7 @@ Replaces the entire array with new values.
 
 ### `_append` for Array Attributes
 
-Adds new values to the end of existing array values.
+Adds new unique values to the end of existing array values (with automatic deduplication).
 
 **Configuration (in attributes object):**
 ```json
@@ -1670,11 +2011,12 @@ Initial entity state:
   "_tags": ["EXISTING_TAG", "CUSTOMER"]
 }
 
-After applying _append:
+After applying _append with ["CUSTOMER", "NEW_TAG"]:
 {
-  "_tags": ["EXISTING_TAG", "CUSTOMER", "NEW_TAG", "ANOTHER_TAG"]
+  "_tags": ["EXISTING_TAG", "CUSTOMER", "NEW_TAG"]
 }
 ```
+Note: "CUSTOMER" is not duplicated because it already exists.
 
 **If entity doesn't exist:**
 ```
@@ -1685,10 +2027,53 @@ Result:
 ```
 
 **Important Notes:**
-- `_append` preserves existing values and adds new ones to the end
+- `_append` preserves existing values and adds only new ones to the end
 - If the entity doesn't exist, `_append` behaves like `_set`
-- No automatic deduplication - if you append a tag that already exists, it will appear twice
+- **Automatic deduplication** - duplicate values are NOT added
 - Works with any array-type attribute, not just `_tags`
+
+### `_append_all` for Array Attributes
+
+Adds all values to the end of existing array values (without deduplication).
+
+**Configuration (in attributes object):**
+```json
+{
+  "attributes": {
+    "_tags": {
+      "_append_all": ["NEW_TAG", "ANOTHER_TAG"]
+    }
+  }
+}
+```
+
+**Example Scenario:**
+```
+Initial entity state:
+{
+  "_tags": ["EXISTING_TAG", "CUSTOMER"]
+}
+
+After applying _append_all with ["CUSTOMER", "NEW_TAG"]:
+{
+  "_tags": ["EXISTING_TAG", "CUSTOMER", "CUSTOMER", "NEW_TAG"]
+}
+```
+Note: "CUSTOMER" IS duplicated because `_append_all` skips deduplication.
+
+**If entity doesn't exist:**
+```
+Result:
+{
+  "_tags": ["NEW_TAG", "ANOTHER_TAG"]
+}
+```
+
+**Important Notes:**
+- `_append_all` preserves existing values and adds ALL new values to the end
+- If the entity doesn't exist, `_append_all` behaves like `_set`
+- **No deduplication** - duplicate values ARE added
+- Use this when you explicitly want to allow duplicates
 
 ## Complete Examples
 
