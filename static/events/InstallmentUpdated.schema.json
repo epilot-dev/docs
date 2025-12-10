@@ -909,10 +909,6 @@
           "$ref": "#/definitions/User",
           "description": "Contact Owner"
         },
-        "represents_contact": {
-          "$ref": "#/definitions/BaseRelation",
-          "description": "Represents Contact"
-        },
         "consent_email_marketing": {
           "$ref": "#/definitions/ConsentAttribute",
           "description": "Email Marketing"
@@ -1086,6 +1082,10 @@
         "mapped_contact": {
           "$ref": "#/definitions/BaseRelation",
           "description": "Mapped Contact"
+        },
+        "represents": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Represents"
         },
         "_files": {
           "$ref": "#/definitions/BaseRelation"
