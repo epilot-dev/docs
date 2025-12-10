@@ -9,7 +9,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "contact",
+      "example": "request",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {

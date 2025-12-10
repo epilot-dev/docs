@@ -9,7 +9,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "contact",
+      "example": "ticket",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -47,17 +47,17 @@
       "$ref": "#/definitions/PurposeAttribute",
       "description": "Purposes"
     },
-    "title": {
+    "ticket_title": {
       "type": "string",
-      "description": "Title"
+      "description": "Ticket Title"
     },
     "customer": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Customer"
     },
-    "number": {
+    "ticket_number": {
       "type": "string",
-      "description": "Number"
+      "description": "Ticket Number"
     },
     "status": {
       "type": "string",

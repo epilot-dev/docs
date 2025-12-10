@@ -9,7 +9,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "submission",
+      "example": "asset",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -43,17 +43,113 @@
       ],
       "description": "Entity Labels"
     },
-    "_purpose": {
-      "$ref": "#/definitions/PurposeAttribute",
-      "description": "Purposes"
+    "title": {
+      "type": "string",
+      "description": "Asset Title"
     },
-    "source": {
-      "$ref": "#/definitions/LinkAttribute",
-      "description": "Source"
-    },
-    "mapped_entities": {
+    "customer": {
       "$ref": "#/definitions/BaseRelation",
-      "description": "Entities"
+      "description": "Customer"
+    },
+    "installation_address": {
+      "$ref": "#/definitions/BaseRelationRef",
+      "description": "Installation Address"
+    },
+    "asset_number": {
+      "type": "string",
+      "description": "Asset Number"
+    },
+    "serial_number": {
+      "type": "string",
+      "description": "Serial Number"
+    },
+    "manufacturer": {
+      "type": "string",
+      "description": "Manufacturer"
+    },
+    "model": {
+      "type": "string",
+      "description": "Model"
+    },
+    "manufacturing_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Manufacturing Date"
+    },
+    "maintenance_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Last Maintenance Date"
+    },
+    "commissioning_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Commissioning Date"
+    },
+    "installation_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Installation Date"
+    },
+    "guarantee": {
+      "type": "string",
+      "description": "Guarantee: hint_helper.asset.guarantee_years"
+    },
+    "manual": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Manual"
+    },
+    "technical_data_about_installation": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Technical data about Installation"
+    },
+    "asset": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Assets"
+    },
+    "contract": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Contract"
+    },
+    "meter": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Meter"
+    },
+    "ticket": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Ticket"
+    },
+    "asset_type": {
+      "type": "string",
+      "enum": [
+        "Wärmepumpe",
+        "Wallbox",
+        "Ladesäule",
+        "Solarmodul"
+      ],
+      "description": "Asset Type"
+    },
+    "upcoming_maintenance_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Upcoming Maintenance Date"
+    },
+    "beginn_widerrufsfrist": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Beginn Widerrufsfrist"
+    },
+    "ende_widerrufsfrist": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Ende Widerrufsfrist"
     },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"
@@ -139,37 +235,6 @@
     }
   },
   "definitions": {
-    "PurposeAttribute": {
-      "type": "array",
-      "description": "List of purpose ids",
-      "items": {
-        "type": "string"
-      },
-      "example": [
-        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
-      ]
-    },
-    "LinkAttribute": {
-      "type": "object",
-      "description": "Link with title and href",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "link"
-          ]
-        },
-        "title": {
-          "type": "string",
-          "example": "Visit Website"
-        },
-        "href": {
-          "type": "string",
-          "format": "uri",
-          "example": "https://example.com"
-        }
-      }
-    },
     "BaseUUID": {
       "type": "string",
       "format": "uuid",
@@ -200,6 +265,36 @@
               },
               "_tags": {
                 "$ref": "#/definitions/BaseTags"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BaseRelationRef": {
+      "type": "object",
+      "nullable": true,
+      "description": "Reference to a specific property of another entity",
+      "properties": {
+        "$relation_ref": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "path": {
+                "type": "string",
+                "example": "address",
+                "description": "The property of the entity (pointed by entity_id) to be used as the reference"
+              },
+              "_tags": {
+                "$ref": "#/definitions/BaseTags"
+              },
+              "_id": {
+                "type": "string",
+                "example": "xHcOoJCa07eysJ1GaQeSb"
               }
             }
           }

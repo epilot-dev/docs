@@ -9,7 +9,7 @@
   "_purpose": [
     "7675dc56-fd1b-46ee-9c35-defe0667b32e"
   ],
-  "title": "string",
+  "ticket_title": "string",
   "customer": {
     "$relation": [
       {
@@ -20,7 +20,7 @@
       }
     ]
   },
-  "number": "string",
+  "ticket_number": "string",
   "status": "Open",
   "payment": [
     {

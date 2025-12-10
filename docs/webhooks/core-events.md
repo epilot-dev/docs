@@ -28,9 +28,8 @@ All events include these standard fields:
 
 ### Metering
 
-<EventSchemaViewer
-  event="AddMeterReading"
-  displayName="Add Meter Reading"
-  description="Triggered when a new meter reading is added to the system. Includes meter counter, meter, contract, customer, and portal user details from the entity graph."
-  apiLink="/api/metering"
-/>
+<EventSchemaViewer event="MeterReadingAdded" />
+
+### Contracts
+
+<EventSchemaViewer event="InstallmentUpdated" />

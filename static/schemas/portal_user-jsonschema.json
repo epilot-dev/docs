@@ -9,7 +9,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "contact",
+      "example": "portal_user",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -112,6 +112,10 @@
     "mapped_contact": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Mapped Contact"
+    },
+    "represents": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Represents"
     },
     "_files": {
       "$ref": "#/definitions/BaseRelation"

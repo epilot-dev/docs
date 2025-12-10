@@ -12,7 +12,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "contact",
+      "example": "billing_event",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {

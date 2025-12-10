@@ -99,16 +99,6 @@
       }
     ]
   },
-  "represents_contact": {
-    "$relation": [
-      {
-        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
-        "_tags": [
-          "example"
-        ]
-      }
-    ]
-  },
   "consent_email_marketing": {
     "type": "consent",
     "topic": "string",

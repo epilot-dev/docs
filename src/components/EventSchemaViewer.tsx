@@ -1,19 +1,31 @@
+import { IconComponentsMap } from '@epilot360/icons';
+import Icon from '@site/src/components/Icon';
 import { JsonSchemaViewer } from '@stoplight/json-schema-viewer';
 import { Provider as MosaicProvider } from '@stoplight/mosaic';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CollapsibleJsonViewer from './CollapsibleJsonViewer';
 import styles from './EntitySchemaViewer.module.css';
 import './mosaic-scoped.css';
 
-interface EventSchemaViewerProps {
-  event: string;
-  displayName: string;
-  description: string;
-  apiLink?: string;
+interface EventConfig {
+  event_name: string;
+  event_title: string;
+  event_description: string;
+  event_tags?: string[];
 }
 
-const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({ event, displayName, description, apiLink }) => {
+interface EventSchemaViewerProps {
+  event: string;
+  apiLink?: string;
+  icon?: string;
+}
+
+const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({
+  event,
+  apiLink,
+  icon = 'entity',
+}) => {
   const [sampleData, setSampleData] = useState<string>('');
   const [configData, setConfigData] = useState<string>('');
   const [schemaData, setSchemaData] = useState<string>('');
@@ -21,6 +33,23 @@ const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({ event, displayNam
   const [activeTab, setActiveTab] = useState<'none' | 'sample' | 'config' | 'schema' | 'visual'>('none');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [eventConfig, setEventConfig] = useState<EventConfig | null>(null);
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const response = await fetch(`/events/${event}.config.json`);
+        if (response.ok) {
+          const json: EventConfig = await response.json();
+          setEventConfig(json);
+          setConfigData(JSON.stringify(json, null, 2));
+        }
+      } catch {
+        // Config loading is optional, fail silently
+      }
+    };
+    loadConfig();
+  }, [event]);
 
   const loadSample = async () => {
     if (activeTab === 'sample') {
@@ -138,14 +167,25 @@ const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({ event, displayNam
     }
   };
 
+  const displayName = eventConfig?.event_title ?? event;
+  const description = eventConfig?.event_description ?? '';
+  const tags = (eventConfig?.event_tags ?? []).filter((tag) => tag !== 'builtin');
+
   return (
     <div className={`${styles.container} entitySchemaViewer`}>
       <div className={styles.header}>
         <div className={styles.titleRow}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-          </svg>
+          {icon && <Icon name={icon as keyof typeof IconComponentsMap} size={24} />}
           <h4 className={styles.entityTitle}>{displayName}</h4>
+          {tags.length > 0 && (
+            <div className={styles.tagContainer}>
+              {tags.map((tag) => (
+                <span key={tag} className={styles.tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         <p className={styles.description}>{description}</p>
         {apiLink && (

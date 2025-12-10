@@ -1,6 +1,6 @@
 {
-  "event_name": "AddMeterReading",
-  "event_title": "Add Meter Reading",
+  "event_name": "MeterReadingAdded",
+  "event_title": "Meter Reading Added",
   "event_description": "Triggered when a new meter reading is added",
   "event_version": "1.0.0",
   "event_tags": [
@@ -67,24 +67,10 @@
     },
     "direction": {
       "json_schema": {
-        "anyOf": [
-          {
-            "anyOf": [
-              {
-                "not": {}
-              },
-              {
-                "type": "string",
-                "enum": [
-                  "feed-in",
-                  "feed-out"
-                ]
-              }
-            ]
-          },
-          {
-            "type": "null"
-          }
+        "type": "string",
+        "enum": [
+          "feed-in",
+          "feed-out"
         ],
         "description": "Direction of energy flow"
       },
