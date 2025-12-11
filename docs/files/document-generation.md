@@ -247,6 +247,12 @@ Use an image placeholder in your template and set the variable in the alt text:
 
 ### Image Loops and Collections
 
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'center'}}>
+<img src="/img/docgen/docgen-images-p-1.png" alt="Document Generation Images Example 1" style={{ maxWidth: '50%', width: '100%' }} />
+<img src="/img/docgen/docgen-images-p-2.png" alt="Document Generation Images Example 2" style={{ maxWidth: '50%', width: '100%' }} />
+</div>
+
+
 #### Mapping Journey Submissions to File Attributes
 
 Since the global `_files` attribute is not yet supported, you need to map Journey submission fields to file attributes. For example, map a journey field to `my_journey_images`.
@@ -299,6 +305,11 @@ Templates containing order tables with margin corrections like:
 **Solution:** Remove the margin correction variables and adjust margins directly in your Word template using Word's built-in margin settings.
 
 ## Excel Generation
+
+<div style={{display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'center'}}>
+<img src="/img/docgen/docgen-excel-1.png" alt="Excel Document Generation Example 1" style={{ maxWidth: '50%', width: '100%' }} />
+<img src="/img/docgen/docgen-excel.png" alt="Excel Document Generation Example 2" style={{ maxWidth: '50%', width: '100%' }} />
+</div>
 
 ### Excel Template Support
 
