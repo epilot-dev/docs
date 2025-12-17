@@ -204,4 +204,9 @@ module.exports.specs = [
     routePath: '/api/erp-integration',
     specUrl: 'https://docs.api.epilot.io/erp-integration.yaml',
   },
+  {
+    layout: { title: 'App API' },
+    routePath: '/api/app',
+    specUrl: 'https://docs.api.epilot.io/app.yaml',
+  },
 ];
