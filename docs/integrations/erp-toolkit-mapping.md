@@ -2,7 +2,6 @@
 title: ERP Toolkit Mappings
 sidebar_position: 20
 ---
-
 # ERP Integration Mapping Specification v2.0
 
 ## Overview
@@ -14,6 +13,7 @@ The ERP Integration Mapping v2.0 provides a powerful and flexible way to transfo
 - [Key Concepts](#key-concepts)
 - [Basic Structure](#basic-structure)
 - [Field Mapping Types](#field-mapping-types)
+- [Repeatable Field Types as Unique Identifiers](#repeatable-field-types-as-unique-identifiers)
 - [Entity-Level Processing](#entity-level-processing)
 - [Relations](#relations)
     - [Relation Operations](#relation-operations)
@@ -86,7 +86,7 @@ Entity Updates (ready for epilot)
 - **`events`**: Object with event names as keys
 - **`entities`**: Array of entity configurations for each event
 - **`entity_schema`**: The epilot entity schema (e.g., "contact", "contract", "billing_account", see [Core Entities](https://docs.epilot.io/docs/entities/core-entities/))
-- **`unique_ids`**: Array of attribute names that uniquely identify this entity
+- **`unique_ids`**: Array of unique identifier configurations (see [Repeatable Field Types as Unique Identifiers](#repeatable-field-types-as-unique-identifiers))
 - **`jsonataExpression`**: Optional JSONata expression to pre-process the event data
 - **`enabled`**: Optional boolean or JSONata expression to conditionally enable/disable entity processing (defaults to `true`)
 - **`fields`**: Array of field mappings
@@ -202,6 +202,229 @@ Set a fixed value regardless of input data. Useful for setting tags, purposes, e
 {
   "attributes": {
     "source": "ERP_IMPORT"
+  }
+}
+```
+
+## Repeatable Field Types as Unique Identifiers
+
+Some entity fields in epilot are repeatable fields stored as arrays of objects. The most common examples are **email** and **phone** fields:
+
+```json
+{
+  "email": [{ "email": "user@example.com" }],
+  "phone": [{ "phone": "+49123456789" }]
+}
+```
+
+When using these fields as unique identifiers, special handling is required because:
+1. **Search**: The Elasticsearch filter must use the nested path (e.g., `email.email.keyword` instead of `email.keyword`)
+2. **Create/Update**: Values must be transformed to the repeatable format when creating or updating entities
+
+### Configuration
+
+To use a repeatable field type as a unique identifier, add the `_type` hint to the **field definition** in the `fields` array:
+
+**Standard field (no _type needed):**
+```json
+{
+  "entity_schema": "contact",
+  "unique_ids": ["customer_number"],
+  "fields": [
+    {
+      "attribute": "customer_number",
+      "field": "customerId"
+    }
+  ]
+}
+```
+
+**Repeatable field with _type hint:**
+```json
+{
+  "entity_schema": "contact",
+  "unique_ids": ["email"],
+  "fields": [
+    {
+      "attribute": "email",
+      "field": "Email",
+      "_type": "email"
+    }
+  ]
+}
+```
+
+**Mixed unique identifiers:**
+```json
+{
+  "entity_schema": "contact",
+  "unique_ids": ["customer_number", "email"],
+  "fields": [
+    {
+      "attribute": "customer_number",
+      "field": "customerId"
+    },
+    {
+      "attribute": "email",
+      "field": "Email",
+      "_type": "email"
+    }
+  ]
+}
+```
+
+### Supported Types
+
+| Type | Storage Format | Search Path | Use Case |
+|------|----------------|-------------|----------|
+| `email` | `[{ "email": "value" }]` | `email.email.keyword` | Contact email addresses |
+| `phone` | `[{ "phone": "value" }]` | `phone.phone.keyword` | Contact phone numbers |
+
+### Complete Example
+
+**Configuration:**
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "CustomerChanged": {
+        "entities": [
+          {
+            "entity_schema": "contact",
+            "unique_ids": ["email"],
+            "fields": [
+              {
+                "attribute": "email",
+                "field": "Email",
+                "_type": "email"
+              },
+              {
+                "attribute": "first_name",
+                "field": "FirstName"
+              },
+              {
+                "attribute": "last_name",
+                "field": "LastName"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+**Input Event:**
+```json
+{
+  "Email": "anna.schmidt@example.com",
+  "FirstName": "Anna",
+  "LastName": "Schmidt"
+}
+```
+
+**Behavior:**
+1. **Search**: System searches for existing contact using `email.email.keyword: "anna.schmidt@example.com"`
+2. **Create**: If not found, creates new contact with email as `[{ "email": "anna.schmidt@example.com" }]`
+3. **Update**: If found, patches the existing contact
+
+### Using in Relations
+
+Repeatable field types can also be used in relation unique identifiers using the `_type` property:
+
+```json
+{
+  "attribute": "primary_contact",
+  "relations": {
+    "operation": "_set",
+    "items": [
+      {
+        "entity_schema": "contact",
+        "unique_ids": [
+          {
+            "attribute": "email",
+            "_type": "email",
+            "field": "contactEmail"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+This allows you to look up related entities by their email address, using the correct search path for the email field.
+
+### Backward Compatibility
+
+Existing configurations without `_type` hints continue to work unchanged. The `_type` hint is only needed for repeatable fields like `email` and `phone`.
+
+### Direct Entity Lookup with `_id`
+
+When using `_id` as the **only** unique identifier, the system performs an optimized direct entity lookup instead of an Elasticsearch search. This is useful for:
+- Linking to entities where you already know the exact entity ID
+- Performance-critical scenarios where you want to avoid search latency
+- Post-action callbacks where entity IDs are already resolved
+
+**Configuration:**
+```json
+{
+  "entity_schema": "contact",
+  "unique_ids": ["_id"],
+  "fields": [
+    {
+      "attribute": "_id",
+      "field": "entityId"
+    },
+    {
+      "attribute": "first_name",
+      "field": "firstName"
+    }
+  ]
+}
+```
+
+**Input:**
+```json
+{
+  "entityId": "019a0c06-7190-7509-91c4-ff5bbe3680d8",
+  "firstName": "Anna"
+}
+```
+
+**Behavior:**
+1. **Direct lookup**: System fetches entity directly by ID (bypasses Elasticsearch)
+2. **Schema validation**: Verifies the entity's schema matches the expected `entity_schema`
+3. **Update**: If found and schema matches, patches the entity with the mapped attributes
+
+**Important Notes:**
+- The `_id` must be a valid, truthy value (not empty string, null, or undefined)
+- If `_id` is combined with other unique identifiers, the standard search behavior is used
+- If the entity doesn't exist, an error will be thrown (unlike search which returns null)
+- If the entity's schema doesn't match the expected `entity_schema`, an error will be thrown
+
+**Using `_id` in Relations:**
+
+You can also use `_id` as a unique identifier in relations for direct lookup:
+
+```json
+{
+  "attribute": "primary_contact",
+  "relations": {
+    "operation": "_set",
+    "items": [
+      {
+        "entity_schema": "contact",
+        "unique_ids": [
+          {
+            "attribute": "_id",
+            "field": "contactEntityId"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
