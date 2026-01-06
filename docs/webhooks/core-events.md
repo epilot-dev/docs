@@ -37,3 +37,7 @@ All events include these standard fields:
 <EventSchemaViewer event="PaymentMethodUpdated" />
 
 <EventSchemaViewer event="BillingAddressUpdated" />
+
+### Other
+
+<EventSchemaViewer event="CreateMove" />
