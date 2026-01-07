@@ -36,6 +36,8 @@ See the [App Components](/apps/about-apps/components/overview) section for detai
 
 **Portal Extensions**: Components that enhance epilot's customer and installer portals with additional functionality and visualizations.
 
+**External Catalog Product**: Components that integrate third-party product catalogs into epilot.
+
 ### Upcoming Component Types (Roadmap)
 
 1. **Custom Automation Tasks**: Define custom automation tasks that can be triggered within epilot's automation workflows.

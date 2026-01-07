@@ -43,6 +43,14 @@ Portal Extensions enhance epilot's customer and installer portals with new secti
 Use cases: Custom dashboard widgets, specialized tools, data visualizations
 ```
 
+### [External Catalog Product](/apps/about-apps/components/external-product-catalog)
+
+External Catalog Product components integrate third-party product catalogs into epilot. They enable Product Blocks to fetch and display products and pricing from external systems, allowing customers to browse and select items from external catalogs directly within their journey experience.
+
+```
+Use cases: Custom product catalogs, journey products, journey product recommendations
+```
+
 ## On the Horizon
 
 The epilot platform continues to evolve, with new component types planned for future releases:
@@ -88,6 +96,17 @@ Ready to create your own component? Each component type has specific requirement
           <h3>Portal Extensions</h3>
           <p>Extend epilot's portals with custom functionality</p>
           <a href="/apps/about-apps/components/portal-extension" className="button button--primary button--block">Start Building</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div className="row" style={{marginTop: '1.5rem'}}>
+    <div className="col col--6">
+      <div className="card" style={{height: '100%'}}>
+        <div className="card__body">
+          <h3>External Product Catalog</h3>
+          <p>Integrate third-party product catalogs into epilot</p>
+          <a href="/apps/about-apps/components/external-product-catalog" className="button button--primary button--block">Start Building</a>
         </div>
       </div>
     </div>
