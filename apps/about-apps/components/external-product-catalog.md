@@ -110,7 +110,7 @@ To ensure seamless communication between epilot and your external catalog, your 
 
 ### Specification
 
-The integration works as a `POST` request to your service endpoint (e.g., `/integration/external-service`). Your service must be able to handle:
+The integration works as a request to your service endpoint with the following request and response:
 
 1.  **Request**: A payload containing the `context` of the journey or a custom one defined by you/epilot.
 2.  **Response**: A list of products or product recommendations in a specific format.
