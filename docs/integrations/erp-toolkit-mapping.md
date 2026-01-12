@@ -32,6 +32,7 @@ The ERP Integration Mapping v2.0 provides a powerful and flexible way to transfo
     - [Example 3: Combined Entity and Meter Readings](#example-3-combined-entity-and-meter-readings)
     - [Validation](#validation)
     - [Best Practices](#best-practices-1)
+    - [Reading Matching Strategies](#reading-matching-strategies)
 - [Array Attribute Operations](#array-attribute-operations)
 - [Complete Examples](#complete-examples)
 - [Best Practices](#best-practices)
@@ -2173,13 +2174,133 @@ The error message includes the item index to help identify which specific meter_
    }
    ```
 
-4**Validate Data Quality**: Use JSONata expressions to ensure data quality
+4. **Validate Data Quality**: Use JSONata expressions to ensure data quality
    ```json
    {
      "attribute": "value",
      "jsonataExpression": "$number(reading_value) >= 0 ? $number(reading_value) : 0"
    }
    ```
+
+### Reading Matching Strategies
+
+By default, meter readings use `external_id` for upsert matching. However, when readings originate from ECP (End Customer Portal) and are later echoed back by the ERP system, duplicates can occur because:
+- ECP readings don't have an `external_id` initially
+- ERP often truncates timestamps to date precision, causing timestamp mismatches
+
+The `reading_matching` option allows you to configure how incoming readings are matched against existing readings.
+
+**Available Strategies:**
+
+| Strategy | Description                                                           |
+|----------|-----------------------------------------------------------------------|
+| `external_id` | Default. Match readings by `external_id` attribute (default behavior) |
+| `strict-date` | Match by meter_id + counter_id + direction + date (German timezone)   |
+
+**Configuration:**
+```json
+{
+  "meter_readings": [
+    {
+      "reading_matching": "strict-date",
+      "meter": { ... },
+      "fields": [ ... ]
+    }
+  ]
+}
+```
+
+**`strict-date` Strategy Details:**
+
+When using `strict-date`:
+1. Before creating a reading, the system looks up existing readings for the same meter_id + counter_id + direction on the same **German calendar day** (Europe/Berlin timezone)
+2. If a **single match** is found: The existing reading is updated with ERP data (including setting `external_id` for future syncs)
+3. If **multiple matches** are found: An error is logged and the operation is skipped (to avoid creating duplicates)
+4. If **no match** is found: A new reading is created normally
+
+**Why German Timezone?**
+
+ECP users in Germany submit readings that are stored with full timestamp precision. When the ERP echoes the reading back, it often truncates to date-only (e.g., `2025-01-15T00:00:00Z`). By comparing dates in German timezone:
+- A reading submitted at 23:30 CET on Jan 15 will match an ERP echo dated Jan 15
+- Timestamps across the UTC midnight boundary are handled correctly
+
+**Example: ECP → ERP Roundtrip**
+
+1. Customer submits reading via ECP at `2025-01-15T14:30:45.123Z` (15:30 German time)
+2. Reading is saved in metering-api without `external_id`
+3. ERP receives the reading and echoes it back with `timestamp: "2025-01-15T00:00:00Z"` and `external_id: "ERP-12345"`
+4. With `reading_matching: "strict-date"`:
+    - System finds existing reading on Jan 15 (German date)
+    - Updates it with ERP's `external_id`, `timestamp`, and `value`
+    - Future ERP updates will match by `external_id`
+
+**Expected Behavior Matrix:**
+
+| Scenario | Result |
+|----------|--------|
+| ECP submission → ERP echo | Update existing ECP reading, set `external_id` |
+| ERP sends same reading multiple times | All updates hit the same record |
+| ERP modifies value | Overwrites ECP value (ERP is source of truth) |
+| Reading only from ERP (no prior ECP) | Creates new reading normally |
+| Multiple readings on same date | Log error, skip to avoid duplicate |
+
+**Complete Example:**
+
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "MeterReadingsChanged": {
+        "meter_readings": [
+          {
+            "reading_matching": "strict-date",
+            "jsonataExpression": "$.readings",
+            "meter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "meter_id"
+                }
+              ]
+            },
+            "meter_counter": {
+              "unique_ids": [
+                {
+                  "attribute": "external_id",
+                  "field": "counter_id"
+                }
+              ]
+            },
+            "fields": [
+              {
+                "attribute": "external_id",
+                "field": "reading_id"
+              },
+              {
+                "attribute": "timestamp",
+                "field": "read_at"
+              },
+              {
+                "attribute": "source",
+                "constant": "ERP"
+              },
+              {
+                "attribute": "value",
+                "field": "reading_value"
+              },
+              {
+                "attribute": "direction",
+                "field": "direction"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
 
 ## Array Attribute Operations
 
