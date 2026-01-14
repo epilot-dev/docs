@@ -160,6 +160,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
   },
   {
+    layout: { title: 'Notification Template API' },
+    routePath: '/api/notification-template',
+    specUrl: 'https://docs.api.epilot.io/notification-template.yaml',
+  },
+  {
     layout: { title: 'Blueprint Manifest API' },
     routePath: '/api/blueprints',
     specUrl: 'https://docs.api.epilot.io/blueprint-manifest.yaml',
