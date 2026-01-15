@@ -18,7 +18,7 @@
     "_event_name": {
       "type": "string",
       "description": "Event name from catalog",
-      "example": "CreateMove"
+      "example": "LocationMoveRequested"
     },
     "_event_version": {
       "type": "string",
@@ -32,7 +32,6 @@
     "operation": {
       "type": "string",
       "enum": [
-        "createEntity",
         "updateEntity"
       ],
       "description": "The entity operation type that triggered this event"

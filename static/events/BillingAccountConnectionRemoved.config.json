@@ -1,12 +1,13 @@
 {
-  "event_name": "CreateMove",
-  "event_title": "Create Move Request",
-  "event_description": "Triggered when a Ticket with the 'Umzug/Auszug' purpose is created",
+  "event_name": "BillingAccountConnectionRemoved",
+  "event_title": "Disassociate Billing Account",
+  "event_description": "Triggered when a billing account is disconnected from a customer",
   "event_version": "1.0.0",
   "event_tags": [
     "builtin",
     "ticket",
-    "move"
+    "billing-account",
+    "Entfernung Kundenkonto"
   ],
   "schema_fields": {
     "operation": {
@@ -53,23 +54,8 @@
         "cardinality": "one"
       },
       {
-        "id": "contract",
-        "schema": "contract",
-        "cardinality": "one"
-      },
-      {
-        "id": "meter",
-        "schema": "meter",
-        "cardinality": "one"
-      },
-      {
-        "id": "submission",
-        "schema": "submission",
-        "cardinality": "one"
-      },
-      {
-        "id": "meter_counter",
-        "schema": "meter_counter",
+        "id": "contact",
+        "schema": "contact",
         "cardinality": "one"
       },
       {
@@ -81,22 +67,10 @@
     "edges": [
       {
         "from": "ticket",
-        "to": "contract"
+        "to": "contact"
       },
       {
         "from": "ticket",
-        "to": "meter"
-      },
-      {
-        "from": "ticket",
-        "to": "submission"
-      },
-      {
-        "from": "ticket",
-        "to": "meter_counter"
-      },
-      {
-        "from": "contract",
         "to": "billing_account"
       }
     ]
@@ -110,7 +84,7 @@
       "ticket"
     ],
     "purpose": [
-      "Umzug/Auszug"
+      "Entfernung Kundenkonto"
     ]
   }
 }

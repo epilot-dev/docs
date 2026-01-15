@@ -38,6 +38,16 @@ All events include these standard fields:
 
 <EventSchemaViewer event="BillingAddressUpdated" />
 
-### Other
+<EventSchemaViewer event="BillingAccountConnectionRemoved" />
 
-<EventSchemaViewer event="CreateMove" />
+### Customer
+
+<EventSchemaViewer event="CustomerDetailsUpdated" />
+
+### Tickets
+
+<EventSchemaViewer event="GeneralRequestCreated" />
+
+<EventSchemaViewer event="LocationMoveRequested" />
+
+<EventSchemaViewer event="TerminateContractRequested" />
