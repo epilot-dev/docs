@@ -9,7 +9,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "contact",
+      "example": "meter",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -233,6 +233,10 @@
     "counters": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Counters"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
     },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"

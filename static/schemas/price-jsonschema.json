@@ -15,7 +15,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "contact",
+      "example": "price",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -72,7 +72,6 @@
         "tiered_volume",
         "tiered_graduated",
         "tiered_flatfee",
-        "dynamic_tariff",
         "dynamic_tariff",
         "external_getag"
       ],
@@ -164,6 +163,7 @@
     "billing_duration_unit": {
       "type": "string",
       "enum": [
+        "days",
         "weeks",
         "months",
         "years"
@@ -177,6 +177,7 @@
     "notice_time_unit": {
       "type": "string",
       "enum": [
+        "days",
         "weeks",
         "months",
         "years"
@@ -190,6 +191,7 @@
     "termination_time_unit": {
       "type": "string",
       "enum": [
+        "days",
         "weeks",
         "months",
         "years"
@@ -203,6 +205,7 @@
     "renewal_duration_unit": {
       "type": "string",
       "enum": [
+        "days",
         "weeks",
         "months",
         "years"

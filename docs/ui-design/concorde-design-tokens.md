@@ -79,6 +79,68 @@ sidebar_position: 3
 | `--concorde-disabled-opacity`  | `0.38`              | The default opacity used for disabled states |
 | `--concorde-input-height`      | `48px`              | The default input height for regular inputs  |
 
+### Dark Mode
+
+The following tokens become active when dark mode is enabled. Each token has a dark mode variant with the suffix `-dark`.
+
+#### 🎨 Main Colors (Dark Mode)
+
+| CSS Variable                      | Description                                                          |
+| --------------------------------- | -------------------------------------------------------------------- |
+| `--concorde-primary-color-dark`   | Dark mode variant of `--concorde-primary-color`                      |
+| `--concorde-accent-color-dark`    | Dark mode variant of `--concorde-accent-color`                       |
+| `--concorde-secondary-color-dark` | Dark mode variant of `--concorde-secondary-color`                    |
+| `--concorde-disabled-color-dark`  | Dark mode variant of `--concorde-disabled-color`                     |
+| `--concorde-error-color-dark`     | Dark mode variant of `--concorde-error-color`                        |
+| `--concorde-outline-dark`         | Dark mode variant of `--concorde-outline`                            |
+| `--concorde-divider-color-dark`   | Dark mode variant of `--concorde-divider-color`                      |
+
+#### 🎨 Text Colors (Dark Mode)
+
+| CSS Variable                          | Description                                                 |
+| ------------------------------------- | ----------------------------------------------------------- |
+| `--concorde-primary-text-dark`        | Dark mode variant of `--concorde-primary-text`              |
+| `--concorde-secondary-text-dark`      | Dark mode variant of `--concorde-secondary-text`            |
+| `--concorde-disabled-text-dark`       | Dark mode variant of `--concorde-disabled-text`             |
+| `--concorde-disabled-label-text-dark` | Dark mode variant of `--concorde-disabled-label-text`       |
+| `--concorde-button-default-text-dark` | Dark mode variant of `--concorde-button-default-text`       |
+
+#### 🎨 Background Colors (Dark Mode)
+
+| CSS Variable                                    | Description                                                       |
+| ----------------------------------------------- | ----------------------------------------------------------------- |
+| `--concorde-default-background-dark`            | Dark mode variant of `--concorde-default-background`              |
+| `--concorde-surface-background-dark`            | Dark mode variant of `--concorde-surface-background`              |
+| `--concorde-neutral-surface-dark`               | Dark mode variant of `--concorde-neutral-surface`                 |
+| `--concorde-loading-background-dark`            | Dark mode variant of `--concorde-loading-background`              |
+| `--concorde-disabled-background-dark`           | Dark mode variant of `--concorde-disabled-background`             |
+| `--concorde-topbar-background-dark`             | Dark mode variant of `--concorde-topbar-background`               |
+| `--concorde-product-tile-background-color-dark` | Dark mode variant of `--concorde-product-tile-background-color`   |
+| `--concorde-card-default-background-dark`       | Dark mode variant of `--concorde-card-default-background`         |
+| `--concorde-skeleton-bg-from-dark`              | Dark mode variant of `--concorde-skeleton-bg-from`                |
+| `--concorde-skeleton-bg-to-dark`                | Dark mode variant of `--concorde-skeleton-bg-to`                  |
+
+#### 🎨 Component Colors (Dark Mode)
+
+| CSS Variable                                      | Description                                                         |
+| ------------------------------------------------- | ------------------------------------------------------------------- |
+| `--concorde-coupon-discount-color-dark`           | Dark mode variant of `--concorde-coupon-discount-color`             |
+| `--concorde-coupon-cashback-color-dark`           | Dark mode variant of `--concorde-coupon-cashback-color`             |
+| `--concorde-primary-button-background-color-dark` | Dark mode variant of `--concorde-primary-button-background-color`   |
+| `--concorde-primary-button-hover-bg-color-dark`   | Dark mode variant of `--concorde-primary-button-hover-bg-color`     |
+| `--concorde-toggle-button-border-color-dark`      | Dark mode variant of `--concorde-toggle-button-border-color`        |
+
+#### 🎨 RGB Colors (Dark Mode)
+
+| CSS Variable                             | Description                                                     |
+| ---------------------------------------- | --------------------------------------------------------------- |
+| `--concorde-primary-color-rgb-dark`      | Dark mode variant of `--concorde-primary-color-rgb`             |
+| `--concorde-secondary-color-rgb-dark`    | Dark mode variant of `--concorde-secondary-color-rgb`           |
+| `--concorde-error-color-rgb-dark`        | Dark mode variant of `--concorde-error-color-rgb`               |
+| `--concorde-default-background-rgb-dark` | Dark mode variant of `--concorde-default-background-rgb`        |
+| `--concorde-primary-text-rgb-dark`       | Dark mode variant of `--concorde-primary-text-rgb`              |
+| `--concorde-secondary-text-rgb-dark`     | Dark mode variant of `--concorde-secondary-text-rgb`            |
+
 ---
 
 ## Concorde Layout Tokens

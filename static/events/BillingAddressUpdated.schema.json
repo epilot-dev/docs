@@ -1,0 +1,2071 @@
+{
+  "type": "object",
+  "properties": {
+    "_org_id": {
+      "type": "string",
+      "description": "epilot tenant/organization ID",
+      "example": "123"
+    },
+    "_event_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when event occurred"
+    },
+    "_event_id": {
+      "type": "string",
+      "description": "Unique event identifier (ULID)"
+    },
+    "_event_name": {
+      "type": "string",
+      "description": "Event name from catalog",
+      "example": "BillingAddressUpdated"
+    },
+    "_event_version": {
+      "type": "string",
+      "description": "Schema version number",
+      "example": "1.0.0"
+    },
+    "_event_source": {
+      "type": "string",
+      "description": "Source that triggered the event"
+    },
+    "operation": {
+      "type": "string",
+      "enum": [
+        "updateEntity"
+      ],
+      "description": "The entity operation type that triggered this event"
+    },
+    "activity_id": {
+      "type": "string",
+      "description": "Activity ID associated with this operation (ULID)",
+      "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
+    },
+    "activity_type": {
+      "type": "string",
+      "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
+      "example": "EntityUpdated"
+    },
+    "trigger_entity": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Entity ID of the entity that triggered this event"
+    },
+    "billing_account": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "_schema"
+      ],
+      "properties": {
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "billing_account",
+          "description": "URL-friendly identifier for the entity schema"
+        },
+        "_id": {
+          "readOnly": true,
+          "type": "string",
+          "format": "uuid",
+          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "description": "Unique identifier for the entity"
+        },
+        "_org": {
+          "type": "string",
+          "description": "Organization Id the entity belongs to",
+          "readOnly": true,
+          "example": "123"
+        },
+        "_title": {
+          "readOnly": true,
+          "type": "string",
+          "nullable": true,
+          "example": "John Doe",
+          "description": "Generated title for the entity based on schema title_template"
+        },
+        "_tags": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "family:label"
+          ],
+          "description": "Entity Labels"
+        },
+        "billing_account_number": {
+          "type": "string",
+          "description": "Billing Account Number"
+        },
+        "balance_currency": {
+          "type": "string",
+          "description": "Three-letter ISO currency code, in lowercase. Must be a supported currency.",
+          "example": "EUR"
+        },
+        "balance_decimal": {
+          "type": "string",
+          "description": "The currency value as a decimal string",
+          "example": "123.45"
+        },
+        "balance": {
+          "type": "number",
+          "description": "Account Balance"
+        },
+        "billing_contact": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Billing Contact"
+        },
+        "billing_address": {
+          "$ref": "#/definitions/AddressAttribute",
+          "description": "Billing Address"
+        },
+        "payment_method": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Payment method details",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "payment_sepa",
+                  "payment_invoice",
+                  "payment_cash"
+                ],
+                "example": "payment_sepa"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "bank_name": {
+                    "type": "string",
+                    "example": "Deutsche Bank"
+                  },
+                  "iban": {
+                    "type": "string",
+                    "example": "DE89370400440532013000"
+                  },
+                  "bic_number": {
+                    "type": "string",
+                    "example": "DEUTDEFF"
+                  },
+                  "fullname": {
+                    "type": "string",
+                    "example": "John Doe"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Payment Method"
+        },
+        "contracts": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Contracts"
+        },
+        "external_id": {
+          "type": "string",
+          "description": "External ID"
+        },
+        "workflows": {
+          "$ref": "#/definitions/WorkflowOverview"
+        },
+        "_files": {
+          "$ref": "#/definitions/BaseRelation"
+        },
+        "_created_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity creation"
+        },
+        "_updated_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity last update"
+        }
+      },
+      "description": "billing_account entity (hydrated from entity graph)"
+    },
+    "contracts": {
+      "type": "array",
+      "description": "Array of contract entities (hydrated from entity graph)",
+      "items": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "_schema",
+          "type",
+          "billing_period",
+          "installment_amount",
+          "balance"
+        ],
+        "properties": {
+          "_schema": {
+            "readOnly": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "example": "contract",
+            "description": "URL-friendly identifier for the entity schema"
+          },
+          "_id": {
+            "readOnly": true,
+            "type": "string",
+            "format": "uuid",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "description": "Unique identifier for the entity"
+          },
+          "_org": {
+            "type": "string",
+            "description": "Organization Id the entity belongs to",
+            "readOnly": true,
+            "example": "123"
+          },
+          "_title": {
+            "readOnly": true,
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe",
+            "description": "Generated title for the entity based on schema title_template"
+          },
+          "_tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "family:label"
+            ],
+            "description": "Entity Labels"
+          },
+          "_purpose": {
+            "$ref": "#/definitions/PurposeAttribute",
+            "description": "Purposes"
+          },
+          "contract_name": {
+            "type": "string",
+            "description": "Contract Name"
+          },
+          "contract_number": {
+            "type": "string",
+            "description": "Contract Number"
+          },
+          "assignee": {
+            "$ref": "#/definitions/User",
+            "description": "Assignee"
+          },
+          "payment": {
+            "$ref": "#/definitions/BaseRelationRef",
+            "description": "Payment Details"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "in_approval_process",
+              "approved",
+              "active",
+              "deactivated",
+              "revoked",
+              "terminated",
+              "expired"
+            ],
+            "description": "Status"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "billing_account": {
+            "$ref": "#/definitions/BaseRelation",
+            "description": "Billing Account"
+          },
+          "account_number": {
+            "type": "string",
+            "description": "Account Number"
+          },
+          "branch": {
+            "type": "string",
+            "enum": [
+              "power",
+              "gas",
+              "water",
+              "waste_water",
+              "district_heating"
+            ],
+            "description": "Branch"
+          },
+          "move_in_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01",
+            "description": "Move In Date"
+          },
+          "move_out_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01",
+            "description": "Move Out Date"
+          },
+          "billing_address": {
+            "$ref": "#/definitions/BaseRelationRef",
+            "description": "Billing Address"
+          },
+          "delivery_address": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "Address attribute",
+              "additionalProperties": true,
+              "properties": {
+                "_tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "billing"
+                  ]
+                },
+                "street": {
+                  "type": "string",
+                  "description": "The first line of the address. Typically the street address or PO Box number.",
+                  "nullable": true,
+                  "example": "Hauptstraße"
+                },
+                "street_number": {
+                  "type": "string",
+                  "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+                  "nullable": true,
+                  "example": "123"
+                },
+                "postal_code": {
+                  "type": "string",
+                  "description": "The postal code for the address.",
+                  "nullable": true,
+                  "example": "50668"
+                },
+                "city": {
+                  "type": "string",
+                  "description": "The name of the city, district, village, or town.",
+                  "nullable": true,
+                  "example": "Cologne"
+                },
+                "country": {
+                  "type": "string",
+                  "description": "The two-letter code for the country of the address.",
+                  "nullable": true,
+                  "example": "DE"
+                },
+                "additional_info": {
+                  "type": "string",
+                  "description": "An additional description for the address",
+                  "nullable": true
+                },
+                "company_name": {
+                  "type": "string",
+                  "description": "the company name, usually used as extra delivery instructions",
+                  "nullable": true
+                },
+                "first_name": {
+                  "type": "string",
+                  "description": "the first name of the recipient, usually used as extra delivery instructions",
+                  "nullable": true
+                },
+                "last_name": {
+                  "type": "string",
+                  "description": "the last name of the recipient, usually used as extra delivery instructions",
+                  "nullable": true
+                },
+                "salutation": {
+                  "type": "string",
+                  "description": "the salutation of the recipient, usually used as extra delivery instructions",
+                  "nullable": true
+                },
+                "title": {
+                  "type": "string",
+                  "description": "the title of the recipient, usually used as extra delivery instructions",
+                  "nullable": true
+                },
+                "coordinates": {
+                  "type": "string",
+                  "description": "Geographical coordinates (latitude, longitude)",
+                  "nullable": true,
+                  "example": "50.948484, 6.943147"
+                },
+                "plot_of_land": {
+                  "type": "string",
+                  "description": "Plot of land information",
+                  "nullable": true
+                },
+                "plot_area": {
+                  "type": "string",
+                  "description": "Area of the plot",
+                  "nullable": true
+                },
+                "start_date": {
+                  "type": "string",
+                  "description": "Start date for the address",
+                  "format": "date",
+                  "nullable": true
+                },
+                "end_date": {
+                  "type": "string",
+                  "description": "End date for the address",
+                  "format": "date",
+                  "nullable": true
+                }
+              }
+            },
+            "description": "Delivery Address"
+          },
+          "additional_addresses": {
+            "$ref": "#/definitions/BaseRelationRef",
+            "description": "Additional Addresses"
+          },
+          "termination_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01",
+            "description": "Date of Termination"
+          },
+          "termination_reason": {
+            "type": "string",
+            "description": "Reason For Termination"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01",
+            "description": "Start Date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01",
+            "description": "End Date"
+          },
+          "customer": {
+            "$ref": "#/definitions/BaseRelation",
+            "description": "Customer"
+          },
+          "order": {
+            "$ref": "#/definitions/BaseRelation",
+            "description": "Order"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "one_time",
+              "recurring"
+            ],
+            "description": "Type"
+          },
+          "billing_period": {
+            "type": "string",
+            "enum": [
+              "weekly",
+              "monthly",
+              "every_quarter",
+              "every_6_months",
+              "yearly"
+            ],
+            "description": "Billing Period"
+          },
+          "billing_duration_amount": {
+            "type": "string",
+            "description": "Billing Duration"
+          },
+          "billing_duration_unit": {
+            "type": "string",
+            "enum": [
+              "weeks",
+              "months",
+              "years"
+            ],
+            "description": "Billing Duration Unit"
+          },
+          "notice_time_amount": {
+            "type": "string",
+            "description": "Notice Time"
+          },
+          "notice_time_unit": {
+            "type": "string",
+            "enum": [
+              "weeks",
+              "months",
+              "years"
+            ],
+            "description": "Notice Time Unit"
+          },
+          "termination_time_amount": {
+            "type": "string",
+            "description": "Termination Time"
+          },
+          "termination_time_unit": {
+            "type": "string",
+            "enum": [
+              "weeks",
+              "months",
+              "years"
+            ],
+            "description": "Termination Time Unit"
+          },
+          "renewal_duration_amount": {
+            "type": "string",
+            "description": "Renewal Duration"
+          },
+          "renewal_duration_unit": {
+            "type": "string",
+            "enum": [
+              "weeks",
+              "months",
+              "years"
+            ],
+            "description": "Renewal Duration Unit"
+          },
+          "billing_due_day": {
+            "type": "string",
+            "description": "Billing Due Day"
+          },
+          "installment_amount_currency": {
+            "type": "string",
+            "description": "Three-letter ISO currency code, in lowercase. Must be a supported currency.",
+            "example": "EUR"
+          },
+          "installment_amount_decimal": {
+            "type": "string",
+            "description": "The currency value as a decimal string",
+            "example": "123.45"
+          },
+          "installment_amount": {
+            "type": "number",
+            "description": "Installment Currency"
+          },
+          "balance_currency": {
+            "type": "string",
+            "description": "Three-letter ISO currency code, in lowercase. Must be a supported currency.",
+            "example": "EUR"
+          },
+          "balance_decimal": {
+            "type": "string",
+            "description": "The currency value as a decimal string",
+            "example": "123.45"
+          },
+          "balance": {
+            "type": "number",
+            "description": "Currency"
+          },
+          "meters": {
+            "$ref": "#/definitions/BaseRelation",
+            "description": "Meters"
+          },
+          "last_sync_at": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01",
+            "description": "Last Sync At"
+          },
+          "external_id": {
+            "type": "string",
+            "description": "External ID"
+          },
+          "workflows": {
+            "$ref": "#/definitions/WorkflowOverview"
+          },
+          "line_items": {
+            "$ref": "#/definitions/LineItems"
+          },
+          "total_details": {
+            "$ref": "#/definitions/TotalDetails"
+          },
+          "_files": {
+            "$ref": "#/definitions/BaseRelation"
+          },
+          "_created_at": {
+            "readOnly": true,
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp of entity creation"
+          },
+          "_updated_at": {
+            "readOnly": true,
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp of entity last update"
+          }
+        }
+      }
+    },
+    "customer": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "_schema"
+      ],
+      "properties": {
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "contact",
+          "description": "URL-friendly identifier for the entity schema"
+        },
+        "_id": {
+          "readOnly": true,
+          "type": "string",
+          "format": "uuid",
+          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "description": "Unique identifier for the entity"
+        },
+        "_org": {
+          "type": "string",
+          "description": "Organization Id the entity belongs to",
+          "readOnly": true,
+          "example": "123"
+        },
+        "_title": {
+          "readOnly": true,
+          "type": "string",
+          "nullable": true,
+          "example": "John Doe",
+          "description": "Generated title for the entity based on schema title_template"
+        },
+        "_tags": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "family:label"
+          ],
+          "description": "Entity Labels"
+        },
+        "_purpose": {
+          "$ref": "#/definitions/PurposeAttribute",
+          "description": "Purposes"
+        },
+        "salutation": {
+          "type": "string",
+          "enum": [
+            "null",
+            "Mr.",
+            "Ms. / Mrs.",
+            "Company",
+            "Contact Person",
+            "Company/Contact Person",
+            "Spouse",
+            "Family",
+            "Ownership",
+            "Assembly",
+            "Other"
+          ],
+          "description": "Salutation"
+        },
+        "title": {
+          "type": "string",
+          "enum": [
+            "null",
+            "Dr.",
+            "Prof.",
+            "Prof. Dr."
+          ],
+          "description": "Title"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "First Name"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last Name"
+        },
+        "customer_number": {
+          "type": "string",
+          "description": "Customer Number"
+        },
+        "birthdate": {
+          "type": "string",
+          "format": "date",
+          "example": "2025-01-01",
+          "description": "Date of Birth"
+        },
+        "email": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          },
+          "description": "Email"
+        },
+        "phone": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "phone": {
+                "type": "string",
+                "example": "+491234567890"
+              }
+            },
+            "required": [
+              "phone"
+            ]
+          },
+          "description": "Phone"
+        },
+        "communication_preference": {
+          "type": "string",
+          "enum": [
+            "postal",
+            "portal"
+          ],
+          "description": "Standard communication method"
+        },
+        "address": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Address attribute",
+            "additionalProperties": true,
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "billing"
+                ]
+              },
+              "street": {
+                "type": "string",
+                "description": "The first line of the address. Typically the street address or PO Box number.",
+                "nullable": true,
+                "example": "Hauptstraße"
+              },
+              "street_number": {
+                "type": "string",
+                "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+                "nullable": true,
+                "example": "123"
+              },
+              "postal_code": {
+                "type": "string",
+                "description": "The postal code for the address.",
+                "nullable": true,
+                "example": "50668"
+              },
+              "city": {
+                "type": "string",
+                "description": "The name of the city, district, village, or town.",
+                "nullable": true,
+                "example": "Cologne"
+              },
+              "country": {
+                "type": "string",
+                "description": "The two-letter code for the country of the address.",
+                "nullable": true,
+                "example": "DE"
+              },
+              "additional_info": {
+                "type": "string",
+                "description": "An additional description for the address",
+                "nullable": true
+              },
+              "company_name": {
+                "type": "string",
+                "description": "the company name, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "first_name": {
+                "type": "string",
+                "description": "the first name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "last_name": {
+                "type": "string",
+                "description": "the last name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "salutation": {
+                "type": "string",
+                "description": "the salutation of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "title": {
+                "type": "string",
+                "description": "the title of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "coordinates": {
+                "type": "string",
+                "description": "Geographical coordinates (latitude, longitude)",
+                "nullable": true,
+                "example": "50.948484, 6.943147"
+              },
+              "plot_of_land": {
+                "type": "string",
+                "description": "Plot of land information",
+                "nullable": true
+              },
+              "plot_area": {
+                "type": "string",
+                "description": "Area of the plot",
+                "nullable": true
+              },
+              "start_date": {
+                "type": "string",
+                "description": "Start date for the address",
+                "format": "date",
+                "nullable": true
+              },
+              "end_date": {
+                "type": "string",
+                "description": "End date for the address",
+                "format": "date",
+                "nullable": true
+              }
+            }
+          },
+          "description": "Address"
+        },
+        "payment": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Payment method details",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "payment_sepa",
+                  "payment_invoice",
+                  "payment_cash"
+                ],
+                "example": "payment_sepa"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "bank_name": {
+                    "type": "string",
+                    "example": "Deutsche Bank"
+                  },
+                  "iban": {
+                    "type": "string",
+                    "example": "DE89370400440532013000"
+                  },
+                  "bic_number": {
+                    "type": "string",
+                    "example": "DEUTDEFF"
+                  },
+                  "fullname": {
+                    "type": "string",
+                    "example": "John Doe"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Payment"
+        },
+        "account": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Account"
+        },
+        "marketing_permission": {
+          "type": "boolean",
+          "description": "Marketing Permission"
+        },
+        "contact_owner": {
+          "$ref": "#/definitions/User",
+          "description": "Contact Owner"
+        },
+        "consent_email_marketing": {
+          "$ref": "#/definitions/ConsentAttribute",
+          "description": "Email Marketing"
+        },
+        "consent_sms_marketing": {
+          "$ref": "#/definitions/ConsentAttribute",
+          "description": "SMS Marketing"
+        },
+        "consent_phone_call": {
+          "$ref": "#/definitions/ConsentAttribute",
+          "description": "Direct Phone Marketing"
+        },
+        "consent_print_marketing": {
+          "$ref": "#/definitions/ConsentAttribute",
+          "description": "Print Marketing"
+        },
+        "portal_users": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Portal Users"
+        },
+        "opportunities": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Opportunities"
+        },
+        "orders": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Orders"
+        },
+        "contracts": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Contracts"
+        },
+        "external_id": {
+          "type": "string",
+          "description": "External ID"
+        },
+        "workflows": {
+          "$ref": "#/definitions/WorkflowOverview"
+        },
+        "_files": {
+          "$ref": "#/definitions/BaseRelation"
+        },
+        "_created_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity creation"
+        },
+        "_updated_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity last update"
+        }
+      },
+      "description": "contact entity (hydrated from entity graph)"
+    },
+    "portal_user": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "_schema"
+      ],
+      "properties": {
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "portal_user",
+          "description": "URL-friendly identifier for the entity schema"
+        },
+        "_id": {
+          "readOnly": true,
+          "type": "string",
+          "format": "uuid",
+          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "description": "Unique identifier for the entity"
+        },
+        "_org": {
+          "type": "string",
+          "description": "Organization Id the entity belongs to",
+          "readOnly": true,
+          "example": "123"
+        },
+        "_title": {
+          "readOnly": true,
+          "type": "string",
+          "nullable": true,
+          "example": "John Doe",
+          "description": "Generated title for the entity based on schema title_template"
+        },
+        "_tags": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "family:label"
+          ],
+          "description": "Entity Labels"
+        },
+        "_purpose": {
+          "$ref": "#/definitions/PurposeAttribute",
+          "description": "Purposes"
+        },
+        "email": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          },
+          "description": "Email"
+        },
+        "secondary_identifier": {
+          "type": "string",
+          "description": "Secondary Identifier"
+        },
+        "origin": {
+          "type": "string",
+          "description": "Origin"
+        },
+        "access_status": {
+          "type": "boolean",
+          "description": "Access Status"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date",
+          "example": "2025-01-01",
+          "description": "Expiration Date"
+        },
+        "mapping_status": {
+          "type": "string",
+          "enum": [
+            "Pending",
+            "Mapped"
+          ],
+          "description": "Mapping Status"
+        },
+        "registration_status": {
+          "type": "string",
+          "enum": [
+            "Registration Pending",
+            "Confirmation Email Sent",
+            "Registered",
+            "Email Update In Progress"
+          ],
+          "description": "Registration Status"
+        },
+        "external_id": {
+          "type": "string",
+          "description": "External ID"
+        },
+        "mapped_contact": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Mapped Contact"
+        },
+        "represents": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Represents"
+        },
+        "_files": {
+          "$ref": "#/definitions/BaseRelation"
+        },
+        "_created_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity creation"
+        },
+        "_updated_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity last update"
+        }
+      },
+      "description": "portal_user entity (hydrated from entity graph)"
+    }
+  },
+  "required": [
+    "_org_id",
+    "_event_time",
+    "_event_id",
+    "_event_name",
+    "_event_version",
+    "_event_source",
+    "operation",
+    "trigger_entity"
+  ],
+  "additionalProperties": true,
+  "definitions": {
+    "AddressAttribute": {
+      "type": "object",
+      "description": "Address attribute",
+      "additionalProperties": true,
+      "properties": {
+        "_tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "billing"
+          ]
+        },
+        "street": {
+          "type": "string",
+          "description": "The first line of the address. Typically the street address or PO Box number.",
+          "nullable": true,
+          "example": "Hauptstraße"
+        },
+        "street_number": {
+          "type": "string",
+          "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+          "nullable": true,
+          "example": "123"
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "The postal code for the address.",
+          "nullable": true,
+          "example": "50668"
+        },
+        "city": {
+          "type": "string",
+          "description": "The name of the city, district, village, or town.",
+          "nullable": true,
+          "example": "Cologne"
+        },
+        "country": {
+          "type": "string",
+          "description": "The two-letter code for the country of the address.",
+          "nullable": true,
+          "example": "DE"
+        },
+        "additional_info": {
+          "type": "string",
+          "description": "An additional description for the address",
+          "nullable": true
+        },
+        "company_name": {
+          "type": "string",
+          "description": "the company name, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "first_name": {
+          "type": "string",
+          "description": "the first name of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "last_name": {
+          "type": "string",
+          "description": "the last name of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "salutation": {
+          "type": "string",
+          "description": "the salutation of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "title": {
+          "type": "string",
+          "description": "the title of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "coordinates": {
+          "type": "string",
+          "description": "Geographical coordinates (latitude, longitude)",
+          "nullable": true,
+          "example": "50.948484, 6.943147"
+        },
+        "plot_of_land": {
+          "type": "string",
+          "description": "Plot of land information",
+          "nullable": true
+        },
+        "plot_area": {
+          "type": "string",
+          "description": "Area of the plot",
+          "nullable": true
+        },
+        "start_date": {
+          "type": "string",
+          "description": "Start date for the address",
+          "format": "date",
+          "nullable": true
+        },
+        "end_date": {
+          "type": "string",
+          "description": "End date for the address",
+          "format": "date",
+          "nullable": true
+        }
+      }
+    },
+    "BaseUUID": {
+      "type": "string",
+      "format": "uuid",
+      "example": "123e4567-e89b-12d3-a456-426614174000"
+    },
+    "BaseTags": {
+      "type": "array",
+      "nullable": true,
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "example"
+      ]
+    },
+    "BaseRelation": {
+      "type": "object",
+      "nullable": true,
+      "description": "Relation to another entity",
+      "properties": {
+        "$relation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "_tags": {
+                "$ref": "#/definitions/BaseTags"
+              }
+            }
+          }
+        }
+      }
+    },
+    "WorkflowStatus": {
+      "type": "string",
+      "enum": [
+        "STARTED",
+        "DONE",
+        "CLOSED"
+      ]
+    },
+    "StepType": {
+      "type": "string",
+      "enum": [
+        "MANUAL",
+        "AUTOMATION"
+      ]
+    },
+    "StepStatus": {
+      "type": "string",
+      "enum": [
+        "UNASSIGNED",
+        "ASSIGNED",
+        "COMPLETED",
+        "SKIPPED",
+        "IN_PROGRESS"
+      ]
+    },
+    "PhaseInEntity": {
+      "type": "object",
+      "description": "Workflow phase information",
+      "properties": {
+        "phase_id": {
+          "type": "string"
+        },
+        "phase_name": {
+          "type": "string"
+        },
+        "phase_progress": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "phase_id",
+        "phase_name",
+        "phase_progress"
+      ]
+    },
+    "WorkflowInEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "definition_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/WorkflowStatus"
+        },
+        "assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "progress": {
+          "type": "number"
+        },
+        "phases_in_progress": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PhaseInEntity"
+          }
+        },
+        "last_update_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "upcoming_tasks_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "task_name": {
+          "type": "string"
+        },
+        "task_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_duedate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "task_execution_type": {
+          "$ref": "#/definitions/StepType"
+        },
+        "task_status": {
+          "$ref": "#/definitions/StepStatus"
+        },
+        "phase_id": {
+          "type": "string"
+        },
+        "phase_name": {
+          "type": "string"
+        },
+        "phase_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "phase_progress": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "definition_id",
+        "name",
+        "status",
+        "assignees",
+        "last_update_time"
+      ]
+    },
+    "WorkflowOverview": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "$ref": "#/definitions/WorkflowInEntity"
+        }
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/WorkflowInEntity"
+        }
+      }
+    },
+    "PurposeAttribute": {
+      "type": "array",
+      "description": "List of purpose ids",
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+      ]
+    },
+    "BaseRelationRef": {
+      "type": "object",
+      "nullable": true,
+      "description": "Reference to a specific property of another entity",
+      "properties": {
+        "$relation_ref": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "path": {
+                "type": "string",
+                "example": "address",
+                "description": "The property of the entity (pointed by entity_id) to be used as the reference"
+              },
+              "_tags": {
+                "$ref": "#/definitions/BaseTags"
+              },
+              "_id": {
+                "type": "string",
+                "example": "xHcOoJCa07eysJ1GaQeSb"
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserId": {
+      "description": "User's unique identifier",
+      "type": "string",
+      "readOnly": true
+    },
+    "OrganizationId": {
+      "description": "Organization unique identifier",
+      "type": "string",
+      "readOnly": true,
+      "example": "123"
+    },
+    "User": {
+      "type": "object",
+      "description": "User information",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/UserId"
+        },
+        "organization_id": {
+          "$ref": "#/definitions/OrganizationId"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "user@example.com"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
+        },
+        "preferred_language": {
+          "type": "string",
+          "example": "de",
+          "description": "ISO 639-1 language code"
+        },
+        "signature": {
+          "type": "string",
+          "example": "<p>Best regards,<br/>John Doe</p>",
+          "description": "HTML email signature"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "Owner"
+          },
+          "deprecated": true,
+          "description": "Deprecated! Please use Permissions API instead"
+        },
+        "image_uri": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "original": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
+            },
+            "thumbnail_32": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
+            }
+          },
+          "nullable": true
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "profileImageName"
+              },
+              "value": {
+                "type": "string",
+                "example": "avatar.png"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          }
+        }
+      },
+      "required": [
+        "id",
+        "organization_id",
+        "email",
+        "name",
+        "preferred_language",
+        "roles",
+        "properties"
+      ]
+    },
+    "TaxBreakdownInfo": {
+      "type": "object",
+      "properties": {
+        "rate": {
+          "type": "number"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "VAT",
+            "GST",
+            "Custom"
+          ]
+        },
+        "_id": {
+          "type": "string"
+        }
+      }
+    },
+    "TaxAmountBreakdown": {
+      "type": "object",
+      "description": "A tax amount associated with a specific tax rate.",
+      "readOnly": true,
+      "properties": {
+        "amount": {
+          "type": "integer"
+        },
+        "rate": {
+          "type": "string",
+          "description": "The tax rate applied. With the release of the tax manager feature this field is being deprecated in favor of the tax field.",
+          "deprecated": true
+        },
+        "rateValue": {
+          "type": "number",
+          "description": "The tax rate value applied. With the release of the tax manager feature this field is being deprecated in favor of the tax field.",
+          "deprecated": true
+        },
+        "tax": {
+          "$ref": "#/definitions/TaxBreakdownInfo"
+        }
+      }
+    },
+    "Amounts": {
+      "type": "object",
+      "properties": {
+        "amount_subtotal": {
+          "type": "integer"
+        },
+        "amount_subtotal_decimal": {
+          "type": "string"
+        },
+        "amount_total": {
+          "type": "integer"
+        },
+        "amount_total_decimal": {
+          "type": "string"
+        }
+      }
+    },
+    "Currency": {
+      "type": "string",
+      "description": "Three-letter ISO currency code, in lowercase. Must be a supported currency.",
+      "example": "EUR"
+    },
+    "RecurrenceAmount": {
+      "type": "object",
+      "description": "An amount associated with a specific recurrence.",
+      "readOnly": true,
+      "allOf": [
+        {
+          "$ref": "#/definitions/Amounts"
+        }
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "billing_period": {
+          "type": "string",
+          "enum": [
+            "weekly",
+            "monthly",
+            "every_quarter",
+            "every_6_months",
+            "yearly"
+          ]
+        },
+        "unit_amount_gross": {
+          "type": "integer"
+        },
+        "unit_amount_net": {
+          "type": "integer"
+        },
+        "amount_tax": {
+          "type": "integer"
+        },
+        "currency": {
+          "$ref": "#/definitions/Currency"
+        }
+      },
+      "required": [
+        "amount_subtotal",
+        "amount_total",
+        "amount_subtotal_decimal",
+        "amount_total_decimal"
+      ]
+    },
+    "RecurrenceAmountWithTax": {
+      "type": "object",
+      "description": "An amount associated with a specific recurrence.",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "billing_period": {
+          "type": "string",
+          "enum": [
+            "weekly",
+            "monthly",
+            "every_quarter",
+            "every_6_months",
+            "yearly"
+          ]
+        },
+        "amount_total": {
+          "type": "integer"
+        },
+        "amount_subtotal": {
+          "type": "integer"
+        },
+        "amount_tax": {
+          "type": "integer"
+        },
+        "tax": {
+          "$ref": "#/definitions/TaxAmountBreakdown"
+        }
+      },
+      "required": [
+        "amount_subtotal",
+        "amount_total"
+      ]
+    },
+    "TotalDetails": {
+      "type": "object",
+      "description": "The total details with tax (and discount) aggregated totals.",
+      "readOnly": true,
+      "properties": {
+        "amount_shipping": {
+          "type": "integer",
+          "description": "This is the sum of all the price item shipping amounts."
+        },
+        "amount_tax": {
+          "type": "integer",
+          "description": "This is the sum of all the price item tax amounts."
+        },
+        "breakdown": {
+          "type": "object",
+          "description": "Breakdown of individual tax (and discount) amounts that add up to the totals.",
+          "properties": {
+            "taxes": {
+              "type": "array",
+              "description": "The aggregated price items tax amount per rate.",
+              "items": {
+                "$ref": "#/definitions/TaxAmountBreakdown"
+              }
+            },
+            "recurrences": {
+              "type": "array",
+              "description": "The aggregated price items tax amount per rate.",
+              "items": {
+                "$ref": "#/definitions/RecurrenceAmount"
+              }
+            },
+            "recurrencesByTax": {
+              "type": "array",
+              "description": "The aggregated price items recurrences by tax rate",
+              "items": {
+                "$ref": "#/definitions/RecurrenceAmountWithTax"
+              }
+            }
+          }
+        }
+      }
+    },
+    "LineItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "price_id": {
+            "$ref": "#/definitions/BaseUUID"
+          },
+          "product_id": {
+            "$ref": "#/definitions/BaseUUID"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "unit_amount": {
+            "type": "integer"
+          },
+          "unit_amount_decimal": {
+            "type": "string"
+          },
+          "pricing_model": {
+            "type": "string",
+            "enum": [
+              "per_unit"
+            ]
+          },
+          "_price": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "_title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "unit_amount": {
+                "type": "integer"
+              },
+              "unit_amount_decimal": {
+                "type": "string"
+              },
+              "unit_amount_currency": {
+                "type": "string"
+              },
+              "active": {
+                "type": "boolean"
+              },
+              "sales_tax": {
+                "type": "string"
+              },
+              "tax_behavior": {
+                "type": "string"
+              },
+              "price_display_in_journeys": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "billing_period": {
+                "type": "string"
+              },
+              "billing_duration_unit": {
+                "type": "string"
+              },
+              "notice_time_unit": {
+                "type": "string"
+              },
+              "termination_time_unit": {
+                "type": "string"
+              },
+              "renewal_duration_unit": {
+                "type": "string"
+              },
+              "internal_description": {
+                "type": "string"
+              },
+              "pricing_model": {
+                "type": "string"
+              },
+              "is_tax_inclusive": {
+                "type": "boolean"
+              },
+              "headline": {
+                "type": "string"
+              },
+              "subHeadline": {
+                "type": "string"
+              },
+              "group": {
+                "type": "string"
+              }
+            }
+          },
+          "_product": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "product"
+                ]
+              },
+              "_title": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "price_options": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "$ref": "#/definitions/BaseUUID"
+                    },
+                    "_title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "unit_amount": {
+                      "type": "integer"
+                    },
+                    "unit_amount_decimal": {
+                      "type": "string"
+                    },
+                    "unit_amount_currency": {
+                      "type": "string"
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "_schema": {
+                      "type": "string"
+                    },
+                    "_org": {
+                      "type": "string"
+                    },
+                    "_created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "_updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "sales_tax": {
+                      "type": "string"
+                    },
+                    "tax_behavior": {
+                      "type": "string"
+                    },
+                    "price_display_in_journeys": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "billing_period": {
+                      "type": "string"
+                    },
+                    "billing_duration_unit": {
+                      "type": "string"
+                    },
+                    "notice_time_unit": {
+                      "type": "string"
+                    },
+                    "termination_time_unit": {
+                      "type": "string"
+                    },
+                    "renewal_duration_unit": {
+                      "type": "string"
+                    },
+                    "internal_description": {
+                      "type": "string"
+                    },
+                    "_owners": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "org_id": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "pricing_model": {
+                      "type": "string"
+                    },
+                    "is_tax_inclusive": {
+                      "type": "boolean"
+                    },
+                    "_acl": {
+                      "type": "object",
+                      "properties": {
+                        "view": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "edit": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "delete": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "$relation": {
+                      "type": "object",
+                      "properties": {
+                        "entity_id": {
+                          "$ref": "#/definitions/BaseUUID"
+                        },
+                        "_schema": {
+                          "type": "string"
+                        },
+                        "_tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "_id": {
+                "$ref": "#/definitions/BaseUUID"
+              }
+            }
+          },
+          "taxes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rate": {
+                  "type": "string"
+                },
+                "rateValue": {
+                  "type": "integer"
+                },
+                "amount": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "currency": {
+            "type": "string"
+          },
+          "unit_amount_net": {
+            "type": "integer"
+          },
+          "unit_amount_net_decimal": {
+            "type": "string"
+          },
+          "unit_amount_gross": {
+            "type": "integer"
+          },
+          "unit_amount_gross_decimal": {
+            "type": "string"
+          },
+          "amount_subtotal": {
+            "type": "integer"
+          },
+          "amount_total": {
+            "type": "integer"
+          },
+          "amount_tax": {
+            "type": "integer"
+          },
+          "is_tax_inclusive": {
+            "type": "boolean"
+          },
+          "amount_subtotal_decimal": {
+            "type": "string"
+          },
+          "amount_total_decimal": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ConsentAttribute": {
+      "type": "object",
+      "description": "Consent Management",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "consent"
+          ]
+        },
+        "topic": {
+          "type": "string"
+        },
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "topic"
+      ]
+    }
+  }
+}

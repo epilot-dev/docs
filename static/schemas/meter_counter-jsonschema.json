@@ -9,7 +9,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "contact",
+      "example": "meter_counter",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -99,6 +99,10 @@
     "meter": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Meter"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
     },
     "_files": {
       "$ref": "#/definitions/BaseRelation"

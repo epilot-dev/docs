@@ -1,0 +1,149 @@
+{
+  "event_name": "MeterReadingAdded",
+  "event_title": "Meter Reading Added",
+  "event_description": "Triggered when a new meter reading is added",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "metering"
+  ],
+  "schema_fields": {
+    "reading_value": {
+      "json_schema": {
+        "type": "number",
+        "description": "The meter reading value"
+      },
+      "required": true
+    },
+    "reading_date": {
+      "json_schema": {
+        "type": "string",
+        "format": "date-time",
+        "description": "ISO 8601 timestamp when reading was taken"
+      },
+      "required": true
+    },
+    "read_by": {
+      "json_schema": {
+        "type": "string",
+        "description": "Name or identifier of who submitted the reading"
+      },
+      "required": false
+    },
+    "reason": {
+      "json_schema": {
+        "type": "string",
+        "description": "Reason for the meter reading (e.g., regular, move-in, move-out, supplier-change, correction, final)"
+      },
+      "required": false
+    },
+    "source": {
+      "json_schema": {
+        "type": "string",
+        "description": "Source system where reading was submitted (e.g., portal, 360, api, automation)"
+      },
+      "required": true
+    },
+    "contract_number": {
+      "json_schema": {
+        "type": "string",
+        "description": "Contract number associated with the meter"
+      },
+      "required": false
+    },
+    "meter_number": {
+      "json_schema": {
+        "type": "string",
+        "description": "Human-readable meter number"
+      },
+      "required": false
+    },
+    "obis_number": {
+      "json_schema": {
+        "type": "string",
+        "description": "OBIS code of the counter"
+      },
+      "required": false
+    },
+    "direction": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "feed-in",
+          "feed-out"
+        ],
+        "description": "Direction of energy flow"
+      },
+      "required": false
+    },
+    "unit": {
+      "json_schema": {
+        "type": "string",
+        "description": "Unit of measurement (e.g., kWh, m3)"
+      },
+      "required": false
+    },
+    "user_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "ID of the user who submitted the reading"
+      },
+      "required": false
+    },
+    "user_email": {
+      "json_schema": {
+        "type": "string",
+        "format": "email",
+        "description": "Email of the user who submitted the reading"
+      },
+      "required": false
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "counter",
+        "schema": "meter_counter",
+        "cardinality": "one"
+      },
+      {
+        "id": "meter",
+        "schema": "meter",
+        "cardinality": "one"
+      },
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      },
+      {
+        "id": "customer",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "portal_user",
+        "schema": "portal_user",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "counter",
+        "to": "meter"
+      },
+      {
+        "from": "meter",
+        "to": "contract"
+      },
+      {
+        "from": "contract",
+        "to": "customer"
+      },
+      {
+        "from": "customer",
+        "to": "portal_user"
+      }
+    ]
+  }
+}

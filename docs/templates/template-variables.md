@@ -21,6 +21,42 @@ Each time an email or document template is used, the Template Variable API is ca
 
 The Template Variable API uses the Entity API and others to fetch the correct values for each variable when compiling the template.
 
+## Computed metadata fields
+
+Some entity fields store identifiers (e.g. slugs or UUIDs). The Template Variables API expands selected metadata into computed fields using the `:<field>` suffix.
+
+### Tags
+
+Entities store tag slugs in `_tags`. To access the resolved tag names:
+
+```handlebars
+{{<entity_slug>._tags:name}}
+```
+
+Other examples:
+
+```handlebars
+{{opportunity._tags:name}}
+{{_tags:name}}
+```
+
+### Purpose
+
+Entities store purpose IDs (UUIDs) in `_purpose` (multi-select). To access the resolved purpose names:
+
+```handlebars
+{{<entity_slug>._purpose:name}}
+```
+
+Other examples:
+
+```handlebars
+{{opportunity._purpose:name}}
+{{_purpose:name}}
+```
+
+If a purpose ID cannot be resolved, the raw ID is returned as a fallback.
+
 ## Variable Picker
 
 We provide a picker UI for users to search and explore available variables.

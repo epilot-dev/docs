@@ -21,33 +21,34 @@
     ]
   },
   "billing_address": {
-    "$relation_ref": [
-      {
-        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
-        "path": "address",
-        "_tags": [
-          "example"
-        ],
-        "_id": "xHcOoJCa07eysJ1GaQeSb"
-      }
-    ]
+    "_tags": [
+      "billing"
+    ],
+    "street": "Hauptstraße",
+    "street_number": "123",
+    "postal_code": "50668",
+    "city": "Cologne",
+    "country": "DE",
+    "additional_info": "string",
+    "company_name": "string",
+    "first_name": "string",
+    "last_name": "string",
+    "salutation": "string",
+    "title": "string",
+    "coordinates": "50.948484, 6.943147",
+    "plot_of_land": "string",
+    "plot_area": "string",
+    "start_date": "1970-01-01",
+    "end_date": "1970-01-01"
   },
   "payment_method": [
     {
-      "_tags": [
-        "string"
-      ],
-      "value": {
-        "$relation_ref": [
-          {
-            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
-            "path": "address",
-            "_tags": [
-              "example"
-            ],
-            "_id": "xHcOoJCa07eysJ1GaQeSb"
-          }
-        ]
+      "type": "payment_sepa",
+      "data": {
+        "bank_name": "Deutsche Bank",
+        "iban": "DE89370400440532013000",
+        "bic_number": "DEUTDEFF",
+        "fullname": "John Doe"
       }
     }
   ],
@@ -61,6 +62,7 @@
       }
     ]
   },
+  "external_id": "string",
   "workflows": {
     "primary": {
       "id": "string",

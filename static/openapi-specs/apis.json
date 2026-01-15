@@ -44,6 +44,16 @@
       ]
     },
     {
+      "name": "Purpose API",
+      "baseURL": "https://purpose.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/purpose.yaml"
+        }
+      ]
+    },
+    {
       "name": "Batch API",
       "baseURL": "https://batch.sls.epilot.io",
       "properties": [
@@ -300,6 +310,16 @@
         {
           "type": "Swagger",
           "url": "https://docs.api.epilot.io/svc-notification-api.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Notification Template API",
+      "baseURL": "https://notification-template.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/notification-template.yaml"
         }
       ]
     },

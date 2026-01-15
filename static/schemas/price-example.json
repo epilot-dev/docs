@@ -25,13 +25,13 @@
   "type": "one_time",
   "billing_period": "weekly",
   "billing_duration_amount": "string",
-  "billing_duration_unit": "weeks",
+  "billing_duration_unit": "days",
   "notice_time_amount": "string",
-  "notice_time_unit": "weeks",
+  "notice_time_unit": "days",
   "termination_time_amount": "string",
-  "termination_time_unit": "weeks",
+  "termination_time_unit": "days",
   "renewal_duration_amount": "string",
-  "renewal_duration_unit": "weeks",
+  "renewal_duration_unit": "days",
   "price_components": {
     "$relation": [
       {

@@ -2,9 +2,9 @@ import { IconComponentsMap } from '@epilot360/icons';
 import Icon from '@site/src/components/Icon';
 import { JsonSchemaViewer } from '@stoplight/json-schema-viewer';
 import { Provider as MosaicProvider } from '@stoplight/mosaic';
-import CodeBlock from '@theme/CodeBlock';
 import React, { useState } from 'react';
 
+import CollapsibleJsonViewer from './CollapsibleJsonViewer';
 import styles from './EntitySchemaViewer.module.css';
 import './mosaic-scoped.css';
 
@@ -217,51 +217,21 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
       )}
 
       {activeTab === 'example' && exampleData && (
-        <div className={styles.codeContainer}>
-          <div className={styles.codeHeader}>
-            <span className={styles.codeTitle}>{schema}-example.json</span>
-            <a
-              href={`/schemas/${schema}-example.json`}
-              download
-              className={styles.downloadButton}
-              title="Download example JSON"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Download
-            </a>
-          </div>
-          <CodeBlock language="json" showLineNumbers>
-            {exampleData}
-          </CodeBlock>
-        </div>
+        <CollapsibleJsonViewer
+          data={exampleData}
+          fileName={`${schema}-example.json`}
+          downloadUrl={`/schemas/${schema}-example.json`}
+          defaultFoldLevel={1}
+        />
       )}
 
       {activeTab === 'schema' && schemaData && (
-        <div className={styles.codeContainer}>
-          <div className={styles.codeHeader}>
-            <span className={styles.codeTitle}>{schema}-jsonschema.json</span>
-            <a
-              href={`/schemas/${schema}-jsonschema.json`}
-              download
-              className={styles.downloadButton}
-              title="Download JSON Schema"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Download
-            </a>
-          </div>
-          <CodeBlock language="json" showLineNumbers>
-            {schemaData}
-          </CodeBlock>
-        </div>
+        <CollapsibleJsonViewer
+          data={schemaData}
+          fileName={`${schema}-jsonschema.json`}
+          downloadUrl={`/schemas/${schema}-jsonschema.json`}
+          defaultFoldLevel={Infinity}
+        />
       )}
 
       {activeTab === 'visual' && schemaObject && (

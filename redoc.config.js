@@ -20,6 +20,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/entity.yaml',
   },
   {
+    layout: { title: 'Purpose API' },
+    routePath: '/api/purpose',
+    specUrl: 'https://docs.api.epilot.io/purpose.yaml',
+  },
+  {
     layout: { title: 'Batch API' },
     routePath: '/api/batch',
     specUrl: 'https://docs.api.epilot.io/batch.yaml',
@@ -135,6 +140,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/notes.yaml',
   },
   {
+    layout: { title: 'Notes API' },
+    routePath: '/api/notes',
+    specUrl: 'https://docs.api.epilot.io/notes.yaml',
+  },
+  {
     layout: { title: 'Consent API' },
     routePath: '/api/consent',
     specUrl: 'https://docs.api.epilot.io/consent.yaml',
@@ -148,6 +158,11 @@ module.exports.specs = [
     layout: { title: 'Notification API' },
     routePath: '/api/notification',
     specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
+  },
+  {
+    layout: { title: 'Notification Template API' },
+    routePath: '/api/notification-template',
+    specUrl: 'https://docs.api.epilot.io/notification-template.yaml',
   },
   {
     layout: { title: 'Blueprint Manifest API' },
@@ -188,5 +203,15 @@ module.exports.specs = [
     layout: { title: 'Validation Rules API' },
     routePath: '/api/validation-rules',
     specUrl: 'https://docs.api.epilot.io/validation-rules.yaml',
+  },
+  {
+    layout: { title: 'ERP Integration API' },
+    routePath: '/api/erp-integration',
+    specUrl: 'https://docs.api.epilot.io/erp-integration.yaml',
+  },
+  {
+    layout: { title: 'App API' },
+    routePath: '/api/app',
+    specUrl: 'https://docs.api.epilot.io/app.yaml',
   },
 ];

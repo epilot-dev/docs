@@ -1,0 +1,106 @@
+---
+title: Overview
+hide_title: true
+sidebar_position: 1
+---
+
+<h1 align="left" style={{ display: 'inline-block' }}>
+  Notes{' '}
+  <span
+    style={{
+      display: 'inline-block',
+      padding: '2px 8px',
+      color: '#fff',
+      fontWeight: 'bold',
+      backgroundColor: '#df0000',
+      borderRadius: '4px',
+      fontSize: '1rem',
+      verticalAlign: 'middle',
+    }}
+  >
+    Beta
+  </span>
+</h1>
+
+Notes provide a way to exchange contextual information in a collaborative way to other Entities in Epilot. **All Notes created in Epilot are represented as Note Entities**, and are accesible through [Entity API's](/api/entity#tag/entity_schema) and [SDK](/docs/architecture/sdk).
+
+:::warning
+Notes were previously available as a platform feature accessible through the Notes Tab on the Entity View. This feature is being deprecated and removed in favor of **Notes as Entities** and the new **Notes Capability**, available from the Entity sidebar, described in this section.
+
+**Notes as Entities** are currently in closed **Beta** only available to selected customers. General Availability will be announced soon.
+:::warning
+
+## Using Notes from the Entity sidebar
+
+### Accessing Notes from the Entity View
+
+On any of the supported Entity types, you can create a new Note by expanding the sidebar and going to the **Notes Tab**. This will show you all the Notes associated with this Entity.
+
+### Creating a new Note
+
+To create a new Note, click on the **New Note** button on the top right of the Notes Tab. You can use various formatting options to structure your Note, mention other users from your organization, add file attachments, and categorize your Notes with labels.
+
+<video
+  width="100%"
+  autoPlay
+  loop
+  muted
+  style={{
+    borderRadius: '5px',
+  }}
+>
+  <source src="/videos/notes/creating_notes.mp4" type="video/mp4" />
+</video>
+
+### Creating a comment on a Note thread
+
+You can also create a comment on a Note thread by clicking on the **Comment** button at the bottom corner of the Note. You can use Note comment threads to discuss a topic in more detail, without adding clutter to the to the current Entity context.
+
+<video
+  width="100%"
+  autoPlay
+  loop
+  muted
+  style={{
+    borderRadius: '5px',
+  }}
+>
+  <source src="/videos/notes/creating_note_comments.mp4" type="video/mp4" />
+</video>
+
+### Pinning Notes
+
+You can pin a Note to the top of the Notes tab by clicking on the **Pin** button in any Note. This will make the Note easilly accessible from the top of the Notes tab.
+
+<video
+  width="100%"
+  autoPlay
+  loop
+  muted
+  style={{
+    borderRadius: '5px',
+  }}
+>
+  <source src="/videos/notes/note_pinning.mp4" type="video/mp4" />
+</video>
+
+### Searching Notes
+
+You can search for any Note that is contextually attached to the current Entity you're viewing by typing parts of it's content, mentioned users, or labels on the search input at the top of the Notes tab.
+
+:::info
+Furthemore, you can filter Notes globally through the Note Entity table. See more details about advanced usage of Note Entities [here](/docs/notes/note_entities).
+:::info
+
+### Note file attachments
+
+You can add file attachments to your Notes and Note comments. These attachements will be resolved to File Entities and can be accessed through the [File API](/api/file).
+
+## Configuring Notes notifications
+
+New Notes will automatically trigger notification events to users that are either:
+
+- Participating in the Note thread (eg.: created the Note or replied to an Note thread at least once);
+- Mentioned directly in the Note or Note comment;
+
+To change these settings, navigate to User > My Account > Notifications, and look for the **Communication** section.

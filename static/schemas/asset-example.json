@@ -1,0 +1,174 @@
+{
+  "_schema": "asset",
+  "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_org": "123",
+  "_title": "John Doe",
+  "_tags": [
+    "family:label"
+  ],
+  "title": "string",
+  "customer": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "installation_address": {
+    "$relation_ref": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "path": "address",
+        "_tags": [
+          "example"
+        ],
+        "_id": "xHcOoJCa07eysJ1GaQeSb"
+      }
+    ]
+  },
+  "asset_number": "string",
+  "serial_number": "string",
+  "manufacturer": "string",
+  "model": "string",
+  "manufacturing_date": "2025-01-01",
+  "maintenance_date": "2025-01-01",
+  "commissioning_date": "2025-01-01",
+  "installation_date": "2025-01-01",
+  "guarantee": "string",
+  "manual": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "technical_data_about_installation": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "asset": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "contract": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "meter": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "ticket": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "asset_type": "Wärmepumpe",
+  "upcoming_maintenance_date": "2025-01-01",
+  "beginn_widerrufsfrist": "2025-01-01",
+  "ende_widerrufsfrist": "2025-01-01",
+  "workflows": {
+    "primary": {
+      "id": "string",
+      "definition_id": "string",
+      "name": "string",
+      "status": "STARTED",
+      "assignees": [
+        "string"
+      ],
+      "progress": 0,
+      "phases_in_progress": [
+        {
+          "phase_id": "string",
+          "phase_name": "string",
+          "phase_progress": 0
+        }
+      ],
+      "last_update_time": "1970-01-01T00:00:00.000Z",
+      "upcoming_tasks_assignees": [
+        "string"
+      ],
+      "task_id": "string",
+      "task_name": "string",
+      "task_assignees": [
+        "string"
+      ],
+      "task_duedate": "1970-01-01T00:00:00.000Z",
+      "task_execution_type": "MANUAL",
+      "task_status": "UNASSIGNED",
+      "phase_id": "string",
+      "phase_name": "string",
+      "phase_assignees": [
+        "string"
+      ],
+      "phase_progress": 0
+    }
+  },
+  "_files": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "_created_at": "1970-01-01T00:00:00.000Z",
+  "_updated_at": "1970-01-01T00:00:00.000Z",
+  "_owners": [
+    {
+      "org_id": "123",
+      "user_id": "456"
+    }
+  ],
+  "_acl": {
+    "view": [
+      "org:456"
+    ],
+    "edit": [
+      "org:456"
+    ],
+    "delete": [
+      "org:456"
+    ]
+  },
+  "_manifest": [
+    "123e4567-e89b-12d3-a456-426614174000"
+  ]
+}

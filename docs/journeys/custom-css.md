@@ -18,6 +18,8 @@ Custom CSS gives you the power to:
 
 **Note:** This feature is part of our new Concorde design migration. Custom CSS applies only to journeys (not the End Customer Portal). We’re continuously improving support for this feature, so refer to the latest release notes for newer updates.
 
+If you plan to use this feature with dark mode, refer to the dark mode section below.
+
 **Pricing:** This feature is available exclusively from the Professional pricing plan.
 
 ## Styling Structure
@@ -101,6 +103,44 @@ To avoid modifying the core layout and overall security of the journey, support 
 
 5. **Preview and Save:** Use the live preview to see changes as you type, then save your work.
 6. **Test your live journey:** Open your journey in a new tab to confirm that the design looks as expected.
+
+## Dark Mode
+
+Journeys with dark mode enabled require additional custom CSS updates. Please make sure to preview the journey in dark mode on the Design Builder or Journey Builder so you can apply the necessary adjustments.
+
+We have provided a dark mode maintained class - `Concorde-Dark`, which is attached to `html` element when dark mode is turned on for scoped styles. There are also Dark mode specific tokens - [Concorde Dark mode Design tokens](/docs/ui-design/concorde-design-tokens#dark-mode) for more granular control.
+
+To include/exclude your other custom CSS styles from dark mode styles, or use dark mode tokens:
+
+```css
+/* To exclude Custom CSS styles from dark mode */
+html:not(.Concorde-Dark) {
+  --concorde-primary-color: #005eb4;
+  --concorde-secondary-color: #913997;
+
+  #Concorde-Step---123456789 {
+    background-color: #f8f8f8;
+  }
+
+  /* ... other styles ... */
+}
+
+/* To scope dark mode styles in Custom CSS */
+.Concorde-Dark {
+  background-color: #f8f8f8;
+
+  .Concorde-Image-Block {
+    border-radius: 10px;
+  }
+
+  /* ... other styles ... */
+}
+
+/* Example of Dark mode tokens */
+:root {
+  --concorde-primary-color-dark: #ffffff;
+}
+```
 
 ## Examples
 
@@ -473,7 +513,7 @@ The snippet below will use a standard and custom font (uploaded) on the Journey.
 /* Standard font */
 @font-face {
   font-family: 'NotoSans-Regular';
-  src: url('https://go.epilot.cloud/element-static/fonts/NotoSans-Regular.ttf');
+  src: url('https://go.epilot.cloud/elements-static/fonts/NotoSans-Regular.ttf');
   font-weight: normal;
   font-style: normal;
 }

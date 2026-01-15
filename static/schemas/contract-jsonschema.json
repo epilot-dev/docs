@@ -13,7 +13,7 @@
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "contact",
+      "example": "contract",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -374,6 +374,10 @@
       "format": "date",
       "example": "2025-01-01",
       "description": "Last Sync At"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
     },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"

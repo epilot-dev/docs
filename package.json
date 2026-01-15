@@ -18,7 +18,9 @@
     "lint:fix": "eslint src --ext js,jsx,ts,tsx,json --fix",
     "pdf": "./scripts/build-pdf.sh",
     "graphql:generate": "./scripts/generate-graphql.sh",
-    "fetch-changelogs": "./scripts/get-changelogs.sh"
+    "fetch-changelogs": "./scripts/get-changelogs.sh",
+    "update-entities": "cp ../entity-api/lambda/ApiHandlerFunction/src/schema/blueprints/snapshots/* static/schemas/",
+    "update-events": "cp ../event-catalog-api/packages/core/src/builtin-events/__snapshots__/* static/events"
   },
   "dependencies": {
     "@cmfcmf/docusaurus-search-local": "^0.10.0",
@@ -30,6 +32,7 @@
     "@epilot360/icons": "^1.17.35",
     "@graphql-tools/url-loader": "^7.9.1",
     "@mdx-js/react": "^1.6.21",
+    "@monaco-editor/react": "^4.7.0",
     "@stoplight/json-schema-viewer": "^4.16.4",
     "@svgr/webpack": "^5.5.0",
     "clsx": "^1.1.1",
