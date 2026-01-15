@@ -53,7 +53,6 @@ Seamless links are configured in your app configuration. Each seamless link defi
     "de": "Fügt Third Party System als Typ für \"Seamless Link\" hinzu. Sobald konfiguriert, kann das System von Portal aus geöffnet werden, ohne sich authentifizieren zu müssen."
   },
   "auth": {
-    "type": "token",
     "url": "{{Options.api_url}}/token",
     "method": "GET",
     "headers": {
@@ -146,7 +145,7 @@ The authentication step supports caching to reduce API calls and improve perform
 Data retrieval hooks are configured in your app configuration. Each hook defines the authentication mechanism, the data retrieval endpoint, and how to process the response.
 
 Below are examples for all three data retrieval hook types.
-All of these enable configuring users to add a Dynamic Tariff block where your integration is pickable using the "Integration" dropdown.
+All of these enable configuring users to add a Dynamic Tariff or Consumption block where your integration is pickable using the "Integration" dropdown.
 
 ![Data retrieval integration in Dynamic Tariff block](../../../static/img/apps/portal-extensions/data-retrieval-integration-portal-builder.png)
 
@@ -157,11 +156,11 @@ All of these enable configuring users to add a Dynamic Tariff block where your i
   "id": "price",
   "type": "priceDataRetrieval",
   "name": {
-    "en": "Price"
+    "en": "Price",
+    "de": "Preis"
   },
   "intervals": ["PT1H"],
   "auth": {
-    "type": "token",
     "url": "{{Options.api_url}}/token",
     "method": "GET",
     "headers": {
@@ -170,7 +169,7 @@ All of these enable configuring users to add a Dynamic Tariff block where your i
     },
     "cache": {
       "key": "{{Options.api_key}}-{{Contact.customer_number}}",
-      "ttl": 3600
+      "ttl": "3600"
     }
   },
   "call": {
@@ -197,11 +196,11 @@ All of these enable configuring users to add a Dynamic Tariff block where your i
   "id": "consumption",
   "type": "consumptionDataRetrieval",
   "name": {
-    "en": "Consumption"
+    "en": "Consumption",
+    "de": "Verbrauch"
   },
   "intervals": ["PT1H"],
   "auth": {
-    "type": "token",
     "url": "{{Options.api_url}}/token",
     "method": "GET",
     "headers": {
@@ -210,7 +209,7 @@ All of these enable configuring users to add a Dynamic Tariff block where your i
     },
     "cache": {
       "key": "{{Options.api_key}}-{{Contact.customer_number}}",
-      "ttl": 3600
+      "ttl": "3600"
     }
   },
   "call": {
@@ -237,11 +236,11 @@ All of these enable configuring users to add a Dynamic Tariff block where your i
   "id": "cost",
   "type": "costDataRetrieval",
   "name": {
-    "en": "Cost"
+    "en": "Cost",
+    "de": "Kosten"
   },
   "intervals": ["PT1H"],
   "auth": {
-    "type": "token",
     "url": "{{Options.api_url}}/token",
     "method": "GET",
     "headers": {
@@ -250,7 +249,7 @@ All of these enable configuring users to add a Dynamic Tariff block where your i
     },
     "cache": {
       "key": "{{Options.api_key}}-{{Contact.customer_number}}",
-      "ttl": 3600
+      "ttl": "3600"
     }
   },
   "call": {
@@ -293,7 +292,7 @@ These variables are automatically provided by epilot based on the portal user's 
 #### Best Practices
 
 - **Caching**: Use authentication token caching to reduce API load and improve response times
-- **Interval Support**: Support multiple intervals if your API allows it to give portal users flexibility
+- **Interval Support**: Support multiple intervals if your API allows it to give portal users flexibility with different data views
 - **Error Handling**: Ensure your API returns appropriate error responses that epilot can handle gracefully
 - **Time Zone Handling**: Take care when handling Time Zones and DSTs
 
@@ -303,6 +302,8 @@ Sometimes it is desired to check against a third party system before allowing a 
 At the same time, it might be necessary to load business entities to epilot before allowing user to proceed in cases epilot does not have all data on non-portal users.
 
 #### Registration Hook
+
+
 
 #### Self-Assignment Hook
 
