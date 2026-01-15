@@ -112,6 +112,10 @@ You can use template variables throughout your seamless link configuration to dy
 Hooks allow changing or adding functionality to portals.
 They typically rely on your API for the execution of any necessary logic and expect a certain response.
 
+For certain functionalities, users can choose which hook is used in the portal settings drawer under Extensions.
+
+![Enable hooks in portal settings](../../../static/img/apps/portal-extensions/enabling-hooks-in-portal-settings.png)
+
 There are currently three groups of hooks supported based on their use:
 
 - Time Series Data Retrieval
@@ -303,13 +307,112 @@ At the same time, it might be necessary to load business entities to epilot befo
 
 #### Registration Hook
 
+Use the registration hook to validate identifiers before creating a portal user. If the registration is valid, you can pass back an epilot Contact UUID that is associated with the portal user.
 
+If no body is specified, all identifiers configured for the portal and provided by the user are passed grouped by the schema. 
+
+```json
+{
+  "id": "registration",
+  "type": "registrationIdentifiersCheck",
+  "call": {
+    "url": "https://webhook.site/5e6eae4f-a0ea-4858-ab1a-3f7cb96f5abd",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "result": "{{CallResponse.data.contact_id}}"
+  }
+}
+```
+
+#### Template Variables
+
+Registration hooks support the standard template variables plus the identifiers context:
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Identifiers.*`**: Access properties provided by the user to identify the entity groupped by schema
 
 #### Self-Assignment Hook
+
+Use the self-assignment hook when portal users attach additional contracts to their account. The hook can also include localized explanations shown to the user.
+
+If no body is specified, all identifiers configured for the portal and provided by the user are passed grouped by the schema. 
+
+```json
+{
+  "id": "CONTRACT_IDENTIFICATION",
+  "type": "contractIdentification",
+  "call": {
+    "url": "https://webhook.site/5e6eae4f-a0ea-4858-ab1a-3f7cb96f5abd",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "entity": {
+        "customer_number": "{{Contact.customer_number}}",
+        "portal_user_id": "{{PortalUser._id}}",
+        "contract_number": "{{Identifiers.contract.contract_number}}"
+      }
+    }
+  },
+  "assignment_mode": "contact_to_portal_user",
+  "explanation": {
+    "en": "If you add additional contracts, all your documents, such as invoices, contract offers, etc., will be managed in the customer portal. You will no longer receive the documents by mail, but you will be notified by email about the upload of new documents that have been uploaded to the customer portal for you. Please note that there is currently a limit of 50 contracts.",
+    "de": "Wenn Sie einen weiteren Verträge hinzufügen werden alle Ihre Dokumente, wie z.B. Rechnungen, Vertragsangebote etc. im Kundenportal verwaltet. Sie erhalten die Dokumente dann nicht mehr per Post, werden aber per E-Mail über den Upload von neuen Unterlagen, die im Kundenportal für Sie hochgeladen wurden, informiert. Bitte beachten Sie, dass derzeit eine Begrenzung von 50 Verträgen besteht."
+  }
+}
+```
+
+#### Template Variables
+
+Self-assignment hooks support the standard template variables plus the identifiers context:
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+- **`PortalUser.*`**: Access properties from the current portal user
+- **`Identifiers.*`**: Access properties provided by the user to identify the entity groupped by schema
+- **`CallResponse.*`**: Access data from the call response (for example in `call.result`)
 
 ### Data Validation
 
 
 #### Meter Reading Plausibility
+
+Use the plausibility check hook to validate meter readings before they are submitted and return limits for validation feedback.
+
+```json
+{
+  "id": "PLAUSIBILITY_CHECK",
+  "type": "meterReadingPlausibilityCheck",
+  "call": {
+    "url": "https://webhook.site/5e6eae4f-a0ea-4858-ab1a-3f7cb96f5abd",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "meter_number": "{{Meter.meter_number}}",
+      "register_number": "{{MeterCounter.register_number}}",
+      "timestamp": "{{Reading.timestamp}}",
+      "value": "{{Reading.value}}"
+    }
+  },
+  "resolved": {
+    "valid": "{{CallResponse.data.valid}}",
+    "lower_limit": "{{CallResponse.data.lower_limit}}",
+    "upper_limit": "{{CallResponse.data.upper_limit}}"
+  }
+}
+```
+
+#### Template Variables
+
+Meter reading plausibility hooks support the standard template variables plus meter reading context:
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+- **`Meter.*`**: Access properties of the meter
+- **`MeterCounter.*`**: Access properties of the meter register
+- **`Reading.*`**: Access properties of the submitted reading
+- **`CallResponse.*`**: Access data from the call response
 
 For additional help or questions about portal extensions, please [contact our developer support team](https://developers.epilot.cloud/contact).
