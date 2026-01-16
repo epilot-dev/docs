@@ -314,16 +314,6 @@
       ]
     },
     {
-      "name": "Notification Template API",
-      "baseURL": "https://notification-template.sls.epilot.io",
-      "properties": [
-        {
-          "type": "Swagger",
-          "url": "https://docs.api.epilot.io/notification-template.yaml"
-        }
-      ]
-    },
-    {
       "name": "Blueprint Manifest API",
       "baseURL": "https://blueprint-manifest.sls.epilot.io",
       "properties": [
