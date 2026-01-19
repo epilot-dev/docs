@@ -30,6 +30,8 @@ All events include these standard fields:
 
 <EventSchemaViewer event="MeterReadingAdded" />
 
+<EventSchemaViewer event="ServiceMeterReadingAdded" />
+
 ### Billing
 
 <EventSchemaViewer event="InstallmentUpdated" />
