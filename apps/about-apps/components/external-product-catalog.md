@@ -1,10 +1,10 @@
 ---
-title: External Catalog Product
+title: External Product Catalog
 hide_title: true
 sidebar_position: 7
 ---
 
-<h1 align="center">External Catalog Product</h1>
+<h1 align="center">External Product Catalog</h1>
 
 <p align="center">Integrate external product catalogs with epilot</p>
 
@@ -12,19 +12,19 @@ sidebar_position: 7
 
 ## Configuration
 
-To add a **External Catalog Product** component, you need to create a new App or update an existing App.
+To add a **External Product Catalog** component, you need to create a new App or update an existing App.
 
 <img src="/img/apps/external-product-catalog/external-catalog-option-menu.png" width="400" />
 
 All development is performed using the built-in configuration editor accessible from the component editor.
 
-The editor provides you with autocomplete and validation of the configuration. That way you can start with the example provided in this documentation and fine-tune your external catalog product without ever leaving the editor.
+The editor provides you with autocomplete and validation of the configuration. That way you can start with the example provided in this documentation and fine-tune your external product catalog without ever leaving the editor.
 
 <img src="/img/apps/external-product-catalog/component-editor.png" width="700" />
 
 ## Hooks
 
-Hooks allow changing or adding functionality to external catalog products.
+Hooks allow changing or adding functionality to external product catalogs.
 They typically rely on your API for the execution of any necessary logic and expect a certain response.
 
 ### Supported Hooks / Catalog Types
@@ -96,7 +96,7 @@ Below is an example of a configuration for the `products` hook, assuming a typic
 
 ## Usage in Journeys
 
-After your External Catalog Product component is configured and the app is installed, it can be used within epilot's Journeys. Currently we support seamless integration of the external catalog product into the journey via Product Blocks and Product Recommendations Blocks (beta).
+After your External Product Catalog component is configured and the app is installed, it can be used within epilot's Journeys. Currently we support seamless integration of the external product catalog into the journey via Product Blocks and Product Recommendations Blocks (beta).
 
 When a journey creator adds a **Product Block** or **Product Recommendations Block** in a journey, they can select the integration as the source for products. Only hooks that are supported for the selected block type will be available (e.g. only `products` hook for Product Block, only `productRecommendations` hook for Product Recommendations Block).
 
