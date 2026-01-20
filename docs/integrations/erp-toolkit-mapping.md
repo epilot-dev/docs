@@ -8,6 +8,8 @@ sidebar_position: 20
 
 The ERP Integration Mapping v2.0 provides a powerful and flexible way to transform ERP system events (customer updates, contract changes, etc.) into epilot entity updates. This document explains how to configure mappings to extract, transform, and structure data from your ERP system.
 
+Each mapping configuration is stored per **use case** within an integration. A use case represents a specific event type from your ERP system (e.g., "CustomerChanged", "ContractUpdated").
+
 ## Table of Contents
 
 - [Key Concepts](#key-concepts)
@@ -36,15 +38,16 @@ The ERP Integration Mapping v2.0 provides a powerful and flexible way to transfo
 - [Array Attribute Operations](#array-attribute-operations)
 - [Complete Examples](#complete-examples)
 - [Best Practices](#best-practices)
+- [Deprecated Format](#deprecated-format)
 
 ## Key Concepts
 
-### Events vs. Objects
+### Use Cases and Events
 
-Version 2.0 uses an **event-based** approach instead of object-based:
-- **Events** represent changes in your ERP system (e.g., "CustomerChanged", "ContractUpdated")
-- Each event can map to **multiple entities** in epilot, also multiples of the same type
-- Each entity mapping can be invoked **multiple times** from array data
+Version 2.0 uses a **use case-based** approach:
+- Each **use case** represents a specific event type from your ERP system (e.g., "CustomerChanged", "ContractUpdated")
+- Each use case configuration can map to **multiple entities** in epilot, including multiples of the same type
+- Each entity mapping can be invoked **multiple times** from array data using JSONata expressions
 
 ### Mapping Flow
 
@@ -60,32 +63,27 @@ Entity Updates (ready for epilot)
 
 ## Basic Structure
 
+Each use case has its own configuration containing `entities` and optionally `meter_readings`:
+
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "EventName": {
-        "entities": [
-          {
-            "entity_schema": "contact",
-            "unique_ids": ["customer_number"],
-            "jsonataExpression": "...",  // Optional
-            "enabled": true,  // Optional (boolean or JSONata string)
-            "fields": [...]
-          }
-        ]
-      }
+  "entities": [
+    {
+      "entity_schema": "contact",
+      "unique_ids": ["customer_number"],
+      "jsonataExpression": "...",
+      "enabled": true,
+      "fields": [...]
     }
-  }
+  ],
+  "meter_readings": [...]
 }
 ```
 
 ### Configuration Elements
 
-- **`version`**: Must be `"2.0"`
-- **`events`**: Object with event names as keys
-- **`entities`**: Array of entity configurations for each event
+- **`entities`**: Array of entity configurations for this use case
+- **`meter_readings`**: Optional array of meter reading configurations
 - **`entity_schema`**: The epilot entity schema (e.g., "contact", "contract", "billing_account", see [Core Entities](https://docs.epilot.io/docs/entities/core-entities/))
 - **`unique_ids`**: Array of unique identifier configurations (see [Repeatable Field Types as Unique Identifiers](#repeatable-field-types-as-unique-identifiers))
 - **`jsonataExpression`**: Optional JSONata expression to pre-process the event data
@@ -229,12 +227,16 @@ To use a repeatable field type as a unique identifier, add the `_type` hint to t
 **Standard field (no _type needed):**
 ```json
 {
-  "entity_schema": "contact",
-  "unique_ids": ["customer_number"],
-  "fields": [
+  "entities": [
     {
-      "attribute": "customer_number",
-      "field": "customerId"
+      "entity_schema": "contact",
+      "unique_ids": ["customer_number"],
+      "fields": [
+        {
+          "attribute": "customer_number",
+          "field": "customerId"
+        }
+      ]
     }
   ]
 }
@@ -243,13 +245,17 @@ To use a repeatable field type as a unique identifier, add the `_type` hint to t
 **Repeatable field with _type hint:**
 ```json
 {
-  "entity_schema": "contact",
-  "unique_ids": ["email"],
-  "fields": [
+  "entities": [
     {
-      "attribute": "email",
-      "field": "Email",
-      "_type": "email"
+      "entity_schema": "contact",
+      "unique_ids": ["email"],
+      "fields": [
+        {
+          "attribute": "email",
+          "field": "Email",
+          "_type": "email"
+        }
+      ]
     }
   ]
 }
@@ -258,17 +264,21 @@ To use a repeatable field type as a unique identifier, add the `_type` hint to t
 **Mixed unique identifiers:**
 ```json
 {
-  "entity_schema": "contact",
-  "unique_ids": ["customer_number", "email"],
-  "fields": [
+  "entities": [
     {
-      "attribute": "customer_number",
-      "field": "customerId"
-    },
-    {
-      "attribute": "email",
-      "field": "Email",
-      "_type": "email"
+      "entity_schema": "contact",
+      "unique_ids": ["customer_number", "email"],
+      "fields": [
+        {
+          "attribute": "customer_number",
+          "field": "customerId"
+        },
+        {
+          "attribute": "email",
+          "field": "Email",
+          "_type": "email"
+        }
+      ]
     }
   ]
 }
@@ -286,34 +296,27 @@ To use a repeatable field type as a unique identifier, add the `_type` hint to t
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "CustomerChanged": {
-        "entities": [
-          {
-            "entity_schema": "contact",
-            "unique_ids": ["email"],
-            "fields": [
-              {
-                "attribute": "email",
-                "field": "Email",
-                "_type": "email"
-              },
-              {
-                "attribute": "first_name",
-                "field": "FirstName"
-              },
-              {
-                "attribute": "last_name",
-                "field": "LastName"
-              }
-            ]
-          }
-        ]
-      }
+  "entities": [
+    {
+      "entity_schema": "contact",
+      "unique_ids": ["email"],
+      "fields": [
+        {
+          "attribute": "email",
+          "field": "Email",
+          "_type": "email"
+        },
+        {
+          "attribute": "first_name",
+          "field": "FirstName"
+        },
+        {
+          "attribute": "last_name",
+          "field": "LastName"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -372,16 +375,20 @@ When using `_id` as the **only** unique identifier, the system performs an optim
 **Configuration:**
 ```json
 {
-  "entity_schema": "contact",
-  "unique_ids": ["_id"],
-  "fields": [
+  "entities": [
     {
-      "attribute": "_id",
-      "field": "entityId"
-    },
-    {
-      "attribute": "first_name",
-      "field": "firstName"
+      "entity_schema": "contact",
+      "unique_ids": ["_id"],
+      "fields": [
+        {
+          "attribute": "_id",
+          "field": "entityId"
+        },
+        {
+          "attribute": "first_name",
+          "field": "firstName"
+        }
+      ]
     }
   ]
 }
@@ -459,38 +466,28 @@ Control field processing with boolean values.
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "CustomerChanged": {
-        "entities": [
-          {
-            "entity_schema": "contact",
-            "unique_ids": ["customer_number"],
-            "fields": [
-              {
-                "attribute": "customer_number",
-                "field": "customerId"
-                // No enabled - defaults to true
-              },
-              {
-                "attribute": "email",
-                "field": "email",
-                "enabled": true
-                // Explicitly enabled
-              },
-              {
-                "attribute": "internal_notes",
-                "field": "notes",
-                "enabled": false
-                // Disabled - will be skipped
-              }
-            ]
-          }
-        ]
-      }
+  "entities": [
+    {
+      "entity_schema": "contact",
+      "unique_ids": ["customer_number"],
+      "fields": [
+        {
+          "attribute": "customer_number",
+          "field": "customerId"
+        },
+        {
+          "attribute": "email",
+          "field": "email",
+          "enabled": true
+        },
+        {
+          "attribute": "internal_notes",
+          "field": "notes",
+          "enabled": false
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -513,7 +510,6 @@ Control field processing with boolean values.
   "attributes": {
     "customer_number": "12345",
     "email": "user@example.com"
-    // internal_notes is NOT included (disabled)
   }
 }
 ```
@@ -525,43 +521,33 @@ Use JSONata expressions to dynamically enable fields based on the input data.
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "CustomerChanged": {
-        "entities": [
-          {
-            "entity_schema": "contact",
-            "unique_ids": ["customer_number"],
-            "fields": [
-              {
-                "attribute": "customer_number",
-                "field": "customerId"
-              },
-              {
-                "attribute": "phone",
-                "field": "phone",
-                "enabled": "$exists(phone) and phone != ''"
-                // Only map if phone exists and is not empty
-              },
-              {
-                "attribute": "mobile",
-                "field": "mobile",
-                "enabled": "$exists(mobile)"
-                // Only map if mobile field exists
-              },
-              {
-                "attribute": "vip_status",
-                "constant": "VIP",
-                "enabled": "vipFlag = true"
-                // Only set VIP status if vipFlag is true
-              }
-            ]
-          }
-        ]
-      }
+  "entities": [
+    {
+      "entity_schema": "contact",
+      "unique_ids": ["customer_number"],
+      "fields": [
+        {
+          "attribute": "customer_number",
+          "field": "customerId"
+        },
+        {
+          "attribute": "phone",
+          "field": "phone",
+          "enabled": "$exists(phone) and phone != ''"
+        },
+        {
+          "attribute": "mobile",
+          "field": "mobile",
+          "enabled": "$exists(mobile)"
+        },
+        {
+          "attribute": "vip_status",
+          "constant": "VIP",
+          "enabled": "vipFlag = true"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -586,16 +572,15 @@ Use JSONata expressions to dynamically enable fields based on the input data.
     "customer_number": "12345",
     "mobile": "555-1234",
     "vip_status": "VIP"
-    // phone is NOT included (empty string)
   }
 }
 ```
 
 **Explanation:**
-- `customer_number`: No `enabled` specified → defaults to `true` → mapped
-- `phone`: `enabled` evaluates to `false` (empty string) → not mapped
-- `mobile`: `enabled` evaluates to `true` (field exists) → mapped
-- `vip_status`: `enabled` evaluates to `true` (vipFlag is true) → mapped
+- `customer_number`: No `enabled` specified -> defaults to `true` -> mapped
+- `phone`: `enabled` evaluates to `false` (empty string) -> not mapped
+- `mobile`: `enabled` evaluates to `true` (field exists) -> mapped
+- `vip_status`: `enabled` evaluates to `true` (vipFlag is true) -> mapped
 
 ### Example 3: Conditional Relations
 
@@ -604,62 +589,54 @@ Field-level `enabled` also works with relation mappings, allowing you to conditi
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "ContractChanged": {
-        "entities": [
-          {
-            "entity_schema": "contract",
-            "unique_ids": ["contract_number"],
-            "fields": [
+  "entities": [
+    {
+      "entity_schema": "contract",
+      "unique_ids": ["contract_number"],
+      "fields": [
+        {
+          "attribute": "contract_number",
+          "field": "number"
+        },
+        {
+          "attribute": "billing_account",
+          "enabled": "$exists(billingAccountId) and billingAccountId != ''",
+          "relations": {
+            "operation": "_set",
+            "items": [
               {
-                "attribute": "contract_number",
-                "field": "number"
-              },
-              {
-                "attribute": "billing_account",
-                "enabled": "$exists(billingAccountId) and billingAccountId != ''",
-                "relations": {
-                  "operation": "_set",
-                  "items": [
-                    {
-                      "entity_schema": "billing_account",
-                      "unique_ids": [
-                        {
-                          "attribute": "external_id",
-                          "field": "billingAccountId"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "attribute": "primary_contact",
-                "enabled": false,
-                "relations": {
-                  "operation": "_set",
-                  "items": [
-                    {
-                      "entity_schema": "contact",
-                      "unique_ids": [
-                        {
-                          "attribute": "email",
-                          "field": "contactEmail"
-                        }
-                      ]
-                    }
-                  ]
-                }
-                // This relation is disabled - won't be created
+                "entity_schema": "billing_account",
+                "unique_ids": [
+                  {
+                    "attribute": "external_id",
+                    "field": "billingAccountId"
+                  }
+                ]
               }
             ]
           }
-        ]
-      }
+        },
+        {
+          "attribute": "primary_contact",
+          "enabled": false,
+          "relations": {
+            "operation": "_set",
+            "items": [
+              {
+                "entity_schema": "contact",
+                "unique_ids": [
+                  {
+                    "attribute": "email",
+                    "field": "contactEmail"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -693,7 +670,6 @@ Field-level `enabled` also works with relation mappings, allowing you to conditi
         ]
       }
     }
-    // primary_contact is NOT included (explicitly disabled)
   }
 }
 ```
@@ -716,8 +692,6 @@ Field-level `enabled` also works with relation mappings, allowing you to conditi
   },
   "attributes": {
     "contract_number": "CTR-002"
-    // billing_account is NOT included (enabled evaluated to false)
-    // primary_contact is NOT included (explicitly disabled)
   }
 }
 ```
@@ -727,35 +701,39 @@ Field-level `enabled` also works with relation mappings, allowing you to conditi
 Both entity-level and field-level `enabled` properties work together. The entity must be enabled first, then individual fields within that entity are evaluated.
 
 **Evaluation Order:**
-1. Entity-level `enabled` is checked → if `false`, entire entity is skipped
+1. Entity-level `enabled` is checked -> if `false`, entire entity is skipped
 2. Entity-level `jsonataExpression` is applied (if present)
 3. For each field:
-    - Field-level `enabled` is checked → if `false`, field is skipped
+    - Field-level `enabled` is checked -> if `false`, field is skipped
     - Field value is extracted/evaluated (if enabled)
 
 **Configuration:**
 ```json
 {
-  "entity_schema": "contact",
-  "unique_ids": ["customer_number"],
-  "enabled": "$exists(customerId)",
-  "fields": [
+  "entities": [
     {
-      "attribute": "customer_number",
-      "field": "customerId"
-    },
-    {
-      "attribute": "email",
-      "field": "email",
-      "enabled": "$exists(email)"
+      "entity_schema": "contact",
+      "unique_ids": ["customer_number"],
+      "enabled": "$exists(customerId)",
+      "fields": [
+        {
+          "attribute": "customer_number",
+          "field": "customerId"
+        },
+        {
+          "attribute": "email",
+          "field": "email",
+          "enabled": "$exists(email)"
+        }
+      ]
     }
   ]
 }
 ```
 
 In this example:
-- If `customerId` doesn't exist → entire entity is skipped (entity-level `enabled`)
-- If `customerId` exists but `email` doesn't → entity is created with just `customer_number`
+- If `customerId` doesn't exist -> entire entity is skipped (entity-level `enabled`)
+- If `customerId` exists but `email` doesn't -> entity is created with just `customer_number`
 
 ## Entity-Level Processing
 
@@ -769,17 +747,21 @@ Entity-level JSONata expressions pre-process data before field mappings are appl
 **Configuration:**
 ```json
 {
-  "entity_schema": "meter",
-  "unique_ids": ["meter_number"],
-  "jsonataExpression": "meters.{\n  \"number\": number,\n  \"type\": type = \"E\" ? \"electricity\" : type = \"G\" ? \"gas\" : type\n}",
-  "fields": [
+  "entities": [
     {
-      "attribute": "meter_number",
-      "field": "number"
-    },
-    {
-      "attribute": "meter_type",
-      "field": "type"
+      "entity_schema": "meter",
+      "unique_ids": ["meter_number"],
+      "jsonataExpression": "meters.{\n  \"number\": number,\n  \"type\": type = \"E\" ? \"electricity\" : type = \"G\" ? \"gas\" : type\n}",
+      "fields": [
+        {
+          "attribute": "meter_number",
+          "field": "number"
+        },
+        {
+          "attribute": "meter_type",
+          "field": "type"
+        }
+      ]
     }
   ]
 }
@@ -841,13 +823,13 @@ The `enabled` field allows you to conditionally include or exclude entity mappin
     {
       "entity_schema": "contact",
       "unique_ids": ["customer_number"],
-      "enabled": true,  // Explicitly enabled (same as omitting)
+      "enabled": true,
       "fields": [...]
     },
     {
       "entity_schema": "contact",
       "unique_ids": ["customer_number"],
-      "enabled": false,  // Disabled - will be skipped
+      "enabled": false,
       "fields": [...]
     }
   ]
@@ -909,14 +891,18 @@ When using both `jsonataExpression` and `enabled`, the evaluation order is:
 **Configuration:**
 ```json
 {
-  "entity_schema": "meter",
-  "unique_ids": ["meter_number"],
-  "jsonataExpression": "meters[type='electricity']",
-  "enabled": "$count($) > 0",  // Only process if array is not empty
-  "fields": [
+  "entities": [
     {
-      "attribute": "meter_number",
-      "field": "number"
+      "entity_schema": "meter",
+      "unique_ids": ["meter_number"],
+      "jsonataExpression": "meters[type='electricity']",
+      "enabled": "$count($) > 0",
+      "fields": [
+        {
+          "attribute": "meter_number",
+          "field": "number"
+        }
+      ]
     }
   ]
 }
@@ -935,7 +921,7 @@ When using both `jsonataExpression` and `enabled`, the evaluation order is:
 
 **Result:** Entity is created for the electricity meter because:
 1. `jsonataExpression` filters to `[{ "number": "M-001", "type": "electricity" }]`
-2. `enabled` evaluates `$count([...]) > 0` → `true`
+2. `enabled` evaluates `$count([...]) > 0` -> `true`
 
 **Input without electricity meters:**
 ```json
@@ -949,7 +935,7 @@ When using both `jsonataExpression` and `enabled`, the evaluation order is:
 
 **Result:** No entity created because:
 1. `jsonataExpression` filters to `[]` (empty array)
-2. `enabled` evaluates `$count([]) > 0` → `false`
+2. `enabled` evaluates `$count([]) > 0` -> `false`
 
 ## Relations
 
@@ -1144,7 +1130,7 @@ Note: "existing-1" IS duplicated because `_append_all` skips deduplication.
   "attributes": {
     "billing_account": {
       "$relation": [{
-        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8",  // Resolved entity ID
+        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8",
         "_schema": "billing_account",
         "_tags": ["PRIMARY"]
       }]
@@ -1201,12 +1187,12 @@ Note: "existing-1" IS duplicated because `_append_all` skips deduplication.
   "contacts": {
     "$relation": [
       {
-        "entity_id": "019a0c06-1111-1111-1111-aaaaaaaaaaaa",  // Resolved entity ID
+        "entity_id": "019a0c06-1111-1111-1111-aaaaaaaaaaaa",
         "_schema": "contact",
         "_tags": ["BILLING"]
       },
       {
-        "entity_id": "019a0c06-2222-2222-2222-bbbbbbbbbbbb",  // Resolved entity ID
+        "entity_id": "019a0c06-2222-2222-2222-bbbbbbbbbbbb",
         "_schema": "contact",
         "_tags": ["TECHNICAL"]
       }
@@ -1246,12 +1232,12 @@ Use JSONata to dynamically generate relation items.
   "related_persons": {
     "$relation": [
       {
-        "entity_id": "019a0c06-3333-3333-3333-cccccccccccc",  // Resolved entity ID
+        "entity_id": "019a0c06-3333-3333-3333-cccccccccccc",
         "_schema": "contact",
         "_tags": ["OWNER"]
       },
       {
-        "entity_id": "019a0c06-4444-4444-4444-dddddddddddd",  // Resolved entity ID
+        "entity_id": "019a0c06-4444-4444-4444-dddddddddddd",
         "_schema": "contact",
         "_tags": ["USER"]
       }
@@ -1305,7 +1291,7 @@ While `$relation` links to an entity, `$relation_ref` links to:
 {
   "attribute": "billing_address",
   "relation_refs": {
-    "operation": "_set",  // or "_append"
+    "operation": "_set",
     "items": [
       {
         "entity_schema": "contact",
@@ -1315,10 +1301,10 @@ While `$relation` links to an entity, `$relation_ref` links to:
             "field": "CustomerNumber"
           }
         ],
-        "path": "address",  // Attribute path on the related entity
+        "path": "address",
         "value": {
           "attribute": "address",
-          "operation": "_append",  // Optional: operation for the attribute value
+          "operation": "_append",
           "jsonataExpression": "{\n  \"street\": BillingStreet,\n  \"city\": BillingCity,\n  \"country\": 'DE',\n  \"postal_code\": BillingPostalCode,\n  \"street_number\": $string(BillingStreetNumber)\n}"
         }
       }
@@ -1339,8 +1325,6 @@ While `$relation` links to an entity, `$relation_ref` links to:
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "object_type": "Invoice",
   "entities": [
     {
       "entity_schema": "opportunity",
@@ -1400,7 +1384,7 @@ While `$relation` links to an entity, `$relation_ref` links to:
      "customer_number": "CUST-123",
      "address": [
        {
-         "_id": "abc123",  // Auto-generated by Entity API
+         "_id": "abc123",
          "street": "Main Street",
          "street_number": "42",
          "city": "Berlin",
@@ -1417,9 +1401,9 @@ While `$relation` links to an entity, `$relation_ref` links to:
      "billing_address": {
        "$relation_ref": [
          {
-           "entity_id": "019a0c06-1234-5678-9abc-def012345678",  // Contact entity ID
+           "entity_id": "019a0c06-1234-5678-9abc-def012345678",
            "path": "address",
-           "_id": "abc123"  // Specific address item ID
+           "_id": "abc123"
          }
        ]
      }
@@ -1584,52 +1568,45 @@ Meter readings mappings enable you to:
 
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "MeterReadingsChanged": {
-        "meter_readings": [
+  "meter_readings": [
+    {
+      "jsonataExpression": "$.readings",
+      "meter": {
+        "unique_ids": [
           {
-            "jsonataExpression": "$.readings",
-            "meter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "meter_id"
-                }
-              ]
-            },
-            "meter_counter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "counter_id"
-                }
-              ]
-            },
-            "fields": [
-              {
-                "attribute": "external_id",
-                "field": "reading_id"
-              },
-              {
-                "attribute": "timestamp",
-                "field": "read_at"
-              },
-              {
-                "attribute": "source",
-                "constant": "ERP"
-              },
-              {
-                "attribute": "value",
-                "field": "reading_value"
-              }
-            ]
+            "attribute": "external_id",
+            "field": "meter_id"
           }
         ]
-      }
+      },
+      "meter_counter": {
+        "unique_ids": [
+          {
+            "attribute": "external_id",
+            "field": "counter_id"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "attribute": "external_id",
+          "field": "reading_id"
+        },
+        {
+          "attribute": "timestamp",
+          "field": "read_at"
+        },
+        {
+          "attribute": "source",
+          "constant": "ERP"
+        },
+        {
+          "attribute": "value",
+          "field": "reading_value"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -1713,48 +1690,41 @@ Extract meter readings from an array in the event payload.
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "MeterReadingsChanged": {
-        "meter_readings": [
+  "meter_readings": [
+    {
+      "jsonataExpression": "$.readings",
+      "meter": {
+        "unique_ids": [
           {
-            "jsonataExpression": "$.readings",
-            "meter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "meter_id"
-                }
-              ]
-            },
-            "fields": [
-              {
-                "attribute": "external_id",
-                "field": "reading_id"
-              },
-              {
-                "attribute": "timestamp",
-                "field": "read_at"
-              },
-              {
-                "attribute": "source",
-                "constant": "ERP"
-              },
-              {
-                "attribute": "value",
-                "field": "reading_value"
-              },
-              {
-                "attribute": "direction",
-                "constant": "feed-in"
-              }
-            ]
+            "attribute": "external_id",
+            "field": "meter_id"
           }
         ]
-      }
+      },
+      "fields": [
+        {
+          "attribute": "external_id",
+          "field": "reading_id"
+        },
+        {
+          "attribute": "timestamp",
+          "field": "read_at"
+        },
+        {
+          "attribute": "source",
+          "constant": "ERP"
+        },
+        {
+          "attribute": "value",
+          "field": "reading_value"
+        },
+        {
+          "attribute": "direction",
+          "constant": "feed-in"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -1821,52 +1791,45 @@ For multi-tariff meters where each reading belongs to a specific counter (e.g., 
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "MeterReadingsChanged": {
-        "meter_readings": [
+  "meter_readings": [
+    {
+      "jsonataExpression": "$.readings",
+      "meter": {
+        "unique_ids": [
           {
-            "jsonataExpression": "$.readings",
-            "meter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "meter_id"
-                }
-              ]
-            },
-            "meter_counter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "tariff_id"
-                }
-              ]
-            },
-            "fields": [
-              {
-                "attribute": "external_id",
-                "jsonataExpression": "$string(meter_id) & '-' & $string(tariff_id) & '-' & $string(reading_id)"
-              },
-              {
-                "attribute": "timestamp",
-                "field": "read_at"
-              },
-              {
-                "attribute": "source",
-                "constant": "ERP"
-              },
-              {
-                "attribute": "value",
-                "field": "reading_value"
-              }
-            ]
+            "attribute": "external_id",
+            "field": "meter_id"
           }
         ]
-      }
+      },
+      "meter_counter": {
+        "unique_ids": [
+          {
+            "attribute": "external_id",
+            "field": "tariff_id"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "attribute": "external_id",
+          "jsonataExpression": "$string(meter_id) & '-' & $string(tariff_id) & '-' & $string(reading_id)"
+        },
+        {
+          "attribute": "timestamp",
+          "field": "read_at"
+        },
+        {
+          "attribute": "source",
+          "constant": "ERP"
+        },
+        {
+          "attribute": "value",
+          "field": "reading_value"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -1938,65 +1901,58 @@ For multi-tariff meters where each reading belongs to a specific counter (e.g., 
 
 ### Example 3: Combined Entity and Meter Readings
 
-A single event can map to both entities and meter readings.
+A single use case can map to both entities and meter readings.
 
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "ContractWithReadings": {
-        "entities": [
+  "entities": [
+    {
+      "entity_schema": "contract",
+      "unique_ids": ["contract_number"],
+      "fields": [
+        {
+          "attribute": "contract_number",
+          "field": "number"
+        },
+        {
+          "attribute": "display_name",
+          "field": "name"
+        }
+      ]
+    }
+  ],
+  "meter_readings": [
+    {
+      "jsonataExpression": "$.readings",
+      "meter": {
+        "unique_ids": [
           {
-            "entity_schema": "contract",
-            "unique_ids": ["contract_number"],
-            "fields": [
-              {
-                "attribute": "contract_number",
-                "field": "number"
-              },
-              {
-                "attribute": "display_name",
-                "field": "name"
-              }
-            ]
-          }
-        ],
-        "meter_readings": [
-          {
-            "jsonataExpression": "$.readings",
-            "meter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "meter_id"
-                }
-              ]
-            },
-            "fields": [
-              {
-                "attribute": "external_id",
-                "field": "reading_id"
-              },
-              {
-                "attribute": "timestamp",
-                "field": "read_at"
-              },
-              {
-                "attribute": "source",
-                "constant": "ERP"
-              },
-              {
-                "attribute": "value",
-                "field": "value"
-              }
-            ]
+            "attribute": "external_id",
+            "field": "meter_id"
           }
         ]
-      }
+      },
+      "fields": [
+        {
+          "attribute": "external_id",
+          "field": "reading_id"
+        },
+        {
+          "attribute": "timestamp",
+          "field": "read_at"
+        },
+        {
+          "attribute": "source",
+          "constant": "ERP"
+        },
+        {
+          "attribute": "value",
+          "field": "value"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -2056,43 +2012,36 @@ When the event payload represents a single meter reading (not an array), you can
 **Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "MeterReadingUpdated": {
-        "meter_readings": [
+  "meter_readings": [
+    {
+      "meter": {
+        "unique_ids": [
           {
-            "meter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "meter_id"
-                }
-              ]
-            },
-            "fields": [
-              {
-                "attribute": "external_id",
-                "field": "reading_id"
-              },
-              {
-                "attribute": "timestamp",
-                "field": "timestamp"
-              },
-              {
-                "attribute": "source",
-                "constant": "ERP"
-              },
-              {
-                "attribute": "value",
-                "field": "value"
-              }
-            ]
+            "attribute": "external_id",
+            "field": "meter_id"
           }
         ]
-      }
+      },
+      "fields": [
+        {
+          "attribute": "external_id",
+          "field": "reading_id"
+        },
+        {
+          "attribute": "timestamp",
+          "field": "timestamp"
+        },
+        {
+          "attribute": "source",
+          "constant": "ERP"
+        },
+        {
+          "attribute": "value",
+          "field": "value"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -2142,7 +2091,7 @@ The system validates meter readings configurations at runtime:
 
 **Validation Error Example:**
 ```
-Meter readings configuration for "MeterReadingsChanged" (item 0) is missing required field attributes: timestamp, source, value
+Meter readings configuration (item 0) is missing required field attributes: timestamp, source, value
 ```
 
 The error message includes the item index to help identify which specific meter_readings configuration has the issue when multiple configurations are present.
@@ -2224,7 +2173,7 @@ ECP users in Germany submit readings that are stored with full timestamp precisi
 - A reading submitted at 23:30 CET on Jan 15 will match an ERP echo dated Jan 15
 - Timestamps across the UTC midnight boundary are handled correctly
 
-**Example: ECP → ERP Roundtrip**
+**Example: ECP -> ERP Roundtrip**
 
 1. Customer submits reading via ECP at `2025-01-15T14:30:45.123Z` (15:30 German time)
 2. Reading is saved in metering-api without `external_id`
@@ -2238,7 +2187,7 @@ ECP users in Germany submit readings that are stored with full timestamp precisi
 
 | Scenario | Result |
 |----------|--------|
-| ECP submission → ERP echo | Update existing ECP reading, set `external_id` |
+| ECP submission -> ERP echo | Update existing ECP reading, set `external_id` |
 | ERP sends same reading multiple times | All updates hit the same record |
 | ERP modifies value | Overwrites ECP value (ERP is source of truth) |
 | Reading only from ERP (no prior ECP) | Creates new reading normally |
@@ -2248,57 +2197,50 @@ ECP users in Germany submit readings that are stored with full timestamp precisi
 
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "MeterReadingsChanged": {
-        "meter_readings": [
+  "meter_readings": [
+    {
+      "reading_matching": "strict-date",
+      "jsonataExpression": "$.readings",
+      "meter": {
+        "unique_ids": [
           {
-            "reading_matching": "strict-date",
-            "jsonataExpression": "$.readings",
-            "meter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "meter_id"
-                }
-              ]
-            },
-            "meter_counter": {
-              "unique_ids": [
-                {
-                  "attribute": "external_id",
-                  "field": "counter_id"
-                }
-              ]
-            },
-            "fields": [
-              {
-                "attribute": "external_id",
-                "field": "reading_id"
-              },
-              {
-                "attribute": "timestamp",
-                "field": "read_at"
-              },
-              {
-                "attribute": "source",
-                "constant": "ERP"
-              },
-              {
-                "attribute": "value",
-                "field": "reading_value"
-              },
-              {
-                "attribute": "direction",
-                "field": "direction"
-              }
-            ]
+            "attribute": "external_id",
+            "field": "meter_id"
           }
         ]
-      }
+      },
+      "meter_counter": {
+        "unique_ids": [
+          {
+            "attribute": "external_id",
+            "field": "counter_id"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "attribute": "external_id",
+          "field": "reading_id"
+        },
+        {
+          "attribute": "timestamp",
+          "field": "read_at"
+        },
+        {
+          "attribute": "source",
+          "constant": "ERP"
+        },
+        {
+          "attribute": "value",
+          "field": "reading_value"
+        },
+        {
+          "attribute": "direction",
+          "field": "direction"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -2314,7 +2256,7 @@ Replaces the entire array with new values.
 ```json
 {
   "attribute": "_tags",
-  "field": "tags"  // Assuming this returns an array or uses operations
+  "field": "tags"
 }
 ```
 
@@ -2421,70 +2363,63 @@ Result:
 
 ## Complete Examples
 
-### Example 1: Customer Update Event
+### Example 1: Customer Update Use Case
 
 Maps a customer change event to a contact entity with billing account relation.
 
-**Mapping Configuration:**
+**Use Case Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "CustomerChanged": {
-        "entities": [
-          {
-            "entity_schema": "contact",
-            "unique_ids": ["customer_number"],
-            "fields": [
+  "entities": [
+    {
+      "entity_schema": "contact",
+      "unique_ids": ["customer_number"],
+      "fields": [
+        {
+          "attribute": "customer_number",
+          "field": "customerId"
+        },
+        {
+          "attribute": "first_name",
+          "field": "$.name.first"
+        },
+        {
+          "attribute": "last_name",
+          "field": "$.name.last"
+        },
+        {
+          "attribute": "email",
+          "field": "email"
+        },
+        {
+          "attribute": "full_name",
+          "jsonataExpression": "name.first & ' ' & name.last"
+        },
+        {
+          "attribute": "source",
+          "constant": "ERP"
+        },
+        {
+          "attribute": "billing_account",
+          "relations": {
+            "operation": "_set",
+            "items": [
               {
-                "attribute": "customer_number",
-                "field": "customerId"
-              },
-              {
-                "attribute": "first_name",
-                "field": "$.name.first"
-              },
-              {
-                "attribute": "last_name",
-                "field": "$.name.last"
-              },
-              {
-                "attribute": "email",
-                "field": "email"
-              },
-              {
-                "attribute": "full_name",
-                "jsonataExpression": "name.first & ' ' & name.last"
-              },
-              {
-                "attribute": "source",
-                "constant": "ERP"
-              },
-              {
-                "attribute": "billing_account",
-                "relations": {
-                  "operation": "_set",
-                  "items": [
-                    {
-                      "entity_schema": "billing_account",
-                      "_tags": ["PRIMARY"],
-                      "unique_ids": [
-                        {
-                          "attribute": "external_id",
-                          "field": "billingAccountId"
-                        }
-                      ]
-                    }
-                  ]
-                }
+                "entity_schema": "billing_account",
+                "_tags": ["PRIMARY"],
+                "unique_ids": [
+                  {
+                    "attribute": "external_id",
+                    "field": "billingAccountId"
+                  }
+                ]
               }
             ]
           }
-        ]
-      }
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -2517,7 +2452,7 @@ Maps a customer change event to a contact entity with billing account relation.
     "source": "ERP",
     "billing_account": {
       "$relation": [{
-        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8", 
+        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8",
         "_schema": "billing_account",
         "_tags": ["PRIMARY"]
       }]
@@ -2530,51 +2465,44 @@ Maps a customer change event to a contact entity with billing account relation.
 
 Creates one contract entity and multiple meter entities from a single event.
 
-**Mapping Configuration:**
+**Use Case Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "ContractChanged": {
-        "entities": [
-          {
-            "entity_schema": "contract",
-            "unique_ids": ["contract_number"],
-            "fields": [
-              {
-                "attribute": "contract_number",
-                "field": "contractNumber"
-              },
-              {
-                "attribute": "start_date",
-                "field": "startDate"
-              },
-              {
-                "attribute": "status",
-                "jsonataExpression": "active = true ? 'ACTIVE' : 'INACTIVE'"
-              }
-            ]
-          },
-          {
-            "entity_schema": "meter",
-            "unique_ids": ["meter_number"],
-            "jsonataExpression": "meters.{\n  \"number\": meterNumber,\n  \"type\": meterType = 'E' ? 'electricity' : meterType = 'G' ? 'gas' : 'other'\n}",
-            "fields": [
-              {
-                "attribute": "meter_number",
-                "field": "number"
-              },
-              {
-                "attribute": "meter_type",
-                "field": "type"
-              }
-            ]
-          }
-        ]
-      }
+  "entities": [
+    {
+      "entity_schema": "contract",
+      "unique_ids": ["contract_number"],
+      "fields": [
+        {
+          "attribute": "contract_number",
+          "field": "contractNumber"
+        },
+        {
+          "attribute": "start_date",
+          "field": "startDate"
+        },
+        {
+          "attribute": "status",
+          "jsonataExpression": "active = true ? 'ACTIVE' : 'INACTIVE'"
+        }
+      ]
+    },
+    {
+      "entity_schema": "meter",
+      "unique_ids": ["meter_number"],
+      "jsonataExpression": "meters.{\n  \"number\": meterNumber,\n  \"type\": meterType = 'E' ? 'electricity' : meterType = 'G' ? 'gas' : 'other'\n}",
+      "fields": [
+        {
+          "attribute": "meter_number",
+          "field": "number"
+        },
+        {
+          "attribute": "meter_type",
+          "field": "type"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -2635,82 +2563,75 @@ Creates one contract entity and multiple meter entities from a single event.
 
 A comprehensive example showing contract with customer, billing account, and dynamic contact relations.
 
-**Mapping Configuration:**
+**Use Case Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "ContractCreated": {
-        "entities": [
-          {
-            "entity_schema": "contract",
-            "unique_ids": ["contract_number"],
-            "fields": [
+  "entities": [
+    {
+      "entity_schema": "contract",
+      "unique_ids": ["contract_number"],
+      "fields": [
+        {
+          "attribute": "contract_number",
+          "field": "number"
+        },
+        {
+          "attribute": "display_name",
+          "field": "displayName"
+        },
+        {
+          "attribute": "contract_type",
+          "constant": "ENERGY"
+        },
+        {
+          "attribute": "primary_customer",
+          "relations": {
+            "operation": "_set",
+            "items": [
               {
-                "attribute": "contract_number",
-                "field": "number"
-              },
-              {
-                "attribute": "display_name",
-                "field": "displayName"
-              },
-              {
-                "attribute": "contract_type",
-                "constant": "ENERGY"
-              },
-              {
-                "attribute": "primary_customer",
-                "relations": {
-                  "operation": "_set",
-                  "items": [
-                    {
-                      "entity_schema": "contact",
-                      "_tags": ["PRIMARY"],
-                      "unique_ids": [
-                        {
-                          "attribute": "customer_number",
-                          "field": "customerId"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "attribute": "billing_account",
-                "relations": {
-                  "operation": "_set",
-                  "items": [
-                    {
-                      "entity_schema": "billing_account",
-                      "unique_ids": [
-                        {
-                          "attribute": "external_id",
-                          "field": "billingAccountId"
-                        },
-                        {
-                          "attribute": "account_type",
-                          "constant": "BILLING"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "attribute": "additional_contacts",
-                "relations": {
-                  "operation": "_set",
-                  "jsonataExpression": "contacts.{\n  \"entity_schema\": \"contact\",\n  \"unique_ids\": [\n    {\n      \"attribute\": \"email\",\n      \"constant\": email\n    }\n  ],\n  \"_tags\": [contactType]\n}"
-                }
+                "entity_schema": "contact",
+                "_tags": ["PRIMARY"],
+                "unique_ids": [
+                  {
+                    "attribute": "customer_number",
+                    "field": "customerId"
+                  }
+                ]
               }
             ]
           }
-        ]
-      }
+        },
+        {
+          "attribute": "billing_account",
+          "relations": {
+            "operation": "_set",
+            "items": [
+              {
+                "entity_schema": "billing_account",
+                "unique_ids": [
+                  {
+                    "attribute": "external_id",
+                    "field": "billingAccountId"
+                  },
+                  {
+                    "attribute": "account_type",
+                    "constant": "BILLING"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "attribute": "additional_contacts",
+          "relations": {
+            "operation": "_set",
+            "jsonataExpression": "contacts.{\n  \"entity_schema\": \"contact\",\n  \"unique_ids\": [\n    {\n      \"attribute\": \"email\",\n      \"constant\": email\n    }\n  ],\n  \"_tags\": [contactType]\n}"
+          }
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -2780,108 +2701,101 @@ A comprehensive example showing contract with customer, billing account, and dyn
 
 A comprehensive example demonstrating field-level conditional processing using both boolean and JSONata `enabled` expressions.
 
-**Mapping Configuration:**
+**Use Case Configuration:**
 ```json
 {
-  "version": "2.0",
-  "mapping": {
-    "events": {
-      "CustomerChanged": {
-        "entities": [
-          {
-            "entity_schema": "contact",
-            "unique_ids": ["customer_number"],
-            "fields": [
+  "entities": [
+    {
+      "entity_schema": "contact",
+      "unique_ids": ["customer_number"],
+      "fields": [
+        {
+          "attribute": "customer_number",
+          "field": "customerId"
+        },
+        {
+          "attribute": "first_name",
+          "field": "firstName"
+        },
+        {
+          "attribute": "last_name",
+          "field": "lastName"
+        },
+        {
+          "attribute": "email",
+          "field": "email",
+          "enabled": "$exists(email) and email != ''"
+        },
+        {
+          "attribute": "phone",
+          "field": "phone",
+          "enabled": "$exists(phone) and phone != ''"
+        },
+        {
+          "attribute": "mobile",
+          "field": "mobile",
+          "enabled": "$exists(mobile) and mobile != ''"
+        },
+        {
+          "attribute": "vip_status",
+          "constant": "VIP",
+          "enabled": "isVip = true"
+        },
+        {
+          "attribute": "customer_type",
+          "jsonataExpression": "customerType = 'B' ? 'BUSINESS' : 'PRIVATE'",
+          "enabled": "$exists(customerType)"
+        },
+        {
+          "attribute": "internal_notes",
+          "field": "internalNotes",
+          "enabled": false
+        },
+        {
+          "attribute": "marketing_consent",
+          "field": "marketingConsent",
+          "enabled": "$exists(marketingConsent)"
+        },
+        {
+          "attribute": "billing_account",
+          "enabled": "$exists(billingAccountId) and billingAccountId != ''",
+          "relations": {
+            "operation": "_set",
+            "items": [
               {
-                "attribute": "customer_number",
-                "field": "customerId"
-              },
-              {
-                "attribute": "first_name",
-                "field": "firstName"
-              },
-              {
-                "attribute": "last_name",
-                "field": "lastName"
-              },
-              {
-                "attribute": "email",
-                "field": "email",
-                "enabled": "$exists(email) and email != ''"
-              },
-              {
-                "attribute": "phone",
-                "field": "phone",
-                "enabled": "$exists(phone) and phone != ''"
-              },
-              {
-                "attribute": "mobile",
-                "field": "mobile",
-                "enabled": "$exists(mobile) and mobile != ''"
-              },
-              {
-                "attribute": "vip_status",
-                "constant": "VIP",
-                "enabled": "isVip = true"
-              },
-              {
-                "attribute": "customer_type",
-                "jsonataExpression": "customerType = 'B' ? 'BUSINESS' : 'PRIVATE'",
-                "enabled": "$exists(customerType)"
-              },
-              {
-                "attribute": "internal_notes",
-                "field": "internalNotes",
-                "enabled": false
-              },
-              {
-                "attribute": "marketing_consent",
-                "field": "marketingConsent",
-                "enabled": "$exists(marketingConsent)"
-              },
-              {
-                "attribute": "billing_account",
-                "enabled": "$exists(billingAccountId) and billingAccountId != ''",
-                "relations": {
-                  "operation": "_set",
-                  "items": [
-                    {
-                      "entity_schema": "billing_account",
-                      "_tags": ["PRIMARY"],
-                      "unique_ids": [
-                        {
-                          "attribute": "external_id",
-                          "field": "billingAccountId"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "attribute": "contract",
-                "enabled": "$exists(contractNumber)",
-                "relations": {
-                  "operation": "_set",
-                  "items": [
-                    {
-                      "entity_schema": "contract",
-                      "unique_ids": [
-                        {
-                          "attribute": "contract_number",
-                          "field": "contractNumber"
-                        }
-                      ]
-                    }
-                  ]
-                }
+                "entity_schema": "billing_account",
+                "_tags": ["PRIMARY"],
+                "unique_ids": [
+                  {
+                    "attribute": "external_id",
+                    "field": "billingAccountId"
+                  }
+                ]
               }
             ]
           }
-        ]
-      }
+        },
+        {
+          "attribute": "contract",
+          "enabled": "$exists(contractNumber)",
+          "relations": {
+            "operation": "_set",
+            "items": [
+              {
+                "entity_schema": "contract",
+                "unique_ids": [
+                  {
+                    "attribute": "contract_number",
+                    "field": "contractNumber"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 
@@ -2999,11 +2913,15 @@ This example demonstrates how the `enabled` property allows the same mapping con
 Always map unique_ids from stable identifiers in your ERP system:
 ```json
 {
-  "unique_ids": ["customer_number"],
-  "fields": [
+  "entities": [
     {
-      "attribute": "customer_number",
-      "field": "erpCustomerId"
+      "unique_ids": ["customer_number"],
+      "fields": [
+        {
+          "attribute": "customer_number",
+          "field": "erpCustomerId"
+        }
+      ]
     }
   ]
 }
@@ -3013,8 +2931,12 @@ Always map unique_ids from stable identifiers in your ERP system:
 When dealing with array data, use entity-level JSONata:
 ```json
 {
-  "jsonataExpression": "items[status='active']",
-  "fields": [...]
+  "entities": [
+    {
+      "jsonataExpression": "items[status='active']",
+      "fields": [...]
+    }
+  ]
 }
 ```
 
@@ -3039,3 +2961,23 @@ Use JSONata to standardize variations:
   "jsonataExpression": "status in ['active', 'Active', 'ACTIVE'] ? 'ACTIVE' : 'INACTIVE'"
 }
 ```
+
+## Deprecated Format
+
+Prior to the use case-based API, mapping configurations were wrapped in a versioned structure with explicit event names:
+
+```json
+{
+  "version": "2.0",
+  "mapping": {
+    "events": {
+      "CustomerChanged": {
+        "entities": [...],
+        "meter_readings": [...]
+      }
+    }
+  }
+}
+```
+
+This format is **deprecated**. Configurations are now stored directly per use case without the `version`, `mapping`, or `events` wrappers. When creating or updating use cases via the API, use the flat structure documented throughout this specification. The v1 mapping simulation endpoint (`/v1/erp/updates/mapping_simulation`) still accepts the old format for backward compatibility, but the v2 endpoint (`/v2/erp/updates/mapping_simulation`) and the use case API expect the new per-use-case format.
