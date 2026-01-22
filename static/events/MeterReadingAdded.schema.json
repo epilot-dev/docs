@@ -29,6 +29,16 @@
       "type": "string",
       "description": "Source that triggered the event"
     },
+    "_trigger_source_type": {
+      "type": "string",
+      "description": "The type of system that triggered the event. Examples: api, automation, operation, portal_user",
+      "example": "api"
+    },
+    "_trigger_source": {
+      "type": "string",
+      "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
+      "example": "api_123456"
+    },
     "reading_value": {
       "type": "number",
       "description": "The meter reading value"

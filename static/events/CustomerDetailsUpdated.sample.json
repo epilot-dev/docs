@@ -5,6 +5,8 @@
   "_event_name": "CustomerDetailsUpdated",
   "_event_version": "1.0.0",
   "_event_source": "string",
+  "_trigger_source_type": "api",
+  "_trigger_source": "api_123456",
   "operation": "updateEntity",
   "activity_id": "01F130Q52Q6MWSNS8N2AVXV4JN",
   "activity_type": "EntityUpdated",

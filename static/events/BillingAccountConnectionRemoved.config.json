@@ -1,56 +1,25 @@
 {
   "event_name": "BillingAccountConnectionRemoved",
   "event_title": "Disassociate Billing Account",
-  "event_description": "Triggered when a billing account is disconnected from a customer",
+  "event_description": "Customer request to disassociate a billing account from a contact",
   "event_version": "1.0.0",
   "event_tags": [
     "builtin",
+    "automation",
     "ticket",
-    "billing-account",
-    "Entfernung Kundenkonto"
+    "billing-account"
   ],
-  "schema_fields": {
-    "operation": {
-      "json_schema": {
-        "type": "string",
-        "enum": [
-          "createEntity",
-          "updateEntity"
-        ],
-        "description": "The entity operation type that triggered this event"
-      },
-      "required": true
-    },
-    "activity_id": {
-      "json_schema": {
-        "type": "string",
-        "description": "Activity ID associated with this operation (ULID)",
-        "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
-      },
-      "required": false
-    },
-    "activity_type": {
-      "json_schema": {
-        "type": "string",
-        "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
-        "example": "EntityUpdated"
-      },
-      "required": false
-    },
-    "trigger_entity": {
-      "json_schema": {
-        "type": "string",
-        "format": "uuid",
-        "description": "Entity ID of the entity that triggered this event"
-      },
-      "required": true
-    }
-  },
+  "schema_fields": {},
   "entity_graph": {
     "nodes": [
       {
         "id": "ticket",
         "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "submission",
+        "schema": "submission",
         "cardinality": "one"
       },
       {
@@ -67,6 +36,10 @@
     "edges": [
       {
         "from": "ticket",
+        "to": "submission"
+      },
+      {
+        "from": "ticket",
         "to": "contact"
       },
       {
@@ -75,16 +48,5 @@
       }
     ]
   },
-  "entity_operation": {
-    "operation": [
-      "createEntity",
-      "updateEntity"
-    ],
-    "schema": [
-      "ticket"
-    ],
-    "purpose": [
-      "Entfernung Kundenkonto"
-    ]
-  }
+  "automation_trigger": true
 }

@@ -1,7 +1,7 @@
 {
   "event_name": "MeterReadingAdded",
   "event_title": "Meter Reading Added",
-  "event_description": "Triggered when a new meter reading is added",
+  "event_description": "Triggered when a new meter reading is added via customer portal",
   "event_version": "1.0.0",
   "event_tags": [
     "builtin",

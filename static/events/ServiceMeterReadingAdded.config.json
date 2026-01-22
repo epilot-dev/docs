@@ -1,51 +1,16 @@
 {
   "event_name": "ServiceMeterReadingAdded",
   "event_title": "Service: Meter Reading Added",
-  "event_description": "Triggered when a ticket gets created for Meter Reading Service",
+  "event_description": "Service request to add a new meter reading via ticket",
   "event_version": "1.0.0",
   "event_tags": [
     "builtin",
+    "automation",
     "service",
     "ticket",
-    "meter",
-    "Übermittlung Zählerstand"
+    "meter"
   ],
   "schema_fields": {
-    "operation": {
-      "json_schema": {
-        "type": "string",
-        "enum": [
-          "createEntity",
-          "updateEntity"
-        ],
-        "description": "The entity operation type that triggered this event"
-      },
-      "required": true
-    },
-    "activity_id": {
-      "json_schema": {
-        "type": "string",
-        "description": "Activity ID associated with this operation (ULID)",
-        "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
-      },
-      "required": false
-    },
-    "activity_type": {
-      "json_schema": {
-        "type": "string",
-        "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
-        "example": "EntityUpdated"
-      },
-      "required": false
-    },
-    "trigger_entity": {
-      "json_schema": {
-        "type": "string",
-        "format": "uuid",
-        "description": "Entity ID of the entity that triggered this event"
-      },
-      "required": true
-    },
     "value": {
       "json_schema": {
         "type": "number",
@@ -132,16 +97,5 @@
       }
     ]
   },
-  "entity_operation": {
-    "operation": [
-      "createEntity",
-      "updateEntity"
-    ],
-    "schema": [
-      "ticket"
-    ],
-    "purpose": [
-      "Übermittlung Zählerstand"
-    ]
-  }
+  "automation_trigger": true
 }

@@ -29,28 +29,15 @@
       "type": "string",
       "description": "Source that triggered the event"
     },
-    "operation": {
+    "_trigger_source_type": {
       "type": "string",
-      "enum": [
-        "createEntity",
-        "updateEntity"
-      ],
-      "description": "The entity operation type that triggered this event"
+      "description": "The type of system that triggered the event. Examples: api, automation, operation, portal_user",
+      "example": "api"
     },
-    "activity_id": {
+    "_trigger_source": {
       "type": "string",
-      "description": "Activity ID associated with this operation (ULID)",
-      "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
-    },
-    "activity_type": {
-      "type": "string",
-      "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
-      "example": "EntityUpdated"
-    },
-    "trigger_entity": {
-      "type": "string",
-      "format": "uuid",
-      "description": "Entity ID of the entity that triggered this event"
+      "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
+      "example": "api_123456"
     },
     "ticket": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -601,6 +588,86 @@
       },
       "description": "contract entity (hydrated from entity graph)"
     },
+    "submission": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "_schema"
+      ],
+      "properties": {
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "submission",
+          "description": "URL-friendly identifier for the entity schema"
+        },
+        "_id": {
+          "readOnly": true,
+          "type": "string",
+          "format": "uuid",
+          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "description": "Unique identifier for the entity"
+        },
+        "_org": {
+          "type": "string",
+          "description": "Organization Id the entity belongs to",
+          "readOnly": true,
+          "example": "123"
+        },
+        "_title": {
+          "readOnly": true,
+          "type": "string",
+          "nullable": true,
+          "example": "John Doe",
+          "description": "Generated title for the entity based on schema title_template"
+        },
+        "_tags": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "family:label"
+          ],
+          "description": "Entity Labels"
+        },
+        "_purpose": {
+          "$ref": "#/definitions/PurposeAttribute",
+          "description": "Purposes"
+        },
+        "source": {
+          "$ref": "#/definitions/LinkAttribute",
+          "description": "Source"
+        },
+        "mapped_entities": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Entities"
+        },
+        "workflows": {
+          "$ref": "#/definitions/WorkflowOverview"
+        },
+        "_files": {
+          "$ref": "#/definitions/BaseRelation"
+        },
+        "_created_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity creation"
+        },
+        "_updated_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity last update"
+        }
+      },
+      "description": "submission entity (hydrated from entity graph)"
+    },
     "contact": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
@@ -1115,9 +1182,7 @@
     "_event_id",
     "_event_name",
     "_event_version",
-    "_event_source",
-    "operation",
-    "trigger_entity"
+    "_event_source"
   ],
   "additionalProperties": true,
   "definitions": {

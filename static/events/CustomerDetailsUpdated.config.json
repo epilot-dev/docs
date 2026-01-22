@@ -7,7 +7,6 @@
     "builtin",
     "customer",
     "contact",
-    "business-partner",
     "account"
   ],
   "schema_fields": {
