@@ -30,9 +30,11 @@ All events include these standard fields:
 
 <EventSchemaViewer event="MeterReadingAdded" />
 
-<EventSchemaViewer event="ServiceMeterReadingAdded" />
+### Customer
 
-### Billing
+<EventSchemaViewer event="CustomerDetailsUpdated" />
+
+### Billing Account
 
 <EventSchemaViewer event="InstallmentUpdated" />
 
@@ -40,16 +42,16 @@ All events include these standard fields:
 
 <EventSchemaViewer event="BillingAddressUpdated" />
 
-<EventSchemaViewer event="BillingAccountConnectionRemoved" />
+### Automation
 
-### Customer
-
-<EventSchemaViewer event="CustomerDetailsUpdated" />
-
-### Tickets
+These events are triggered manually via automation.
 
 <EventSchemaViewer event="GeneralRequestCreated" />
 
 <EventSchemaViewer event="LocationMoveRequested" />
 
 <EventSchemaViewer event="TerminateContractRequested" />
+
+<EventSchemaViewer event="BillingAccountConnectionRemoved" />
+
+<EventSchemaViewer event="ServiceMeterReadingAdded" />

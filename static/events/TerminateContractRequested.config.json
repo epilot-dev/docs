@@ -25,7 +25,10 @@
       {
         "id": "submission",
         "schema": "submission",
-        "cardinality": "one"
+        "cardinality": "one",
+        "fields": [
+          "_id"
+        ]
       },
       {
         "id": "contact",

@@ -595,13 +595,6 @@
         "_schema"
       ],
       "properties": {
-        "_schema": {
-          "readOnly": true,
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9_-]+$",
-          "example": "submission",
-          "description": "URL-friendly identifier for the entity schema"
-        },
         "_id": {
           "readOnly": true,
           "type": "string",
@@ -609,61 +602,18 @@
           "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
           "description": "Unique identifier for the entity"
         },
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "submission",
+          "description": "URL-friendly identifier for the entity schema"
+        },
         "_org": {
           "type": "string",
           "description": "Organization Id the entity belongs to",
           "readOnly": true,
           "example": "123"
-        },
-        "_title": {
-          "readOnly": true,
-          "type": "string",
-          "nullable": true,
-          "example": "John Doe",
-          "description": "Generated title for the entity based on schema title_template"
-        },
-        "_tags": {
-          "type": "array",
-          "nullable": true,
-          "items": {
-            "type": "string"
-          },
-          "example": [
-            "family:label"
-          ],
-          "description": "Entity Labels"
-        },
-        "_purpose": {
-          "$ref": "#/definitions/PurposeAttribute",
-          "description": "Purposes"
-        },
-        "source": {
-          "$ref": "#/definitions/LinkAttribute",
-          "description": "Source"
-        },
-        "mapped_entities": {
-          "$ref": "#/definitions/BaseRelation",
-          "description": "Entities"
-        },
-        "workflows": {
-          "$ref": "#/definitions/WorkflowOverview"
-        },
-        "_files": {
-          "$ref": "#/definitions/BaseRelation"
-        },
-        "_created_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity creation"
-        },
-        "_updated_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity last update"
         }
       },
       "description": "submission entity (hydrated from entity graph)"
