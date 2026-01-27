@@ -23,7 +23,7 @@
     "_event_version": {
       "type": "string",
       "description": "Schema version number",
-      "example": "1.0.0"
+      "example": "1.1.0"
     },
     "_event_source": {
       "type": "string",
@@ -41,20 +41,100 @@
     },
     "value": {
       "type": "number",
-      "description": "The meter reading value captured by the ticket"
+      "description": "The meter reading value"
     },
     "reading_timestamp": {
       "type": "string",
       "format": "date-time",
       "description": "ISO 8601 timestamp when the meter reading was taken"
     },
-    "reason": {
+    "counter_id": {
       "type": "string",
-      "description": "Reason provided for the meter reading update"
+      "format": "uuid",
+      "description": "Entity ID of the meter counter"
     },
-    "note": {
+    "direction": {
       "type": "string",
-      "description": "Additional note related to the meter reading update"
+      "enum": [
+        "feed-in",
+        "feed-out"
+      ],
+      "description": "Direction of energy flow"
+    },
+    "read_by": {
+      "type": "string",
+      "description": "Name of the person who submitted the reading"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "valid",
+        "invalid",
+        "pending"
+      ],
+      "description": "Status of the meter reading"
+    },
+    "reading_source": {
+      "type": "string",
+      "description": "Source of the meter reading (e.g., ECP, portal)"
+    },
+    "meter_readings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "counter_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Entity ID of the meter counter"
+          },
+          "value": {
+            "type": "number",
+            "description": "The meter reading value"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "feed-in",
+              "feed-out"
+            ],
+            "description": "Direction of energy flow"
+          },
+          "reading_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the reading was taken"
+          },
+          "read_by": {
+            "type": "string",
+            "description": "Name of the person who submitted the reading"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "valid",
+              "invalid",
+              "pending"
+            ],
+            "description": "Status of the meter reading"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Array of all meter readings from the ticket"
+    },
+    "meter_reading_status": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "valid",
+          "invalid",
+          "pending"
+        ],
+        "description": "Status of the meter reading"
+      },
+      "description": "Status array for meter readings"
     },
     "ticket": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -868,131 +948,134 @@
       },
       "description": "meter entity (hydrated from entity graph)"
     },
-    "meter_counter": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "type": "object",
-      "required": [
-        "_schema"
-      ],
-      "properties": {
-        "_schema": {
-          "readOnly": true,
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9_-]+$",
-          "example": "meter_counter",
-          "description": "URL-friendly identifier for the entity schema"
-        },
-        "_id": {
-          "readOnly": true,
-          "type": "string",
-          "format": "uuid",
-          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "description": "Unique identifier for the entity"
-        },
-        "_org": {
-          "type": "string",
-          "description": "Organization Id the entity belongs to",
-          "readOnly": true,
-          "example": "123"
-        },
-        "_title": {
-          "readOnly": true,
-          "type": "string",
-          "nullable": true,
-          "example": "John Doe",
-          "description": "Generated title for the entity based on schema title_template"
-        },
-        "_tags": {
-          "type": "array",
-          "nullable": true,
-          "items": {
-            "type": "string"
+    "meter_counters": {
+      "type": "array",
+      "description": "Array of meter_counter entities (hydrated from entity graph)",
+      "items": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "_schema"
+        ],
+        "properties": {
+          "_schema": {
+            "readOnly": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "example": "meter_counter",
+            "description": "URL-friendly identifier for the entity schema"
           },
-          "example": [
-            "family:label"
-          ],
-          "description": "Entity Labels"
-        },
-        "_purpose": {
-          "$ref": "#/definitions/PurposeAttribute",
-          "description": "Purposes"
-        },
-        "obis_number": {
-          "type": "string",
-          "description": "OBIS Number"
-        },
-        "direction": {
-          "type": "string",
-          "enum": [
-            "feed-in",
-            "feed-out"
-          ],
-          "description": "Direction"
-        },
-        "tariff_type": {
-          "type": "string",
-          "enum": [
-            "ht",
-            "nt",
-            "et"
-          ],
-          "description": "Tariff type"
-        },
-        "transformer_ratio": {
-          "type": "string",
-          "description": "Transformer Ratio"
-        },
-        "unit": {
-          "type": "string",
-          "enum": [
-            "w",
-            "wh",
-            "kw",
-            "kWh",
-            "kvarh",
-            "mw",
-            "mWh",
-            "unit",
-            "cubic-meter",
-            "hour",
-            "day",
-            "month",
-            "year",
-            "percentage"
-          ],
-          "description": "Unit"
-        },
-        "conversion_factor": {
-          "type": "string",
-          "description": "Conversion Factor"
-        },
-        "meter": {
-          "$ref": "#/definitions/BaseRelation",
-          "description": "Meter"
-        },
-        "external_id": {
-          "type": "string",
-          "description": "External ID"
-        },
-        "_files": {
-          "$ref": "#/definitions/BaseRelation"
-        },
-        "_created_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity creation"
-        },
-        "_updated_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity last update"
+          "_id": {
+            "readOnly": true,
+            "type": "string",
+            "format": "uuid",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "description": "Unique identifier for the entity"
+          },
+          "_org": {
+            "type": "string",
+            "description": "Organization Id the entity belongs to",
+            "readOnly": true,
+            "example": "123"
+          },
+          "_title": {
+            "readOnly": true,
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe",
+            "description": "Generated title for the entity based on schema title_template"
+          },
+          "_tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "family:label"
+            ],
+            "description": "Entity Labels"
+          },
+          "_purpose": {
+            "$ref": "#/definitions/PurposeAttribute",
+            "description": "Purposes"
+          },
+          "obis_number": {
+            "type": "string",
+            "description": "OBIS Number"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "feed-in",
+              "feed-out"
+            ],
+            "description": "Direction"
+          },
+          "tariff_type": {
+            "type": "string",
+            "enum": [
+              "ht",
+              "nt",
+              "et"
+            ],
+            "description": "Tariff type"
+          },
+          "transformer_ratio": {
+            "type": "string",
+            "description": "Transformer Ratio"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "w",
+              "wh",
+              "kw",
+              "kWh",
+              "kvarh",
+              "mw",
+              "mWh",
+              "unit",
+              "cubic-meter",
+              "hour",
+              "day",
+              "month",
+              "year",
+              "percentage"
+            ],
+            "description": "Unit"
+          },
+          "conversion_factor": {
+            "type": "string",
+            "description": "Conversion Factor"
+          },
+          "meter": {
+            "$ref": "#/definitions/BaseRelation",
+            "description": "Meter"
+          },
+          "external_id": {
+            "type": "string",
+            "description": "External ID"
+          },
+          "_files": {
+            "$ref": "#/definitions/BaseRelation"
+          },
+          "_created_at": {
+            "readOnly": true,
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp of entity creation"
+          },
+          "_updated_at": {
+            "readOnly": true,
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp of entity last update"
+          }
         }
-      },
-      "description": "meter_counter entity (hydrated from entity graph)"
+      }
     },
     "billing_account": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",

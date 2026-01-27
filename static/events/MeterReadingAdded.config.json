@@ -5,6 +5,7 @@
   "event_version": "1.0.0",
   "event_tags": [
     "builtin",
+    "erp",
     "metering"
   ],
   "schema_fields": {

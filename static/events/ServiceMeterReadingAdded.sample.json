@@ -3,14 +3,30 @@
   "_event_time": "1970-01-01T00:00:00.000Z",
   "_event_id": "string",
   "_event_name": "ServiceMeterReadingAdded",
-  "_event_version": "1.0.0",
+  "_event_version": "1.1.0",
   "_event_source": "string",
   "_trigger_source_type": "api",
   "_trigger_source": "api_123456",
   "value": 0,
   "reading_timestamp": "1970-01-01T00:00:00.000Z",
-  "reason": "string",
-  "note": "string",
+  "counter_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "direction": "feed-in",
+  "read_by": "string",
+  "status": "valid",
+  "reading_source": "string",
+  "meter_readings": [
+    {
+      "counter_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "value": 0,
+      "direction": "feed-in",
+      "reading_timestamp": "1970-01-01T00:00:00.000Z",
+      "read_by": "string",
+      "status": "valid"
+    }
+  ],
+  "meter_reading_status": [
+    "valid"
+  ],
   "ticket": {
     "_schema": "ticket",
     "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -170,27 +186,29 @@
     "_created_at": "1970-01-01T00:00:00.000Z",
     "_updated_at": "1970-01-01T00:00:00.000Z"
   },
-  "meter_counter": {
-    "_schema": "meter_counter",
-    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "_org": "123",
-    "_title": "John Doe",
-    "_tags": [
-      "family:label"
-    ],
-    "_purpose": {},
-    "obis_number": "string",
-    "direction": "feed-in",
-    "tariff_type": "ht",
-    "transformer_ratio": "string",
-    "unit": "w",
-    "conversion_factor": "string",
-    "meter": {},
-    "external_id": "string",
-    "_files": {},
-    "_created_at": "1970-01-01T00:00:00.000Z",
-    "_updated_at": "1970-01-01T00:00:00.000Z"
-  },
+  "meter_counters": [
+    {
+      "_schema": "meter_counter",
+      "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "_org": "123",
+      "_title": "John Doe",
+      "_tags": [
+        "family:label"
+      ],
+      "_purpose": {},
+      "obis_number": "string",
+      "direction": "feed-in",
+      "tariff_type": "ht",
+      "transformer_ratio": "string",
+      "unit": "w",
+      "conversion_factor": "string",
+      "meter": {},
+      "external_id": "string",
+      "_files": {},
+      "_created_at": "1970-01-01T00:00:00.000Z",
+      "_updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
   "billing_account": {
     "_schema": "billing_account",
     "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
