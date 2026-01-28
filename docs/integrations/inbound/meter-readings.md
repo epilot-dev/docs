@@ -22,7 +22,6 @@ Meter readings are configured separately from entity mappings:
 
 ```json
 {
-  "mapping_version": "v2.0",
   "entities": [...],
   "meter_readings": [
     {
@@ -256,7 +255,6 @@ From payload:
 
 ```json
 {
-  "mapping_version": "v2.0",
   "meter_readings": [
     {
       "jsonataExpression": "readings",

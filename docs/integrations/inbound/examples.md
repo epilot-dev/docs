@@ -45,7 +45,6 @@ Synchronize customer data from an ERP system into epilot contacts.
 
 ```json
 {
-  "mapping_version": "v2.0",
   "entities": [
     {
       "entity_schema": "contact",
@@ -150,7 +149,6 @@ Synchronize contracts that link to customers and include nested meter data.
 
 ```json
 {
-  "mapping_version": "v2.0",
   "entities": [
     {
       "entity_schema": "meter",
@@ -251,7 +249,6 @@ Import a batch of meter readings from a scheduled ERP export.
 
 ```json
 {
-  "mapping_version": "v2.0",
   "meter_readings": [
     {
       "jsonataExpression": "readings",
@@ -335,7 +332,6 @@ Handle business partners with multiple address types.
 
 ```json
 {
-  "mapping_version": "v2.0",
   "entities": [
     {
       "entity_schema": "contact",
@@ -429,7 +425,6 @@ Handle different entity types based on payload conditions.
 
 ```json
 {
-  "mapping_version": "v2.0",
   "entities": [
     {
       "entity_schema": "contact",

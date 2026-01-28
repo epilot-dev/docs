@@ -14,7 +14,6 @@ A mapping configuration consists of one or more entity definitions:
 
 ```json
 {
-  "mapping_version": "v2.0",
   "entities": [
     {
       "entity_schema": "contact",

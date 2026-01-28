@@ -57,7 +57,6 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
     "type": "inbound",
     "enabled": true,
     "configuration": {
-      "mapping_version": "v2.0",
       "entities": [
         {
           "entity_schema": "contact",
