@@ -1,6 +1,5 @@
 ---
 title: Zapier
-sidebar_position: 1
 ---
 
 # Zapier Integration
@@ -31,7 +30,7 @@ To install the Zapier app on epilot, go to [Integrations > Apps](https://portal.
 
 Follow the instructions on the [Zapier App Page](https://portal.epilot.cloud/app/apps/install/marketplace?appId=673a7330-7e2f-4b4b-835f-85a81b65b889) to install the app on your epilot organization. 
 
-![Zapier App install page](../../static/img/zapier/install-zapier-app-en.png)
+![Zapier App install page](/img/zapier/install-zapier-app-en.png)
 
 ## Setting up an Automation to trigger Zapier (epilot → Zapier)
 
@@ -39,7 +38,7 @@ Follow the instructions on the [Zapier App Page](https://portal.epilot.cloud/app
 
 To trigger Zapier integrations from epilot. Create a [new Automation](https://portal.epilot.cloud/app/automation-hub) and add a Zapier Trigger action to it.
 
-![Add Zapier Trigger to Automation](../../static/img/zapier/automation-add-zapier-action-en.png)
+![Add Zapier Trigger to Automation](/img/zapier/automation-add-zapier-action-en.png)
 
 ### 2. Build Your First Zap
 
@@ -53,11 +52,11 @@ In Zap editor, select the epilot trigger and choose *Select an account* to pick 
 
 Paste your [epilot Access Token](https://portal.epilot.cloud/app/tokens) into the Access Token field and continue. This token will be used by Zapier to perform actions on epilot.
 
-![Zapier Connect Account](../../static/img/zapier/zapier-connect-account.png)
+![Zapier Connect Account](/img/zapier/zapier-connect-account.png)
 
 Name your trigger. Make sure to use a descriptive name that will help you identify your Zap in the Automation configuration.
 
-![Zapier Editor](../../static/img/zapier/zapier-editor-trigger-name.png)
+![Zapier Editor](/img/zapier/zapier-editor-trigger-name.png)
 
 ### 4. Test the Trigger
 
@@ -65,7 +64,7 @@ Back in the Automation configuration, select the Zapier trigger you just created
 
 You can now continue on Zapier side to create your first Zap.
 
-![Automation Select Trigger](../../static/img/zapier/automation-select-trigger-en.png)
+![Automation Select Trigger](/img/zapier/automation-select-trigger-en.png)
 
 ## Creating Submissions (Zapier → epilot)
 
@@ -76,17 +75,17 @@ This Zap will use the epilot Create Submission action.
 
 For this example, we will use the [Zapier Calendly Integration](https://zapier.com/apps/calendly) to forward scheduled calls to epilot.
 
-![Zapier Calendly Integration](../../static/img/zapier/zap-editor-calendly-trigger.png)
+![Zapier Calendly Integration](/img/zapier/zap-editor-calendly-trigger.png)
 
 ### 2. Add the epilot Create Submission Action
 
 In the Zap editor, continue to add a new action. Search for "epilot" and choose the epilot app from the list.
 
-![Zapier Choose App](../../static/img/zapier/zapier-choose-app.png)
+![Zapier Choose App](/img/zapier/zapier-choose-app.png)
 
 Pick the "Create Submission" action event and continue.
 
-![Zap Editor Choose Action event](../../static/img/zapier/zap-editor-choose-action.png)
+![Zap Editor Choose Action event](/img/zapier/zap-editor-choose-action.png)
 
 ### 3. Configure Submission Fields
 
@@ -94,10 +93,10 @@ Map fields from your Zap to Submission fields. These fields will be included in 
 
 Define a `source_id` to track the origin of the submission. This will help you identify the origin of the submission in the epilot portal, and create further automations based on the `source_id`.
 
-![Zapier Submission Mapping](../../static/img/zapier/zapier-submission-mapping.png)
+![Zapier Submission Mapping](/img/zapier/zapier-submission-mapping.png)
 
 ### 4. Test the Zap
 
 Run your Zap or manually test the step. If the Zap is successful, you will see a new submission in the epilot portal with the source_id you defined.
 
-![Zapier Submission Result](../../static/img/zapier/submission-zapier-calendly.png)
+![Zapier Submission Result](/img/zapier/submission-zapier-calendly.png)

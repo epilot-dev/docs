@@ -21,11 +21,7 @@ interface EventSchemaViewerProps {
   icon?: string;
 }
 
-const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({
-  event,
-  apiLink,
-  icon = 'entity',
-}) => {
+const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({ event, apiLink, icon = 'entity' }) => {
   const [sampleData, setSampleData] = useState<string>('');
   const [configData, setConfigData] = useState<string>('');
   const [schemaData, setSchemaData] = useState<string>('');
@@ -72,34 +68,6 @@ const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({
       const json = await response.json();
       setSampleData(JSON.stringify(json, null, 2));
       setActiveTab('sample');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadConfig = async () => {
-    if (activeTab === 'config') {
-      setActiveTab('none');
-
-      return;
-    }
-
-    if (configData) {
-      setActiveTab('config');
-
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(`/events/${event}.config.json`);
-      if (!response.ok) throw new Error('Failed to load config');
-      const json = await response.json();
-      setConfigData(JSON.stringify(json, null, 2));
-      setActiveTab('config');
     } catch (err) {
       setError(err.message);
     } finally {

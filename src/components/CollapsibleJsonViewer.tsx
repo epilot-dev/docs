@@ -1,5 +1,5 @@
-import Editor from '@monaco-editor/react';
 import { useColorMode } from '@docusaurus/theme-common';
+import Editor from '@monaco-editor/react';
 import React, { useRef, useState, useCallback } from 'react';
 
 import styles from './CollapsibleJsonViewer.module.css';
@@ -177,9 +177,9 @@ const CollapsibleJsonViewer: React.FC<CollapsibleJsonViewerProps> = ({
               horizontalScrollbarSize: 10,
             },
             fontSize: 13,
-            fontFamily: getComputedStyle(document.documentElement)
-              .getPropertyValue('--ifm-font-family-monospace')
-              .trim() || 'monospace',
+            fontFamily:
+              getComputedStyle(document.documentElement).getPropertyValue('--ifm-font-family-monospace').trim() ||
+              'monospace',
             automaticLayout: true,
           }}
         />
