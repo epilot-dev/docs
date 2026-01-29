@@ -75,6 +75,12 @@ Have an idea for a new component type that would enhance the epilot platform? We
 
 Our product team regularly reviews component requests and prioritizes them based on community interest and strategic alignment.
 
+## App Surfaces & Communication
+
+When your component runs inside epilot, it's embedded in an iframe and communicates with the parent application through the `@epilot/app-bridge` library. Different component types are displayed on different "surfaces" within epilot.
+
+Learn more about [App Surfaces](/apps/app-surfaces) to understand how your app communicates with epilot and receives authentication, entity context, and configuration data.
+
 ## Building Your First Component
 
 Ready to create your own component? Each component type has specific requirements and capabilities, but they all follow similar development patterns.

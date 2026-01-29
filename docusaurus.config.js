@@ -6,7 +6,6 @@ const path = require('path');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
-const graphqlMarkdownConfig = require('./graphql-markdown.config');
 const { specs } = require('./redoc.config');
 const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
 
@@ -95,16 +94,6 @@ const apiChangelogPlugins = specs
 
   plugins: [
     require.resolve('@cmfcmf/docusaurus-search-local'),
-    ...graphqlMarkdownConfig,
-    [
-      '@docusaurus/plugin-content-docs',
-      {
-        id: 'graphql',
-        path: 'graphql',
-        routeBasePath: 'graphql',
-        sidebarPath: require.resolve('./sidebars.js'),
-      },
-    ],
     [
       '@docusaurus/plugin-content-docs',
       {
@@ -153,11 +142,6 @@ const apiChangelogPlugins = specs
             position: 'left',
           },
           {
-            position: 'left',
-            label: 'GraphQL',
-            to: '/graphql/sharing',
-          },
-          {
             to: '/docs/architecture/sdk',
             label: 'SDK',
             position: 'left',
@@ -185,10 +169,6 @@ const apiChangelogPlugins = specs
               {
                 label: 'REST API Docs',
                 to: '/api',
-              },
-              {
-                label: 'Graphql API Docs',
-                to: '/graphql/sharing',
               },
               {
                 label: 'SDK',
