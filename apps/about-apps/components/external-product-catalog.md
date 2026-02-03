@@ -104,6 +104,16 @@ When a journey creator adds a **Product Block** or **Product Recommendations Blo
 
 This allows the journey to dynamically fetch products and pricing from your external catalog in journeys.
 
+## Usage in Portals
+
+After your External Product Catalog component is configured and the app is installed, it can be used within epilot's Portals. Currently we support seamless integration of the external product catalog into the journey via Product Blocks.
+
+When configuring a Portal, they can add a **Product Block** and select the integration as the source for products. Only hooks that are supported for the selected block type will be available.
+
+<img src="/img/apps/external-product-catalog/portal-product-block-config.png" width="500" />
+
+This allows the journey to dynamically fetch products and pricing from your external catalog in journeys.
+
 ## Integration Interface
 
 To ensure seamless communication between epilot and your external catalog, your integration must respect the **External Catalog Integration Interface**.
