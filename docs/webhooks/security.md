@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 title: "Security"
 ---
 
@@ -23,6 +23,6 @@ When configured with OAuth, epilot will obtain an access token from your authori
 
 
 ### How Webhooks Are Further Secured (Asymmetric Signature)
-To ensure that webhook requests are secure, epilot uses an asymmetric signature mechanism. This involves generating a unique signature for each request that is sent to the external system. The signature is created using a private key that is known only to the epilot platform, and it is verified by the external system using a corresponding [public key](https://webhooks.sls.epilot.io/v1/.well-known/public-key). This ensures that only authorized requests are processed, and it prevents unauthorized access to the external system. 
+To ensure that webhook requests are secure, epilot uses an asymmetric signature mechanism. This involves generating a unique signature for each request that is sent to the external system. The signature is created using a private key that is known only to the epilot platform, and it is verified by the external system using a corresponding [public key](https://webhooks.sls.epilot.io/v1/webhooks/.well-known/public-key). This ensures that only authorized requests are processed, and it prevents unauthorized access to the external system. 
 
 To secure the endpoint our webhook is calling, you need to verify the signature of the request. We recommend to use the `verifyEpilotSignature` function by our App SDK as it handles the verification process for you. This function checks the signature against the public key and ensures that the request is valid. We use a standard way to sign & verify the requests according to the [webhook spec](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md).
