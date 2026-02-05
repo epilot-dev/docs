@@ -32,6 +32,8 @@ A mapping configuration consists of one or more entity definitions:
 | `entity_schema` | string | Yes | The epilot entity schema (e.g., `contact`, `contract`, `meter`) |
 | `unique_ids` | string[] | Yes | Fields used to find existing entities |
 | `enabled` | boolean/string | No | Enable/disable this mapping |
+| `mode` | string | No | Operation mode: `upsert` (default), `delete`, `purge`, `upsert-prune-scope-purge`, or `upsert-prune-scope-delete`. See [Operation Modes](#operation-modes) |
+| `scope` | object | No | Required for prune-scope modes. Defines which entities to consider for pruning. See [Prune Scope Operations](#prune-scope-operations) |
 | `jsonataExpression` | string | No | Pre-process the payload before field mapping |
 | `fields` | array | Yes | Field mapping definitions |
 
@@ -230,6 +232,199 @@ Enable or disable entity processing based on payload conditions:
   "fields": [...]
 }
 ```
+
+## Operation Modes
+
+The `mode` field controls how entities are processed. By default, entities are upserted (created or updated).
+
+### Mode Options
+
+| Mode | Description |
+|------|-------------|
+| `upsert` | Create or update the entity (default behavior) |
+| `delete` | Soft delete - marks entity as deleted but keeps in Recycle Bin for 30 days |
+| `purge` | Hard delete - permanently removes from the system |
+| `upsert-prune-scope-purge` | Upsert entities from array, then hard delete entities in scope that weren't upserted |
+| `upsert-prune-scope-delete` | Upsert entities from array, then soft delete entities in scope that weren't upserted |
+
+:::note
+The `upsert-prune-scope-*` modes require a `scope` configuration. See [Prune Scope Operations](#prune-scope-operations).
+:::
+
+### Entity Deletion
+
+To delete entities, use `mode: "delete"` or `mode: "purge"`:
+
+```json
+{
+  "entities": [
+    {
+      "entity_schema": "billing_event",
+      "unique_ids": ["external_id"],
+      "mode": "purge",
+      "fields": [
+        {
+          "attribute": "external_id",
+          "field": "billing_event_id"
+        }
+      ]
+    }
+  ]
+}
+```
+
+For deletion modes, only the `unique_ids` fields need to be mapped in `fields` - other field mappings are ignored since no entity attributes are being updated.
+
+#### Conditional Deletion
+
+Combine `mode` with `enabled` for conditional deletion based on payload data:
+
+```json
+{
+  "entity_schema": "contract",
+  "unique_ids": ["contract_number"],
+  "mode": "delete",
+  "enabled": "status = 'TERMINATED'",
+  "fields": [
+    { "attribute": "contract_number", "field": "contract_id" }
+  ]
+}
+```
+
+### Prune Scope Operations
+
+The `upsert-prune-scope-purge` and `upsert-prune-scope-delete` modes enable a powerful sync pattern: upsert all entities from an array in the payload, then delete/purge entities within a defined scope that weren't included in the upsert.
+
+This is ideal for synchronizing child entity collections, such as syncing all billing events for a billing account.
+
+#### Scope Configuration
+
+When using prune-scope modes, you must provide a `scope` configuration that defines how to identify which existing entities should be considered for deletion. The scope is resolved against the **original event payload** (not individual array items).
+
+##### scope_mode Options
+
+| Mode | Description |
+|------|-------------|
+| `relations` | Find scope by looking at what a specific entity relates TO |
+| `reverse-relations` | Find scope by looking at what's related TO a specific entity |
+| `query` | Find scope entities directly via query parameters |
+
+#### Example: Sync Billing Events for a Billing Account
+
+When receiving a billing account update with billing events, sync all billing events and remove any that are no longer in the payload:
+
+```json
+{
+  "entities": [
+    {
+      "entity_schema": "billing_event",
+      "unique_ids": ["external_id"],
+      "jsonataExpression": "$map(billingevents[], function($v) { $merge([$v, { \"billingaccountnumber\": billingaccountnumber }]) })",
+      "mode": "upsert-prune-scope-purge",
+      "scope": {
+        "scope_mode": "reverse-relations",
+        "schema": "billing_account",
+        "unique_ids": [
+          {
+            "attribute": "billing_account_number",
+            "field": "billingaccountnumber"
+          }
+        ]
+      },
+      "fields": [
+        { "attribute": "external_id", "field": "billing_event_number" },
+        { "attribute": "billing_account_number", "field": "billingaccountnumber" }
+      ]
+    }
+  ]
+}
+```
+
+**Input:**
+
+```json
+{
+  "billingaccountnumber": "002800699425",
+  "billingevents": [
+    { "billing_event_number": "002800699425-2025-08-15" },
+    { "billing_event_number": "002800699425-2024-08-05" }
+  ]
+}
+```
+
+**Result:**
+1. Upserts 2 billing_event entities with the specified external_ids
+2. Finds all billing_event entities related to billing_account with `billing_account_number = "002800699425"`
+3. Purges any billing_event entities in that scope that weren't in the upserted list
+
+#### Example: Query Mode for Direct Matching
+
+Find scope entities directly by query parameters instead of through relations:
+
+```json
+{
+  "entities": [
+    {
+      "entity_schema": "billing_event",
+      "unique_ids": ["external_id"],
+      "jsonataExpression": "$map(billingevents[], function($v) { $merge([$v, { \"billingaccountnumber\": billingaccountnumber }]) })",
+      "mode": "upsert-prune-scope-purge",
+      "scope": {
+        "scope_mode": "query",
+        "query": [
+          {
+            "attribute": "billing_account_number",
+            "field": "billingaccountnumber"
+          },
+          {
+            "attribute": "type",
+            "constant": "INVOICE"
+          }
+        ]
+      },
+      "fields": [
+        { "attribute": "external_id", "field": "billing_event_number" },
+        { "attribute": "billing_account_number", "field": "billingaccountnumber" }
+      ]
+    }
+  ]
+}
+```
+
+:::warning
+If the array yields zero entities (e.g., `billingevents: []`), this will result in the deletion of **all** entities in the scope. Ensure your payload always contains the expected data.
+:::
+
+### Mixed Operations
+
+You can mix upsert and delete operations in the same use case by using multiple entity entries with different modes:
+
+```json
+{
+  "entities": [
+    {
+      "entity_schema": "meter",
+      "unique_ids": ["external_id"],
+      "mode": "upsert",
+      "fields": [
+        { "attribute": "external_id", "field": "meter_id" },
+        { "attribute": "status", "constant": "DECOMMISSIONED" }
+      ]
+    },
+    {
+      "entity_schema": "billing_event",
+      "unique_ids": ["external_id"],
+      "mode": "purge",
+      "jsonataExpression": "billing_events",
+      "fields": [
+        { "attribute": "external_id", "field": "event_id" }
+      ]
+    }
+  ]
+}
+```
+
+This configuration updates the meter status to "DECOMMISSIONED" while also purging the associated billing events.
 
 ## Field Mapping Priority
 

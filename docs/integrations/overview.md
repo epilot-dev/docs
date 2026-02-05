@@ -72,6 +72,7 @@ Mappings define how ERP data transforms into epilot entities:
     {
       "entity_schema": "contact",
       "unique_ids": ["customer_number"],
+      "mode": "upsert",
       "fields": [
         { "attribute": "first_name", "field": "firstName" },
         { "attribute": "last_name", "field": "lastName" }
@@ -80,6 +81,8 @@ Mappings define how ERP data transforms into epilot entities:
   ]
 }
 ```
+
+The `mode` field controls the operation: `upsert` (default), `delete`, `purge`, or prune-scope variants for synchronizing collections. See [Mapping](./inbound/mapping#operation-modes) for details.
 
 ## Architecture
 

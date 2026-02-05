@@ -53,6 +53,15 @@ Every meter reading configuration must include mappings for these fields:
 | `source` | Origin of the reading (e.g., "ERP", "MANUAL") |
 | `value` | The actual meter reading value |
 
+### Optional Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `mode` | string | Operation mode: `upsert` (default) or `delete`. Note: `purge` is not supported for meter readings |
+| `reading_matching` | string | Matching strategy: `external_id` (default) or `strict-date`. See [Reading Matching Strategies](#reading-matching-strategies) |
+| `jsonataExpression` | string | Extract readings from nested payload structures |
+| `meter_counter` | object | For multi-tariff meters, identifies the specific counter |
+
 Missing required fields will result in a validation error:
 ```
 Meter readings configuration (item 0) is missing required field attributes: timestamp, source
@@ -387,6 +396,68 @@ The `reading_matching` option configures how incoming readings are matched:
 4. If no match is found: Creates a new reading
 
 This strategy is useful for ECP-to-ERP roundtrip scenarios where the ERP echoes readings back with truncated timestamps.
+
+## Meter Reading Deletion
+
+To delete meter readings, use `mode: "delete"`:
+
+```json
+{
+  "meter_readings": [
+    {
+      "mode": "delete",
+      "meter": {
+        "unique_ids": [
+          { "attribute": "external_id", "field": "meter_id" }
+        ]
+      },
+      "fields": [
+        { "attribute": "external_id", "field": "reading_id" }
+      ]
+    }
+  ]
+}
+```
+
+:::note
+Meter readings only support `delete` mode, not `purge`. Deletion is always permanent.
+:::
+
+### Deletion with Strict Date Matching
+
+The `reading_matching: "strict-date"` strategy is particularly useful for deletion when readings may not have a stable `external_id`:
+
+```json
+{
+  "meter_readings": [
+    {
+      "mode": "delete",
+      "reading_matching": "strict-date",
+      "meter": {
+        "unique_ids": [
+          { "attribute": "external_id", "field": "meter_id" }
+        ]
+      },
+      "fields": [
+        { "attribute": "external_id", "field": "reading_id" },
+        { "attribute": "timestamp", "field": "timestamp" }
+      ]
+    }
+  ]
+}
+```
+
+**Input:**
+
+```json
+{
+  "meter_id": "M-12345",
+  "reading_id": "R-67890",
+  "timestamp": "2025-02-01T10:00:00Z"
+}
+```
+
+**Result:** The meter reading with `external_id = "R-67890"` associated with meter `M-12345` will be deleted. With `strict-date` matching, the system matches by meter_id + date if an exact external_id match is not found.
 
 ## Best Practices
 
