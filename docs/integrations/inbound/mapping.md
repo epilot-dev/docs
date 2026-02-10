@@ -305,8 +305,7 @@ When using prune-scope modes, you must provide a `scope` configuration that defi
 
 | Mode | Description |
 |------|-------------|
-| `relations` | Find scope by looking at what a specific entity relates TO |
-| `reverse-relations` | Find scope by looking at what's related TO a specific entity |
+| `relations` | Find scope by looking at all entities related to a specific entity (both direct and reverse relations) |
 | `query` | Find scope entities directly via query parameters |
 
 #### Example: Sync Billing Events for a Billing Account
@@ -322,7 +321,7 @@ When receiving a billing account update with billing events, sync all billing ev
       "jsonataExpression": "$map(billingevents[], function($v) { $merge([$v, { \"billingaccountnumber\": billingaccountnumber }]) })",
       "mode": "upsert-prune-scope-purge",
       "scope": {
-        "scope_mode": "reverse-relations",
+        "scope_mode": "relations",
         "schema": "billing_account",
         "unique_ids": [
           {
