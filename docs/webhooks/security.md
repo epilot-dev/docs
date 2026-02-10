@@ -167,7 +167,7 @@ async function verifyWebhookFull(req: Request, orgId: string): Promise<boolean> 
 To fetch your organization's public key, include your organization ID as a query parameter:
 
 ```bash
-curl "https://webhooks.sls.epilot.cloud/v1/webhooks/.well-known/public-key?orgId=YOUR_ORG_ID"
+curl "https://webhooks.sls.epilot.io/v1/webhooks/.well-known/public-key?orgId=YOUR_ORG_ID"
 ```
 
 Response:
