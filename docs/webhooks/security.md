@@ -67,18 +67,14 @@ function verifyWebhook(req: Request): boolean {
   const payload = req.body; // raw request body as string
   const headers = req.headers;
 
-  // Extract the v1s signature and convert prefix for standardwebhooks compatibility
+  // Extract the v1 signature and convert prefix for standardwebhooks compatibility
   const signatureHeader = headers["webhook-signature"];
   const v1sSig = signatureHeader
-    .split(" ")
-    .find((s) => s.startsWith("v1s,"));
+    .split(" ")[1]
 
   if (!v1sSig) {
     throw new Error("No symmetric signature found");
   }
-
-  // standardwebhooks expects "v1," prefix, so replace "v1s," -> "v1,"
-  const standardSig = v1sSig.replace("v1s,", "v1,");
 
   const wh = new Webhook(signingSecret);
 
@@ -86,7 +82,7 @@ function verifyWebhook(req: Request): boolean {
   wh.verify(payload, {
     "webhook-id": headers["webhook-id"],
     "webhook-timestamp": headers["webhook-timestamp"],
-    "webhook-signature": standardSig,
+    "webhook-signature": v1sSig,
   });
 
   return true;
