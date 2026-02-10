@@ -36,7 +36,7 @@ Every webhook request from epilot includes three signature headers:
 
 epilot sends **two** signatures with each webhook request:
 
-- **`v1a`** (asymmetric, Ed25519) — Proves the request came from epilot. Verified using epilot's public key, which you can fetch from the `/v1/webhooks/.well-known/public-key` endpoint.
+- **`v1a`** (asymmetric, Ed25519) — Proves the request came from your organization. Verified using your organization's public key, which is specific to your tenant and never shared across organizations.
 - **`v1s`** (symmetric, HMAC-SHA256) — Proves the request is intended for your specific webhook. Verified using the `whsec_...` signing secret you received when the webhook was created.
 
 Both signatures are computed over the same content:
@@ -95,20 +95,28 @@ function verifyWebhook(req: Request): boolean {
 
 ### Option 2: Asymmetric Verification
 
-Use Node.js `crypto` to verify the `v1a` Ed25519 signature with epilot's public key.
+Use Node.js `crypto` to verify the `v1a` Ed25519 signature with your organization's public key. Each tenant has their own key pair.
 
 ```typescript
 import crypto from "node:crypto";
 
-// Fetch once and cache — this key rarely changes
-// GET /v1/webhooks/.well-known/public-key
-const epilotPublicKey = `-----BEGIN PUBLIC KEY-----
-MCowBQYDK2VwAyEA...
------END PUBLIC KEY-----`;
+// Fetch your organization's public key (per-tenant)
+// Requires org_id query parameter
+async function getOrgPublicKey(orgId: string): Promise<string> {
+  const response = await fetch(
+    `https://webhooks.sls.epilot.cloud/v1/webhooks/.well-known/public-key?org_id=${orgId}`
+  );
+  const data = await response.json();
+  return data.publicKey;
+}
 
-function verifyAsymmetric(req: Request): boolean {
+async function verifyAsymmetric(req: Request, orgId: string): Promise<boolean> {
   const payload = req.body; // raw request body as string
   const headers = req.headers;
+
+  // Fetch and cache your organization's public key (rarely changes)
+  // The public key is specific to your organization (org_id)
+  const orgPublicKey = await getOrgPublicKey(orgId);
 
   const signatureHeader = headers["webhook-signature"];
   const v1aSig = signatureHeader
@@ -126,7 +134,7 @@ function verifyAsymmetric(req: Request): boolean {
   return crypto.verify(
     null,
     new TextEncoder().encode(signedContent),
-    epilotPublicKey,
+    orgPublicKey,
     signature
   );
 }
@@ -137,7 +145,7 @@ function verifyAsymmetric(req: Request): boolean {
 For maximum security, verify both signatures:
 
 ```typescript
-function verifyWebhookFull(req: Request): boolean {
+async function verifyWebhookFull(req: Request, orgId: string): Promise<boolean> {
   // 1. Check timestamp freshness (reject requests older than 5 minutes)
   const timestamp = Number(req.headers["webhook-timestamp"]);
   const now = Math.floor(Date.now() / 1000);
@@ -145,9 +153,9 @@ function verifyWebhookFull(req: Request): boolean {
     throw new Error("Webhook timestamp too old — possible replay attack");
   }
 
-  // 2. Verify asymmetric signature (proves it came from epilot)
-  const isFromEpilot = verifyAsymmetric(req);
-  if (!isFromEpilot) {
+  // 2. Verify asymmetric signature (proves it came from your organization)
+  const isFromOrg = await verifyAsymmetric(req, orgId);
+  if (!isFromOrg) {
     throw new Error("Invalid asymmetric signature");
   }
 
@@ -160,9 +168,13 @@ function verifyWebhookFull(req: Request): boolean {
 
 ## Fetching the Public Key
 
+To fetch your organization's public key, include your organization ID as a query parameter:
+
 ```bash
-curl https://webhooks.sls.epilot.cloud/v1/webhooks/.well-known/public-key
+curl "https://webhooks.sls.epilot.cloud/v1/webhooks/.well-known/public-key?orgId=YOUR_ORG_ID"
 ```
+
+Response:
 
 ```json
 {
@@ -170,7 +182,7 @@ curl https://webhooks.sls.epilot.cloud/v1/webhooks/.well-known/public-key
 }
 ```
 
-Cache this key — it only changes if epilot rotates signing keys.
+Cache this key — it's unique to your organization and rarely changes. The public key is derived from your organization's private Ed25519 key pair, which is stored encrypted and never leaves epilot's systems.
 
 ## Signing Secret
 
