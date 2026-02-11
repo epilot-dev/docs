@@ -96,7 +96,7 @@ async function getOrgPublicKey(orgId: string): Promise<string> {
     `https://webhooks.sls.epilot.io/v1/webhooks/.well-known/public-key?orgId=${orgId}`
   );
   const data = await response.json();
-  return data.publicKey;
+  return data.public_key;
 }
 
 async function verifyAsymmetric(req: Request, orgId: string): Promise<boolean> {
@@ -167,7 +167,7 @@ Response:
 
 ```json
 {
-  "publicKey": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA...\n-----END PUBLIC KEY-----\n"
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA...\n-----END PUBLIC KEY-----\n"
 }
 ```
 
