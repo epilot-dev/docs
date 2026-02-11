@@ -30,14 +30,14 @@ Every webhook request from epilot includes three signature headers:
 |--------|-------------|
 | `webhook-id` | Unique message identifier (e.g. `msg_2a4f8b...`) |
 | `webhook-timestamp` | Unix timestamp (seconds) when the request was signed |
-| `webhook-signature` | Space-separated signatures: `v1a,<asymmetric> v1s,<symmetric>` |
+| `webhook-signature` | Space-separated signatures: `v1a,<asymmetric> v1,<symmetric>` |
 
 ## Two Signatures, Two Purposes
 
 epilot sends **two** signatures with each webhook request:
 
 - **`v1a`** (asymmetric, Ed25519) — Proves the request came from your organization. Verified using your organization's public key, which is specific to your tenant and never shared across organizations.
-- **`v1s`** (symmetric, HMAC-SHA256) — Proves the request is intended for your specific webhook. Verified using the `whsec_...` signing secret you received when the webhook was created.
+- **`v1`** (symmetric, HMAC-SHA256) — Proves the request is intended for your specific webhook. Verified using the `whsec_...` signing secret you received when the webhook was created.
 
 Both signatures are computed over the same content:
 
@@ -45,18 +45,11 @@ Both signatures are computed over the same content:
 signed_content = ${webhook-id}.${webhook-timestamp}.${request_body}
 ```
 
-## Signed Payload Fields
-
-Every webhook payload includes two system-injected fields that are **always set by epilot after any payload transformations** (including JSONata). These fields cannot be modified or spoofed:
-
-- `_org_id` — The epilot organization ID that owns the webhook
-- `_webhook_event_id` — The unique event ID for this webhook invocation
-
 ## Verification
 
 ### Option 1: Symmetric Verification (recommended for most use cases)
 
-Use the [`standardwebhooks`](https://www.npmjs.com/package/standardwebhooks) npm package to verify the `v1s` signature with your webhook's signing secret.
+Use the [`standardwebhooks`](https://www.npmjs.com/package/standardwebhooks) npm package to verify the `v1` signature with your webhook's signing secret.
 
 ```typescript
 import { Webhook } from "standardwebhooks";
@@ -100,7 +93,7 @@ import crypto from "node:crypto";
 // Requires org_id query parameter
 async function getOrgPublicKey(orgId: string): Promise<string> {
   const response = await fetch(
-    `https://webhooks.sls.epilot.cloud/v1/webhooks/.well-known/public-key?org_id=${orgId}`
+    `https://webhooks.sls.epilot.cloud/v1/webhooks/.well-known/public-key?orgId=${orgId}`
   );
   const data = await response.json();
   return data.publicKey;
