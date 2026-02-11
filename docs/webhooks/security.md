@@ -93,7 +93,7 @@ import crypto from "node:crypto";
 // Requires org_id query parameter
 async function getOrgPublicKey(orgId: string): Promise<string> {
   const response = await fetch(
-    `https://webhooks.sls.epilot.cloud/v1/webhooks/.well-known/public-key?orgId=${orgId}`
+    `https://webhooks.sls.epilot.io/v1/webhooks/.well-known/public-key?orgId=${orgId}`
   );
   const data = await response.json();
   return data.publicKey;
