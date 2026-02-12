@@ -50,8 +50,9 @@ Every meter reading configuration must include mappings for these fields:
 |-------|-------------|
 | `external_id` | Unique identifier for this reading |
 | `timestamp` | When the reading was taken (ISO 8601 format) |
-| `source` | Origin of the reading (e.g., "ERP", "MANUAL") |
+| `source` | Origin of the reading. Must be one of: `ERP`, `ECP`, `360`, `journey-submission` |
 | `value` | The actual meter reading value |
+| `reason` *(optional)* | Reason for the reading. Must be one of: `regular`, `irregular`, `last`, `first`, `meter_change`, `contract_change`, `meter_adjustment`, or empty/null. Invalid values will be rejected with a validation error. |
 
 ### Optional Properties
 
