@@ -11,30 +11,26 @@ To balance speed with stability, epilot operates two release channels: **Canary*
 
 ## Release Channels
 
+### Stable (Monthly Releases)
+
+The Stable channel receives curated, tested releases on a regular cadence. Usually about 1 month between releases. Each release goes through a structured acceptance testing period before publication.
+
+Stable releases are assembled by snapshotting tested versions of all frontend microservices into a `stable-importmap.json`, which is served to organizations on the Stable channel.
+
+During the release, new features are rolled out using feature flags.
+
 ### Canary (Continuous Updates)
 
-The Canary channel receives every deployment as it happens. Code merged to `main` flows through staging, passes automated E2E tests, and reaches production within minutes.
+The Canary channel receives new deployments in real-time. Code merged to `main` flows through staging, passes automated tests, and usually gets shipped to production within minutes.
 
-Canary is suited for:
+Canary is treated as a critical production environment with high stability, however changes happen more frequently and might lack official communication at times.
 
-- Internal testing and development organizations
-- Partner organizations validating upcoming features
+For this reason, canary is suitable for:
+
+- Sandboxes
+- Validating upcoming features
 - Customers who want early access to new capabilities
 
-### Stable (Periodic Releases)
-
-The Stable channel receives curated, tested releases on a regular cadence. Each release goes through a structured acceptance testing period before publication.
-
-**Release lifecycle:**
-
-| Phase | What happens |
-|-------|-------------|
-| Feature development | Teams ship continuously to Canary |
-| Release candidate assembly | Tested versions of all microfrontends are tagged for inclusion |
-| Acceptance testing | QA team + engineers validate the release candidate |
-| Release | Stable import map updated, release notes published |
-
-Stable releases are assembled by snapshotting tested versions of all frontend microfrontends into a `stable-importmap.json`, which is served to organizations on the Stable channel.
 
 ### How Customers Choose
 
@@ -49,9 +45,7 @@ Critical issues affecting Stable customers are addressed immediately through two
 - **Hotfix tags** (`hotfix-*`) -- deploy directly to the Stable import map, skipping E2E tests for speed. Reserved for critical production issues.
 - **Patch tags** (`patch-*`) -- deploy to the Stable import map after running the full pipeline with E2E tests and manual approval. Used for non-urgent fixes between scheduled releases.
 
-:::caution
-Hotfix deployments bypass E2E tests entirely. Use them only for critical production issues where the risk of the bug outweighs the risk of skipping automated validation.
-:::
+We try to minimize the usage of both mechanisms, but especially hotfixes should only be used in rare occasions, usually related to a critical bugfix or incident response.
 
 ## Deployment Pipeline
 
@@ -102,7 +96,7 @@ Flags are evaluated at runtime using the organization ID (and optionally user ID
 
 ### Unit Tests
 
-All services use [Vitest](https://vitest.dev/) for unit testing. Test files are colocated next to the modules they test. Integration tests against AWS services use [LocalStack](https://localstack.cloud/) running as a Docker service in CI.
+All services implement unit testing with high (usually >80%) code coverage. Integration tests against AWS services use [LocalStack](https://localstack.cloud/) running as a Docker service in CI.
 
 ### End-to-End Tests (Playwright)
 
@@ -124,10 +118,10 @@ Playwright test durations are monitored via Datadog. Alerts fire when key user f
 
 Each Stable release follows a structured quality gate:
 
-1. **Release candidate assembly.** Teams tag tested versions of their microfrontends for inclusion.
-2. **Acceptance testing.** A minimum 3-day testing period where QA engineers and cross-functional colleagues validate the release candidate in a production-like environment.
-3. **Release readiness criteria.** All automated tests passing, QA playbooks completed, no open blocker bugs, no open translation issues.
-4. **Release.** The stable import map is updated and release notes are published.
+1. **Breakathon.** Teams take time to stress test and find ways to "break" their own features to uncover new bugs.
+2. **Acceptance testing.** A minimum 3-day testing period where QA engineers and cross-functional colleagues validate the release candidate.
+3. **Release readiness criteria.** All automated tests passing, QA playbooks completed, no known bugs, no open translation issues.
+4. **Release.** The stable import map is updated, feature toggles are switched, and release notes are published.
 5. **Post-release monitoring.** Bug reports in the first 7 days after release are tracked and analyzed to improve future releases.
 
 :::info
