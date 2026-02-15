@@ -58,7 +58,7 @@ Every meter reading configuration must include mappings for these fields:
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `mode` | string | Operation mode: `upsert` (default) or `delete`. Note: `purge` is not supported for meter readings |
+| `mode` | string | Operation mode: `upsert` (default), `delete`, or `upsert-prune-scope`. Note: `purge` is not supported for meter readings. See [Prune Scope](#prune-scope) |
 | `reading_matching` | string | Matching strategy: `external_id` (default) or `strict-date`. See [Reading Matching Strategies](#reading-matching-strategies) |
 | `jsonataExpression` | string | Extract readings from nested payload structures |
 | `meter_counter` | object | For multi-tariff meters, identifies the specific counter |
@@ -421,7 +421,7 @@ To delete meter readings, use `mode: "delete"`:
 ```
 
 :::note
-Meter readings only support `delete` mode, not `purge`. Deletion is always permanent.
+Meter readings support `delete` and `upsert-prune-scope` modes, but not `purge`. Deletion is always permanent.
 :::
 
 ### Deletion with Strict Date Matching
@@ -459,6 +459,86 @@ The `reading_matching: "strict-date"` strategy is particularly useful for deleti
 ```
 
 **Result:** The meter reading with `external_id = "R-67890"` associated with meter `M-12345` will be deleted. With `strict-date` matching, the system matches by meter_id + date if an exact external_id match is not found.
+
+## Prune Scope
+
+The `upsert-prune-scope` mode enables a sync pattern for meter readings: upsert all readings from the payload for a given meter/counter, then permanently delete all other readings for that meter/counter that weren't part of the upsert.
+
+The scope is naturally defined by **meter + counter** — no explicit `scope_mode` is needed (unlike entity prune scope modes).
+
+An optional `scope` object can restrict pruning to readings from a specific source.
+
+### Scope Configuration (optional)
+
+| Property | Required | Description |
+|----------|----------|-------------|
+| `source` | No | When set, only readings with this source are eligible for pruning |
+
+### Basic Prune Scope Example
+
+```json
+{
+  "meter_readings": [
+    {
+      "jsonataExpression": "$.readings",
+      "mode": "upsert-prune-scope",
+      "meter": {
+        "unique_ids": [{ "attribute": "external_id", "field": "meter_id" }]
+      },
+      "meter_counter": {
+        "unique_ids": [{ "attribute": "external_id", "field": "counter_id" }]
+      },
+      "fields": [
+        { "attribute": "external_id", "field": "reading_id" },
+        { "attribute": "timestamp", "field": "read_at" },
+        { "attribute": "source", "constant": "ERP" },
+        { "attribute": "value", "field": "meter_value" }
+      ]
+    }
+  ]
+}
+```
+
+This upserts all readings from the `readings` array, then deletes any other readings for the same meter+counter that weren't in the payload.
+
+### Prune Scope with Source Filter
+
+```json
+{
+  "meter_readings": [
+    {
+      "jsonataExpression": "$.readings",
+      "mode": "upsert-prune-scope",
+      "scope": { "source": "ERP" },
+      "meter": {
+        "unique_ids": [{ "attribute": "external_id", "field": "meter_id" }]
+      },
+      "meter_counter": {
+        "unique_ids": [{ "attribute": "external_id", "field": "counter_id" }]
+      },
+      "fields": [
+        { "attribute": "external_id", "field": "reading_id" },
+        { "attribute": "timestamp", "field": "read_at" },
+        { "attribute": "source", "constant": "ERP" },
+        { "attribute": "value", "field": "meter_value" }
+      ]
+    }
+  ]
+}
+```
+
+With `source: "ERP"`, only readings with `source: "ERP"` are eligible for pruning. Manually entered or ECP readings remain untouched.
+
+:::warning
+If the payload yields zero readings, all readings in scope will be deleted — the ERP is treated as the source of truth. Use the `source` scope filter to avoid accidentally deleting readings from other sources (e.g., manually entered readings).
+:::
+
+### Important Notes
+
+1. **Scope**: The scope is always all readings for the meter + counter.
+2. **Permanent Deletion**: Meter reading deletion is always permanent (no soft delete/purge distinction).
+3. **Source Filter Recommended**: Use `source` to avoid accidentally deleting readings from other sources.
+4. **External ID**: The `external_id` attribute is used to identify which readings to keep during pruning.
 
 ## Best Practices
 

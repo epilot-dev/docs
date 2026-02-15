@@ -32,7 +32,7 @@ A mapping configuration consists of one or more entity definitions:
 | `entity_schema` | string | Yes | The epilot entity schema (e.g., `contact`, `contract`, `meter`) |
 | `unique_ids` | string[] | Yes | Fields used to find existing entities |
 | `enabled` | boolean/string | No | Enable/disable this mapping |
-| `mode` | string | No | Operation mode: `upsert` (default), `delete`, `purge`, `upsert-prune-scope-purge`, or `upsert-prune-scope-delete`. See [Operation Modes](#operation-modes) |
+| `mode` | string | No | Operation mode: `upsert` (default), `delete`, `purge`, `upsert-prune-scope-purge`, or `upsert-prune-scope-delete`. See [Operation Modes](#operation-modes). For meter readings, see also `upsert-prune-scope` in [Meter Reading Prune Scope Operations](#meter-reading-prune-scope-operations) |
 | `scope` | object | No | Required for prune-scope modes. Defines which entities to consider for pruning. See [Prune Scope Operations](#prune-scope-operations) |
 | `jsonataExpression` | string | No | Pre-process the payload before field mapping |
 | `fields` | array | Yes | Field mapping definitions |
@@ -246,9 +246,10 @@ The `mode` field controls how entities are processed. By default, entities are u
 | `purge` | Hard delete - permanently removes from the system |
 | `upsert-prune-scope-purge` | Upsert entities from array, then hard delete entities in scope that weren't upserted |
 | `upsert-prune-scope-delete` | Upsert entities from array, then soft delete entities in scope that weren't upserted |
+| `upsert-prune-scope` | (Meter readings only) Upsert readings from array, then delete all other readings for the same meter+counter that weren't upserted |
 
 :::note
-The `upsert-prune-scope-*` modes require a `scope` configuration. See [Prune Scope Operations](#prune-scope-operations).
+The `upsert-prune-scope-*` modes require a `scope` configuration. See [Prune Scope Operations](#prune-scope-operations). The `upsert-prune-scope` mode is for meter readings only and uses the meter+counter as natural scope. See [Meter Reading Prune Scope Operations](#meter-reading-prune-scope-operations).
 :::
 
 ### Entity Deletion
@@ -393,6 +394,83 @@ Find scope entities directly by query parameters instead of through relations:
 :::warning
 If the array yields zero entities (e.g., `billingevents: []`), this will result in the deletion of **all** entities in the scope. Ensure your payload always contains the expected data.
 :::
+
+### Meter Reading Prune Scope Operations
+
+The `upsert-prune-scope` mode for meter readings enables a sync pattern similar to entity prune scope: upsert all readings from the payload for a given meter/counter, then permanently delete all other readings for that meter/counter that weren't part of the upsert.
+
+The scope is naturally defined by **meter + counter** — no explicit `scope_mode` is needed.
+
+An optional `scope` object can be added to restrict pruning to readings from a specific source.
+
+#### Scope Configuration (optional)
+
+| Property | Required | Description |
+|----------|----------|-------------|
+| `source` | No | When set, only readings with this source are eligible for pruning |
+
+#### Example: Basic Meter Reading Prune Scope
+
+```json
+{
+  "meter_readings": [
+    {
+      "jsonataExpression": "$.readings",
+      "mode": "upsert-prune-scope",
+      "meter": {
+        "unique_ids": [{ "attribute": "external_id", "field": "meter_id" }]
+      },
+      "meter_counter": {
+        "unique_ids": [{ "attribute": "external_id", "field": "counter_id" }]
+      },
+      "fields": [
+        { "attribute": "external_id", "field": "reading_id" },
+        { "attribute": "timestamp", "field": "read_at" },
+        { "attribute": "source", "constant": "ERP" },
+        { "attribute": "value", "field": "meter_value" }
+      ]
+    }
+  ]
+}
+```
+
+This configuration upserts all readings from the `readings` array, then deletes any other readings for the same meter+counter that weren't in the payload.
+
+#### Example: With Source Scope
+
+```json
+{
+  "meter_readings": [
+    {
+      "jsonataExpression": "$.readings",
+      "mode": "upsert-prune-scope",
+      "scope": { "source": "ERP" },
+      "meter": {
+        "unique_ids": [{ "attribute": "external_id", "field": "meter_id" }]
+      },
+      "meter_counter": {
+        "unique_ids": [{ "attribute": "external_id", "field": "counter_id" }]
+      },
+      "fields": [
+        { "attribute": "external_id", "field": "reading_id" },
+        { "attribute": "timestamp", "field": "read_at" },
+        { "attribute": "source", "constant": "ERP" },
+        { "attribute": "value", "field": "meter_value" }
+      ]
+    }
+  ]
+}
+```
+
+With `source: "ERP"`, only readings with `source: "ERP"` are eligible for pruning. Manually entered or ECP readings remain untouched.
+
+#### Important Notes
+
+1. **Scope**: The scope is always all readings for the meter + counter.
+2. **Permanent Deletion**: Meter reading deletion is always permanent (no soft delete/purge distinction).
+3. **Source Filter Recommended**: Use `source` to avoid accidentally deleting readings from other sources (e.g., manually entered readings).
+4. **Empty Payload**: If the payload yields zero readings, all readings in scope will be deleted (the ERP is treated as source of truth).
+5. **External ID**: The `external_id` attribute is used to identify which readings to keep during pruning.
 
 ### Mixed Operations
 
