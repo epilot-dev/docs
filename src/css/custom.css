@@ -48,7 +48,7 @@ html[data-theme='dark'] .button.button--primary {
 .button.button--primary {
   background: var(--epilot-gradient);
   border: none;
-  border-radius: 20px;
+  border-radius: 0.75rem;
   padding: 10px 28px;
   font-weight: 600;
   font-size: 15px;
@@ -65,7 +65,7 @@ html[data-theme='dark'] .button.button--primary {
 
 .button.button--secondary {
   border: 1.5px solid var(--ifm-color-primary);
-  border-radius: 20px;
+  border-radius: 0.75rem;
   padding: 10px 28px;
   font-weight: 600;
   font-size: 15px;
@@ -105,11 +105,11 @@ html[data-theme='dark'] .button.button--primary {
 .dsla-search-wrapper .dsla-search-field input,
 .dsla-search-wrapper input[type="search"],
 .navbar__search-input {
-  border-radius: 20px !important;
+  border-radius: 0.75rem !important;
 }
 
 .aa-DetachedContainer--modal .aa-Form {
-  border-radius: 20px !important;
+  border-radius: 0.75rem !important;
   margin: 8px;
 }
 
@@ -137,7 +137,7 @@ html[data-theme='dark'] .button.button--primary {
   border: 1px solid var(--ifm-color-primary);
   color: var(--ifm-color-primary) !important;
   background: transparent;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 }
 
 .navbar-button--secondary:hover {
@@ -151,7 +151,7 @@ html[data-theme='dark'] .button.button--primary {
   border: none;
   background: var(--epilot-gradient);
   color: #fff !important;
-  border-radius: 12px;
+  border-radius: 0.75rem;
 }
 
 .navbar-button--primary:hover {
