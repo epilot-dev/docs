@@ -61,17 +61,13 @@
 .apiLink {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.75rem;
-  background: var(--ifm-color-primary-lightest);
-  border-radius: 6px;
+  gap: 0.35rem;
   font-size: 0.85rem;
   color: var(--ifm-color-primary);
-  transition: all 0.2s ease;
 }
 
 .apiLink:hover {
-  background: var(--ifm-color-primary-lighter);
+  color: var(--ifm-color-primary-dark);
 }
 
 .apiLink svg {
@@ -79,9 +75,8 @@
 }
 
 .apiLinkText {
-  color: var(--ifm-color-primary);
+  color: inherit;
   text-decoration: none;
-  font-weight: 500;
 }
 
 .apiLinkText:hover {
@@ -252,14 +247,6 @@ html[data-theme='dark'] .container {
 html[data-theme='dark'] .container:hover {
   border-color: var(--ifm-color-emphasis-400);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-html[data-theme='dark'] .apiLink {
-  background: rgba(87, 192, 255, 0.15);
-}
-
-html[data-theme='dark'] .apiLink:hover {
-  background: rgba(87, 192, 255, 0.25);
 }
 
 html[data-theme='dark'] .button {

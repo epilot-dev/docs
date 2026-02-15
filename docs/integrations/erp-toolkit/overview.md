@@ -9,11 +9,14 @@ slug: /integrations/erp-toolkit/overview
 
 The ERP Toolkit is epilot's opinionated integration platform for building, monitoring, and maintaining ERP integrations. It combines **standardized entity and event schemas**, **JSONata-based mapping**, **a dedicated inbound ingestion API**, **configuration APIs**, **central monitoring**, and **packaged Blueprints/Apps** into a single, cohesive system.
 
+![ERP Toolkit High Level](/img/erp-toolkit-high-level.jpg)
+
 The toolkit is optimized for energy-sector use cases: end-customer self-service via portals, meter reading propagation, contract lifecycle management, and billing account synchronization.
 
 :::info
 The ERP Toolkit does not remove the need for middleware. It standardizes the interface between epilot and your middle layer, radically reducing the complexity compared to direct API integration.
 :::
+
 
 ## Components
 

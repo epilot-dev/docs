@@ -97,14 +97,20 @@ html[data-theme='dark'] .button.button--primary {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  min-width: 300px;
+  min-width: 200px;
 }
 
+.aa-DetachedSearchButton,
 .dsla-search-wrapper .aa-Autocomplete .aa-Form,
 .dsla-search-wrapper .dsla-search-field input,
 .dsla-search-wrapper input[type="search"],
 .navbar__search-input {
   border-radius: 20px !important;
+}
+
+.aa-DetachedContainer--modal .aa-Form {
+  border-radius: 20px !important;
+  margin: 8px;
 }
 
 /* Navbar button links */
@@ -152,6 +158,25 @@ html[data-theme='dark'] .button.button--primary {
   opacity: 0.9;
   color: #fff !important;
   text-decoration: none;
+}
+
+
+.aa-DetachedSearchButtonPlaceholder {
+  padding-right: 10px;
+}
+
+/* Hide navbar buttons and fix search on mobile */
+@media (max-width: 996px) {
+  .navbar-button {
+    display: none;
+  }
+
+  .navbar__items--right .navbar__search,
+  .navbar__items--right .dsla-search-wrapper {
+    position: static;
+    transform: none;
+    min-width: 0;
+  }
 }
 
 /* Fix search bar colors in dark mode */
