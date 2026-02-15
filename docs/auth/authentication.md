@@ -19,10 +19,10 @@ The recommended way to authenticate with epilot APIs is using **Access Tokens** 
 3. Pass the token as a bearer token in your API requests
 
 ```typescript
-import { authorizeWithToken } from '@epilot/auth';
-import entityClient from '@epilot/entity-client';
+import { getClient } from '@epilot/entity-client';
 
-authorizeWithToken(entityClient, '<your-access-token>');
+const entityClient = getClient();
+entityClient.defaults.headers['Authorization'] = 'Bearer <your-access-token>';
 ```
 
 See [Access Tokens](/docs/auth/access-tokens) for full details on creating, scoping and revoking tokens.

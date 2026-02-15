@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: c0
 ---
 
 # Template Variables
@@ -42,8 +42,6 @@ If a purpose ID cannot be resolved, the raw ID is returned.
 ## Variable Picker
 
 The variable picker UI lets users search and explore available variables.
-
-![Variable Picker UI](../../static/img/templates/variable-picker.png)
 
 ## Variable Builder
 
