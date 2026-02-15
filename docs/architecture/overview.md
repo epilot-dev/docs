@@ -16,7 +16,7 @@ _epilot_ is a multi-tenant SaaS platform for energy suppliers, municipal utiliti
 
 The epilot application consists of:
 
-- [The epilot portal](/docs/portal/microfrontends) — single-spa micro-frontend SPA
+- [The epilot portal](/docs/architecture/microfrontends) — single-spa micro-frontend SPA
 - [Embeddable Journey Frontends](/docs/journeys/journey-builder) — customer-facing forms and flows
 - [Customer & Installer Portals](/docs/portals/customer-portal) — self-service portals
 - Serverless microservices with [public APIs](/api)

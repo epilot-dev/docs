@@ -64,7 +64,7 @@ flowchart TD
 
 ### Frontend Deployments
 
-The epilot 360 portal is a [single-spa micro-frontend architecture](/docs/portal/microfrontends). Each microfrontend deploys independently and updates an import map that the portal shell reads at load time.
+The epilot 360 portal is a [single-spa micro-frontend architecture](/docs/architecture/microfrontends). Each microfrontend deploys independently and updates an import map that the portal shell reads at load time.
 
 | Trigger | Import map updated | Channel |
 |---------|-------------------|---------|
