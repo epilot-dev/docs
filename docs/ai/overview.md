@@ -224,51 +224,6 @@ Every AI feature that modifies data enforces human approval. The AI agent never 
 
 The platform collects structured feedback (ratings, rejection reasons, free-text comments) which feeds back into prompt refinement and retrieval quality improvements. Feedback is continuously reviewed to improve AI quality.
 
-## GenAI API Reference
-
-The GenAI API exposes the following operation groups:
-
-### Message Operations
-
-| Endpoint | Method | Description |
-|---|---|---|
-| `/v1/genai/thread/{threadId}/info` | GET | Get thread summary, topics, and next steps |
-| `/v1/genai/thread/{threadId}/reply` | POST | Get AI-generated reply suggestion |
-| `/v1/genai/thread/{threadId}/reply:streaming-token` | POST | Get streaming token for reply generation |
-| `/v1/genai/thread/{threadId}/suggested-actions` | POST | Get AI-suggested entity actions from email content |
-| `/v1/genai/message/{messageId}/auto-label` | POST | Auto-label a message |
-| `/v1/genai/message/{messageId}/auto-label/accept` | POST | Accept suggested labels |
-| `/v1/genai/message/{messageId}/auto-label/reject` | POST | Reject suggested labels |
-
-### Entity Operations
-
-| Endpoint | Method | Description |
-|---|---|---|
-| `/v1/genai/entity/{slug}/{entityId}/summary` | GET | Get latest entity summary |
-| `/v1/genai/entity/{slug}/{entityId}/summary:streaming-token` | POST | Generate streaming entity summary |
-| `/v1/genai/entity/{slug}/{entityId}/ask` | POST | Conversational Q&A about an entity |
-| `/v1/genai/entity/{entityId}/copilot:streaming-token` | POST | AI Copilot streaming interface |
-| `/v1/genai/entity/getTableFilters` | POST | AI-powered table filter generation |
-
-### Feedback Operations
-
-| Endpoint | Method | Description |
-|---|---|---|
-| `/v1/genai/feedback/{jobId}` | GET | Get feedback for a job |
-| `/v1/genai/feedback/{jobId}` | PUT | Submit feedback (rating + comments) |
-
-### Other Operations
-
-| Endpoint | Method | Description |
-|---|---|---|
-| `/v1/genai/blueprints/getBlueprintsSummary` | POST | Generate blueprint description |
-| `/v1/genai/portal/getDesign` | POST | AI-generated portal design |
-| `/v1/genai/erp/mapping:generate` | POST | AI-assisted ERP mapping |
-
-:::info Authentication
-All GenAI API endpoints require standard epilot authentication (`Authorization: Bearer <token>`) and an organization header (`x-epilot-org-id`).
-:::
-
 ## Roadmap
 
 The AI roadmap progresses through three phases:
