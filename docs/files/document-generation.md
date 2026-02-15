@@ -120,6 +120,19 @@ Generate documents from templates with variable substitution.
 }
 ```
 
+:::important Language Parameter for Translations
+The `language` parameter (values: `"en"` or `"de"`) is critical for proper translation of:
+- **Salutation fields** (e.g., "Mr." vs "Herr", "Ms./Mrs." vs "Frau")
+- **Yes/No values** via the `{{yn}}` helper
+- **Date and currency formatting**
+
+If `language` is not provided, the API falls back to:
+1. User preferences from `user_id` lookup
+2. Organization default settings
+
+When triggering document generation from [Workflow Task Automations](/docs/workflows/workflow-automations), ensure the language context is properly passed to avoid missing or incorrect translations.
+:::
+
 **Response Example:**
 ```json
 {
@@ -366,17 +379,23 @@ Cell B2: {{% chart_url }}
 - **Verify data source**: Check if variable exists in payload or entity
 - **Review precedence**: Remember `variable_payload` overrides entity data
 
-#### 2. Image Not Rendering
+#### 2. Salutation or Other Translations Missing/Incorrect
+- **Check language parameter**: Ensure `language` is set to `"en"` or `"de"` in the request
+- **Verify user_id**: If `language` is not set, ensure `user_id` is provided for user preference lookup
+- **Workflow automations**: When using [Workflow Task Automations](/docs/workflows/workflow-automations), ensure `activity_id` is passed to provide language context
+- **Manual vs Automation**: Document generation triggered manually has access to user context; automations triggered programmatically (e.g., from flows) may need explicit language configuration
+
+#### 3. Image Not Rendering
 - **Check URL format**: Use `{{% url }}` with correct syntax
 - **Verify image access**: Ensure image URL is accessible
 - **Label filtering**: Confirm images have correct labels when using filters
 
-#### 3. Loop Syntax Errors
+#### 4. Loop Syntax Errors
 - **Array notation**: Use `[*]` for all items, `[...label]` for filtered
 - **Closing tags**: Ensure matching opening and closing loop tags
 - **Margin conflicts**: Remove `{{~order_table mt=2 mb=2}}` when using loops
 
-#### 4. Excel Formula Issues
+#### 5. Excel Formula Issues
 - **Formula preservation**: Use standard Excel formula syntax
 - **Variable in formulas**: Wrap variables in appropriate functions
 

@@ -240,9 +240,20 @@ Content-Type: application/json
 
 {
   "entity_id": "11111111-1111-1111-1111-111111111111",
-  "flow_id": "abc123-automation-flow-id"
+  "flow_id": "abc123-automation-flow-id",
+  "activity_id": "01F130Q52Q6MWSNS8N2AVXV4JN"
 }
 ```
+
+:::important Language Context for Document Generation
+When triggering automation executions that include document generation actions, ensure that `activity_id` is passed. The `activity_id` links to the activity context which includes user information needed for:
+- **Language/locale resolution** for template variable translations (e.g., salutation/Anrede)
+- **User preferences** lookup for formatting
+
+Without proper language context, translated variables like `{{yn true}}` (Yes/No), salutations, and other i18n-dependent values may not render correctly.
+
+Alternatively, if the automation includes a "Create Document" action, the action configuration should specify the `language` parameter explicitly (e.g., `"de"` or `"en"`).
+:::
 
 **Response:**
 ```json
