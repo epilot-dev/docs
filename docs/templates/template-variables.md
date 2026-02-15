@@ -1,5 +1,5 @@
 ---
-sidebar_position: c0
+sidebar_position: 0
 ---
 
 # Template Variables

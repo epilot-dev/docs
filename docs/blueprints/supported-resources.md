@@ -52,7 +52,7 @@ Blueprints support the following resource types. Each resource type corresponds 
 
 1. **Webhooks** are included as part of automations but created in an incomplete state -- users must manually add the URL and auth configuration after import.
 2. **Designs** can be copied standalone, but the target organization's default design is applied for imported journeys.
-3. **Schema capabilities and headlines** are only exported when exporting the full schema (not as individual attributes).
+3. **Schema capabilities** are only exported when exporting the full schema (not as individual resources).
 
 ## See Also
 
