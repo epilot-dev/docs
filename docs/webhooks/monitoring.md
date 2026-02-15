@@ -2,18 +2,15 @@
 sidebar_position: 4
 ---
 
-# Monitoring 
+# Monitoring
 
 [[API Docs](/api/webhooks#tag/event/operation/getEventById)]
 [[SDK](https://www.npmjs.com/package/@epilot/webhooks-client)]
 
-Each webhook request is either successful or failed is logged as an **Event**. You can view the events in the **Webhook Events** section of each webhook configuration.
+Every webhook request is logged as an **Event** with a success or failure status. View events in the **Webhook Events** section of each webhook configuration.
 
+You can filter by status, inspect request details (payload, headers, response code), and replay any event. Replaying sends the same payload again and creates a new event record. Events are retained for 4 weeks by default.
 
-You can view and filter failed and succesful events and its details. Every event can be replayed. The replay will send the same payload and creates a new event afterwards. By default, all events are persisted for 4 weeks. 
-
-This is partifularly useful for debugging issues with webhooks, as you can see the exact payload that was sent from the webhook endpoint. You can also see additional information like the origin of the request, its headers and the response status code.
-
-You can also replay events to test your webhook endpoint without having to trigger the original event again.
+This is useful for debugging — you can see the exact payload sent to your endpoint, the request origin, and the response status code without re-triggering the original event.
 
 ![Webhook Events](../../static/img/webhooks/events.gif)

@@ -4,37 +4,33 @@ sidebar_position: 3
 
 # Embedding Journeys
 
-Journeys can easily be embedded on any website by placing an embed script tag provided by epilot on your website, and then optionally customizing it for advanced use.
+Embed any epilot journey on your website using a script tag. The embed script loads the journey by its ID and renders it in an iframe on your page.
 
-## Embed Script
-
-An embed script is a simple way to publish an epilot journey on your website. The script loads the journey using a Journey ID and a secure token to embed the journey securely on your website.
-
-This page guides you through the different options available to embed a Journey into your web page.
+This guide covers all available embedding options and the `__epilot` JavaScript API for advanced customization.
 
 ## Embed Configurator
 
-Configure and copy the embed script via the Journey Builders' Embed Configurator after saving the Journey. You can choose:
+Configure and copy the embed script via the Journey Builder's Embed Configurator after saving your journey. Options include:
 
-- Whether the Journey should be shown in a full-screen overlay, or inline to your website (Default: Fullscreen)
-- The language of the journey (Default: German DE)
-- The label of the button that suppose to open the journey (Default: Inhalt anzeigen)
-- The alignment of the button, left, right, or center (Default: Left)
-- Overwride the journey option to scroll the user to the top of the new step once the end user clicks on the next button in any step (Default: ON)
+- **Display mode** — full-screen overlay or inline on your website (Default: Fullscreen)
+- **Language** (Default: German DE)
+- **Button label** — the text on the button that opens the journey (Default: Inhalt anzeigen)
+- **Button alignment** — left, right, or center (Default: Left)
+- **Scroll to top** — scrolls to the top of the journey when the user navigates to a new step (Default: ON)
 
-Depending on the embedding type, you can change additional settings.
+Additional settings are available depending on the embedding type.
 
 ![Embedding Configuration](../../static/img/journey-builder-embed.png)
 
 ## Journey Data Injection
 
-It is possible by using the Embed Script to modify the initial state of the journey. There are the following posibilities:
+The embed script can modify the initial state of a journey. You can:
 
-1. Setting an intial data for the journey: doing this will prefill the blocks with data.
-2. Starting the journey from a specific step: doing this will start the journey from the specified step if it was combined with the initial data, one can achieve a case when a product is selection is done in an external website, injected into the journey, then the in journey selection step skipped.
-3. Set display options for the journey fields (for now disabling fields)
+1. **Prefill data** — set initial values for journey blocks.
+2. **Start from a specific step** — skip earlier steps (e.g., when product selection happens on an external website).
+3. **Control field display** — disable specific fields.
 
-The following DataInjectionOptions type shows what is possible. However we ask devs to go to our [Embed Script Docs](https://github.com/epilot-dev/epilot-journey-sdk/tree/main/examples/embed-script) to view some examples.
+The `DataInjectionOptions` type below defines all available options. See the [Embed Script examples](https://github.com/epilot-dev/epilot-journey-sdk/tree/main/examples/embed-script) for working code.
 
 **Type Definition**
 
@@ -52,7 +48,7 @@ export type DataInjectionOptions = {
 }
 ```
 
-To populate `intialState` in `DataInjectionOptions` properly, open the journey in **debug mode** (see video below) and copy the journey state per step.
+To populate `initialState` in `DataInjectionOptions` properly, open the journey in **debug mode** (see video below) and copy the journey state per step.
 
 ![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
 
@@ -83,7 +79,7 @@ See example below to inject data into Step 2 and Step 3. Notice that Step 1 need
 ## Configuration Possibilities
 
 For more advanced configuration options, you can modify the embed script yourself, as it adds an interface to your website to interact with the journey: `__epilot`
-Below we explain all possibile configuration options
+Below are all available configuration options.
 
 ### init
 
@@ -238,7 +234,7 @@ __epilot.exitFullScreen('123')
 ### isInitialized
 
 **Description**  
-Checks whether a journey is initialized already initialized or not.
+Checks whether a journey is already initialized.
 
 **Type Definition**
 
@@ -278,8 +274,8 @@ The below code snippet provides the configured embed script and a button opening
 ```
 
 **Attributes explained**  
-`data-ep-mode` - sets the mode the journey runs in  
-`data-ep-journeyIds` the journey to be created via it’s id
+`data-ep-mode` — sets the mode the journey runs in
+`data-ep-journeyIds` — the journey to load by its ID
 
 **Outcome**
 
@@ -299,14 +295,14 @@ The below code snippet provides the configured embed script required to set up t
 <!-- Embed script managing your Journey -->
 <script
   data-ep-mode="inline"
-  data-journeyIds="<your-journey-id>"
+  data-ep-journeyIds="<your-journey-id>"
   src="https://embed.journey.epilot.io/bundle.js"
 ></script>
 ```
 
 **Attributes explained**  
 `data-ep-mode` - sets the mode the journey runs in
-`data-ep-journeyIds` the journey to be created via it’s id
+`data-ep-journeyIds` — the journey to load by its ID
 
 **Outcome**
 
@@ -328,16 +324,14 @@ The best way to embed multiple journeys is to use the `__epilot` interface descr
 <script src="https://embed.journey.epilot.io/bundle.js"></script>
 <script>
   __epilot.init([
-      {
-           { journeyId: '<your-journey-id-1>', mode: 'full-screen' },
-           { journeyId: '<your-journey-id-2>', mode: 'full-screen' },
-      }
+    { journeyId: '<your-journey-id-1>', mode: 'full-screen' },
+    { journeyId: '<your-journey-id-2>', mode: 'full-screen' },
   ])
 </script>
 ```
 
 **Attributes explained**  
-In this example, we dont need any `data-ep-` attributes, as we use the `__epilot` interface to initialize the Journeys
+In this example, no `data-ep-` attributes are needed because the `__epilot.init()` API handles configuration directly.
 
 **Outcome**
 

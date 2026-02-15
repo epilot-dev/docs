@@ -8,15 +8,16 @@ sidebar_position: 1
 [[API Docs](/api/automation#tag/flows)]
 [[SDK](https://www.npmjs.com/package/@epilot/automation-client)]
 
-The epilot app comes with a general-purpose automation framework to automate some actions with [Entities](/docs/entities/entity-api).
+epilot provides a general-purpose automation framework for executing actions on [Entities](/docs/entities/entity-api) in response to events.
 
-Some examples of Automation usage in epilot:
+Common use cases:
 
-- Sending Automated Emails on Journey Submissions
-- Mapping data from Submissions to Business Entities such as Contacts, Orders or Opportunities
-- Configuring Webhook integrations triggered on Entity Updates
+- Sending automated emails on journey submissions
+- Mapping submission data to business entities such as Contacts, Orders, or Opportunities
+- Triggering webhooks on entity updates
+- Generating documents from templates
+- Starting workflows as part of a business process
 
-The configuration of Automation is found under:
-[Configuration > Advanced Configuration > Automation](https://portal.epilot.cloud/app/automation-hub)
- 
+Configure automations under [Configuration > Advanced Configuration > Automation](https://portal.epilot.cloud/app/automation-hub).
+
 [![Automation Hub](../../static/img/automation-hub-empty.png)](https://portal.epilot.cloud/app/automation-hub)

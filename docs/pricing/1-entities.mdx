@@ -3,30 +3,27 @@ sidebar_position: 1
 title: Entities
 ---
 
-The epilot platform defines 3 cores entities that are used to model the data and the business logic around all our pricing features.
+Three core entities power epilot pricing.
 
 ## [Product](/api/pricing#tag/product_schema) {#product}
 
-Products are the core of your pricing model. They are the items you sell to your customers. They can be physical or digital goods, services, subscriptions, or any other item you want to sell.
+Products represent items you sell: physical goods, digital goods, services, or subscriptions.
 
-A product can be sold in many ways, with different billing cycles, and with different price tags. To configure different ways of selling a product, you can create multiple price options.
-
-A product can have 2 types of prices listed under their price options: simples prices or composite prices, to model more complex pricing models.
+A product can have multiple **price options** for different billing cycles and price points. Each option uses either a simple or composite price.
 
 ## [Price](/api/pricing#tag/simple_price_schema) {#price}
 
-A price defines the price of a product, and can be of one of the following types:
+A price defines how much a product costs. Two types are supported:
 
-- **[Simple](/api/pricing#tag/simple_price_schema)**: A simple price is a single price that is applied to the product, with a fixed amount, paid upfront or in installments (recurrently).
+- **[Simple](/api/pricing#tag/simple_price_schema)** -- a fixed amount, paid one-time or recurrently.
 
-- **[Composite](/api/pricing#tag/dynamic_price_schema)**: A composite price is a price that is calculated based on a set of prices. These prices often belong to the same product, but they can also belong to other products. For example, a product can have a composite price that is calculated based on the price of a physical good and the price of a service (e.g, wallbox + fast charging station service fee paid recurrently).
+- **[Composite](/api/pricing#tag/dynamic_price_schema)** -- calculated from a set of component prices, which can span multiple products. Example: a wallbox price + a recurring fast-charging service fee.
 
 ## [Tax](/api/pricing#tag/tax_schema) {#tax}
 
-A tax is a percentage that is applied to a price. Taxes can behave in two different ways:
+A tax is a percentage applied to a price. Two modes:
 
-- Inclusive: The tax is included in the price. For example, a price of 100€ with a 20% tax will be displayed as 100€, since the tax is already included in the price.
+- **Inclusive** -- the tax is included in the displayed price. A 100 EUR price with 20% inclusive tax displays as 100 EUR.
+- **Exclusive** -- the tax is added on top. A 100 EUR price with 20% exclusive tax displays as 120 EUR.
 
-- Exclusive: The tax is not included in the price. For example, a price of 100€ with a 20% tax will be displayed as 120€, since the tax is not included in the price.
-
-Taxes can also be bound to their corresponding jurisdiction by specifying the Tax Region in the Tax definition.
+Bind taxes to a jurisdiction by setting the **Tax Region**.

@@ -8,46 +8,49 @@ sidebar_position: 4
 [[API Docs](/api/workflow-execution)]
 [[SDK](https://www.npmjs.com/package/@epilot/workflow-client)]
 
-Workflows consist of two primary components, and their advancement can be interpreted in various ways depending on specific factors.
+Workflows consist of two primary components, and their progression depends on the status of each.
 
-Workflows components:
-- Task
-- Phase
+Workflow components:
+- **Task** -- an individual unit of work
+- **Phase** -- a group of related tasks
 
 ## Tasks
-A task represents an individual unit of work.
 
+A task represents an individual unit of work within a workflow.
 
 ![workflow task](../../static/img/workflows/task.png)
 
 ## Phases
-Phases are another integral part of workflows, with the distinction that phases can encompass tasks.
 
+A phase groups related tasks together into a logical stage of the workflow.
 
 ![workflow phase](../../static/img/workflows/phase.png)
 
 ## Progression Tracking
-The progression within a workflow is visualized through the combined use of tasks, phases, and the status field.
+
+Workflow progression is determined by the combined statuses of tasks, phases, and the workflow itself.
 
 ## Status
-The status fields, used to indicate the state of the workflow and its components, are as follows:
-- workflows status: `STARTED`, `CANCELLED`, `DONE`
-- task status: `ASSIGNED`, `UNASSIGNED`, `IN_PROGRESS`, `SKIPPED`, `DONE`
-- phase status: `OPEN`, `IN_PROGRESS`, `COMPLETED`
+
+| Component | Possible Statuses |
+|-----------|-------------------|
+| Workflow | `STARTED`, `DONE`, `CLOSED` |
+| Task | `PENDING`, `IN_PROGRESS`, `COMPLETED`, `SKIPPED` |
+| Phase | `OPEN`, `IN_PROGRESS`, `COMPLETED` |
 
 ### Phase status logic
-- `OPEN`
-  - contains at least 1 `OPEN` and none `IN_PROGRESS`/`DONE`/`SKIPPED` tasks
-- `IN_PROGRESS`
-  - the first phase of a started workflow
-  - contains at least 1 `IN_PROGRESS` task
-  - contains at least 1 `DONE`/`SKIPPED` task BUT not all tasks are `DONE`/`SKIPPED` (implying work has started on the phase)
-  - considering linear workflows, a phase which follows a `COMPLETED` phase/task AND contains the NEXT_OPEN_TASK
-- `COMPLETED`
-  - all tasks `DONE` or `SKIPPED`
 
-> ⚠️ Statuses play a crucial role when data is presented based on them.
-One approach to monitoring workflow progress is by tallying and considering phases in the IN_PROGRESS state.
+- **`OPEN`** -- contains at least one open task with no `IN_PROGRESS`/`COMPLETED`/`SKIPPED` tasks
+- **`IN_PROGRESS`** -- the phase is active when any of these are true:
+  - It is the first phase of a started workflow
+  - It contains at least one `IN_PROGRESS` task
+  - Some tasks are `COMPLETED`/`SKIPPED` but not all (work has started)
+  - In linear workflows, it follows a `COMPLETED` phase and contains the next open task
+- **`COMPLETED`** -- all tasks are `COMPLETED` or `SKIPPED`
+
+:::info
+Phase statuses drive entity attribute updates and dashboard displays. A common way to monitor workflow progress is to count phases in the `IN_PROGRESS` state.
+:::
 ![workflow phases in progress](../../static/img/workflows/phases_in_progress.png)
 
 
@@ -56,18 +59,21 @@ One approach to monitoring workflow progress is by tallying and considering phas
 
 
 ## Current Workflow Position
-Another valuable tool for monitoring workflow progression is the concept of the `current task` and `current phase`.
-- `current task`
+Another way to monitor progression is through the **current task** and **current phase**.
 
-In a sequential workflow, the current task is always the first task that falls into one of the following states: `ASSIGNED`, `UNASSIGNED`, `IN_PROGRESS` when viewing the workflow from top to bottom, regardless of whether the task is at the root level or a child of a phase.
+### Current task
+
+In a sequential workflow, the current task is the first task (top to bottom) in a `PENDING` or `IN_PROGRESS` state, regardless of whether it is at the root level or inside a phase.
 ![workflow current task](../../static/img/workflows/current_task.png)
-The current task is identifiable by a blue border when viewing a workflow.
+The current task is indicated by a blue border in the workflow UI.
 
-- `current phase`
+### Current phase
 
-Similar to the `current task`, the `current phase` is represented by a phase that contains the `current task` as one of its children. In the image below, "Prüfung" is the `current phase`.
+The current phase is the phase that contains the current task. In the image below, "Prüfung" is the current phase.
 ![workflow current phase](../../static/img/workflows/current_phase.png)
 
-> ⚠️ The present positions of tasks and phases within the workflow are employed when updating entity attributes. Workflow configurations can enable the updating of entity attributes directly from the workflow hub, as illustrated in the image below:
+:::warning
+The current task and phase positions are used when updating entity attributes. Workflow configurations can update entity attributes directly from the workflow hub:
+:::
 ![workflow configure entity update](../../static/img/workflows/configure_entity_update.png)
 ![workflow entity attribute updated](../../static/img/workflows/entity_attribute_updated.png)

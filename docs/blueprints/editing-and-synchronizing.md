@@ -20,7 +20,7 @@ To change a Blueprint’s name, hover over it, click the pen icon, enter the new
 
 ### Adding Resources
 
-- Click the **“Ressource hinzufügen”** button on the left.
+- Click the **"Add Resource"** button on the left.
 
 - Follow the procedure for adding a resource, the same as when creating a Blueprint.
 
@@ -91,9 +91,9 @@ Note: Deleting a Blueprint does **not** delete the underlying resources in your 
 
 ## Synchronizing your blueprint with another org
 
-When a Blueprint has been created or installed in your sandbox, you can synchronize it with other organizations you are associated with. Synchronization means transfering configuration elements (resources) —such as journeys, automations, products, workflows, and entity schemas—from one tenant to another.
+When a Blueprint has been created or installed in your sandbox, you can synchronize it with other organizations you are associated with. Synchronization transfers configuration resources -- journeys, automations, products, workflows, entity schemas, and more -- from one tenant to another.
 
-On the **Blueprints tab** all the Blueprints available in your organisation: both created and installed from a Marketplace, are listed in the “Blueprints” tab. The label in “Source” column will help you understand where each Blueprint is coming from.
+The **Blueprints tab** lists all Blueprints available in your organization -- both custom-created and installed from the Marketplace. The **Source** column indicates where each Blueprint originated.
 
 ![Installed blueprints tab](/img/blueprints/3-installed-blueprints-tab.png)
 
@@ -117,7 +117,7 @@ Click on **“Actions → Synchronize”** on the top right corner.
 
 ![Actions](/img/blueprints/3-actions.png)
 
-You will be directed to a screen that allows to select the destination org you wish to synchronize to, meaning - where do you wish to transfer your Blueprint to.
+Select the destination organization where you want to transfer your Blueprint.
 
 ![Switch org screen](/img/blueprints/3-switch-org-screen.png)
 
@@ -127,7 +127,7 @@ Select your production org and click on “**Continue**”.
 
 Now we will prepare the resources of your blueprint for synchronization.
 
-Depending on the amount of resources, this may take from 1~5 min, after which you can click on “**Continue to destination organization**”.
+Depending on the number of resources, this may take 1-5 minutes. When ready, click **"Continue to destination organization"**.
 
 ![Continue to destination](/img/blueprints/3-continue-to-destination.png)
 
@@ -135,7 +135,7 @@ Depending on the amount of resources, this may take from 1~5 min, after which yo
 
 ### Switching to the destination org
 
-You will be prompted to switch the **destination org** to finish the syncing process, just click continue and you will be redirected there.
+You will be prompted to switch to the **destination organization** to finish the sync. Click continue and you will be redirected.
 
 ![Destination modal](/img/blueprints/3-destination-modal.png)
 
@@ -144,36 +144,34 @@ You will be prompted to switch the **destination org** to finish the syncing pro
 ### Reviewing the resources impact
 
 
-Now on the destination org, you will be able to review the impact that this blueprint will have on the resources of this org, just like in the [blueprint installation process](/docs/blueprints/installing-a-blueprint).
+On the destination organization, review the impact this Blueprint will have on existing resources -- similar to the [installation process](/docs/blueprints/installing-a-blueprint).
 
-Just click on “See resources with their impact” to review it.
-
-
-You will see what will be created denoted by **New**, and if some of those resources are already present on the destination org (that will happen if it’s not the first time syncing the blueprint), you will see either **No changes**,  “**Update**" or “**Delete**".
+Click **"See resources with their impact"** to review. Each resource is labeled:
+- **New** -- will be created
+- **Update** -- existing resource will be updated
+- **No changes** -- already in sync
+- **Delete** -- will be removed
 
 ![Resources impact](/img/blueprints/3-resources-impact.png)
 
-If everything is as expect you can now click on “Synchronize Blueprint” to finish the process.
+If everything looks correct, click **"Synchronize Blueprint"** to finish the process.
 
 
 ---
 
-And that’s it! 
-You will be presented with the success page of the synchronization process, which will give you a link to see the instance of your blueprint in this destination org!
+The success page provides a link to view the Blueprint instance in the destination organization.
 
 ![Sync complete screen](/img/blueprints/3-sync-complete-screen.png)
 
-You successfully synchronized your sandbox blueprint to your production org!
+You have synchronized your sandbox Blueprint to your production organization.
 
 ---
 
 ### Further editing the blueprint
 
-Now you are able to edit and manage your Blueprint, for more details [click here](#editing-blueprints).
+You can now edit and manage your Blueprint. See [Editing Blueprints](#editing-blueprints) for details.
 
-After that, if you need, you can sync those changes back to the sandbox.
-
-For that, just repeat this process, but this time, starting from the blueprint overview page of the destination org.
+To sync changes back to the sandbox, repeat this process starting from the Blueprint overview page of the destination organization.
 
 :::info
 
@@ -185,4 +183,4 @@ We recommend experimenting with changes in the Sandbox and syncing to Production
 ![Installed blueprint page](/img/blueprints/3-installed-blueprint-page.png)
 
 
-That also counts for the blueprint back in the sandbox: you can go back and continue to make changes and experiment by adding, removing or editing resources. Those changes will only be present on your sandbox until you click on “**Actions → Synchronize**” again.
+The same applies to the Blueprint in the sandbox -- you can continue adding, removing, or editing resources. Changes remain in the sandbox until you select **"Actions > Synchronize"** again.

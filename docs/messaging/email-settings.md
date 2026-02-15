@@ -10,59 +10,65 @@ sidebar_position: 1
 [[SDK](https://www.npmjs.com/package/@epilot/email-settings-client)]
 [[Setup Docs](https://help.epilot.cloud/hc/de/articles/5573710208412-E-Mail-Konfigurationsmen%C3%BC-im-Detail-epilot-360-#h_01GA1JYMPGHRE0XDCHW9N61G57)]
 
-Epilot not only provides the capability to send emails using our domain but also allows customers to bring their own subdomains. This enables messages to be sent and received via epilot, acting on behalf of your own organization. It is highly recommended that an IT professional from your company, who is well-versed with DNS records, handle this integration.
+epilot supports sending emails from its default domain, but you can also bring your own subdomain. This lets you send and receive messages through epilot on behalf of your organization.
 
-### Subdomain Delegation:
-While setting up the subdomain, a process known as 'subdomain delegation' is required. With this setup:
-
-- The subdomain will be managed by epilot by giving complete control.
-- Its primary role will be to enable the sending and receiving of emails.
-- This subdomain can be further configured to serve as a dedicated portal for end customers or installers.
-- More on the portal domain setup [here](https://help.epilot.cloud/hc/de/articles/4417739340050-Kundenportal-einrichten-epilot-360-#h_01GC9GHGN6788D2GDVE6H0BVVQ).
-
-### Optional: Managing the subdomain yourself
-
-Customers who choose not to provide Epilot with full domain access can request a DNS configuration from us. We will supply a file that includes 8 crucial DNS records necessary for activating email services on their subdomain. These include:
-- 3 CNAME records for DKIM,
-- 2 MX records for Mail Exchange,
-- 3 TXT records (2 for SPF and 1 for DMARC).
-
-Get in touch with [epilot support](mailto:support@epilot.cloud) for assistance in owning your own subdomain and obtaining the necessary DNS configuration to leverage the email functionality.
-
-:::note
-Regardless of the chosen option, the DNS records must not be removed; otherwise, we risk losing the ability to manage email communications effectively going forward.
+:::tip
+Have someone familiar with DNS records handle this integration.
 :::
 
-:::note
-For customers managing their own subdomain, you may be asked to manually change DNS records from time to time to ensure epilot works correctly and securely. This is not needed when the subdomain is delegated to epilot.
+### Subdomain Delegation
+
+The recommended approach is to delegate your subdomain to epilot. With delegation:
+
+- epilot manages the subdomain entirely.
+- Email sending and receiving work out of the box.
+- The subdomain can also serve as a portal domain for end customers or installers. See the [portal domain setup guide](https://help.epilot.cloud/hc/de/articles/4417739340050-Kundenportal-einrichten-epilot-360-#h_01GC9GHGN6788D2GDVE6H0BVVQ).
+
+### Self-Managed Subdomain
+
+If you prefer not to delegate full domain access, epilot provides a DNS configuration file containing 8 records required for email activation:
+
+| Record Type | Count | Purpose |
+|-------------|-------|---------|
+| CNAME | 3 | DKIM signing |
+| MX | 2 | Mail exchange |
+| TXT | 3 | SPF (2) and DMARC (1) |
+
+Contact [epilot support](mailto:support@epilot.cloud) to request the DNS configuration.
+
+:::warning
+Do not remove the DNS records after setup. Removing them breaks email sending and receiving.
 :::
 
-### SPF, DMARC, and DKIM Implementation:
-- After the domain is delegated to us, we handle the creation of all the necessary MX & TXT records in our AWS hosted zone. This includes:
-  - SPF (Sender Policy Framework) to specify the servers that are allowed to send email for your domain.
-  - DMARC (Domain-based Message Authentication Reporting and Conformance) to enable reporting and set a policy for email authentication.
-  - DKIM (DomainKeys Identified Mail) to sign emails cryptographically.
-- These protocols assist in verifying the email sender’s identity, which significantly reduces the risk of phishing emails and spam.
-- Further reference can be found in the [AWS documentation](https://docs.aws.amazon.com/ses/latest/dg/email-authentication-methods.html).
+:::info
+If you manage your own subdomain, epilot may occasionally ask you to update DNS records for security or deliverability reasons. This is not needed when the subdomain is delegated.
+:::
 
-### Custom "Mail From" Domain Configuration:
-- Per the [AWS SES guidelines](https://docs.aws.amazon.com/ses/latest/dg/mail-from.html), it is advised to use a different "Mail From" domain than the sender's email address that appears in the actual email.
-- To align with this guidance, we configure the "Mail From" domain to adopt the format mail.${subdomain}.
-- This distinct "Mail From" domain is a best practice that enhances email deliverability and aligns with various email authentication standards.
+### SPF, DMARC, and DKIM
 
-### Email Transmission Security:
-- SES, by default, ensures the secure transmission of emails using TLS (Transport Layer Security) encryption.
-- This ensures that the contents of the email are secure during transit and are protected from eavesdropping or tampering.
+When you delegate a subdomain, epilot creates all necessary MX and TXT records in an AWS-hosted zone:
 
-### Security on attachments:
-- To safeguard email attachments, we utilize [AWS S3 VirusScan](https://github.com/widdix/aws-s3-virusscan), which leverages the ClamAV engine. This system actively scans and identifies malicious files, ensuring they are automatically deleted before reaching any recipient. 
-- ClamAV is a robust, open-source antivirus solution recognized for its capability to detect a wide range of threats, including trojans, malware, and viruses. Its team and vast community consistently refresh the virus databases, enabling the tool to recognize and counteract the latest risks. 
-- We've also configured our system for internal notifications on any detection events, ensuring that we're always informed of potential threats.
+- **SPF** (Sender Policy Framework) -- specifies which servers can send email for your domain.
+- **DMARC** (Domain-based Message Authentication, Reporting and Conformance) -- sets an authentication policy and enables reporting.
+- **DKIM** (DomainKeys Identified Mail) -- cryptographically signs outgoing emails.
+
+These protocols verify sender identity and reduce the risk of phishing and spam. See the [AWS email authentication docs](https://docs.aws.amazon.com/ses/latest/dg/email-authentication-methods.html) for more detail.
+
+### Custom Mail-From Domain
+
+Per [AWS SES best practices](https://docs.aws.amazon.com/ses/latest/dg/mail-from.html), the Mail-From domain should differ from the sender address. epilot configures the Mail-From domain as `mail.${subdomain}` to improve deliverability.
+
+### Transport Security
+
+All emails are transmitted over TLS by default via AWS SES, protecting message contents in transit.
+
+### Attachment Scanning
+
+epilot scans all email attachments using [AWS S3 VirusScan](https://github.com/widdix/aws-s3-virusscan) powered by the ClamAV engine. Malicious files are automatically deleted before delivery. Internal alerts notify the team on every detection event.
 
 ### Email Receiving
-- We employ SES receipt rules to handle incoming emails. 
-- These rules are configured to direct the emails to separate S3 buckets, organized by tenant. 
-- Subsequently, these emails are processed and structured as message entities along with attachments, which are then organized under their respective parent threads.
+
+Incoming emails are handled via SES receipt rules. Emails are routed to per-tenant S3 buckets, then processed into message entities with attachments organized under their parent threads.
 
 ## Email Addresses
 
@@ -70,4 +76,4 @@ For customers managing their own subdomain, you may be asked to manually change 
 [[SDK](https://www.npmjs.com/package/@epilot/email-settings-client)]
 [[Setup Docs](https://help.epilot.cloud/hc/de/articles/5573710208412-E-Mail-Konfigurationsmen%C3%BC-im-Detail-epilot-360-#h_01GA1JYT6TNQ64AJH612WN9J4V)]
 
-With this setting, users have the flexibility to designate a specific email address within their subdomain for both sending and receiving messages.
+Configure specific email addresses within your subdomain for sending and receiving messages.

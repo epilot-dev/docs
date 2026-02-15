@@ -132,7 +132,7 @@ curl --location --request POST 'https://entity.sls.epilot.io/v1/entity/v1/entity
 --header 'Content-Type: application/json' \
 --data-raw '{
   "q": "_schema:journey",
-  fields: ['journey_id', '_title', 'tags'],
+  "fields": ["journey_id", "_title", "tags"],
   "size": 25,
   "sort": "_created_at:asc",
   "from": 0,
@@ -183,8 +183,8 @@ curl --location --request PUT 'https://journey-config.sls.epilot.io/v1/journey/c
     "rules": [],
     "logics": [],
     "name": "<your jouney launcher name>",
-    "organizationId": "728",
-    "brandId": "3154079",
+    "organizationId": "<your organisation id>",
+    "brandId": "<brand id from the previous step>",
     "steps": [
         {
             "name": "Launcher step",
@@ -238,4 +238,4 @@ curl --location --request PUT 'https://journey-config.sls.epilot.io/v1/journey/c
 }'
 ```
 
-With this, the Launcher Journey has been created using a launcher template. It also has been assigned a design, and the linked child journeys are mapped. The launcher journey is now ready to be used :tada:
+The launcher journey is now created from the template, assigned a design, and linked to its child journeys. It is ready to be embedded or shared.

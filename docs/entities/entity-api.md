@@ -7,27 +7,21 @@ sidebar_position: 5
 [[API Docs](/api/entity/#tag/Entities)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
-The Entity API provides a common flexible data layer for epilot business objects.
+The Entity API is the primary data layer for epilot business objects. It exposes five sub-APIs:
 
-The design of Entity API consists of multiple different parts each providing core functionality for Flexible Entities:
-
-- [Schema API](#schema-api)
-- [CRUD API](#crud-api)
-- [Search API](#search-api)
-- [Relations API](#relations-api)
-- [Activity API](#activity-api)
+- [Schema API](#schema-api) — define entity data models
+- [CRUD API](#crud-api) — create, read, update, delete entities
+- [Search API](#search-api) — list and search entities
+- [Relations API](#relations-api) — manage links between entities
+- [Activity API](#activity-api) — audit log for entity mutations
 
 ## Schema API
 
 [[API Docs](/api/entity/#tag/Schemas)]
 
-The Schema API defines the unique data model of each tenants' business entities.
+The Schema API defines the data model for each tenant's business entities. Schemas control how entities like Contacts, Orders, and Products are structured and displayed in the UI.
 
-This is where you define what e.g. _Contacts_, _Orders_, _Opportunities_, _Products_ should look like.
-
-Schema objects stored by the Schema API are used to control how the epilot application displays entities in the Portal UI.
-
-The Schema API gives full control to create, update and delete Schemas, complete with versioning and blueprints as examples of entity schemas.
+Schemas support versioning and can be created, updated, or deleted programmatically. See [Core Entities](/docs/entities/core-entities) for the built-in schemas.
 
 ```json
 // GET /v1/entity/schemas/contact
@@ -114,21 +108,15 @@ The Schema API gives full control to create, update and delete Schemas, complete
 
 [[API Docs](/api/entity/#tag/Entities)]
 
-The CRUD API (create-read-update-delete) is a simple JSON document storage for entities.
+The CRUD API provides create, read, update, and delete operations for entity documents. Any JSON object can be stored as an entity.
 
-Any JSON object can be stored and retrieved as an entity using the CRUD API.
-
-```json
-// createEntity
-// POST /v1/entity/exampleSchema
+```json title="createEntity — POST /v1/entity/{schema}"
 {
   "hello": "world"
 }
 ```
 
-```json
-// getEntity
-// GET /v1/entity/exampleSchema/77f9e5ad-7809-4376-bbf1-817b3cadb94c
+```json title="getEntity — GET /v1/entity/{schema}/{id}"
 {
   "_id": "77f9e5ad-7809-4376-bbf1-817b3cadb94c",
   "_schema": "exampleSchema",
@@ -138,65 +126,27 @@ Any JSON object can be stored and retrieved as an entity using the CRUD API.
 }
 ```
 
-```json
-// updateEntity
-// PUT /v1/entity/exampleSchema/77f9e5ad-7809-4376-bbf1-817b3cadb94c
+```json title="updateEntity — PUT /v1/entity/{schema}/{id}"
 {
   "hello": "updated"
 }
 ```
 
-```json
-// deleteEntity
-// DELETE /v1/entity/exampleSchema/77f9e5ad-7809-4376-bbf1-817b3cadb94c
-```
-
-## Relations API
-
-[[API Docs](/api/entity/#tag/Relations)]
-
-The Relations API is a convenience API to manage relations between entities:
-
-```json
-// addRelations
-// POST /v1/entity/exampleSchema/77f9e5ad-7809-4376-bbf1-817b3cadb94c/relations
-[
-  {
-    "attribute": "products",
-    "entity_id": "e8878f62-2d3d-4c86-bfe7-01a4180ff048",
-    "_tags": []
-  }
-]
-```
-
-The API can also be used to retrieve the related entities using the `?hydrate=true` parameter:
-
-```json
-// getRelations
-// GET /v1/entity/exampleSchema/77f9e5ad-7809-4376-bbf1-817b3cadb94c/relations?hydrate=true
-[
-  {
-    "_id": "e8878f62-2d3d-4c86-bfe7-01a4180ff048",
-    "_schema": "product",
-    "_title": "Sample Product",
-    "price": 10000
-  }
-]
+```text title="deleteEntity — DELETE /v1/entity/{schema}/{id}"
+204 No Content
 ```
 
 ## Search API
 
-The Entity Search API provides list and search functionality for entity documents.
+The Search API provides list and search functionality for entity documents.
 
 ### Listing Entities
 
 [[API Docs](/api/entity#operation/listEntities)]
 
-Simple listing of entities without a need for loose matching can be done using a subset of [Elastic DSL](https://www.elastic.co/docs/explore-analyze/query-filter/languages/querydsl) with convenience combination operators.
+Use `listEntities` for structured filtering with a subset of [Elasticsearch Query DSL](https://www.elastic.co/docs/explore-analyze/query-filter/languages/querydsl):
 
-```json
-// listEntities
-// POST /v1/entity:list
+```json title="listEntities — POST /v1/entity:list"
 {
   "filter": [
     { "term": { "_schema": "exampleSchema" } },
@@ -214,11 +164,9 @@ Simple listing of entities without a need for loose matching can be done using a
 
 [[API Docs](/api/entity#operation/searchEntities)]
 
-Elasticsearch (Lucene) query syntax is supported for complex querying.
+Use `searchEntities` for free-text search with Lucene query syntax:
 
-```json
-// searchEntities
-// POST /v1/entity:search
+```json title="searchEntities — POST /v1/entity:search"
 {
   "q": "_schema:exampleSchema AND hello:world",
   "sort": "_created_at:desc",
@@ -231,62 +179,66 @@ Elasticsearch (Lucene) query syntax is supported for complex querying.
 
 ### Stable Queries
 
-Stable Queries are designed to allow paginating through large and changing datasets without missing or duplicating records or perform multiple queries on the same changing dataset. They provide consistency guarantees over a short window of time, making them suitable for automation, bulk processing, exports, and similar tasks where precision matters.
+Stable Queries let you paginate through large, changing datasets without missing or duplicating records. They provide consistency guarantees over a short time window, making them ideal for automation, bulk processing, and exports.
 
-To use stable queries, pass `stable_for` (available both on `listEntities` or `searchEntities`), which denotes for how many seconds to maintain a stable search context.
-Then, always use the latest returned `stable_query_id` — each subsequent search request can return different identifiers.
+To use stable queries, pass `stable_for` (seconds) on `listEntities` or `searchEntities`. Always use the latest returned `stable_query_id` in subsequent requests — the ID can change between pages. Combine with `search_after` for precise deep pagination.
 
-It is recommended to use `search_after` with Stable Queries as it allows doing precise deep pagination.
+:::tip
+Keep the `stable_for` TTL short. Stable windows consume server-side resources and are designed for batch operations, not interactive pagination.
+:::
 
-Avoid extending the TTL unnecessarily — stable windows are short by design to reduce server-side resource usage.
+**Use stable queries when:**
+- Paginating more than a few pages in one batch
+- Paginating beyond 25,000 records deep (`from` + `size`)
+- You need consistency guarantees (no missing/duplicate items)
+- Running multiple queries against the same dataset snapshot
 
-#### When to use Stable Queries?
-
-- When you need to retrieve more than a few pages in one go.
-- When you need to paginate more than 25 000 records deep (from + size).
-- When you cannot tolerate missing or duplicate items during pagination.
-- When you need to perform multiple queries within the same context.
-
-#### When not to use Stable Queries?
-
-- If you are performing just one query with no pagination (<=1000 items - max size).
-- If your next related query is waiting for user input. For example, you do not know when the user will visit the next page and stable windows are limited in time by design. It is better to give the user tools to find the relevant record using filters or search rather than to require them to scan pages of results manually.
+**Skip stable queries when:**
+- Fetching a single page (up to 1,000 items, the max `size`)
+- The next page request depends on user input (the stable window may expire)
 
 ## Relations API
 
 [[API Docs](/api/entity/#tag/Relations)]
 
-The Relations API is a convenience API to manage relations between entities.
+The Relations API manages links between entities. Relations are stored as attributes with a `$relation` property on the entity document.
 
-Relations are stored as an attribute with a `$relation` property on the entity document.
-
-```json
-// addRelations
-// POST /v1/entity/exampleSchema/77f9e5ad-7809-4376-bbf1-817b3cadb94c/relations
+```json title="addRelations — POST /v1/entity/{schema}/{id}/relations"
 [
   {
-    "attribute": "account",
+    "attribute": "products",
     "entity_id": "e8878f62-2d3d-4c86-bfe7-01a4180ff048",
     "_tags": []
   }
 ]
 ```
 
+Pass `?hydrate=true` to retrieve full related entity data:
+
+```json title="getRelations — GET /v1/entity/{schema}/{id}/relations?hydrate=true"
+[
+  {
+    "_id": "e8878f62-2d3d-4c86-bfe7-01a4180ff048",
+    "_schema": "product",
+    "_title": "Sample Product",
+    "price": 10000
+  }
+]
+```
+
+See [Relations](/docs/entities/relations) for details on how relations are stored and queried.
+
 ## Activity API
 
 [[API Docs](/api/entity#tag/Activity)]
 
-The Activity API provides an append-only event log for all actions performed on entities.
+The Activity API provides an append-only audit log for all entity mutations.
 
-Each activity item contains a timestamp, the caller (who), a type, title and message a list of Entity `createEntity`, `updateEntity`, `deleteEntity` operations.
+Each activity item contains a timestamp, the caller identity, a type, title, message, and a list of operations (`createEntity`, `updateEntity`, `deleteEntity`).
 
-Entity mutations automatically create activities unless an existing activity id is provided explicitly, in which case the operation is linked to the existing activity.
+Entity mutations automatically create activity entries. To group multiple operations under one activity, pass an existing `activity_id` in the request.
 
-Activities stored in the API appear in the Activity Feed in the entity portal UI.
-
-```json
-// getEntityActivityFeed
-// GET  /v1/entity/exampleSchema/77f9e5ad-7809-4376-bbf1-817b3cadb94c/activity
+```json title="getEntityActivityFeed — GET /v1/entity/{schema}/{id}/activity"
 {
   "total": 1,
   "results": [

@@ -3,14 +3,14 @@ sidebar_position: 5
 title: Pricing Models
 ---
 
-Pricing Models are a way to define how your customers will be charged for your products. The `Price` entity has a `pricing_model` field that defines the pricing model to be used. It can be one of the following:
+Pricing models define how customers are charged. Set the `pricing_model` field on a `Price` entity to one of:
 
 1. `per_unit`
 2. `tiered_volume`
 3. `tiered_cumulative`
 4. `tiered_flatfee`
 
-These models can be unit based or flat-fee based as shown in the following image:
+Models are either unit-based or flat-fee-based:
 
 <table
   width="600px"
@@ -54,13 +54,13 @@ These models can be unit based or flat-fee based as shown in the following image
   </tbody>
 </table>
 
-Each model is specified in detail below.
+Details for each model follow.
 
 <hr />
 
 ## Standard
 
-It's the most common pricing model. It's used when you want to charge your customers for each unit of your product. If `variable_price=true`, the amount to be paid by the customer will be calculated based the user input, ex: consumption.
+Charges a fixed amount per unit. When `variable_price=true`, the total is calculated from user input (e.g. consumption).
 
 Example:
 
@@ -82,7 +82,7 @@ Amount to pay = 2000 kWh * €0.055/kWh = 110 €
 
 ## Tiered Volume
 
-It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on the `Price` entity. The amount to be paid by the customer will consider the unit price of the tier according to the quantity consumed and the same unit price is applied for all the consumed units.
+The customer lands in a single tier based on total quantity, and that tier's unit price applies to **all** consumed units.
 
 Example:
 
@@ -129,7 +129,7 @@ Amount to pay = 2000 kWh * €0.054/kWh = 108 €
 
 ## Tiered Cumulative
 
-It's used when you want to charge your customers for a product based on the amount of units they consume. It's necessary to define the price tiers on the `Price` entity. While similar to volume pricing, cumulative pricing charges for the usage in each tier instead of applying a single price to the tier in which the user lands on.
+Each tier's unit price applies only to units **within that tier's range**. Lower tiers keep their price as consumption crosses into higher tiers.
 
 Example:
 
@@ -176,7 +176,7 @@ Amount to pay = 1000 kWh * €0.055/kWh + 1000 kWh * €0.054/kWh = 109 €
 
 ## Tiered Flat Fee
 
-It's used when you want to charge your customers for a product based on a flat-fee applicable to a given amount of units consumed. It's necessary to define the price tiers on the `Price` entity. While similar to tiered volume, tiered flat fee charges for the same price (flat) for the entire range instead using the unit price to multiply the quantity.
+Charges a flat fee based on which tier the consumption falls into. The customer pays the tier's flat fee regardless of exact quantity.
 
 Example:
 
@@ -221,19 +221,15 @@ Max peak power = 7 kW
 Amount to pay = 100 €
 ```
 
-## Tier based pricing models caveats
+## Tier selection and input precedence
 
-The tier that will be used to calculate the amount to be paid by the customer is the one that the customer lands on. The tiers ranges are defined by the `up_to` field.
+Tier ranges are defined by the `up_to` field. The customer's consumption determines which tier applies. For cumulative models, all tiers up to the matched tier contribute.
 
-For example, if the customer consumes 2000 kWh, the tier that will be used is the one that goes up to 2000 kWh, or when the tier is graduated, all the ones until the landed tier.
+Consumption comes from two possible sources:
 
-That consumption can either be requested via a mapping input or via a quantity input. Since both could be used at the same time, the following rules apply:
+| Priority | Source | Where it's set |
+| --- | --- | --- |
+| 1 | Mapping input | NumberInputBlock in a [Journey](/docs/journeys/journey-builder), or mapping input on an [Order](/docs/pricing/orders) |
+| 2 | Quantity input | ProductSelectBlock/ShoppingCart in a [Journey](/docs/journeys/journey-builder), or quantity input on an [Order](/docs/pricing/orders) |
 
-1. If the mapping input is used, the consumption will be the value of the mapping input.
-2. If the quantity input is used, the consumption will be the value of the quantity input.
-3. If both inputs are used, the consumption will be the value of the mapping input, ignoring the quantity input.
-4. If none of the inputs are used, the consumption will be assumed as 1.
-
-The mapping input can be requested on a [Journey](/docs/journeys/journey-builder) via a NumberInputBlock mapped to the price or on an [Order](/docs/pricing/orders) via the mapping input.
-
-The quantity input can be requested on a [Journey](/docs/journeys/journey-builder) via a quantity input on a ProductSelectBlock/ShoppingCart or on an [Order](/docs/pricing/orders) via the quantity input.
+If both inputs are provided, the **mapping input takes precedence**. If neither is provided, consumption defaults to `1`.

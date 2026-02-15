@@ -3,26 +3,23 @@ sidebar_position: 2
 title: "Security"
 ---
 
-## API Key
+## Endpoint Authentication
 
-API Key authentication allows you to secure your webhook endpoint by requiring a secret key to be included in the request headers. When configuring your webhook, you can specify an API key that epilot will send with each request.
+epilot supports three methods for authenticating requests to your webhook endpoint:
 
-The API key is typically sent in the `X-API-Key` header. Your endpoint should validate this key before processing any webhook payload to ensure the request originates from epilot.
+### API Key
 
-## Basic Auth (Username + Password)
+epilot sends your configured API key in the `X-API-Key` header with each request. Validate this key before processing any payload.
 
-Basic Authentication provides a simple way to secure your webhook endpoint using a username and password combination. When configured, epilot encodes the credentials using Base64 and includes them in the `Authorization` header with the `Basic` scheme.
+### Basic Auth
 
-Your server should decode and validate these credentials before accepting the webhook payload. This method is widely supported and easy to implement, though it should always be used over HTTPS to prevent credential exposure.
+epilot Base64-encodes the configured username and password and sends them in the `Authorization: Basic` header. Always use HTTPS to prevent credential exposure.
 
-## OAuth
+### OAuth
 
-OAuth authentication enables secure, token-based access to your webhook endpoints. This method is particularly useful when integrating with systems that already use OAuth for authentication.
+epilot obtains an access token from your authorization server and sends it in the `Authorization: Bearer` header. Token expiration and refresh are handled automatically.
 
-When configured with OAuth, epilot will obtain an access token from your authorization server and include it in the `Authorization` header with the `Bearer` scheme. This approach provides enhanced security through token expiration and refresh mechanisms.
-
-
-# Webhook Signature Verification
+## Webhook Signature Verification
 
 Every webhook request from epilot includes three signature headers:
 

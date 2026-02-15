@@ -6,31 +6,36 @@ sidebar_position: 2
 
 :::info
 
-As one of our core [engineering principles](https://github.com/epilot-dev/engineering-principles#api-first-we-design-software-with-apis), epilot is built API first, meaning the software is designed using concrete API contracts before implementation.
+As a core [engineering principle](https://github.com/epilot-dev/engineering-principles#api-first-we-design-software-with-apis), epilot designs API contracts before implementation.
 
 :::
 
-We use machine readable standards to design and describe our APIs:
+All APIs are defined using machine-readable standards:
 
 - [OpenAPI specification](https://www.openapis.org/)
-- [GraphQL schemas](https://graphql.org/)
 - [TypeScript type definitions](https://www.typescriptlang.org/)
 
 ## Public API
 
-Our core APIs are public and free to use for our technical partners and customers to build and extend our product for their own purposes.
+All core APIs are public. Partners and customers use them to build integrations and extend the platform.
 
-Click here to view our [API documentation](/api).
+Browse the full [API Reference](/api).
 
-## Accessing APIs with MCP Server
+## Webhooks & Event Schemas
 
-For developers working with LLM clients (like Claude Desktop), you can interact with epilot APIs more naturally using our MCP (Model Context Protocol) server integration. This allows you to ask questions about our APIs and explore endpoints directly within your LLM interface.
+epilot publishes platform events through [Webhooks](/docs/webhooks), enabling real-time push notifications to external systems. Events follow a standardized schema defined in [Core Events](/docs/webhooks/core-events), covering entity lifecycle changes, workflow transitions, portal actions, and more.
+
+Webhooks are the primary mechanism for outbound integrations — ERPs, middleware, and third-party systems subscribe to the events they care about and receive structured payloads as they happen. See [Payload Structure](/docs/webhooks/payload-structure/intro) for format details and [Security](/docs/webhooks/security) for signature verification.
+
+## Accessing APIs with MCP
+
+Developers using LLM clients (Claude Desktop, Cursor, etc.) can explore epilot APIs through the [MCP](https://modelcontextprotocol.io/) server.
 
 ### Setup
 
-Add the following configuration to your MCP client settings (see [MCP configuration guide](https://modelcontextprotocol.io/quickstart/user) for detailed setup instructions):
+Add this to your MCP client configuration (see [MCP setup guide](https://modelcontextprotocol.io/quickstart/user)):
 
-```json
+```json title="MCP client config"
 {
   "mcpServers": {
     "epilot-openapi": {
@@ -48,10 +53,6 @@ Add the following configuration to your MCP client settings (see [MCP configurat
 
 Once configured, you can:
 
-- Ask questions about available endpoints
-- Get detailed information about API schemas
+- Query available endpoints and schemas
 - Explore request/response formats interactively
 - Generate code examples for specific endpoints
-- Understand API relationships and dependencies
-
-This integration makes it easier to discover and work with epilot's extensive API ecosystem directly from your development environment.

@@ -6,7 +6,7 @@ description: Complete integration examples for common use cases
 
 # Integration Examples
 
-This page provides complete, working examples for common ERP integration scenarios.
+Complete, working examples for common ERP integration scenarios.
 
 ## Example 1: Customer Master Data Sync
 
@@ -475,4 +475,4 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/erp/updates/mapping_simul
   }'
 ```
 
-The simulation returns the transformed entity data without persisting anything, allowing you to verify your mappings before production use.
+The simulation returns transformed entity data without persisting anything, so you can verify mappings before production use.

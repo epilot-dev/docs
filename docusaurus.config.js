@@ -100,7 +100,7 @@ const apiChangelogPlugins = specs
         id: 'apps',
         path: 'apps',
         routeBasePath: 'apps',
-        sidebarPath: require.resolve('./sidebars.js'),
+        sidebarPath: require.resolve('./sidebars-apps.js'),
       },
     ],
     [
@@ -154,6 +154,18 @@ const apiChangelogPlugins = specs
             label: 'Apps',
             docsPluginId: 'apps',
           },
+          {
+            href: 'https://marketplace.epilot.cloud/en',
+            label: 'Marketplace',
+            position: 'right',
+            className: 'navbar-button navbar-button--secondary',
+          },
+          {
+            href: 'https://portal.epilot.cloud',
+            label: 'Log in',
+            position: 'right',
+            className: 'navbar-button navbar-button--primary',
+          },
         ],
       },
       footer: {
@@ -173,6 +185,10 @@ const apiChangelogPlugins = specs
               {
                 label: 'SDK',
                 to: '/docs/architecture/sdk',
+              },
+              {
+                label: 'Open Source',
+                to: '/docs/architecture/open-source',
               },
             ],
           },

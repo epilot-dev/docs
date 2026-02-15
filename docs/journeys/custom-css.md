@@ -4,23 +4,23 @@ sidebar_position: 9
 
 # Custom CSS
 
-Custom CSS empowers you to personalize your journeys and branding beyond the standard Design Builder settings. Easily change the look and feel to match your brand and create engaging experiences for your end users. This guide will help you understand how to get started with the feature.
+Custom CSS lets you style journeys beyond the standard Design Builder settings. Override design tokens, target specific components, and match your exact brand requirements.
 
 ![Custom CSS](../../static/img/design-builder-custom-css.png)
 
-## Why use Custom CSS?
+## Why Use Custom CSS?
 
-Custom CSS gives you the power to:
+Custom CSS lets you:
 
-- **Enhance your journey's look to match your brand:** Customize buttons, inputs, links, cards, and more with your own CSS rules.
-- **Apply detailed styling:** Make adjustments at a global theme level, journey level, step level, or even block level.
-- **Stand out:** Create unique, visually appealing designs that resonate with your end customers.
+- **Match your brand** — customize buttons, inputs, links, cards, and more with your own CSS rules.
+- **Style at any level** — apply changes globally, per journey, per step, or per block.
+- **Create unique designs** — go beyond the Design Builder's built-in controls.
 
-**Note:** This feature is part of our new Concorde design migration. Custom CSS applies only to journeys (not the End Customer Portal). We’re continuously improving support for this feature, so refer to the latest release notes for newer updates.
+:::info
+Custom CSS applies only to journeys using the **Concorde** design (not the End Customer Portal or legacy design). It is available on the **Professional** pricing plan and above.
+:::
 
-If you plan to use this feature with dark mode, refer to the dark mode section below.
-
-**Pricing:** This feature is available exclusively from the Professional pricing plan.
+If you plan to use Custom CSS with dark mode, see the [dark mode section](#dark-mode) below.
 
 ## Styling Structure
 
@@ -166,9 +166,12 @@ This snippet below modifies the alignment of the logo in the header of a journey
 
 ```css
 :root {
-  --concorde-topbar-logo-alignment: flex-start; // Left alignment
-  --concorde-topbar-logo-alignment: center; // Center alignment (default)
-  --concorde-topbar-logo-alignment: flex-end; // Right alignment
+  /* Left alignment */
+  --concorde-topbar-logo-alignment: flex-start;
+  /* Center alignment (default) */
+  --concorde-topbar-logo-alignment: center;
+  /* Right alignment */
+  --concorde-topbar-logo-alignment: flex-end;
 }
 ```
 
@@ -577,13 +580,7 @@ We’ve started supporting this migration process and recommend moving your jour
 **Q: Can I get help if my CSS isn’t working as expected?**  
 **A:** Yes! Our support team is available to help you.
 
-## Conclusion
-
-With the ability to apply global, journey, step, and block-level styles, you have the flexibility to fully control your design without compromising the integrity of the base system.
-
-For further questions or feedback, please reach out to our support team.
-
-Further reading:
+## Further Reading
 
 - [Concorde Design tokens](/docs/ui-design/concorde-design-tokens)
 - [Concorde HTML Layout Overview](/docs/ui-design/concorde-html-structure)

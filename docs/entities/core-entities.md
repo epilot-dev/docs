@@ -7,7 +7,7 @@ import EntitySchemaViewer from '@site/src/components/EntitySchemaViewer';
 
 # Core Entities
 
-This page provides an overview for epilot's core entity data model with all of the built-in entity schemas, including examples and schema definitions.
+epilot ships with a set of built-in entity schemas that model common business objects. This page lists all core schemas with their descriptions, relationship diagram, and links to API docs.
 
 ## Relationship Diagram
 
@@ -183,7 +183,7 @@ graph TB
 <EntitySchemaViewer
   schema="meter"
   displayName="Meter"
-  description="Meters store details about power, gas or water or other devices used to meter consumption."
+  description="Meters store details about power, gas, water, or other devices used to meter consumption."
   apiLink="/api/metering#tag/meter_schema"
 />
 

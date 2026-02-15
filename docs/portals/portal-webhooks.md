@@ -3,29 +3,29 @@ title: Portal Webhooks
 sidebar_position: 4
 ---
 
-# Portal Webhooks 
+# Portal Webhooks
 
-Customer and installer portals specific webbhooks allow to integrate applications with the activities emitted within portal.
+Portal-specific webhooks let you integrate external applications with activities that occur inside customer and installer portals.
 
-In the epilot portal you can configure a webhook which includes the activity:
+## Setup
+
+1. Configure a webhook that includes the portal activity:
 
 ![Doc Downloaded Webhook](../../static/img/portals/doc-downloaded-webhook.png)
 
-After that go to "Automations" and create a new automation with on of the portal specific triggers. E.g. "File Activity: File Downloaded from portal":
+2. Go to **Automations** and create a new automation with a portal-specific trigger (e.g. "File Activity: File Downloaded from portal"):
 
 ![Doc Downloaded Automation Trigger](../../static/img/portals/doc-downloaded-automation-trigger.png)
 
-Then add an action to the automation and select the webhook you crated before:
+3. Add an action to the automation and select the webhook you created:
 
 ![Doc Downloaded Automation Action](../../static/img/portals/doc-downloaded-automation-action.png)
 
 ## Webhook Payload
 
-The webhook message contains the whole `entity` that was part of the acitity. The `activity` part of the webhook contains the `type` of the acitivyt and `caller` information of the user who triggered the activity.
+The webhook message contains the full `entity` involved in the activity. The `activity` object includes the activity `type` and `caller` information identifying the portal user who triggered it.
 
-Example of the webhook message for the activity "DocDownloadedFromPortal":
-
-```json
+```json title="Example: DocDownloadedFromPortal"
 {
     "metadata": {
         "webhook_id": "17DwnAQo8zZaJWCQ5HaZhC",
@@ -35,7 +35,7 @@ Example of the webhook message for the activity "DocDownloadedFromPortal":
         "_schema": "file",
         "_id": "78794089-343c-4bcd-97a1-9b307c3ac040",
         "_org": "739224",
-        ...other entity attribures
+        ...other entity attributes
     },
     "activity": {
         "type": "DocDownloadedFromPortal",
@@ -66,4 +66,7 @@ Example of the webhook message for the activity "DocDownloadedFromPortal":
 ```
 
 ## Activity Types
-- `DocDownloadedFromPortal` - Automation trigger "File Activity: File Downloaded from portal"
+
+| Type | Automation Trigger |
+|---|---|
+| `DocDownloadedFromPortal` | File Activity: File Downloaded from portal |

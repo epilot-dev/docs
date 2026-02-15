@@ -22,23 +22,23 @@ sidebar_position: 1
   </span>
 </h1>
 
-Notes provide a way to exchange contextual information in a collaborative way to other Entities in Epilot. **All Notes created in Epilot are represented as Note Entities**, and are accesible through [Entity API's](/api/entity#tag/entity_schema) and [SDK](/docs/architecture/sdk).
+Notes let you attach contextual information to other entities in epilot. **All notes are represented as Note entities**, accessible through the [Entity API](/api/entity#tag/entity_schema) and [SDK](/docs/architecture/sdk).
 
 :::warning
-Notes were previously available as a platform feature accessible through the Notes Tab on the Entity View. This feature is being deprecated and removed in favor of **Notes as Entities** and the new **Notes Capability**, available from the Entity sidebar, described in this section.
+Notes were previously available through the Notes Tab on the Entity View. That feature is deprecated in favor of **Notes as Entities** and the **Notes Capability** on the Entity sidebar, described in this section.
 
-**Notes as Entities** are currently in closed **Beta** only available to selected customers. General Availability will be announced soon.
-:::warning
+**Notes as Entities** is currently in closed **Beta**, available to selected customers only. General Availability will be announced soon.
+:::
 
 ## Using Notes from the Entity sidebar
 
 ### Accessing Notes from the Entity View
 
-On any of the supported Entity types, you can create a new Note by expanding the sidebar and going to the **Notes Tab**. This will show you all the Notes associated with this Entity.
+On any supported entity type, expand the sidebar and go to the **Notes Tab** to see all notes associated with that entity.
 
 ### Creating a new Note
 
-To create a new Note, click on the **New Note** button on the top right of the Notes Tab. You can use various formatting options to structure your Note, mention other users from your organization, add file attachments, and categorize your Notes with labels.
+Click **New Note** in the top-right corner of the Notes Tab. You can format your note with rich text, mention other users, add file attachments, and categorize with labels.
 
 <video
   width="100%"
@@ -54,7 +54,7 @@ To create a new Note, click on the **New Note** button on the top right of the N
 
 ### Creating a comment on a Note thread
 
-You can also create a comment on a Note thread by clicking on the **Comment** button at the bottom corner of the Note. You can use Note comment threads to discuss a topic in more detail, without adding clutter to the to the current Entity context.
+Click the **Comment** button at the bottom of any note to start a thread. Comment threads let you discuss a topic in detail without cluttering the parent entity context.
 
 <video
   width="100%"
@@ -70,7 +70,7 @@ You can also create a comment on a Note thread by clicking on the **Comment** bu
 
 ### Pinning Notes
 
-You can pin a Note to the top of the Notes tab by clicking on the **Pin** button in any Note. This will make the Note easilly accessible from the top of the Notes tab.
+Click the **Pin** button on any note to pin it to the top of the Notes tab for quick access.
 
 <video
   width="100%"
@@ -86,21 +86,21 @@ You can pin a Note to the top of the Notes tab by clicking on the **Pin** button
 
 ### Searching Notes
 
-You can search for any Note that is contextually attached to the current Entity you're viewing by typing parts of it's content, mentioned users, or labels on the search input at the top of the Notes tab.
+Search notes on the current entity by content, mentioned users, or labels using the search input at the top of the Notes tab.
 
 :::info
-Furthemore, you can filter Notes globally through the Note Entity table. See more details about advanced usage of Note Entities [here](/docs/notes/note_entities).
-:::info
+You can also filter notes globally through the Note entity table. See [Note Entities](/docs/notes/note_entities) for details.
+:::
 
 ### Note file attachments
 
-You can add file attachments to your Notes and Note comments. These attachements will be resolved to File Entities and can be accessed through the [File API](/api/file).
+You can add file attachments to notes and comments. Attachments are stored as File entities and accessible through the [File API](/api/file).
 
 ## Configuring Notes notifications
 
-New Notes will automatically trigger notification events to users that are either:
+New notes automatically notify users who are:
 
-- Participating in the Note thread (eg.: created the Note or replied to an Note thread at least once);
-- Mentioned directly in the Note or Note comment;
+- Participating in the thread (created the note or replied at least once)
+- Mentioned directly in the note or comment
 
-To change these settings, navigate to User > My Account > Notifications, and look for the **Communication** section.
+To change notification preferences, go to **User > My Account > Notifications** and find the **Communication** section.

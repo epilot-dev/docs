@@ -2,41 +2,39 @@
 sidebar_position: 14
 ---
 
-# Audit logs
+# Audit Logs
 
 [[SDK](https://www.npmjs.com/package/@epilot/audit-logs-client)]
 
-Audit logs are a record of all the events which modified resources in your account. This includes changes to entities, automations, webhooks, and more. The audit logs are immutable and can be accessed by admin users in the epilot portal.
-
+Audit logs record all events that modify resources in your organization: entity changes, automation runs, webhook updates, and more.
 
 :::info
-
-Audit logs are a pricing feature for enterprise tiers. Contact our sales team to learn more about the pricing.
-
+Audit logs are an enterprise-tier feature. Contact sales for details.
 :::
 
 ![Audit log table](../static/img/audit-log-table.png)
 
 ## Permission
-To access the audit logs, you need to have the `audit_log:view` permission. This permission is only available to admin users or as a dedicated permission, which can be assigned to any user in the access management.
 
-## Services being audited
-As epilot covers a variety of services, the audit logging is added incrementally. The following services are currently being audited. Contact our support team if you need audit logs for a service not listed here.
+Viewing audit logs requires the `audit_log:view` permission. Admin users have this by default. Assign it to other users through access management.
 
+## Audited services
 
-| Service  	|    |
-|----------	|----------	|
-| Entity   	| ✅      	|
-| Workflow 	| ✅      	|
-| Webhook  	| ✅      	|
-| Automation| ✅      	|
-| Journey  	| ❌       	|
-| User     	| ✅    	|
-| Permission     	| ✅       	|
-| Blueprint     	| ❌       	|
-| Messaging     	| ❌       	|
-| Email Settings    	| ✅      	|
+Coverage expands over time. Contact support if you need audit logs for a service not yet covered.
 
+| Service        | Audited |
+| -------------- | ------- |
+| Entity         | Yes     |
+| Workflow       | Yes     |
+| Webhook        | Yes     |
+| Automation     | Yes     |
+| Journey        | No      |
+| User           | Yes     |
+| Permission     | Yes     |
+| Blueprint      | No      |
+| Messaging      | No      |
+| Email Settings | Yes     |
 
-## Facade apis
-Our generic entity api is audited. More specific wrappers for this apis (facade apis) are not audited to avoid duplication.
+## Facade APIs
+
+The Entity API is audited. Facade APIs (wrappers around the Entity API) are not separately audited to avoid duplicate entries.

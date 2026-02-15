@@ -11,7 +11,7 @@ sidebar_position: 2
 
 ## Workflow data structure
 
-The example below is the workflow data structure of how the workflow information presents itself inside the entity payload. The workflow payload is detailed  provides a nice overview of the process.
+The example below shows how workflow information is stored inside the entity payload. The `workflows` object is keyed by `definition_id`, with each key containing an array of active workflow execution summaries.
 ```json
 {
     "_id": "11111111-1111-1111-1111-111111111111",
@@ -113,10 +113,9 @@ The example below is the workflow data structure of how the workflow information
 }
 ```
 
-## Old data structure and migration
-`deprecated`
+## Old Data Structure (Deprecated)
 
-The example below is the old structure for workflow data on entities.
+The example below shows the previous `workflows` array structure, which has been replaced by the hashmap structure above.
 ```json
 {
     "_id": "11111111-1111-1111-1111-111111111111",
@@ -145,9 +144,9 @@ The example below is the old structure for workflow data on entities.
 
 ## Migration
 
-How to migrate from the old workflow structure to the new workflow structure. Changes:
+To migrate from the old array-based structure to the new hashmap structure, apply the following field mappings:
 
-`deprecated workflow structure`
+**Deprecated structure:**
 ```json
 {
     "_id": "11111111-1111-1111-1111-111111111111",
@@ -174,7 +173,7 @@ How to migrate from the old workflow structure to the new workflow structure. Ch
 }
 ```
 
-`workflow structure`
+**Current structure:**
 ```json
 {
     "_id": "11111111-1111-1111-1111-111111111111",
@@ -207,7 +206,7 @@ How to migrate from the old workflow structure to the new workflow structure. Ch
                 "phase_id": "362pq2sy9ll",
                 "phase_name": "Research"
             }
-        ]
+        ],
         "primary": {
             "id": "85mk9wzyp98",
             "definition_id": "rUqQv3Xd",
@@ -236,16 +235,27 @@ How to migrate from the old workflow structure to the new workflow structure. Ch
 ```
 
 ### Changes
-Updated from `workflows` Array                      ➡️ `workflows` Hashmap (`definition_id`: {...})
-- Added `primary` key into `workflows` object
-- Added `duedate` key into `workflows` object
-- Added `last_update_time` key into `workflows` object
-- Added `task_assignees` key into `workflows` object
-- Added `task_execution_type` key into `workflows` object
-- Migrated `workflow_status`    ➡️ `status`
-- Migrated `workflow_assignees` ➡️ `assignees`
-- Migrated `workflow_definition_id` ➡️ `definition_id`
-- Migrated `next_open_step_id` ➡️ `task_id`
-- Migrated `next_open_step_name` ➡️ `task_name`
-- Migrated `next_open_section_id` ➡️ `phase_id`
-- Migrated `next_open_section_name` ➡️ `phase_name`
+
+**Structural change:** `workflows` migrated from an array to a hashmap keyed by `definition_id`.
+
+**New fields:**
+
+| Field | Description |
+|-------|-------------|
+| `primary` | Points to the primary workflow execution |
+| `duedate` | Workflow-level due date |
+| `last_update_time` | Timestamp of the last update |
+| `task_assignees` | Assignees for the current task |
+| `task_execution_type` | `AUTOMATION` or `MANUAL` |
+
+**Renamed fields:**
+
+| Old Field | New Field |
+|-----------|-----------|
+| `workflow_status` | `status` |
+| `workflow_assignees` | `assignees` |
+| `workflow_definition_id` | `definition_id` |
+| `next_open_step_id` | `task_id` |
+| `next_open_step_name` | `task_name` |
+| `next_open_section_id` | `phase_id` |
+| `next_open_section_name` | `phase_name` |

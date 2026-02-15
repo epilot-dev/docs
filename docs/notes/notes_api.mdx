@@ -5,64 +5,59 @@ sidebar_position: 3
 
 [[API Docs](/api/notes)] [[SDK](https://www.npmjs.com/package/@epilot/notes-client)]
 
-Developers and integration partners can leverage the Notes API to easily manipulate Note Entities in the platform.
+The Notes API lets developers and integration partners create, read, update, and delete Note entities.
 
-## Getting notes for an Entity context
+## Getting Notes by Context
 
-You can use the [`getNotesByContext`](/api) operation to get all the Notes associated with an Entity context. This will return all the Notes from the Entity ID passed as a path parameter.
+Use the [`getNotesByContext`](/api/notes#tag/Notes/operation/getNotesByContext) operation to retrieve all notes associated with an entity.
 
-> *Example of a `getNotesByContext` request*:
+```
+GET /v1/notes/{entity_id}
+```
 
-> `https://notes.dev.sls.epilot.io/v1/notes/8429e0f4-3c06-41fd-92bb-a00ba575d1fc`
+### Non-Entity Contexts
 
-### Non-Entity contexts
+Filter notes by non-entity contexts such as `workflow_execution` or `workflow_task` using the `contexts` query parameter:
 
-In addition to the Entity ID of the primary context for a Note, you can use the `contexts` query parameter to filter the returned Notes by specific non-entity contexts, such as `workflow_execution` and `workflow_task`.
-
-> *Example of a `getNotesByContext` request with a `contexts` query parameter*:
-
-> `https://notes.dev.sls.epilot.io/v1/notes/8429e0f4-3c06-41fd-92bb-a00ba575d1fc?contexts[]={"type":"workflow_execution","id":"zio6qcaduot"}&contexts[]={"type":"workflow_task","id":"anm0narsy2i"}`
+```
+GET /v1/notes/{entity_id}?contexts[]={"type":"workflow_execution","id":"zio6qcaduot"}
+```
 
 :::note
-Remember to encode the URL with a method like [`encondeURIComponent()`](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent).
-:::note
+URL-encode the `contexts` parameter values using [`encodeURIComponent()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent).
+:::
 
-## Creating and updating Notes
+## Creating and Updating Notes
 
-You can create a new Note by using the [`createNote`](/api/notes#tag/Notes/operation/createNote) operation. And update an existing Note using the [`updateNote`](/api) or [`patchNote`](/api) This operation accepts all the attributes especified on the Note Entity schema, and a `content` attribute, which should be a stringified HTML content for the Note.
+Create a note with [`createNote`](/api/notes#tag/Notes/operation/createNote). Update an existing note with [`updateNote`](/api/notes#tag/Notes/operation/updateNote) or [`patchNote`](/api/notes#tag/Notes/operation/patchNote). These operations accept all attributes defined on the Note entity schema, plus a `content` attribute containing stringified HTML.
 
-### Note content formatting rules
+### Content Formatting Rules
 
-The styles of the Note content are normalized, which means that any style attributes in the `content` attribute will be removed during the Note creation. We conform to standard HTML tags to resolve the Note formatting:
+Note content is normalized -- inline style attributes are stripped. Use standard HTML tags for formatting:
 
-- The entire content should be wrapped in a `<body>` tag;
-- `<p>` tag for simple paragraphs;
-  - You can use the `<span>` tag with the `epilot360-comment-user-id` attribute to mention users in the Note;
-- `<h1>` to `<h3>` tags for headings (we allow a maximum of 3 levels of heading depth);
-- `<li>` tag for list items, wrapped in a `<ol>` tag for ordered lists, and `<ul>` for unordered lists;
-- `<a>` tag for links;
-  - The `href` attribute is required for links;
-- For styling tags, we allow the following:
-  - `<strong>` or `<b>` tag for bold text;
-  - `<em>` or `<i>` tag for italic text;
-  - `<u>` tag for underlined text;
+- Wrap all content in a `<body>` tag
+- `<p>` for paragraphs
+  - Use `<span>` with the `epilot360-comment-user-id` attribute to mention users
+- `<h1>` to `<h3>` for headings (max 3 levels)
+- `<ol>` / `<ul>` with `<li>` for lists
+- `<a href="...">` for links
+- `<strong>` / `<b>` for bold, `<em>` / `<i>` for italic, `<u>` for underline
 
-> *Example of a `createNote` request body with valid HTML content*:
-```json
+```json title="createNote request body"
 {
   "entity_id": "4e9f4d7a-f5d8-4f0d-b8d6-d1b1d5f1f2f3",
-  "content": "<body><p>Hello from Epilot</p></body>",
+  "content": "<body><p>Hello from epilot</p></body>"
 }
 ```
 
 ## Pinning Notes
 
-You can pin a Note to the top of the Notes tab by using the [`pinNote`](/api/notes#tag/Notes/operation/pinNote) operation. This operation accepts the Entity ID of the Note as a path parameter.
+Use [`pinNote`](/api/notes#tag/Notes/operation/pinNote) to pin a note to the top of the Notes tab. Pass the Note entity ID as a path parameter.
 
 ## Deleting Notes
 
-You can delete a Note using the [`deleteNote`](/api/notes#tag/Notes/operation/deleteNote) operation. This operation accepts the Entity ID of the Note as a path parameter.
+Use [`deleteNote`](/api/notes#tag/Notes/operation/deleteNote) to delete a note. Pass the Note entity ID as a path parameter.
 
 :::danger
-Deleting a Note that has comments will also delete all the Note Entities for these comments
-:::danger
+Deleting a note that has comments also deletes all comment Note entities in that thread.
+:::

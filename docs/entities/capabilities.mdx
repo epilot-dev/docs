@@ -4,12 +4,14 @@ sidebar_position: 7
 
 # Capabilities
 
-[[API Docs](/docs/entities/flexible-entities)]
+[[API Docs](/api/entity/#tag/Schemas)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
+
+Capabilities extend entity views with additional functionality. They are defined on a schema and hook into the UI as tabs, attribute groups, or action buttons. Each capability specifies a `name`, `title`, and a list of `ui_hooks` that control where and how the capability renders.
 
 ## Native Capabilities
 
-Native capabilities are capabilities that are built into the platform and are available to all entities. These capabilities are configurable and are always available. The following capabilities are available:
+The following capabilities are built into the platform and available to all entities:
 
 ### Order Table
 
@@ -35,7 +37,7 @@ Order Capability basic structure:
   }
 ```
 
-Capability configuration to support hidding columns:
+Capability configuration to support hiding columns:
 
 ```json
   {
@@ -60,17 +62,17 @@ Capability configuration to support hidding columns:
   }
 ```
 
-The property `settings.columns` enables us to control which columns shoube be visible or hidden.
+The `settings.columns` property controls which columns are visible or hidden.
 
 ### Quoting
 
-The quoting capability provides the ability to manage quotes and orders (`items`) within the Opportunity entity. These quotes & orders are made of Order entities essentially and describe a set of items to be sold or quoted to an end-customer.
+The quoting capability manages quotes and orders (`items`) within the Opportunity entity. Each quote or order links to Order entities that describe a set of items to be sold or quoted to an end-customer.
 
-For further details on the structure of the `items` field, please refer to our [Pricing API](/api/pricing#tag/opportunity_schema) and check the Opportunity Schema.
+For details on the `items` field structure, see the [Pricing API](/api/pricing#tag/opportunity_schema) Opportunity Schema.
 
 ![Quoting Capability](/img/quoting-capability.png)
 
-Capability configuration to support hidding columns:
+Capability configuration to support hiding columns:
 
 ```json
   {
@@ -92,4 +94,4 @@ Capability configuration to support hidding columns:
   }
 ```
 
-The property `settings.display_grand_totals` enables us to control whether the grand totals should be displayed or not. When Grand Totals are displayed, all other recurrence based totals are hidden.
+The `settings.display_grand_totals` property controls whether grand totals are displayed. When enabled, recurrence-based totals are hidden.

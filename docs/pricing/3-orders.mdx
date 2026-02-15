@@ -8,9 +8,9 @@ import { GetOrderApiSample, GetOrderSample, UpdateOrderSample, UpdateOrderApiSam
 
 # Orders
 
-An Order is a collection of Products and Prices that can be purchased by a Customer. Orders can be created manually on the platform our through automations that run upon certain events, such as a Journey submission.
+An Order is a collection of products and prices purchased by a customer. Create orders manually or through automations triggered by events like journey submissions.
 
-Our platform is build in a way such that [Business Entities](/docs/entities/flexible-entities) can be installed by our customers, and on this context we can also claim that we "eat our own dog food". This means that we use our own platform to build and model the Order Entity.
+Orders use the same [flexible entity](/docs/entities/flexible-entities) system as all other epilot entities.
 
 <img
   style={{ boxShadow: '#a2a2a2 0px 0px 25px -8px', borderRadius: '5px' }}
@@ -20,15 +20,15 @@ Our platform is build in a way such that [Business Entities](/docs/entities/flex
 
 ## Managing Orders via Pricing API {#managing-orders-via-pricing-api}
 
-Using our [Entity API](/docs/entities/entity-api) we can directly manage Orders, although very rapidly we realise that an Order has more to it than just a collection of Products and Prices. We needed to be able to manage the Order's lifecycle, and we needed to be able to manage the Order's state. We also needed to be able to recompute the order's product and price totals, along with the order price and product relations. Using just our Entity API would not suffice here since there is additional logic required to fully manage an order.
+The [Entity API](/docs/entities/entity-api) handles basic data operations, but orders require additional logic: lifecycle management, state transitions, and line-item total recomputation.
 
-To fullfil this purpose we have designed the [Pricing API](/api/pricing), which is a wrapper around the Entity API. The [Pricing API](/api/pricing) allows us to manage Orders, and it also allows us to manage the Order's lifecycle and state, recomputing the order's product and price totals, along with its price and product relations.
+Use the [Pricing API](/api/pricing) for all programmatic order operations. It wraps the Entity API with this logic.
 
 ### Example: Updating an Order {#example-updating-an-order}
 
-For general cases, the Entity API can be used directly to deal with simple business entities. In the Orders case, it relies on the [Pricing API](/api/pricing) to ensure any changes over `line_items` will have all the line items and grand totals computed properly.
+Order `line_items` changes must go through the [Pricing API](/api/pricing) to recompute totals correctly.
 
-On both examples below API/SDK we authenticate using a [Org Access Token (OAT)](/docs/auth/access-tokens) that can be generated from our Epilot Portal:
+Both examples authenticate with an [Org Access Token (OAT)](/docs/auth/access-tokens):
 
 <Tabs lazy>
   <TabItem value="api" label="API" default>
@@ -39,7 +39,7 @@ On both examples below API/SDK we authenticate using a [Org Access Token (OAT)](
   </TabItem>
 </Tabs>
 
-After fetching the Order from the [Pricing API](/api/pricing) we can change the `line_items` and then call the [Pricing API](/api/pricing) to update the order. The update is done via PUT so it's a full update. We don't yet have a PATCH endpoint for upserting entity changes.
+Modify the `line_items` and send a PUT request. The update is a full replacement -- no PATCH endpoint exists for partial updates.
 
 <Tabs lazy>
   <TabItem value="api" label="API" default>

@@ -9,11 +9,9 @@ sidebar_position: 2
 
 <h3 style={{ fontWeight: "300", color: "gray", marginTop: "10px", marginBottom: "30px" }}>This document gives an overview of the Concorde HTML layout structure for better targeting with custom CSS selectors.</h3>
 
-**Note:** Concorde refers to the new Journey design.
+Concorde is epilot's open-source component library for Journeys. [[GitHub](https://github.com/epilot-dev/concorde-elements)]
 
-This document gives an overview of the Concorde HTML layout structure for better targeting with custom CSS selectors. We have prefixed classes and ids with `Concorde-` so they stand out and are easily recognizable.
-
-This guide will help with custom css styling of the new journey design.
+All maintained classes and IDs are prefixed with `Concorde-` for easy identification. Use these selectors in your [Custom CSS](/docs/journeys/custom-css) to target specific components, blocks, steps, and layout regions.
 
 ## Concorde Components: Maintained HTML Classes
 

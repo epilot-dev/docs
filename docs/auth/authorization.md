@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Authorization
@@ -12,7 +12,7 @@ The epilot application uses standard [OAuth 2.0](https://oauth.net/2/) tokens (J
 
 ## Authorization Header
 
-A valid bearer token should be passed in the `Authorization` request header to authorize API requests.
+Pass a valid bearer token in the `Authorization` request header to authorize API requests:
 
 ```
 Authorization: Bearer <your-access-token>
@@ -20,13 +20,11 @@ Authorization: Bearer <your-access-token>
 
 ## API Gateway Authorizer
 
-Requests to epilot APIs are authorized on the API Gateway level. Token claims are passed to backend microservices.
+All requests to epilot APIs pass through an API Gateway authorizer that validates the bearer token and extracts claims. Backend microservices receive these claims as verified context.
 
 ## Permissions API
 
-While the JWT token contains basic information about the identity of the authorized user such as user id and source organization, to check that the user is allowed to perform actions and access resources, we need to check the Permissions API for claims
-
-Example:
+The JWT token identifies the user (user ID, organization), but does not encode what the user can do. To check whether a user can perform a specific action, call the [Permissions API](/docs/auth/permissions).
 
 ```js
 import { tokenIsPermitted } from '@epilot/permissions'
@@ -34,10 +32,11 @@ import { tokenIsPermitted } from '@epilot/permissions'
 const isPermitted = await tokenIsPermitted(context.token, 'myaction')
 ```
 
-[Permissions Documentation](/docs/auth/permissions)
+See the full [Permissions documentation](/docs/auth/permissions) for details on roles, grants, and evaluation logic.
 
-## Links
+## See Also
 
-- API Gateway Authorizer project: https://gitlab.com/e-pilot/product/auth/custom-authorizer
-- Permissions package: https://www.npmjs.com/package/@epilot/permissions
-- Internal Auth package: https://www.npmjs.com/package/@epilot/internal-auth
+- [Token Types](/docs/auth/token-types) — comparison of all epilot token types
+- [Permissions](/docs/auth/permissions) — role-based access control
+- [`@epilot/permissions`](https://www.npmjs.com/package/@epilot/permissions) — permissions evaluation package
+- [`@epilot/internal-auth`](https://www.npmjs.com/package/@epilot/internal-auth) — internal auth utilities

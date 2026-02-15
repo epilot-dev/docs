@@ -8,85 +8,80 @@ sidebar_position: 1
 [[API Docs](/api/workflow-execution)]
 [[SDK](https://www.npmjs.com/package/@epilot/workflow-client)]
 
-Workflows are a collection of tasks that is used to track the progress and performing operations from the task itself.
+Workflows are structured collections of tasks used to track progress and execute operations across a business process.
 
 ## Functionality
 
-You can do following operations from a task in the running workflow.
+From a running workflow task, you can:
 
-- Run Automations
-- Run Journeys
+- Run automations
+- Run journeys
 - Add notes
 - Add assignees
-- Add due date
-- Mark the task as done
-- Mark the task as in progress
+- Set a due date
+- Mark the task as done or in progress
 - Skip the task
 
 ## Building a Workflow
 
-A Workflow can be defined in the builder under: [Workflows > Workflow Builder](https://portal.epilot.cloud/app/workflows-hub).
+Define workflows in the builder under [Workflows > Workflow Builder](https://portal.epilot.cloud/app/workflows-hub).
 
-You can either create one from scratch or use a template.
+You can create a workflow from scratch or start from a template.
 
 ![workflow builder](../../static/img/workflows/workflow-builder.png)
 
 ### Task details
 
-You can add several details to the tasks:
+Each task supports the following configuration:
 
-- Due date and dynamic due date
+- Due date (static or dynamic)
 - Automations to run from the task
 - Journey to complete from the task
-- Required tasks to be completed before that task can be worked upon
+- Required predecessor tasks
 - Task description
 - Assignees
 
 ### Workflow details
 
-From the settings button in the top bar, you can configure the entity attributes to update.
+From the settings button in the top bar, configure which entity attributes the workflow updates.
 
 ![configure entity update](../../static/img/workflows/configure_entity_update.png)
 
-You can also configure closing reasons for the Workflow.
+You can also configure closing reasons for the workflow.
 
 ![closing reasons](../../static/img/workflows/closing-reasons.png)
 
+## Starting a Workflow
 
-## Starting a workflow
+A workflow can be started in two ways:
 
-A workflow can be started in 2 ways:
+### With an Automation
 
-#### With an Automation
+Define a **Start Workflow** action in an [Automation Flow](/docs/automation/automation-flows).
 
-You can define a workflow to be triggered in an [automation action](/docs/automation/automation-flows).
+### Manually
 
-#### Manually
+Open the sidebar on an entity, click **Trigger new Workflow**, and select from your defined workflows.
 
-You can open the sidebar on an entity and click on `Trigger new Workflow` and select the workflow from the list of all your defined workflows.
-
-You will see the tasks you defined in the sidebar and perform the following tasks:
+The sidebar displays all tasks with the following operations:
 
 - Run automations
 - Complete journeys
-- Assign users, partners
-- Add note to tasks
-- Mark task as done, skip or in progress
-- Add due date
-- Add a manual task
-- Multiple operations on several tasks at once.
+- Assign users or partners
+- Add notes to tasks
+- Mark tasks as done, skip, or in progress
+- Set due dates
+- Add manual tasks
+- Perform bulk operations on multiple tasks
 
 <img src="/img/workflows/workflow-sidebar.png" width="400"/>
 
-
-You will often see some tasks have some required tasks before they can be completed or skipped.
+Some tasks have required predecessor tasks that must be completed or skipped first.
 
 <img src="/img/workflows/required-tasks.png" width="600"/>
 
-
-
 ## Workflows Dashboard
-You can also see the workflows task assigned to specific person from the Workflow Dashboard tile as well.
 
+The Workflows Dashboard tile shows tasks assigned to a specific user.
 
 ![workflow-dashboard](../../static/img/workflows/workflow-dashboard.png)

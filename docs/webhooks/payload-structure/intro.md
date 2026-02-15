@@ -3,19 +3,19 @@ sidebar_position: 1
 title: Common Data Structure
 ---
 
-# What data is sent to your webhook?
+# Payload Structure
 
 [[API Docs](/api/webhooks)]
 [[SDK](https://www.npmjs.com/package/@epilot/webhooks-client)]
 
-Webhooks have different payload structures depending on its trigger type. The most common event is the `Automation Trigger Webhook` event. Once this event is selected, you are able to trigger a webhook request within an automation.
-The other use case is the `Portal Access Entity Access` event, which is triggered when a user accesses an entity in the portal. This event is used to track user access to entities and can be used to trigger webhooks based on user actions.
+Webhook payloads vary by trigger type. The two trigger types are:
+
+- **Automation Trigger Webhook** — Fires when an automation action sends a webhook request. This is the most common trigger.
+- **Portal User Access** — Fires when a user accesses an entity in the portal.
 
 ![Trigger](../../../static/img/webhooks/trigger.gif)
 
-The following section describes the payload structure for both event types.
-
-Every webhook event always contains a `metadata` object, which includes the organization ID and other metadata related information about the event. The `entity` object contains the entity data, while the `relations` and `activity` objects are optional and can be included based on the webhook configuration.
+Every payload contains a `metadata` object with the organization ID and event context. The `entity` object holds the primary entity data. The `relations` and `activity` objects are optional and depend on the webhook configuration.
 
 ```json
 {
@@ -44,25 +44,27 @@ Every webhook event always contains a `metadata` object, which includes the orga
 }
 ```
 
-The flow can be nailed down to a simple overview with the following steps:
+The overall flow works as follows:
 
-1. You configure a trigger for the webhook
-2. If the trigger is of type `Portal Access`, you get a webhook request every time a user accesses (login) its portal account.
-2. If the trigger is of typ `Automation Trigger`, you can connect a webhook action in the automation configuration.
-3. You can configure a JSONata query in the webhook config to further transform the payload to your needs
-
+1. Configure a trigger for the webhook
+2. **Portal Access** triggers fire on every portal user login
+3. **Automation Trigger** triggers fire when connected to an automation action
+4. Optionally configure a JSONata expression to transform the payload before delivery
 
 ![Simple Overview](../../../static/img/webhooks/intro.png)
 
-# Main Entity
-There is always a main entity in the webhook payload. This is the entity that the webhook is triggered on. The `entity` object contains the data of this main entity, which can be a contact, opportunity, or any other entity type.
-If you select the `Portal Access Entity Access` event, the `entity` object will contain the contat entity of the user who accessed the resource. If you select the `Automation Trigger Webhook` event, the `entity` object will contain the entity data related to the automation trigger.
+## Main Entity
+
+Every webhook payload includes a main entity in the `entity` object. The entity type depends on the trigger:
+
+- **Portal User Access** — The `entity` object contains the contact entity of the user who accessed the portal.
+- **Automation Trigger** — The `entity` object contains the entity that the automation was triggered on (e.g., a contact, opportunity, or order).
 
 
 
-# Webhook fields
+## Webhook Fields
 
-The payload sent to the webhook URL contains the following fields (prerequisite is the input is not transformed with a JSONata query):
+The payload sent to the webhook URL contains the following fields (assuming no JSONata transformation is applied):
 
 | Field                                        | Type       | Description                                           |
 | -------------------------------------------- | ---------  | ----------------------------------------------------- |

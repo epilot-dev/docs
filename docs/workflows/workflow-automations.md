@@ -1,3 +1,8 @@
+---
+title: Workflow Task Automations
+sidebar_position: 5
+---
+
 # Workflow Task Automations Integration Guide
 
 This guide explains how to integrate external systems with the Workflows API to handle automated workflow tasks. Automated tasks are defined within a running workflow execution and trigger automation flows behind the scenes.
@@ -553,6 +558,6 @@ async function pollAutomationStatusWithTimeout(executionId, timeoutMs = 300000) 
 
 ## Related Documentation
 
-- [Workflows API Reference](/api/workflow-execution))
+- [Workflows API Reference](/api/workflow-execution)
 - [Automation API Reference](/api/automation)
 - [Entity API Reference](/api/entity)

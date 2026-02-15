@@ -1,74 +1,61 @@
 ---
 sidebar_position: 10
 title: Supported Resources
-hide_title: true
 ---
 
-## Resources Supported in Blueprints
+# Supported Resources
 
-The following resource configurations are supported for blueprints and sandbox pipelines:
+[[API Docs](/api/blueprints)]
 
-**Journeys**
-- [x] Journey Launcher
-- [x] Post Qualification Journeys
+Blueprints support the following resource types. Each resource type corresponds to a `ResourceNodeType` in the [Blueprint Manifest API](/api/blueprints).
 
-**Automations**
-- [x] Webhooks*
-- [x] Workflows
-- [x] Email Templates
-- [x] Document Templates
-- [x] Entity Mappings
+## Resource Types
 
-**Products**
-- [x] Prices
-- [x] Taxes
-- [x] Cross Sellable Products
-- [x] Files (Images, Downloads, Availability)
+| Resource Type | API Value | Description |
+|---------------|-----------|-------------|
+| **Journeys** | `journey` | Journey configurations and launchers |
+| **Design Builder** | `designbuilder` | Journey design / theming configurations |
+| **Products** | `product` | Product entities |
+| **Prices** | `price` | Price entities |
+| **Coupons** | `coupon` | Promotional codes |
+| **Product Recommendations** | `product_recommendation` | Cross-sellable product configurations |
+| **Taxes** | `tax` | Tax configurations |
+| **Files** | `file` | Images, document templates, attachments, downloads |
+| **Email Templates** | `emailtemplate` | Email templates with attachments and variables |
+| **Schemas** | `schema` | Full entity schemas |
+| **Schema Attributes** | `schema_attribute` | Individual schema attributes |
+| **Schema Capabilities** | `schema_capability` | Schema capabilities |
+| **Schema Groups** | `schema_group` | Attribute groups |
+| **Schema Group Headlines** | `schema_group_headline` | Group headlines |
+| **Automation Flows** | `automation_flow` | Automation flow configurations |
+| **Entity Mappings** | `entity_mapping` | Entity mapping definitions |
+| **Workflow Definitions** | `workflow_definition` | Workflow configurations |
+| **Closing Reasons** | `closing_reason` | Workflow closing reasons |
+| **Taxonomies** | `taxonomy` | Taxonomy definitions |
+| **Taxonomy Classifications** | `taxonomy_classification` | Purposes and labels |
+| **Webhooks** | `webhook` | Webhook configurations |
+| **Integrations** | `integration` | ERP and third-party integrations |
+| **Custom Variables** | `custom_variable` | Custom template variables |
+| **Dashboards** | `dashboard` | Dashboard configurations |
+| **Saved Views** | `saved_view` | Table and inbox saved views |
+| **Roles** | `role` | Roles and permission configurations |
+| **User Groups** | `usergroup` | User group definitions |
+| **Portal Configurations** | `portal_config` | Customer portal configurations |
+| **Apps** | `app` | App configurations |
+| **Targets** | `target` | Target / goal definitions |
+| **Kanban Views** | `kanban` | Kanban board configurations |
+| **Validation Rules** | `validation_rule` | Entity validation rules |
+| **Flow Templates** | `flow_template` | Reusable flow templates |
+| **Notification Templates** | `notification_template` | Notification template configurations |
 
-**Schemas**
-- [x] Attributes
-- [x] Groups
-- [x] Capabilities
-- [x] Headlines*
-- [x] Full Schemas (Sandbox only)
+## Known Limitations
 
-**Taxonomies**
-- [x] Purposes
-- [x] Labels
+1. **Webhooks** are included as part of automations but created in an incomplete state -- users must manually add the URL and auth configuration after import.
+2. **Designs** can be copied standalone, but the target organization's default design is applied for imported journeys.
+3. **Schema capabilities and headlines** are only exported when exporting the full schema (not as individual attributes).
 
-**Workflows**
-- [x] Closing Reasons
-- [x] Automations
-- [x] Journeys
-- [x] Portal related configuration
+## See Also
 
-**Email Templates**
-- [x] Files (Attachments)
-- [x] Journeys Linked in Template (Post Qualification Journey)
-- [x] Custom Variables
-
-**Files**
-- [x] Document Templates
-- [x] Product Images
-- [x] Email Attachments
-- [x] Product Downloads
-- [x] Availability Files
-- [x] Address Suggestions on Journeys
-
-**Designs**
-- [x] Designs
-
-### Upcoming 
-
-- [ ] Dashboards
-- [ ] Saved Views (Table & Inbox)
-- [ ] Roles & Permissions
-- [ ] Families (Labels)
-- [ ] Portals
-
-### Known Limitations*
-
-1. Webhooks are included as part of automations, but created in incomplete state, waiting for the user to add a URL and auth configuration
-1. Only Purpose Taxonomies are currently supported
-1. Designs can be copied standalone now, but the target organization’s default design is applied for imported Journeys
-1. Capabilities and Headlines are currently only exported when exporting full schema
+- [Blueprint Overview](/docs/blueprints/intro) -- What blueprints are and how they work
+- [Installing a Blueprint](/docs/blueprints/installing-a-blueprint) -- Step-by-step installation guide
+- [Editing and Synchronizing](/docs/blueprints/editing-and-synchronizing) -- Managing blueprint changes

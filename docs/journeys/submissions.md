@@ -7,15 +7,13 @@ sidebar_position: 4
 [[API Docs](/api/submission)]
 [[SDK](https://www.npmjs.com/package/@epilot/submission-client)]
 
-Submissions are entities that store raw data collected from Journeys or other outside data sources into epilot.
-
-Submissions are created via the [Submission API](/api/submission).
+Submissions are entities that store raw data collected from journeys or other external sources. They are created via the [Submission API](/api/submission).
 
 ## Submission Entity
 
-A Submission entity does not have a fixed schema for all its data like other business entities, but rather is designed to collect the raw JSON payload to be further processed in other entities.
+Unlike other business entities, a Submission does not have a fixed schema. It stores the raw JSON payload for further processing.
 
-A typical use of submissions is to map the incoming submission payload into further business entities like Contacts, Opportunities and Orders using [Automation](/docs/automation/automation-flows).
+A typical workflow maps the incoming submission data into business entities like Contacts, Opportunities, and Orders using [Automation](/docs/automation/automation-flows).
 
 ![Submission Example](../../static/img/submission.png)
 

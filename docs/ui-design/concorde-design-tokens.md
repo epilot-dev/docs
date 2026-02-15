@@ -6,11 +6,11 @@ sidebar_position: 3
 
 <h1 style={{display:"inline-block"}}>Concorde Design tokens: CSS variables</h1>
 
-**Note:** Concorde refers to the new Journey design.
+Concorde is epilot's open-source component library for Journeys. [[GitHub](https://github.com/epilot-dev/concorde-elements)]
 
 ## Concorde Global Tokens
 
-### 🎨 Main Colors
+### Main Colors
 
 | CSS Variable                     | Default        | Description                                                                                                                                                                          |
 | -------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -25,7 +25,7 @@ sidebar_position: 3
 | `--concorde-secondary-color-rgb` | `145, 57, 151` | The rgb tuple version of `--concorde-secondary-color`. Used to create transparent variations of the main secondary color.                                                            |
 | `--concorde-error-color-rgb`     | `255, 58, 63`  | The rgb tuple version of `--concorde-error-color`. Used to create transparent variations of the main error color.                                                                    |
 
-### 🎨 Text Colors
+### Text Colors
 
 | CSS Variable                     | Default         | Description                                                                                                              |
 | -------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -36,7 +36,7 @@ sidebar_position: 3
 | `--concorde-primary-text-rgb`    | `0, 22, 50`     | The rgb tuple version of `--concorde-primary-text`. Used to create transparent variations of the primary text color.     |
 | `--concorde-secondary-text-rgb`  | `113, 113, 113` | The rgb tuple version of `--concorde-secondary-text`. Used to create transparent variations of the secondary text color. |
 
-### 🎨 Background Colors
+### Background Colors
 
 | CSS Variable                        | Default         | Description                                                                                                                                       |
 | ----------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -48,7 +48,7 @@ sidebar_position: 3
 | `--concorde-default-background-rgb` | `255, 255, 255` | The rgb tuple version of `--concorde-default-background`. Used to create transparent variations of the default background color.                  |
 | `--concorde-disabled-background`    | `#e6eef7`       | The disabled background color used to for the Mobile Stepper only.                                                                                |
 
-### 🔠 Typography
+### Typography
 
 | CSS Variable             | Default                                                   | Description                                                                              |
 | ------------------------ | --------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
@@ -61,7 +61,7 @@ sidebar_position: 3
 | `--concorde-text-sm`     | `0.875rem`                                                | The sm font size (h6).                                                                   |
 | `--concorde-text-xs`     | `0.75rem`                                                 | The xs font size.                                                                        |
 
-### 🌑 Shadows
+### Shadows
 
 | CSS Variable                     | Default                                                       | Description                                     |
 | -------------------------------- | ------------------------------------------------------------- | ----------------------------------------------- |
@@ -69,7 +69,7 @@ sidebar_position: 3
 | `--concorde-card-shadow`         | `0 0 1px rgba(0, 0, 0, 0.12), 0 8px 48px rgba(0, 0, 0, 0.08)` | The box shadow of the elevated card             |
 | `--concorde-card-shadow-hover`   | `0 0 1px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.16)` | The box shadow of the elevated card hover state |
 
-### 🎭 Others
+### Others
 
 | CSS Variable                   | Default             | Description                                  |
 | ------------------------------ | ------------------- | -------------------------------------------- |
@@ -83,7 +83,7 @@ sidebar_position: 3
 
 The following tokens become active when dark mode is enabled. Each token has a dark mode variant with the suffix `-dark`.
 
-#### 🎨 Main Colors (Dark Mode)
+#### Main Colors (Dark Mode)
 
 | CSS Variable                      | Description                                                          |
 | --------------------------------- | -------------------------------------------------------------------- |
@@ -95,7 +95,7 @@ The following tokens become active when dark mode is enabled. Each token has a d
 | `--concorde-outline-dark`         | Dark mode variant of `--concorde-outline`                            |
 | `--concorde-divider-color-dark`   | Dark mode variant of `--concorde-divider-color`                      |
 
-#### 🎨 Text Colors (Dark Mode)
+#### Text Colors (Dark Mode)
 
 | CSS Variable                          | Description                                                 |
 | ------------------------------------- | ----------------------------------------------------------- |
@@ -105,7 +105,7 @@ The following tokens become active when dark mode is enabled. Each token has a d
 | `--concorde-disabled-label-text-dark` | Dark mode variant of `--concorde-disabled-label-text`       |
 | `--concorde-button-default-text-dark` | Dark mode variant of `--concorde-button-default-text`       |
 
-#### 🎨 Background Colors (Dark Mode)
+#### Background Colors (Dark Mode)
 
 | CSS Variable                                    | Description                                                       |
 | ----------------------------------------------- | ----------------------------------------------------------------- |
@@ -120,7 +120,7 @@ The following tokens become active when dark mode is enabled. Each token has a d
 | `--concorde-skeleton-bg-from-dark`              | Dark mode variant of `--concorde-skeleton-bg-from`                |
 | `--concorde-skeleton-bg-to-dark`                | Dark mode variant of `--concorde-skeleton-bg-to`                  |
 
-#### 🎨 Component Colors (Dark Mode)
+#### Component Colors (Dark Mode)
 
 | CSS Variable                                      | Description                                                         |
 | ------------------------------------------------- | ------------------------------------------------------------------- |
@@ -130,7 +130,7 @@ The following tokens become active when dark mode is enabled. Each token has a d
 | `--concorde-primary-button-hover-bg-color-dark`   | Dark mode variant of `--concorde-primary-button-hover-bg-color`     |
 | `--concorde-toggle-button-border-color-dark`      | Dark mode variant of `--concorde-toggle-button-border-color`        |
 
-#### 🎨 RGB Colors (Dark Mode)
+#### RGB Colors (Dark Mode)
 
 | CSS Variable                             | Description                                                     |
 | ---------------------------------------- | --------------------------------------------------------------- |
@@ -145,7 +145,7 @@ The following tokens become active when dark mode is enabled. Each token has a d
 
 ## Concorde Layout Tokens
 
-### Navbar
+### Layout and Navbar
 
 | CSS Variable                           | Default                         | Description                                                                                                                                                                                                           |
 | -------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

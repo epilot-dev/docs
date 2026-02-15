@@ -1,36 +1,26 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Serverless
 
 :::info
-
-The epilot platform is built on serverless architecture. In practice this means we favour the usage of fully managed, self-scaling 3rd party cloud services over self-managed containers or virtual machines.
-
+epilot runs on serverless architecture: fully managed, self-scaling cloud services instead of self-managed containers or virtual machines.
 :::
 
 ## Why Serverless?
 
-We choose this approach to maintain development speed by leveraging off-the-shelf components and avoid the operational cost of having to maintain and operate our own cloud infrastructure.
+Serverless lets the team ship faster with off-the-shelf components and zero infrastructure management overhead.
 
 Principle: [Rent over build](https://github.com/epilot-dev/engineering-principles#rent-over-build-we-rent-the-necessary-and-focus-on-building-the-important)
 
-## Serverless technologies used
+## Technologies
 
-The majority of backend microservices are built using serverless AWS services such as Lambda, Step Functions, API Gateway, DynamoDB, S3 and EventBridge.
+Most backend microservices run on AWS Lambda, Step Functions, API Gateway, DynamoDB, S3, and EventBridge.
 
-We also utilise Fargate for serverless containers and Redshift Serverless + Firehose for our data lake on S3.
+epilot also uses [ClickHouse Cloud](https://clickhouse.com/) for the [Datalake](/docs/datalake/epilot-datalake), analytical queries, and complex SQL workloads.
 
-Other notable 3rd party cloud services we use include Elastic Cloud for search, Datadog for observability and GitLab for CI, feature flags and package registry.
+Notable third-party services: Elastic Cloud (search), Momento (caching), Datadog (observability), and GitLab (CI, feature flags, package registry).
 
-See our [Tech Radar](https://docs.epilot.io/techradar/) for more info on the serverless technologies we use.
+See the [Tech Radar](https://docs.epilot.io/techradar/) for the full technology landscape.
 
-## Boilerplate Projects
-
-We offer internal boilerplate projects to bootstrap projects on popular frameworks and get started quickly:
-
-- [create-mfe-app](https://gitlab.com/e-pilot/product/epilot-portal/epilot360-dev-utils/-/tree/main/packages/create-mfe-app)
-- [AWS SAM](https://gitlab.com/e-pilot/platform/cookie-cutter/ts-sam)
-- [AWS CDK](https://gitlab.com/e-pilot/platform/cookie-cutter/ts-cdk)
-- [Fargate](https://gitlab.com/e-pilot/platform/cookie-cutter/docker-fargate)

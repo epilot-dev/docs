@@ -15,8 +15,8 @@ The **multi-tenant, white-label Portals solution** provides customers with per-p
 
 ## Front End
 
-Portals utilize React and related modern tooling like the accessible and easily themable Radix UI or Tenstack Query.
-The content below focuses on the infrastructure aspects.
+Portals use React with Radix UI (accessible, themeable components) and TanStack Query (data fetching).
+The content below focuses on the infrastructure.
 
 ### Per Portal
 
@@ -47,7 +47,7 @@ For easier maintenance and scalability, the rest of the architecture is shared.
 
 ## Backend
 
-Portals backend follows the same principles as any other part of epilot's [serverless](http://localhost:3000/docs/architecture/serverless), [api-first](docs/architecture/api-first) [architecture](http://localhost:3000/docs/architecture/overview).
+Portals backend follows the same principles as any other part of epilot's [serverless](/docs/architecture/serverless), [API-first](/docs/architecture/api-first) [architecture](/docs/architecture/overview).
 
 ### Shared
 - **Amazon API Gateway**  
@@ -76,7 +76,7 @@ Portals backend follows the same principles as any other part of epilot's [serve
 - Each portal has its own **CloudFront distribution, Cognito pool, and Route 53 custom domain**, allowing full branding and identity isolation.
 - Shared front end resources (**S3 and Lambda@Edge**) support all portals collectively.
 - Backend services are centralized (**API Gateway, Lambda, DynamoDB, SQS**) to ensure scalability and easier maintenance.
-- Portals communicate with the rest of the [platform](/docs/architecture/overview) primarily via **EventBridge** and direct **Lambda Invoke** (using **IAM**) for secure integration with the broader ecosystem.
+- Portals communicate with the rest of the [platform](/docs/architecture/overview) via **EventBridge** and direct **Lambda Invoke** (using **IAM**) for secure integration with the broader ecosystem.
 
 ---
 

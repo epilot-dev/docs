@@ -6,7 +6,7 @@ description: Synchronize meter reading data from ERP systems
 
 # Meter Readings
 
-The ERP Toolkit provides specialized support for meter reading data, a common use case in utility and energy industry integrations.
+The ERP Toolkit provides specialized support for meter reading data, common in utility and energy industry integrations.
 
 ## Overview
 
@@ -367,9 +367,9 @@ Extract Readings Array (JSONata)
 
 ## Reading Matching Strategies
 
-By default, meter readings use `external_id` for upsert matching. However, when readings originate from the End Customer Portal (ECP) and are later echoed back by the ERP, duplicates can occur because ECP readings may not have an `external_id` initially.
+By default, meter readings use `external_id` for upsert matching. When readings originate from the End Customer Portal (ECP) and are later echoed back by the ERP, duplicates can occur because ECP readings may not have an `external_id` initially.
 
-The `reading_matching` option configures how incoming readings are matched:
+The `reading_matching` option configures matching behavior:
 
 | Strategy | Description |
 |----------|-------------|
@@ -391,12 +391,13 @@ The `reading_matching` option configures how incoming readings are matched:
 ```
 
 **How strict-date works:**
-1. Before creating a reading, the system looks up existing readings for the same meter_id + counter_id + direction on the same German calendar day
-2. If a single match is found: Updates the existing reading with ERP data
-3. If multiple matches are found: Logs an error and skips (to avoid duplicates)
-4. If no match is found: Creates a new reading
 
-This strategy is useful for ECP-to-ERP roundtrip scenarios where the ERP echoes readings back with truncated timestamps.
+1. Looks up existing readings for the same meter_id + counter_id + direction on the same German calendar day
+2. Single match: updates the existing reading with ERP data
+3. Multiple matches: logs an error and skips to avoid duplicates
+4. No match: creates a new reading
+
+This strategy handles ECP-to-ERP roundtrip scenarios where the ERP echoes readings back with truncated timestamps.
 
 ## Meter Reading Deletion
 
@@ -462,11 +463,9 @@ The `reading_matching: "strict-date"` strategy is particularly useful for deleti
 
 ## Prune Scope
 
-The `upsert-prune-scope` mode enables a sync pattern for meter readings: upsert all readings from the payload for a given meter/counter, then permanently delete all other readings for that meter/counter that weren't part of the upsert.
+The `upsert-prune-scope` mode upserts all readings from the payload for a given meter/counter, then permanently deletes all other readings for that meter/counter that weren't part of the upsert.
 
-The scope is naturally defined by **meter + counter** — no explicit `scope_mode` is needed (unlike entity prune scope modes).
-
-An optional `scope` object can restrict pruning to readings from a specific source.
+The scope is naturally defined by **meter + counter** — no explicit `scope_mode` is needed. An optional `scope` object can restrict pruning to readings from a specific source.
 
 ### Scope Configuration (optional)
 
@@ -499,7 +498,7 @@ An optional `scope` object can restrict pruning to readings from a specific sour
 }
 ```
 
-This upserts all readings from the `readings` array, then deletes any other readings for the same meter+counter that weren't in the payload.
+Upserts all readings from the `readings` array, then deletes other readings for the same meter+counter not in the payload.
 
 ### Prune Scope with Source Filter
 

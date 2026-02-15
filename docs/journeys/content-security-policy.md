@@ -17,14 +17,14 @@ script-src 'self' 'unsafe-inline' https://*.epilot.io https://*.epilot.cloud;
 frame-src 'self' https://*.epilot.io https://*.epilot.cloud;
 ```
 
-, which is explained below:
+These rules break down as follows:
 
-- The `script-src` rule is allowing you to inject script from epilot domains, whiel the `'unsafe-inline'` directive allows executing inline scripts to initialise it.
-- The `frame-src` rule is allowing you to embed epilot apps from our domains into your page.
+- `script-src` allows loading scripts from epilot domains. The `'unsafe-inline'` directive allows executing inline scripts needed to initialize the journey.
+- `frame-src` allows embedding epilot iframes into your page.
 
 ### Alternative to `'unsafe-inline'`
 
-Instead of allowing the execution of all inline scripts, you can selectively selectively allow the ones responsible for embedding journeys, which is preferrable from a security standpoint.
+Instead of allowing all inline scripts, you can selectively allow only the ones responsible for embedding journeys, which is preferable from a security standpoint.
 
 To selectively allow inline scripts to be executed, we recommend you use [nonces](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#nonce-based) or [hashes](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html#hashes), and tweak your `script-src` rule accordingly.
 
@@ -49,7 +49,7 @@ As an example, you would add the `nonce` attribute to the embedding script you g
 </script>
 ```
 
-, and add that to your webpage, followed by the `script-src` rule below:
+Then add the following `script-src` rule to your CSP header:
 
 ```text
 script-src 'self' 'nonce-ee3ad7cc9b0f' https://*.epilot.io https://*.epilot.cloud;

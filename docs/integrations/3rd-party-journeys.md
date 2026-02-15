@@ -4,13 +4,9 @@ sidebar_position: 10
 
 # Example: 3rd Party Journey
 
-This article shows 2 examples for integrating a custom 3rd party form source via the epilot API.
+Two examples for integrating a custom 3rd party form source via the epilot API. Each includes a downloadable [Postman](https://www.postman.com/collection/) collection for testing.
 
-The examples contain downloadable Collection files for [Postman](https://www.postman.com/collection/) to make it easy to test the API calls.
-
-Feel free to contact customer support for help in integrating your custom journey into epilot.
-
-In this example we'll create the following entities:
+These examples create the following entities:
 
 - **Opportunity**
 - **Order**
@@ -18,25 +14,23 @@ In this example we'll create the following entities:
 - **Contact**
 - **Account**
 
-We'll also cover the following topics:
+The examples also cover:
 
-1. Attaching Files to entities
-1. Creating relations between the Entities
-1. Starting workflows
+1. Attaching files to entities
+2. Creating relations between entities
+3. Starting workflows
 
 ## Method 1: Using Submission API (Simple)
 
 [[Postman Collection](/downloads/simple-submission.postman_collection.json.zip)]
 
-The simplest way to integrate a custom 3rd party journey is to directly use the [Submission API](/api/submission) and configure an [Automation](/docs/automation/intro) to create further entities and trigger emails and workflows.
+The simplest approach: use the [Submission API](/api/submission) and configure an [Automation](/docs/automation/intro) to create entities, trigger emails, and start workflows.
 
 ### Step 1: Upload Files (optional)
 
-Submission API may be used together with [File API](https://docs.epilot.io/api/file) to pass file uploads to submissions using the following flow:
+Use the [File API](https://docs.epilot.io/api/file) `uploadFile` or `uploadFilePublic` operation to generate a temporary upload URL and receive an `s3ref`.
 
-Use the `uploadFile` or `uploadFilePublic` operation of File API to generate a temporary upload URL and receive an s3ref.
-
-Please note that the `uploadFile` requires a valid OAuth2 authorization token for epilot.
+Note: `uploadFile` requires a valid OAuth2 authorization token.
 
 ```
 POST https://file.sls.epilot.io/v1/files/public/upload
@@ -65,7 +59,7 @@ Response (200):
 }
 ```
 
-Then, upload a file with a `PUT` operation to the generated upload_url. (Hint: make sure you pass the correct Content-Type header and encoding!)
+Upload the file with a `PUT` request to the `upload_url`. Ensure you set the correct `Content-Type` header and encoding.
 
 ```
 PUT https://epilot-files-prod.s3.eu-central-1.amazonaws.com/123/temp/4d689aeb-1497-4410-a9fe-b36ca9ac4389/document.pdf?AWSParams=123
@@ -79,7 +73,7 @@ Request Body:
 
 ### Step 2: Create Submission
 
-To create a Submission, call the [Submission API](/api/submission) with data from your custom form or journey:
+Call the [Submission API](/api/submission) with data from your custom form or journey:
 
 ```
 POST https://submission.sls.epilot.io/v1/submission/submissions
@@ -104,7 +98,7 @@ Any valid JSON data can be passed via the `entities` property.
 }
 ```
 
-If you uploaded any files during the first step, you should pass the `s3ref`s in the `entities.*.files` property in your Submission API payload:
+If you uploaded files in Step 1, pass the `s3ref`s in the `entities.*.files` property:
 
 Request Body:
 
@@ -129,7 +123,7 @@ Request Body:
 }
 ```
 
-You may also optionally add marketing opt ins to your Submission API payload to display consent information on the created entities.
+Optionally add marketing opt-ins to record consent information on the created entities:
 
 ```json
 {
@@ -148,11 +142,11 @@ You may also optionally add marketing opt ins to your Submission API payload to 
 
 ### Step 3: Create an Automation Flow
 
-To automatically create epilot epilot entities, send emails and start workflows from your submissions, you can configure an [Automation](/docs/automation/intro).
+To automatically create entities, send emails, and start workflows from submissions, configure an [Automation](/docs/automation/intro).
 
-Create a new Automation from [Configuration > Advanced Configuration > Automations > Create](https://portal.epilot.cloud/app/automation-hub/flow/create)
+Create a new automation from [Configuration > Advanced Configuration > Automations > Create](https://portal.epilot.cloud/app/automation-hub/flow/create).
 
-Configure an API Submission trigger with the same `source_id` you're passing in your Submission API payload.
+Configure an API Submission trigger with the same `source_id` from your Submission API payload.
 
 ![API Submission Trigger](/img/automation-trigger-api.png)
 
@@ -160,11 +154,11 @@ Switch to the _Actions_ Tab and add your first Entity Mapping action.
 
 ![Map Entity Action](/img/automation-map-entity-action.png)
 
-You can now start mapping fields from your submission to business objects. Refer to the [Entity Mapping documentation](/docs/automation/entity-mapping) for details.
+Map fields from your submission to business objects. See the [Entity Mapping documentation](/docs/automation/entity-mapping) for details.
 
 ![Map Entity Action](/img/automation-entity-mapping.png)
 
-To ensure proper relations between actions, the recommended order for journey submission Automation actions is the following:
+The recommended order for journey submission automation actions:
 
 1. Create/Edit Account
 1. Create/Edit Contact
@@ -179,11 +173,11 @@ Refer to the [Automation documentation](/docs/automation/intro) for details.
 
 [[Postman Collection](/downloads/api-journey.postman_collection.json.zip)]
 
-In some cases it may be easier to directly use epilot APIs to create your business objects and trigger actions, in place of using Automation.
+For more control, use epilot APIs directly to create business objects and trigger actions instead of relying on automations.
 
 ### Step 1: Create customer entities (contact + account)
 
-We start by using the Entity API [`upsertEntity`](/api/entity#operation/getUserLoginParameters) operation to create or update a Contact, and optionally an Account entity, which are related to each other:
+Use the Entity API [`upsertEntity`](/api/entity#operation/getUserLoginParameters) operation to create or update a Contact and optionally an Account entity:
 
 ```
 PATCH https://entity.sls.epilot.io/v1/entity/account:upsert
@@ -271,13 +265,11 @@ Request body 2:
 }
 ```
 
-Make sure to take note of each returned entity `_id` property.
+Save each returned entity `_id` for use in subsequent steps.
 
 ### Step 2: Upload Files
 
-Next, we use the File API `uploadFile` operation together with `saveFile` to upload files and save them as File entities.
-
-Again, make note of the file ids for later use.
+Use the File API `uploadFile` and `saveFile` operations to upload files and save them as File entities. Save the file IDs for later use.
 
 Call `uploadFile` to receive an `s3ref` and `upload_url`:
 
@@ -301,7 +293,7 @@ Check out [the File API example](/docs/files/file-api#example-flow), or the exam
 
 ### Step 3: Creating an Order
 
-We first use the [Entity Search API](/api/entity#operation/searchEntities) to fetch all configured products and their prices in epilot:
+First, fetch all configured products and their prices using the [Entity Search API](/api/entity#operation/searchEntities):
 
 ```
 POST https://entity.sls.epilot.io/v1/entity:search
@@ -316,7 +308,7 @@ POST https://entity.sls.epilot.io/v1/entity:search
 }
 ```
 
-Taking note of product and price ids, we create an order entity by calling the [Pricing API `createOrder` operation](/api/pricing#operation/createOrder).
+Using the product and price IDs, create an order via the [Pricing API `createOrder` operation](/api/pricing#operation/createOrder):
 
 ```
 POST https://pricing-api.sls.epilot.io/v1/order
@@ -360,7 +352,7 @@ POST https://pricing-api.sls.epilot.io/v1/order
 
 ### Step 4: Create Opportunity
 
-We use the [Entity API `createEntity` operation](http://localhost:3000/api/entity#operation/createEntity) to create an Opportunity entity with the correct relations.
+Create an Opportunity entity with relations using the [Entity API `createEntity` operation](/api/entity#operation/createEntity):
 
 ```
 POST https://entity.sls.epilot.io/v1/entity/opportunity
@@ -416,7 +408,7 @@ POST https://entity.sls.epilot.io/v1/entity/opportunity
 
 ### Step 5: Start Workflow (optional)
 
-To start a workflow, we call the Workflow API `createExecution` operation:
+Start a workflow using the Workflow API `createExecution` operation:
 
 ```
 POST https://workflows-execution.sls.epilot.io/v1/workflows/executions
@@ -448,7 +440,7 @@ POST https://workflows-execution.sls.epilot.io/v1/workflows/executions
 
 ### Step 6: Create Submission (optional)
 
-To store the raw journey submission data and possibly trigger further automations, we can also create a submission entity using the `createEntity` operation:
+Optionally store the raw submission data and trigger further automations by creating a submission entity:
 
 ```
 POST https://entity.sls.epilot.io/v1/entity/submission

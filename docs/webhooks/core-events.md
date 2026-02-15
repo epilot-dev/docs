@@ -7,15 +7,15 @@ import EventSchemaViewer from '@site/src/components/EventSchemaViewer';
 
 # Core Events
 
-This page provides an overview of epilot's core event catalog with all of the built-in event schemas, including examples and schema definitions.
+epilot's core event catalog with built-in event schemas, examples, and schema definitions.
 
 ## Event Architecture
 
-Events in epilot follow a consistent structure with common metadata fields and event-specific payloads. Each event may include hydrated entity data from the entity graph.
+Events follow a consistent structure with common metadata fields and event-specific payloads. Each event may include hydrated entity data from the entity graph.
 
 ### Common Event Fields
 
-All events include these standard fields:
+All events include these fields:
 
 - `_org_id`: epilot tenant/organization ID
 - `_event_time`: ISO 8601 timestamp when event occurred

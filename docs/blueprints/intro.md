@@ -27,8 +27,8 @@ Available through the **epilot Marketplace**, Blueprints allow companies to quic
 
 A common example of a Blueprint is the sale of **heat pumps, PV systems, or electricity and gas tariffs.**
 
-Here’s how it works in practice:
-A customer applies through a predefined interactive form on your website. The request is captured in epilot, creating a lead for your agents team. Agents are notified immediately, and automated workflows (e.g., emails, task assignments) ensure the case is processed smoothly.
+Here is how it works in practice:
+A customer applies through a predefined interactive form on your website. The request is captured in epilot, creating a lead for your team. Agents are notified immediately, and automated workflows (e.g., emails, task assignments) ensure the case is processed smoothly.
 
 ---
 
@@ -73,7 +73,7 @@ If you are using a **Business** or **Starter** license, please contact your sale
 
 ### Installation and sandbox
 
-Epilot Marketplace Blueprints can be installed only in a [sandbox environment](/docs/blueprints/intro#sandbox).
+Epilot Marketplace Blueprints can be installed only in a [sandbox environment](/docs/blueprints/sandboxes).
 
 A sandbox is a safe testing space that allows you to validate configurations without affecting your production environment. Once the Blueprint has been installed and tested successfully, it can be synchronized into your production organization.
 
@@ -81,40 +81,11 @@ For step-by-step instructions, see the [Installation documentation](/docs/bluepr
 
 ---
 
-## Sandbox
+## Sandboxes
 
-A **Sandbox** provides the ability to safely test the epilot configuration in a separate tenant, away from the tenant used in daily business operations. Typical configurations include journeys along with their associated elements such as automations, products, workflows, or entity schemas. Once validated, these setups can be transferred to the desired tenant
+Blueprints are installed by default in a **sandbox** -- a separate epilot organization for safe testing. Once validated, configurations are promoted to production.
 
-A sandbox environment is the only place where Marketplace Blueprints can be installed. This ensures that all configurations are tested safely before being transferred to production.
-
----
-
-### Sandbox activation
-
-If you would like to use a sandbox but do not yet have one, please contact your Customer Success or Sales representative.
-
-Alternatively, you can also request a  sandbox directly during the installation of a Blueprint.
-
-![Wallbox B2C blueprint description page](/img/blueprints/1-wallbox-description.png)
-
-
----
-
-### Sandbox set up for synchronizing between organizations
-
-To transfer configurations between organizations (for example, from a sandbox to a production environment), you must have a user account with the **same email address** in both organizations. With this in place, the connection between the organizations is created automatically for that user, and the transfer process can be executed without additional setup. To learn how synchronize resources between your Sandbox and other Org [click here].
-
----
-
-### Switching Between Organizations
-
-:::tip
-
-To make switching between organizations possible, invite your users to both organizations using the same email address. Then you can conveniently switch between organizations by clicking your initials in the bottom left corner.
-
-:::
-
-![Org Switcher](/img/blueprints/1-org-switcher.png)
+For full details on setup and organization switching, see [Sandboxes](/docs/blueprints/sandboxes).
 
 ---
 
@@ -122,7 +93,7 @@ To make switching between organizations possible, invite your users to both orga
 
 **Technical Note**
 
-Blueprints are implemented using official epilot Terraform SDK, available on [Terraform Registry](https://registry.terraform.io/namespaces/epilot-dev). A blueprint file is a zip file containing a terraform configurations that are imported through epilot APIs.
+Blueprints are implemented using the official epilot Terraform SDK, available on [Terraform Registry](https://registry.terraform.io/namespaces/epilot-dev). A blueprint file is a zip archive containing Terraform configurations that are imported through epilot APIs.
 
 :::
 

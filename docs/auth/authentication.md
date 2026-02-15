@@ -4,71 +4,52 @@ sidebar_position: 1
 
 # Authentication
 
-:::info
+epilot APIs use bearer tokens for authentication. All requests must include a valid token in the `Authorization` header:
 
-The epilot application uses standard [OAuth 2.0](https://oauth.net/2/) to authenticate.
-
-:::
-
-## Quick Start
-
-You can login to obtain a token for testing epilot APIs quickly via the command line. (Requires [Node.js](https://nodejs.org/en/download/))
-
-```sh
-$ npx @epilot/auth
-
-? Email email@example.com
-? Password [hidden]
-
-# <access token printed here>
+```
+Authorization: Bearer <your-token>
 ```
 
-:::tip
+## Getting Started
 
-OAuth tokens expire after a short period (60 min) and must be refreshed using a refresh token.
+The recommended way to authenticate with epilot APIs is using **Access Tokens** — long-lived, scoped tokens designed for integrations.
 
-For integration purposes we recommend using long term [Access Tokens](/docs/auth/access-tokens).
-
-:::
+1. Go to [Settings > Access Tokens](https://portal.epilot.cloud/app/tokens) in the epilot portal
+2. Create a new token, optionally scoping it to specific roles
+3. Pass the token as a bearer token in your API requests
 
 ```typescript
-import { authorizeWithToken } from '@epilot/auth'
-import entityClient from '@epilot/entity-client'
+import { authorizeWithToken } from '@epilot/auth';
+import entityClient from '@epilot/entity-client';
 
-authorizeWithToken(entityClient, '<my_access_token>')
-
-// you can now use entity client
+authorizeWithToken(entityClient, '<your-access-token>');
 ```
 
-## Cognito User Pools
+See [Access Tokens](/docs/auth/access-tokens) for full details on creating, scoping and revoking tokens.
 
-Each epilot tenant gets their own Cognito User Pool for login.
+## How It Works
 
-Cognito also provides SSO and MFA functionality, configurable via Organisation Settings in epilot.
+epilot authentication is built on [OAuth 2.0](https://oauth.net/2/) with [Amazon Cognito User Pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) as the identity provider. Each epilot tenant has its own Cognito User Pool.
 
-## User API
+When a user logs in to the epilot portal, Cognito issues short-lived OAuth tokens (60 min). For API integrations, the [Access Token service](/api/access-token) issues long-lived JWTs with claims compatible with Cognito tokens, so all epilot APIs accept them seamlessly.
 
-The epilot user API provides functionality to invite and manage users in epilot organisations.
+All tokens are verified by the API Gateway authorizer using JWKS endpoints before reaching backend services.
 
-The Cognito sync service part of the User API takes care of managing users in each User Pool.
+## Token Types
 
-## Login with SDK
+| Token | Lifetime | Use case |
+|---|---|---|
+| **Access Token** | Long-lived | Server-side API integrations, scripts, third-party apps |
+| **OAuth 2.0 Token** | 60 minutes | Interactive user sessions in the epilot portal |
+| **Publishable Token** | Long-lived | Client-side public apps (journeys, portals) |
 
-While we recommend using [Access Tokens](/docs/auth/access-tokens), you can also authenticate with your username and password using the the [SDK](/docs/architecture/sdk):
+For most integrations, **Access Tokens** are the right choice. See [Token Types](/docs/auth/token-types) for a full comparison.
 
-```sh
-npm install --save @epilot/auth
-```
+## See Also
 
-```typescript
-import { authenticate } from '@epilot/auth'
-import entityClient from '@epilot/entity-client'
-
-const credentials = await authenticate({
-  username: 'email@example.com',
-  password: 'xxx',
-})
-credentials.configureClient(entityClient)
-
-// entityClient is now authorized with epilot OAuth2 tokens
-```
+- [Access Tokens](/docs/auth/access-tokens) — creating and managing scoped tokens
+- [Token Types](/docs/auth/token-types) — comparison of all epilot token types
+- [Authorization](/docs/auth/authorization) — how API requests are authorized
+- [Permissions](/docs/auth/permissions) — role-based access control and grants
+- [MFA, Passwordless & Passkeys](/docs/auth/mfa) — additional authentication methods
+- [SSO](/docs/sso/single-sign-on) — single sign-on with OIDC and SAML

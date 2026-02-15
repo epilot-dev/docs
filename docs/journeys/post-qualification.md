@@ -8,7 +8,7 @@ sidebar_position: 8
 
 A post qualification journey comes in combination with another journey. Journey 1 collects the lead - e.g. contact info & product interest. The second Journey collects additional information about lead - e.g. roof details. An email is sent to any Contact of Journey 1 via link in email as part of the Journeys Automation.
 
-It works by passing and processing a query parameter `opportunity_id` to the the post qualification journey (2nd). Doing so, will update the opportunity created by Journey 1.
+It works by passing a query parameter `opportunity_id` to the post-qualification journey. This parameter links the submission back to the opportunity created by Journey 1, updating it with the new data.
 
 **Submission Behavior:**
 
@@ -77,10 +77,10 @@ In your clipboard you will have an embed code similar to this:
 
 In order to take the parameter `opportunity_id` from the website we need to enrich the code to do that just before the \_\_epilot.init() call by adding:
 
-```html
-const epilotQueryString = window.location.search const epilotUrlSearchParams =
-new URLSearchParams(epilotQueryString) const epilotData =
-Object.fromEntries(epilotUrlSearchParams.entries())
+```javascript
+const epilotQueryString = window.location.search
+const epilotUrlSearchParams = new URLSearchParams(epilotQueryString)
+const epilotData = Object.fromEntries(epilotUrlSearchParams.entries())
 ```
 
 **2. Add parameters to journey**
@@ -142,6 +142,6 @@ The goal is to lead the Recipient to the post qualification journey embedded on 
 
 **Example link:**
 
-<https://example.com/your-sub-page?opportunity_id={{opportunity._id}>}
+`https://example.com/your-sub-page?opportunity_id={{opportunity._id}}`
 
 ![Email template](../../static/img/post-quali-example-email-template.png)

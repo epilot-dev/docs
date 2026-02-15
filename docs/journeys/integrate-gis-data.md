@@ -2,8 +2,8 @@
 sidebar_position: 6
 ---
 # Integrating GIS Data
-While usually updating the address suggestions file from the Journey Builder UI there might be cases to automate this by utilising our APIs.
-This example provides guidelines for integrating the GIS (Geo Information System) data with the epilot. The integration focuses on automating the process of uploading address information within a CSV file into epilot and using this data for address auto-complete functionality within journey blocks.
+
+Address suggestion files are typically uploaded through the Journey Builder UI, but you can automate this process using the epilot APIs. This guide covers programmatic integration of GIS (Geo Information System) data — uploading address CSV files and attaching them to journeys for address autocomplete functionality.
 
 The process involves:
 1. **Uploading a CSV File**: Upload a CSV file containing the new address information.
@@ -66,7 +66,7 @@ This ensures that we provide correct address suggestions in Address or Availabil
 **Required Steps:**  
 1. Get the `public_url` from the response of the `saveFile` request (this shouldn't include "temp" in the path)
 2. Call the [validateFile Endpoint](https://docs.epilot.io/api/address-suggestions#tag/Addresses-API/operation/validateAddresses) by passing the `public_url` value as a query parameter.
-3. If that call responds with a `200` status code, proceed with the next section, if not adjust the file according to the reponse.
+3. If the response returns a `200` status code, proceed to the next section. Otherwise, adjust the file according to the validation errors in the response.
 
 ```shell
 curl --location --request GET 'https://address-suggestions-api.sls.epilot.io/v1/suggestions:validate?s3FileUrl=<PUBLIC-URL>' \
@@ -93,11 +93,8 @@ curl --location --request PATCH 'https://journey-config.sls.epilot.io/v1/journey
 You can get the journey id by opening the journey in a new tab from the Journey Builder
 
 ## Additional Resources
-For more detailed information on each API and additional configuration options, please refer to the [epilot dev center](https://docs.epilot.io/docs/intro).
 
-
-
-
+For more details on each API and additional configuration options, see the [epilot dev center](https://docs.epilot.io/docs/intro).
 
 
 

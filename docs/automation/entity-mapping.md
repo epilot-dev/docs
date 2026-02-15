@@ -7,7 +7,9 @@ sidebar_position: 4
 [[API Docs](/api/automation#tag/flows)]
 [[SDK](https://www.npmjs.com/package/@epilot/automation-client)]
 
-> These docs describe the advanced, low code Entity Mapping Feature. If you are looking for the no code solution, you can check out the docs [here](https://help.epilot.cloud/automatisierungen-und-mapping/6304301252242-Mapping-Zuordnung-von-Journey-Daten-zu-Entit%25C3%25A4ten?from_search=202771407).
+:::info
+These docs describe the advanced, low-code Entity Mapping feature. For the no-code solution, see the [epilot Help Center](https://help.epilot.cloud/automatisierungen-und-mapping/6304301252242-Mapping-Zuordnung-von-Journey-Daten-zu-Entit%25C3%25A4ten?from_search=202771407).
+:::
 
 The **Create/Edit Entity (Advanced)** action allows mapping data from one entity to create or update other entities.
 
@@ -46,7 +48,7 @@ As an example, the following mapping operation will:
 
 1. Append an object with `email` property to the output array value
 1. Copy the value for the `email` property from a Journey submission field in Step 1, Block "Persönliche Informationen", field "email".
-1. Make sure each objet in the output array is unique using the value of `email` as the key.
+1. Make sure each object in the output array is unique using the value of `email` as the key.
 
 ```json
 {
@@ -162,7 +164,7 @@ Duplicate objects are deeply merged retaining the old values. If a matching obje
 
 The `_set` operation can be used to override an existing value with a new one.
 
-This is useful in cases where you don't want to merge target values together (default behaviour)
+Use this when you want to replace a value entirely instead of merging (the default behavior).
 
 ```json
 // set source link to an object with href and title
@@ -179,8 +181,8 @@ This is useful in cases where you don't want to merge target values together (de
 The `_random` operation can be used to generate a random number or id.
 
 Options for **type**:
-- Use `nanoid` or `uuid` to generate a random number.
-- Use `number` and optionally set the `min` (default 0) and `max` (default 1) value.
+- `nanoid` or `uuid` -- generates a random identifier
+- `number` -- generates a random number, with optional `min` (default 0) and `max` (default 1)
 
 ```json
 {
@@ -202,7 +204,7 @@ Options for **type**:
 
 The `_template` operation can be used to output a single string based on [handlebars](https://handlebarsjs.com/guide/expressions.html) expressions.
 
-This is useful when you want to manipulate fields e.g. through mathematical expressions and merge multiple fields into a single one.
+Use this to concatenate fields, apply mathematical expressions, or merge multiple values into a single string.
 ```json
 {
   "_template": "{{contact.first_name}} {{contact.last_name}}",
@@ -242,11 +244,9 @@ Example: To update existing Contacts based on the email address value, switch on
 
 ## Relation Mappings
 
-When choosing a relation attribute for mapping, you define which entities from the trigger entity (usually submission) should be added as relations.
+When choosing a relation attribute for mapping, you define which entities from the trigger entity (usually a submission) to add as relations.
 
-This is done by defining a filter. 
-
-To relate a Contact defined earlier in the automation with "primary" relation label, Filter by `Schema: contact` and `Relation Label: primary`.
+Define a filter to select the related entities. For example, to relate a Contact created earlier in the automation with a "primary" label, filter by `Schema: contact` and `Relation Label: primary`.
 
 ![Relation Mapping Example](../../static/img/automation-relation.png)
 

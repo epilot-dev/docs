@@ -7,7 +7,7 @@ sidebar_position: 3
 [[API Docs](/api/metering)]
 [[SDK](https://www.npmjs.com/package/@epilot/metering-client)]
 
-The Metering API provides a comprehensive set of functionalities for managing meters and their readings within the system. It offers endpoints for retrieving meter information, updating meter details, creating meter readings, and more. The API caters to both administrators and customers, allowing them to perform various operations related to meter management and monitoring.
+The Metering API manages meters and their readings. It provides endpoints for retrieving meter information, updating meter details, creating readings, and querying reading history. Both administrators and portal end-users have access, with different permission scopes.
 
 - [Administrator Actions](#administrator-actions)
 - [Customer Actions](#customer-actions)
@@ -16,13 +16,24 @@ The Metering API provides a comprehensive set of functionalities for managing me
 
 [[API Docs](/api/metering/#tag/ECP-Admin)]
 
-As an administrator, you have privileged access to the Metering API, enabling you to perform advanced meter management tasks. You can retrieve customer meters to monitor and analyze meter data, update meter details such as type, location, and manufacturer, and retrieve detailed information about a specific meter or counter. Additionally, you can create meter readings to record values, along with relevant metadata such as the person who recorded the reading and the reason behind it. This API also provides functionality for creating multiple meter readings at once, creating readings from journey submissions, and retrieving readings within a specified interval.
+Administrators have full access to meter management:
+
+- Retrieve and monitor customer meters
+- Update meter details (type, location, manufacturer)
+- View specific meter or counter information
+- Create individual or bulk meter readings with metadata (recorder, reason)
+- Create readings from journey submissions
+- Query readings within a specified interval
 
 ## Customer Actions
 
 [[API Docs](/api/metering/#tag/ECP)]
 
-Customers, specifically those using the ECP (Customer Portal), have access to a tailored set of functionalities within the Metering API. Through the portal, customers can view and access information about their meters. The API allows customers to retrieve their associated meters, providing details such as meter type, location, and associated contracts. Customers can also update specific meter details when necessary. The ECP ensures a user-friendly interface for customers, allowing them to easily manage and monitor their metering information.
+Portal end-users (Customer Portal) access a scoped subset of metering functionality:
+
+- View their associated meters with details (type, location, linked contracts)
+- Update specific meter details where permitted
+- Submit meter readings through the portal interface
 
 ## Entities
 
@@ -31,8 +42,9 @@ Customers, specifically those using the ECP (Customer Portal), have access to a 
 
 ### Meter
 
-A meter represents a device used for measuring and recording consumption or production of a particular resource, such as electricity, water, or gas. It is associated with specific attributes such as the meter type, manufacturer, meter number, and location. The Metering API allows administrators and customers to retrieve information about meters, update their details, and perform various operations related to meter readings. The example below is the structure of how a meter entity would like.
-```json
+A meter represents a device that measures consumption or production of a resource (electricity, water, gas). It carries attributes like meter type, manufacturer, meter number, and location.
+
+```json title="Meter entity example"
 {
     "_id": "string",
     "_title": "Example Entity",
@@ -86,8 +98,9 @@ A meter represents a device used for measuring and recording consumption or prod
 ```
 ### Counter
 
-A counter is a component within a meter that keeps track of specific measurements or readings. Counters are typically used to record values related to different aspects of resource consumption or production. For example, in an electricity meter, counters may track energy consumption during peak and off-peak hours or differentiate between energy fed into the grid (feed-in) and consumed from the grid (feed-out). The Metering API enables customers to retrieve counter details, including the counter's ID, direction, transformer ratio, unit of measurement, and current consumption. Customers can also update counter information and retrieve readings associated with specific meters and counters. The example below is the structure of how a counter entity would like. 
-```json
+A counter is a component within a meter that tracks a specific measurement. For example, an electricity meter may have counters for peak/off-peak consumption, or for feed-in vs. feed-out energy. Counter attributes include direction, transformer ratio, unit, and current consumption.
+
+```json title="Counter entity example"
 {
     "_id": "991a1821-43bc-46b8-967d-64a3d87c31f8",
     "_title": "Example Entity",

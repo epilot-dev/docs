@@ -1,9 +1,3 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
 import Link from '@docusaurus/Link';
 import clsx from 'clsx';
 import React from 'react';
@@ -18,22 +12,24 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'For Developers',
+    title: 'Entities',
     image: '/img/devs.webp',
     description: (
       <>
-        This developer center is intended for all developers building and working with epilot platform. All resources
-        you need in one place.
+        A standard data model with flexible schemas and attributes. Build on{' '}
+        <Link to="/docs/entities/core-entities">core entities</Link> like contacts, orders, products and contracts — or
+        define your own.
       </>
     ),
   },
   {
-    title: 'API First',
+    title: 'APIs',
     image: '/img/cogwheel.webp',
     description: (
       <>
-        All our platform features are available and documented with industry standard <Link to="/api">API specs</Link>{' '}
-        like OpenAPI and GraphQL.
+        All platform features available via <Link to="/api">REST APIs</Link> documented with OpenAPI specs.
+        Subscribe to platform events through <Link to="/docs/webhooks">Webhooks</Link> with{' '}
+        standardized <Link to="/docs/webhooks/core-events">event schemas</Link>.
       </>
     ),
   },
@@ -42,8 +38,8 @@ const FeatureList: FeatureItem[] = [
     image: '/img/epilot.png',
     description: (
       <>
-        Use <Link to="/docs/architecture/sdk">our SDK</Link> for TypeScript and JavaScript to build faster. All our APIs
-        just one npm install away.
+        Use the <Link to="/docs/architecture/sdk">epilot SDK</Link> for TypeScript and JavaScript. All APIs just one{' '}
+        <code>npm install</code> away.
       </>
     ),
   },

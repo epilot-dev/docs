@@ -4,18 +4,15 @@ sidebar_position: 5
 
 # Static IPs
 
-
-Enterprise customers have the option to configure their webhook integrations to send requests from a predefined list of static IP addresses. This feature enables organizations to introduce stricter network-level security controls, such as firewall rules or IP whitelisting, to ensure that only trusted requests are allowed to access internal systems.
-
-This can be particularly valuable for customers operating in secure environments or requiring compliance with internal or regulatory data protection standards.
+Enterprise customers can configure webhook integrations to send requests from a fixed set of static IP addresses. This enables firewall rules and IP allowlisting to restrict access to internal systems.
 
 :::info
-This feature is only available upon request for enterprise plans. Please contact support to enable static IPs for your webhook configuration.
+Static IPs are available on enterprise plans by request. Contact support to enable this feature.
 :::
 
+## Configuration
 
-## How To Configure Static IPs
+To set up static IPs for webhooks:
 
-Requirements for configuring static IPs for webhooks:
-- You need to own and send us the list of static IP addresses you want us to whitelist
-- Once that is done we will provide you with a list of static IPs you can whitelist
+1. Send epilot support the list of static IP addresses you want to allowlist
+2. epilot provides you with a list of outbound static IPs to allowlist on your firewall

@@ -1,49 +1,36 @@
 ---
-title: Components Library
-hide_title: true
+title: Component Library
 sidebar_position: 1
 ---
 
-<h1 align="left" style={{display:"inline-block"}}>Components Library<span
-  style={{ display: "inline-block", padding: "2px 8px", color: "#fff", fontWeight: "bold", backgroundColor: "#df0000", borderRadius: "4px", fontSize: "1rem", verticalAlign: "middle" }}>ALPHA</span></h1>
+# Component Library
 
-<h2 style={{ fontWeight: "300", color: "gray" }}>Learn the basics of using epilot UI Components Library to build your custom capabilities on top of our 360 platform.</h2>
+**Volt UI** is the design system for epilot 360 — a tree-shakeable React component library built on [Radix UI](https://www.radix-ui.com/) primitives with [Tailwind CSS](https://tailwindcss.com/) for styling.
 
-[[SDK](https://www.npmjs.com/package/@epilot/base-elements)]
-[[Storybook](https://base-elements.dev.epilot.io/)]
+:::info
+Volt UI is currently an internal library and not yet publicly available. This page documents the design direction for epilot 360's UI layer.
+:::
 
-The entire epilot platform is built around the concept of flexibility and customization. We believe that the best way to achieve this is by providing a set of UI components that can be used to build custom capabilities on top of the epilot platform.
+## Overview
 
-The epilot UI Components Library is built using [React](https://reactjs.org/) and [Material UI](https://material-ui.com/). And it's distributed as a set of npm packages:
+Volt UI provides the foundational components for the epilot 360 admin application. All CSS classes and design tokens are prefixed with `volt-` to avoid conflicts with application styles.
 
-- [@epilot/base-elements](https://www.npmjs.com/package/@epilot/base-elements)
-- [@epilot/base-modules](https://www.npmjs.com/package/@epilot/base-modules)
+| | Details |
+|---|---|
+| **Framework** | React |
+| **Primitives** | Radix UI |
+| **Styling** | Tailwind CSS |
+| **Prefix** | `volt-` |
 
-## Storybook
+Volt UI provides a component API reference, theming guide, and usage examples.
 
-The epilot UI Components Library is documented using [Storybook](https://storybook.js.org/). You can find the latest version of the Storybook under the following links:
+---
 
-- <https://base-elements.dev.epilot.io>
-- <https://base-modules.dev.epilot.io>
+## Customer-Facing Styling
 
-## Getting Started
+For styling **Journeys** (customer-facing forms), epilot uses [**Concorde**](https://github.com/epilot-dev/concorde-elements) — an open-source design system with CSS custom properties (`--concorde-*`). See:
 
-To get started, you can install the package using npm:
-
-```bash
-npm install @epilot/base-elements
-```
-
-You can then import the components in your React application:
-
-```jsx
-import { Button, ThemeProvider } from '@epilot/base-elements'
-
-function App() {
-  return (
-    <ThemeProvider>
-      <Button>My Button</Button>
-    </ThemeProvider>
-  )
-}
-```
+- [Concorde Design Tokens](/docs/ui-design/concorde-design-tokens) — Full list of theming variables
+- [Concorde HTML Structure](/docs/ui-design/concorde-html-structure) — DOM structure reference
+- [Design Builder](/docs/journeys/design-builder) — Visual theming tool
+- [Custom CSS](/docs/journeys/custom-css) — Advanced journey styling

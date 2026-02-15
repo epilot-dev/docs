@@ -9,36 +9,19 @@ sidebar_position: 3
 
 ## Overview
 
-The Document Generation API is a powerful serverless document processing service that enables dynamic document creation from templates. It supports multiple input and output formats, advanced variable substitution, image handling with loops, and Excel generation capabilities.
-
-### Key Features
-- **Multi-format Support**: Process DOCX, XLSX, XLS, XLSM, and ICS templates
-- **Variable Substitution**: Replace template variables with dynamic data from entities
-- **Image Processing**: Direct image embedding with size control and loop support
-- **PDF Generation**: Convert documents to PDF with preview URLs
-- **Excel Support**: Full spreadsheet generation with formula preservation
-- **Async Processing**: Handle large documents with job tracking
-- **Multi-language**: Support for English and German localization
-
-### Architecture
-The service uses a dual-Lambda architecture:
-- **API Handler Function**: REST API router for synchronous operations (Node.js 22)
-- **Generate Document Function**: Dockerized Lambda for async document processing (Node.js 18 + Python)
+The Document Generation API creates documents from templates with dynamic variable substitution. It supports multiple input and output formats, image embedding, Excel generation, and async processing with job tracking.
 
 ## API Endpoints
 
-### 1. Extract Template Metadata
+### Extract Template Metadata
 
 Extract metadata and variables from document templates.
 
 **Endpoint:** `POST /v2/documents:meta`
 
-**Supported Formats:**
-- `.docx`, `.doc` - Word documents
-- `.xlsx`, `.xls`, `.xlsm` - Excel spreadsheets
+**Supported formats:** `.docx`, `.doc`, `.xlsx`, `.xls`, `.xlsm`
 
-**Request Example:**
-```json
+```json title="Request"
 {
   "template_document": {
     "s3ref": {
@@ -49,8 +32,7 @@ Extract metadata and variables from document templates.
 }
 ```
 
-**Response Example:**
-```json
+```json title="Response"
 {
   "page_margins": {
     "top": 1440,
@@ -69,34 +51,25 @@ Extract metadata and variables from document templates.
 }
 ```
 
-### 2. Generate Documents
+### Generate Documents
 
 Generate documents from templates with variable substitution.
 
 **Endpoint:** `POST /v2/documents:generate`
 
-**Supported Input Formats:**
-- `.docx` - Word documents
-- `.xlsx`, `.xls`, `.xlsm` - Excel spreadsheets
-- `.ics` - Calendar files
+**Input formats:** `.docx`, `.xlsx`, `.xls`, `.xlsm`, `.ics`
 
-**Supported Output Formats:**
-- `.pdf` - PDF with preview URL
-- `.docx` - Word document (text-only mode)
-- `.xlsx` - Excel spreadsheet
-- `.ics` - Calendar format
+**Output formats:** `.pdf`, `.docx`, `.xlsx`, `.ics`
 
-**Query Parameters:**
-- `job_id` - Track async generation status
-- `mode` - Generation mode:
-  - `partial_generation` - User validation before final output
-  - `full_generation` (default) - Complete generation in one step
-- `preview_mode` - Preview behavior:
-  - `open` - Open in browser
-  - `download` (default) - Force download
+**Query parameters:**
 
-**Request Example:**
-```json
+| Parameter | Values | Default | Description |
+|-----------|--------|---------|-------------|
+| `job_id` | string | -- | Track async generation status |
+| `mode` | `partial_generation`, `full_generation` | `full_generation` | Generation flow type |
+| `preview_mode` | `open`, `download` | `open` | Preview behavior |
+
+```json title="Request"
 {
   "template_document": {
     "s3ref": {
@@ -120,8 +93,7 @@ Generate documents from templates with variable substitution.
 }
 ```
 
-**Response Example:**
-```json
+```json title="Response"
 {
   "job_id": "job_550e8400",
   "job_status": "SUCCESS",
@@ -149,14 +121,13 @@ Generate documents from templates with variable substitution.
 }
 ```
 
-### 3. Convert Documents
+### Convert Documents
 
 Convert documents between formats (currently DOCX to PDF).
 
 **Endpoint:** `POST /v2/documents:convert`
 
-**Request Example:**
-```json
+```json title="Request"
 {
   "input_document": {
     "s3ref": {
@@ -170,8 +141,7 @@ Convert documents between formats (currently DOCX to PDF).
 }
 ```
 
-**Response Example:**
-```json
+```json title="Response"
 {
   "output_document": {
     "s3ref": {
@@ -201,11 +171,12 @@ Templates use double curly braces for variable substitution:
 
 ### Variable Resolution Order
 
-Variables are resolved in the following precedence order:
-1. **`variable_payload`** - Explicitly provided values (highest priority)
-2. **`context_data`** - Additional context data
-3. **Template Variables API** - Entity attributes from `context_entity_id`
-4. **User Preferences** - Language settings from `user_id`
+Variables resolve in this precedence order (highest first):
+
+1. `variable_payload` -- explicitly provided values
+2. `context_data` -- additional context data
+3. Entity attributes from `context_entity_id`
+4. User preferences (language) from `user_id`
 
 ### Complex Variable Examples
 
@@ -286,23 +257,11 @@ This only includes images with the label "solar-panel".
 
 ### Automatic Public URL Generation
 
-The Document Generation service automatically handles private images:
-- Private images are automatically converted to signed URLs with temporary access credentials
-- These signed URLs include encrypted authentication tokens that grant time-limited access
-- URLs expire shortly after document processing completes for security
+The service automatically handles private images by converting them to signed URLs with temporary access credentials. These URLs expire shortly after document processing completes.
 
-### Important Compatibility Note
-
-⚠️ **Order Tables with Margin Corrections are Incompatible with Loops**
-
-Templates containing order tables with margin corrections like:
-```
-{{~order_table mt=2 mb=2}}
-```
-
-**Cannot** be used with image loops or any FOR_LOOP constructs.
-
-**Solution:** Remove the margin correction variables and adjust margins directly in your Word template using Word's built-in margin settings.
+:::warning
+**Order tables with margin corrections are incompatible with loops.** Templates using `{{~order_table mt=2 mb=2}}` cannot include image loops or any `FOR_LOOP` constructs. Remove margin correction variables and adjust margins directly in Word's built-in settings instead.
+:::
 
 ## Excel Generation
 
@@ -313,11 +272,14 @@ Templates containing order tables with margin corrections like:
 
 ### Excel Template Support
 
-The Document Generation API fully supports Excel templates with:
-- **Variable substitution** in cells
-- **Formula preservation** (recalculation is not supported due to Excel's security model)
-- **Image embedding** in spreadsheets
-- :warning: **Order Table variables** are not supported due to Excel's limitations with direct HTML rendering
+The Document Generation API supports Excel templates with:
+- Variable substitution in cells
+- Formula preservation (recalculation is not supported due to Excel's security model)
+- Image embedding in spreadsheets
+
+:::note
+Order Table variables are not supported in Excel templates due to Excel's limitations with direct HTML rendering.
+:::
 
 ### Excel Variable Syntax
 
@@ -359,74 +321,40 @@ Cell B2: {{% chart_url }}
 
 ## Troubleshooting
 
-### Common Issues
+<details>
+<summary>Variables not replaced</summary>
 
-#### 1. Variables Not Replaced
-- **Check variable syntax**: Ensure correct use of `{{}}` brackets
-- **Verify data source**: Check if variable exists in payload or entity
-- **Review precedence**: Remember `variable_payload` overrides entity data
+- Verify `{{}}` bracket syntax
+- Check that the variable exists in the payload or entity
+- Remember that `variable_payload` overrides entity data
 
-#### 2. Image Not Rendering
-- **Check URL format**: Use `{{% url }}` with correct syntax
-- **Verify image access**: Ensure image URL is accessible
-- **Label filtering**: Confirm images have correct labels when using filters
+</details>
 
-#### 3. Loop Syntax Errors
-- **Array notation**: Use `[*]` for all items, `[...label]` for filtered
-- **Closing tags**: Ensure matching opening and closing loop tags
-- **Margin conflicts**: Remove `{{~order_table mt=2 mb=2}}` when using loops
+<details>
+<summary>Image not rendering</summary>
 
-#### 4. Excel Formula Issues
-- **Formula preservation**: Use standard Excel formula syntax
-- **Variable in formulas**: Wrap variables in appropriate functions
+- Use `{{% url }}` with the correct syntax
+- Confirm the image URL is accessible
+- When using label filters, verify images have the correct labels
+
+</details>
+
+<details>
+<summary>Loop syntax errors</summary>
+
+- Use `[*]` for all items, `[...label]` for filtered
+- Ensure matching opening and closing loop tags
+- Remove `{{~order_table mt=2 mb=2}}` when using loops
+
+</details>
 
 ## Code Examples
 
-### JavaScript/TypeScript Client
+### cURL
 
-```typescript
-import { DocumentClient } from '@epilot/document-client';
-
-const client = new DocumentClient(...);
-
-// Generate document
-async function generateInvoice(customerId: string) {
-  const response = await client.generateDocument({
-    template_document: {
-      s3ref: {
-        bucket: 'epilot-files-prod',
-        key: 'templates/invoice.docx'
-      }
-    },
-    context_entity_id: customerId,
-    variable_payload: {
-      invoice_date: new Date().toISOString(),
-      due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-    }
-  });
-
-  return response.pdf.preview_url;
-}
-
-// Extract template metadata
-async function analyzeTemplate(templateRef: S3Reference) {
-  const metadata = await client.getTemplateMeta({
-    template_document: { s3ref: templateRef }
-  });
-
-  console.log('Variables found:', metadata.variables);
-  console.log('Page margins:', metadata.page_margins);
-
-  return metadata;
-}
-```
-
-### cURL Examples
-
-```bash
-# Extract template metadata
+```bash title="Extract template metadata"
 curl -X POST https://api.epilot.cloud/v2/documents:meta \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "template_document": {
@@ -436,10 +364,11 @@ curl -X POST https://api.epilot.cloud/v2/documents:meta \
       }
     }
   }'
+```
 
-# Generate document
+```bash title="Generate a document"
 curl -X POST https://api.epilot.cloud/v2/documents:generate \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "template_document": {
@@ -455,11 +384,11 @@ curl -X POST https://api.epilot.cloud/v2/documents:generate \
   }'
 ```
 
-## Advanced Features
-
 ### Template Settings
-Customize document appearance:
-```json
+
+Customize document margins and appearance:
+
+```json title="template_settings"
 {
   "template_settings": {
     "top_margin": 1440,
@@ -473,38 +402,24 @@ Customize document appearance:
 }
 ```
 
-### Job Status Tracking
+### Async Job Tracking
 
-For async operations, track job status:
+For large documents, poll the generation endpoint with the returned `job_id`:
 
 ```typescript
-// Initial request returns job_id
 const { job_id } = await client.generateDocument({ ... });
 
-// Poll for status
-const checkStatus = async (jobId: string) => {
-  const response = await client.getJobStatus(jobId);
+const poll = async (jobId: string) => {
+  const res = await client.generateDocument({ job_id: jobId });
 
-  switch(response.job_status) {
-    case 'STARTED':
-    case 'PROCESSING':
-      // Still processing, check again later
-      setTimeout(() => checkStatus(jobId), 2000);
-      break;
-    case 'SUCCESS':
-      // Document ready
-      console.log('Document URL:', response.pdf.preview_url);
-      break;
-    case 'FAILED':
-      // Handle error
-      console.error('Generation failed:', response.error);
-      break;
+  if (res.job_status === 'SUCCESS') {
+    return res.pdf.preview_url;
+  } else if (res.job_status === 'FAILED') {
+    throw new Error('Generation failed');
   }
+
+  // Still processing -- retry after delay
+  await new Promise((r) => setTimeout(r, 2000));
+  return poll(jobId);
 };
 ```
-
-## Support
-
-For additional references:
-- **API Documentation**: [API Reference](/api/document)
-- **SDK**: [@epilot/document-client](https://www.npmjs.com/package/@epilot/document-client)

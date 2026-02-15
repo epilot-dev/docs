@@ -297,18 +297,6 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
   }'
 ```
 
-## Environment Variables
-
-When self-hosting or developing locally:
-
-| Variable | Description |
-|----------|-------------|
-| `STAGE` | Deployment stage (dev, staging, prod) |
-| `LOG_LEVEL` | Logging verbosity (DEBUG, INFO, WARN, ERROR) |
-| `DYNAMODB_TABLE` | DynamoDB table for tracking |
-| `INTEGRATIONS_TABLE` | DynamoDB table for integrations |
-| `ERP_UPDATES_QUEUE_URL` | SQS queue URL for events |
-
 ## Rate Limits
 
 | Endpoint | Limit |
@@ -328,13 +316,9 @@ curl -H 'Authorization: Bearer <your-token>' ...
 
 ### Organization Isolation
 
-- Each organization's data is isolated
-- Integration IDs are scoped to organizations
-- Cross-organization access is not permitted
+Each organization's data is fully isolated. Integration IDs are scoped to organizations, and cross-organization access is not permitted.
 
 ### Permissions
-
-Required permissions for API access:
 
 | Action | Permission |
 |--------|------------|

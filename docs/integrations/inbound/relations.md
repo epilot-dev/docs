@@ -6,7 +6,7 @@ description: Link entities together during synchronization
 
 # Entity Relations
 
-Relations connect entities together in epilot. The ERP Toolkit supports creating and updating relations between entities during synchronization.
+Relations connect entities in epilot. The ERP Toolkit creates and updates relations between entities during synchronization.
 
 ## Relation Basics
 
@@ -297,9 +297,9 @@ The system automatically preserves `_id` values when updating repeatable attribu
 
 ## Relation Resolution Strategy
 
-The ERP Toolkit uses an **all-or-nothing** strategy for relations:
+The ERP Toolkit uses an **all-or-nothing** strategy:
 
-1. All relations in a mapping are resolved before any entity updates
+1. All relations in a mapping resolve before any entity updates
 2. If any relation cannot be found, the entire update fails
 3. This ensures data consistency
 

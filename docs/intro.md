@@ -10,26 +10,26 @@ sidebar_position: 1
 
 <h1 align="center">Documentation</h1>
 
-<p align="center">Learn the basics of using epilot developer tools and APIs to unlock the potential of the epilot platform.</p>
+<p align="center">Developer tools and APIs for the epilot platform.</p>
 
 ## Architecture
 
-Understand the basics of the epilot platform and learn core concepts like entities, authentication and automation.
+Entities, authentication, automation, and the serverless platform behind epilot.
 
-[Overview](/docs/architecture/overview) - [Tech Stack](/docs/architecture/overview#tech-stack)
+[Overview](/docs/architecture/overview) | [Tech Stack](/docs/architecture/overview#tech-stack) | [Security](/docs/architecture/security)
 
 ## APIs
 
-Explore and learn to use our APIs to build your own solutions on epilot.
+Public REST APIs for integrations and extending epilot.
 
-[Overview](/docs/architecture/api-first) - [Docs](/api)
+[API First](/docs/architecture/api-first) | [API Reference](/api)
 
 ## SDK
 
-Explore our developer tools and get started with the epilot SDK
+TypeScript SDK with full type support for all epilot APIs.
 
-[Overview](/docs/architecture/sdk)
+[SDK Docs](/docs/architecture/sdk)
 
-## Contact us
+## Contact
 
-You can always [open an issue](https://github.com/epilot-dev/docs/issues) on our GitHub repository, or if you're already a customer, contact us via customer support to receive technical assistance.
+[Open an issue](https://github.com/epilot-dev/docs/issues) on GitHub or reach out via customer support for technical assistance.

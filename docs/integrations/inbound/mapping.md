@@ -6,7 +6,7 @@ description: Configure how ERP data transforms into epilot entities
 
 # Mapping
 
-Mapping defines how data from your ERP system transforms into epilot entities. This page covers the mapping configuration structure and available options.
+Mapping defines how ERP data transforms into epilot entities. This page covers the configuration structure and available options.
 
 ## Mapping Configuration
 
@@ -116,7 +116,7 @@ Use the `enabled` property to conditionally map fields:
 
 ## Repeatable Fields
 
-Email and phone fields in epilot are stored as arrays. Use the `_type` property to specify the field type:
+Email and phone fields in epilot are stored as arrays. Use `_type` to specify the field type:
 
 ### Email Fields
 
@@ -294,13 +294,13 @@ Combine `mode` with `enabled` for conditional deletion based on payload data:
 
 ### Prune Scope Operations
 
-The `upsert-prune-scope-purge` and `upsert-prune-scope-delete` modes enable a powerful sync pattern: upsert all entities from an array in the payload, then delete/purge entities within a defined scope that weren't included in the upsert.
+The `upsert-prune-scope-purge` and `upsert-prune-scope-delete` modes upsert all entities from an array in the payload, then delete/purge entities within a defined scope that weren't included in the upsert.
 
-This is ideal for synchronizing child entity collections, such as syncing all billing events for a billing account.
+This is ideal for synchronizing child entity collections, such as billing events for a billing account.
 
 #### Scope Configuration
 
-When using prune-scope modes, you must provide a `scope` configuration that defines how to identify which existing entities should be considered for deletion. The scope is resolved against the **original event payload** (not individual array items).
+Prune-scope modes require a `scope` configuration that defines which existing entities are eligible for deletion. The scope resolves against the **original event payload** (not individual array items).
 
 ##### scope_mode Options
 
@@ -311,7 +311,7 @@ When using prune-scope modes, you must provide a `scope` configuration that defi
 
 #### Example: Sync Billing Events for a Billing Account
 
-When receiving a billing account update with billing events, sync all billing events and remove any that are no longer in the payload:
+Sync all billing events for a billing account and remove any that are no longer in the payload:
 
 ```json
 {
@@ -397,11 +397,9 @@ If the array yields zero entities (e.g., `billingevents: []`), this will result 
 
 ### Meter Reading Prune Scope Operations
 
-The `upsert-prune-scope` mode for meter readings enables a sync pattern similar to entity prune scope: upsert all readings from the payload for a given meter/counter, then permanently delete all other readings for that meter/counter that weren't part of the upsert.
+The `upsert-prune-scope` mode for meter readings upserts all readings from the payload for a given meter/counter, then permanently deletes all other readings for that meter/counter that weren't part of the upsert.
 
-The scope is naturally defined by **meter + counter** — no explicit `scope_mode` is needed.
-
-An optional `scope` object can be added to restrict pruning to readings from a specific source.
+The scope is naturally defined by **meter + counter** — no explicit `scope_mode` is needed. An optional `scope` object can restrict pruning to readings from a specific source.
 
 #### Scope Configuration (optional)
 
@@ -434,7 +432,7 @@ An optional `scope` object can be added to restrict pruning to readings from a s
 }
 ```
 
-This configuration upserts all readings from the `readings` array, then deletes any other readings for the same meter+counter that weren't in the payload.
+Upserts all readings from the `readings` array, then deletes any other readings for the same meter+counter not in the payload.
 
 #### Example: With Source Scope
 
@@ -501,7 +499,7 @@ You can mix upsert and delete operations in the same use case by using multiple 
 }
 ```
 
-This configuration updates the meter status to "DECOMMISSIONED" while also purging the associated billing events.
+Updates the meter status to "DECOMMISSIONED" while purging associated billing events.
 
 ## Field Mapping Priority
 

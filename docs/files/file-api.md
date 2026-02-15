@@ -7,108 +7,90 @@ sidebar_position: 2
 [[API Docs](/api/file)]
 [[SDK](https://www.npmjs.com/package/@epilot/file-client)]
 
-
 Files in epilot are uploaded and managed through the [File API](/api/file).
 
 ## Downloading Files
 
-The [`downloadFile` operation](/api/file#tag/files/operation/downloadFile) returns a temporary presigned S3 URL, which the client uses to download a file using the `GET` method.
+The [`downloadFile` operation](/api/file#tag/files/operation/downloadFile) returns a temporary presigned S3 URL for downloading a file.
 
 ```
-GET https://file.sls.epilot.io/v1/files/4ffdc191-f32c-404a-8520-c403b7408afa/download
+GET /v1/files/{id}/download
 ```
 
-```json
+```json title="Response"
 {
-  "download_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/66/3fe52f11-89d8-4482-a102-b060e9c4b328/Snapshot_202205147_140500.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA5AGXFWQOZC655PER%2F20240307%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20240307T130430Z&X-Amz-Expires=900&X-Amz-Security-Token=IQoJb3JpZ2..."
+  "download_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/...?X-Amz-..."
 }
 ```
 
-The `download_url` in the response is valid for 15 minutes and can be used to download the file using the `GET` method.
+The `download_url` is valid for 15 minutes.
 
 :::info
-
-The `downloadFile` operation requires a valid access token to be present in the request.
-
+The `downloadFile` operation requires a valid access token.
 :::
 
 :::note
-
-The `public_url` property of a file entity may also be used to download a file directly if the file is public. However the `downloadFile` operation works for both public and private files and is the recommended way to download files.
-
+Public files can also be downloaded directly via their `public_url` property. However, `downloadFile` works for both public and private files and is the recommended approach.
 :::
-
 
 ## Uploading Files
 
-The [`uploadFile` operation](/api/file#tag/files/operation/uploadFileV2) returns a temporary presigned S3 URL, which the client uses to upload a file using the `PUT` or `POST` method.
+The [`uploadFileV2` operation](/api/file#tag/files/operation/uploadFileV2) returns a temporary presigned S3 URL for uploading a file via `PUT`.
 
-After uploading, the client should call the [`saveFileV2` operation](/api/file#tag/files/operation/saveFileV2) to save the uploaded file as an entity make it permanent.
-
-Files that are uploaded but not saved expire and are deleted within 24 hours.
+After uploading, call [`saveFileV2`](/api/file#tag/files/operation/saveFileV2) to persist the file and create a File entity. Files that are uploaded but not saved expire and are deleted within 24 hours.
 
 :::info
-
-The `uploadFileV2` operation requires a valid access token to be present in the request. Use the `uploadFilePublic` operation to upload files for Submissions of public journeys.
-
+`uploadFileV2` requires a valid access token. Use `uploadFilePublic` for public journey submissions.
 :::
 
 ## Example Upload Flow
 
-### Step 1: Call uploadFile to receive s3ref
+### Step 1: Call uploadFileV2 to get an s3ref
 
 ```
-POST https://file.sls.epilot.io/v2/files/upload
+POST /v2/files/upload
 ```
 
-Body (application/json):
-```json
+```json title="Request body"
 {
   "filename": "example.pdf",
   "mime_type": "application/pdf"
 }
 ```
 
-Response (201):
-```json
+```json title="Response (201)"
 {
   "s3ref": {
     "bucket": "epilot-prod-user-content",
     "key": "123/temp/f5e1c2be-7392-4a0d-8c45-236743423733/example.pdf"
   },
-  "upload_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/temp/f5e1c2be-7392-4a0d-8c45-236743423733/example.pdf?X-Amz-...",
-  "public_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/temp/f5e1c2be-7392-4a0d-8c45-236743423733/example.pdf"
+  "upload_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/...?X-Amz-...",
+  "public_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/..."
 }
 ```
 
-### Step 2: Upload your file using a PUT request
+### Step 2: Upload the file to S3
 
-Use the returned `upload_url` to upload your file to S3.
+Use the returned `upload_url` to upload your file via `PUT`.
 
-> Hint: Make sure your Content-Type request header is set correctly!
+:::tip
+Set the `Content-Type` header to match the file's MIME type.
+:::
 
 ```
-PUT https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/temp/f5e1c2be-7392-4a0d-8c45-236743423733/example.pdf?X-Amz-...
-```
+PUT {upload_url}
+Content-Type: application/pdf
 
-Body (application/pdf):
-```
 (binary data)
 ```
 
-Response (201):
-```
-(empty)
-```
-
-### Step 3: Call saveFileV2 to persist the file and create a File entity
+### Step 3: Call saveFileV2 to persist the file
 
 ```
-POST https://file.sls.epilot.io/v2/files
+POST /v2/files
 ```
 
-Body (application/json):
-```json
+```json title="Request body"
 {
   "s3ref": {
     "bucket": "epilot-prod-user-content",
@@ -119,8 +101,7 @@ Body (application/json):
 }
 ```
 
-Response (201):
-```json
+```json title="Response (201)"
 {
   "_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8",
   "filename": "example.pdf",
@@ -129,15 +110,15 @@ Response (201):
   "type": "document",
   "mime_type": "application/pdf",
   "size_bytes": 0,
-  "versions": [
-    ...
-  ]
+  "versions": [...]
 }
 ```
 
-Note that the `public_url` property of the File entity is still present in the response, even if the entity has `access_control` set to `private`. For `private` the public URL is simply not accessible and will return a 403 response.
+:::note
+The `public_url` property is always present in the response. When `access_control` is `private`, the URL returns a 403 response.
+:::
 
-You can now attach the returned file entity id to your business entity as a relation to any attribute of type `file`, or the default `_files` attribute:
+Attach the returned file entity ID to a business entity as a relation on any `file` attribute, or the default `_files` attribute:
 
 ```json
 {
@@ -153,14 +134,13 @@ You can now attach the returned file entity id to your business entity as a rela
 
 ## External Files
 
-In some cases, storing files on the epilot side is undesirable. For instance, when it would mean migrating a large document archive. In such scenarios, it is possible to skip the upload steps and utilize the `custom_download_url` property when saving a File entity.
+When migrating a large document archive is impractical, skip the upload steps and use the `custom_download_url` property to reference files stored externally.
 
 ```
-POST https://file.sls.epilot.io/v2/files
+POST /v2/files
 ```
 
-Body (application/json):
-```json
+```json title="Request body"
 {
   "custom_download_url": "https://external-url.io?fileID=42",
   "filename": "example.pdf",
@@ -168,8 +148,7 @@ Body (application/json):
 }
 ```
 
-Response (201):
-```json
+```json title="Response (201)"
 {
   "_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8",
   "filename": "example.pdf",
@@ -177,29 +156,23 @@ Response (201):
   "custom_download_url": "https://external-url.io?fileID=42",
   "type": "unknown",
   "size_bytes": 0,
-  "versions": [
-    ...
-  ]
+  "versions": [...]
 }
 ```
 
-External files are then retrieved on the fly from epilot with a short-lived signature and streamed directly to the end user.
-To verify the request is coming from epilot, use the [`verifyCustomDownloadUrl` operation](/api/file#tag/files/operation/verifyCustomDownloadUrl).
+epilot retrieves external files on the fly with a short-lived signature and streams them directly to the end user. Use the [`verifyCustomDownloadUrl` operation](/api/file#tag/files/operation/verifyCustomDownloadUrl) to verify that a download request originates from epilot.
 
 ![External file download flow](../../static/img/file-custom-url-flow.png)
 
-:::info
-
-Requests to download external files come from the user's browser. All data from the response (including headers) can be viewed by the end user and as such should not contain any sensitive data, like internal tokens, apart from the file.
-
+:::warning
+Download requests for external files come from the user's browser. Do not include sensitive data (internal tokens, credentials) in the response -- the end user can inspect all response headers and content.
 :::
 
 
 ## Updating Files
 
-Modifying or saving new versions of File entities happens via the [`saveFileV2` operation](/api/file#tag/files/operation/saveFileV2).
-
+Update or save new versions of File entities via the [`saveFileV2` operation](/api/file#tag/files/operation/saveFileV2).
 
 ## Deleting Files
 
-Deleting files is done using the [`deleteFile` operation](/api/file#tag/files/operation/saveFile). When the file entity is deleted, the underyling S3 object is deleted permanently.
+Delete files using the [`deleteFile` operation](/api/file#tag/files/operation/deleteFile). This permanently deletes both the File entity and the underlying S3 object.

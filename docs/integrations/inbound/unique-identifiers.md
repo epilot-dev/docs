@@ -6,7 +6,7 @@ description: Configure how entities are matched and looked up
 
 # Unique Identifiers
 
-Unique identifiers determine how the ERP Toolkit finds existing entities in epilot. When an event is processed, the system searches for entities matching the specified identifiers to decide whether to create a new entity or update an existing one.
+Unique identifiers determine how the ERP Toolkit finds existing entities in epilot. When processing an event, the system searches for entities matching the specified identifiers to decide whether to create or update.
 
 ## Basic Usage
 
@@ -23,7 +23,7 @@ Specify one or more fields as unique identifiers:
 }
 ```
 
-The system extracts the value of `customer_number` from the mapped fields and searches for existing entities.
+The system extracts `customer_number` from the mapped fields and searches for existing entities.
 
 ## Lookup Behavior
 
@@ -247,7 +247,7 @@ When multiple entities match the identifier:
 }
 ```
 
-**Resolution:** Use more specific identifiers or clean up duplicate data in epilot.
+**Resolution:** Use more specific identifiers or clean up duplicate data.
 
 ### No Identifier Value
 

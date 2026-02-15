@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+title: JSONata Customization
 ---
 
 # Customization
@@ -7,28 +8,24 @@ sidebar_position: 4
 [[API Docs](/api/webhooks)]
 [[SDK](https://www.npmjs.com/package/@epilot/webhooks-client)]
 
-## Get full control over the webhook payload by using JSONata
-[JSONata](https://jsonata.org/) is a lightweight query and transformation language for JSON data. It allows you to extract, transform, and manipulate JSON data in a flexible way. In the context of webhooks, JSONata can be used to customize the payload of the webhook request by defining a transformation expression that specifies how the data should be structured.
+## JSONata Payload Transformation
 
-To use JSONata in your webhook configuration, you can define a transformation expression that specifies how the data should be structured. This expression can include filters, transformations, and other operations to customize the payload according to your needs.
-For example, you can use JSONata to extract specific fields from the entity data, transform the data into a different format, or filter out unnecessary fields. This allows you to create a payload that is tailored to your specific requirements and reduces the amount of data that needs to be transmitted over the network.
+[JSONata](https://jsonata.org/) is a lightweight query and transformation language for JSON data. Use it to reshape, filter, or extract specific fields from the webhook payload before delivery.
 
-
-:::info
-By using JSONata, we give you full control over the webhook payload. You can customize the payload structure, include or exclude specific fields, and transform the data as needed. This flexibility allows you to create a payload that is optimized for your use case and reduces the amount of data that needs to be transmitted. Use the testing feature to verify that your JSONata expression produces the desired payload structure.
-
-You can use the [JSONata online editor](https://try.jsonata.org/) to test your expressions and see the results in real-time. This can help you quickly iterate on your payload structure and ensure that it meets your requirements before deploying it in production.
+:::tip
+Test your JSONata expressions in the [JSONata online editor](https://try.jsonata.org/) before deploying to production. The webhook configuration UI also includes a built-in test feature.
 :::
 
 ### How to Use JSONata
-To use JSONata in your webhook configuration, follow these steps:
-1. **Open the Webhook Configuration**: Navigate to the webhook configuration page in the epilot portal.
-2. **Select the JSONata Option**: In the webhook configuration, select the option to use JSONata for customizing the payload.
-3. **Define the Transformation Expression**: Enter the JSONata expression that defines how the data should be transformed. You can use the provided example as a starting point and modify it according to your needs.
-4. **Test the Configuration**: Use the test feature to verify that the JSONata expression produces the desired payload structure. You can adjust the expression as needed based on the test results.
-### Example JSONata Expression
 
-Imagine the following webhook payload structure for an opportunity. Most of the time we are only interested in a sub-set of this data structure. By using JSONata we can simplify the payload and even use its utilities to parse and transform data to your needs.
+1. Open the webhook configuration in the epilot portal
+2. Select the JSONata transformation option
+3. Enter your JSONata expression
+4. Use the built-in test feature to verify the output
+
+### Example
+
+Given this webhook payload for an opportunity:
 
 ```json
 {
@@ -80,7 +77,7 @@ Imagine the following webhook payload structure for an opportunity. Most of the 
 }
 ```
 
-by using this JSONata query:
+Apply this JSONata expression:
 
 ```json
 {
@@ -91,7 +88,7 @@ by using this JSONata query:
 }
 ```
 
-This will result in the following payload:
+The resulting payload:
 
 ```json
 {
@@ -101,12 +98,10 @@ This will result in the following payload:
     "status": "open"
 }
 ```
-This example demonstrates how to extract specific fields from the webhook payload and transform them into a simplified structure. You can adjust the JSONata expression to include or exclude fields, apply transformations, or filter data as needed.
 
+## Additional Attributes
 
-## Get Additional Attributes
-
-Customizing the payload of an incoming webhook request is entirely feasible. The standard structure for this customization typically follows this general format:
+You can include optional data sections in the webhook payload. The base structure supports these optional sections:
 
 ```json
 {
@@ -124,19 +119,15 @@ Customizing the payload of an incoming webhook request is entirely feasible. The
    } // optional
 }
 ```
-- Include Changed Attributes
-  - shows the ***changed*** added|deleted|updated attributes ***after*** the event
-  - important note: this will only be included if the event is a change event e.g. an `Entity update: Opportunity` automation trigger. Manual trigger will not fill changed attribures.
-- Include Activity
-- Include Relations
-  - **hydrated** relations to other entities
-  - important note: including this can increase the payload size significantly
+- **Include Changed Attributes** — Shows added, deleted, and updated attributes after the event. Only populated for change events (e.g., `Entity update: Opportunity`). Manual triggers do not include changed attributes.
+- **Include Activity** — Adds activity data to the payload.
+- **Include Relations** — Adds hydrated relations to other entities. Note: this can significantly increase payload size.
 
 ![Custom Webhook Payload Configuration](../../../static/img/webhooks/custom-payload.png)
 
-## Custom header
+## Custom Headers
 
-Custom headers can be added to the webhook request to provide additional information or authentication. This feature allows users to include custom headers in the webhook request, enhancing the security and customization options available for webhook configurations.
+Add custom headers to webhook requests for additional authentication or metadata.
 
 ![Custom Webhook Header](../../../static/img/webhooks/custom-header.png)
 
@@ -188,8 +179,8 @@ The following headers are forbidden and will be removed from the request:
     'x-amzn-*'
 ```
 
-## Custom oauth parameter
+## Custom OAuth Parameters
 
-Custom OAuth parameters can be seamlessly integrated into the webhook configuration process. These parameters can be included as part of the OAuth request, appended as body, query, or header parameters. This feature empowers users to augment the OAuth request with supplementary information as needed, enhancing the flexibility and customization options within the authentication flow.
+Add custom parameters to the OAuth token request as body, query, or header parameters. This is useful when your authorization server requires additional context beyond the standard OAuth fields.
 
-![Custom Webhook Ouath Parameter](../../../static/img/webhooks/custom-oauth.png)
+![Custom Webhook OAuth Parameter](../../../static/img/webhooks/custom-oauth.png)

@@ -42,7 +42,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
 }
 ```
 
-Save the `id` - you'll need it for subsequent API calls.
+Save the `id` — you'll need it for subsequent API calls.
 
 ## Step 2: Create a Use Case
 
@@ -115,7 +115,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/erp/updates/events' \
 
 ## Processing Flow
 
-When you send events, they flow through the following pipeline:
+Events flow through the following pipeline:
 
 ![Processing Flow](/img/integrations/toolkit-processing.svg)
 

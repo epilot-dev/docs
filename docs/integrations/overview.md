@@ -4,151 +4,173 @@ title: Overview
 description: Introduction to the ERP Toolkit for integrating ERP systems with epilot
 ---
 
-# Integrations
+# ERP Toolkit
 
-The heart of every integration from and into epilot is the ERP Toolkit. It enables seamless bi-directional data synchronization between your ERP system and the epilot platform. It provides a robust, event-driven architecture for managing customer data, contracts, meters, and other business entities across systems.
+The ERP Toolkit is epilot's opinionated integration platform for building, monitoring, and maintaining ERP integrations. It combines **standardized entity and event schemas**, **JSONata-based mapping**, **a dedicated inbound ingestion API**, **configuration APIs**, **central monitoring**, and **packaged Blueprints/Apps** into a single, cohesive system.
 
-## What is the ERP Toolkit?
+The toolkit is optimized for energy-sector use cases: end-customer self-service via portals, meter reading propagation, contract lifecycle management, and billing account synchronization.
 
-The ERP Toolkit is an integration layer that:
-
-- **Transforms data** from ERP-specific formats into epilot entities
-- **Synchronizes entities** bi-directionally between systems
-- **Tracks changes** with full audit trails and monitoring
-- **Handles complexity** of entity relationships and dependencies
-
-## Integration Directions
-
-### Inbound (ERP to epilot)
-
-Transfer data from your ERP system into epilot. Common use cases include:
-
-- Synchronizing customer master data (contacts, accounts)
-- Importing contracts and subscriptions
-- Loading meter readings and consumption data
-- Updating billing information
-
-[Learn more about Inbound Integration](./inbound/getting-started)
-
-### Outbound (epilot to ERP)
-
-Transfer data from epilot back to your ERP system. Common use cases include:
-
-- Sending new customer registrations
-- Exporting contract changes
-- Triggering billing processes
-
-:::note
-Outbound integration documentation is coming soon.
+:::info
+The ERP Toolkit does not remove the need for middleware. It standardizes the interface between epilot and your middle layer, radically reducing the complexity compared to direct API integration.
 :::
 
-## Key Concepts
+## Components
 
-### Integrations
+The ERP Toolkit is composed of the following components. Each plays a specific role in the integration lifecycle.
 
-An **Integration** represents a connection to an external ERP system. Each integration contains:
+| Component | Description | Status |
+|-----------|-------------|--------|
+| **[Integration Hub](#integration-hub)** | Admin UI in epilot 360 to configure and monitor integrations | In progress |
+| **[ERP Integration API](#erp-integration-api)** | CRUD API to manage integrations, use cases, and mappings | Stable |
+| **[ERP Inbound API](#inbound-api)** | Dedicated API to receive and simulate inbound ERP events | Stable |
+| **[Use Cases](#use-cases)** | Documented integration flows with testing support | In progress |
+| **[Core Entities](/docs/entities/core-entities)** | Standardized entity schemas for mapping targets | Stable |
+| **[Core Events](/docs/webhooks/core-events)** | Standardized event payloads for outbound notifications | Stable |
+| **[Webhooks](/docs/webhooks)** | Push events from epilot to ERPs via core events | Stable |
+| **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
+| **[Monitoring and ACKs](#monitoring-and-acks)** | Central logging, error tracking, and event replay | In progress |
+| **[Blueprints](https://marketplace.epilot.cloud/en/blueprints)** | Packaged, installable integration setups | Stable |
+| **[Apps](https://marketplace.epilot.cloud/en/apps)** | Custom automation actions and portal extensions for ERP logic | In progress |
 
-- Unique identifier and name
-- One or more **Use Cases** defining specific data flows
-- Configuration for authentication and endpoints
+### Integration Hub
+
+The Integration Hub is the administrative UI within epilot 360 (accessible at `/app/integrations`). It provides a guided wizard for activating ERP integrations, selecting self-service use cases, configuring mappings, running integration tests, and monitoring health.
+
+### ERP Integration API
+
+The `/v2/integrations` CRUD API centralizes all integration configuration in one place:
+
+- **Environments** -- API URLs, tenant IDs, secrets
+- **API tokens** with scoped roles and permissions
+- **Inbound use cases** with entity mappings
+- **Outbound use cases** with event mappings
+- **Associated Apps and portal extensions**
+
+See the [Configuration Guide](./configuration) for API details.
+
+### Inbound API
+
+Two dedicated endpoints for receiving ERP data:
+
+| Endpoint | Purpose |
+|----------|---------|
+| `/v2/erp/updates/events` | Receive raw ERP data as events for processing |
+| `/v2/erp/updates/mapping_simulation` | Dry-run events to verify mappings before going live |
+
+See the [Inbound Integration Guide](./inbound/getting-started) for setup instructions.
 
 ### Use Cases
 
-A **Use Case** defines a specific data synchronization scenario within an integration:
+A **use case** is a documented ERP integration flow: a description of how epilot and the ERP work together to implement a specific scenario (e.g., "Keep Contract In Sync" or "Meter Reading Submission"). Each use case defines:
 
-| Property | Description |
-|----------|-------------|
-| `type` | Either `inbound` or `outbound` |
-| `enabled` | Toggle to activate/deactivate |
-| `configuration` | Mapping rules and transformation logic |
+- Which core entities need to be mapped
+- Which core events are sent or received
+- Expected ERP behavior and response
+- Testing via simulated events or webhook test triggers with ACK confirmation
 
-### Mapping
+### JSONata Mapping
 
-Mappings define how ERP data transforms into epilot entities:
+[JSONata](https://jsonata.org/) is the core transformation language for defining mappings between epilot's standardized entity/event schemas and ERP-specific data models. It is used across:
 
-```json
-{
-  "entities": [
-    {
-      "entity_schema": "contact",
-      "unique_ids": ["customer_number"],
-      "mode": "upsert",
-      "fields": [
-        { "attribute": "first_name", "field": "firstName" },
-        { "attribute": "last_name", "field": "lastName" }
-      ]
-    }
-  ]
-}
-```
+- Inbound event processing (ERP to epilot entity mapping)
+- Outbound webhook payloads (epilot event to ERP format)
+- The Map Data flow building block
 
-The `mode` field controls the operation: `upsert` (default), `delete`, `purge`, or prune-scope variants for synchronizing collections. See [Mapping](./inbound/mapping#operation-modes) for details.
+### Monitoring and ACKs
+
+All inbound and outbound events are centrally logged and surfaced in the Integration Hub. Key capabilities:
+
+- **Event replay** -- reprocess failed events
+- **ACK tracking** -- ERPs acknowledge processed events via `v1/erp/tracking/acknowledgement`, enabling end-to-end visibility
+- **Error alerting** -- per-use-case status indicators with actionable error details
+- **Partner log shipping** -- middleware partners can send logs to epilot for centralized monitoring
 
 ## Architecture
 
 ![ERP Toolkit Integration Architecture](/img/integrations/overview.svg)
 
+## Integration Directions
+
+### Inbound (ERP to epilot)
+
+Push data from your ERP into epilot. Typical flows:
+
+- Synchronize customer master data (contacts, accounts)
+- Import contracts and subscriptions
+- Submit meter readings and consumption data
+- Update billing and payment information
+
+[Inbound Integration Guide](./inbound/getting-started)
+
+### Outbound (epilot to ERP)
+
+Push epilot events to your ERP via webhooks. Typical flows:
+
+- New customer registrations and portal sign-ups
+- Contract changes (move-in, move-out, termination)
+- Self-service requests (IBAN changes, installment adjustments)
+- Meter reading submissions
+
+Outbound events use [Core Events](/docs/webhooks/core-events) and are delivered through [Webhooks](/docs/webhooks). JSONata transforms simplify payloads before delivery.
+
+## Operational Model
+
+The ERP Toolkit and your middle layer have clearly separated responsibilities.
+
+| Toolkit (epilot) | Middle Layer (yours) |
+|-------------------|---------------------|
+| Stable schemas (core entities/events) and versioning | ERP connectivity (on-prem, VPN, ERP API calls) |
+| Deduplication and idempotency | Domain-specific validation required by ERP |
+| Inbound ingestion at scale with retries and mapping execution | ACK back to epilot for "processed" state |
+| Central monitoring, replay, and retention | |
+| Configuration APIs and UI | |
+
+:::tip
+Most integrations involve a middleware (e.g., SAP CPI) that handles ERP-specific connectivity and validation. The toolkit standardizes the epilot side so your middleware only needs to speak one protocol.
+:::
+
 ## Integration Patterns
 
-There are two primary patterns for integrating your ERP system with epilot: **Pull-based (Delta Sync)** and **Event-driven**. The right choice depends on your ERP system's capabilities and data transformation requirements.
+Two primary patterns exist. The right choice depends on your ERP's capabilities.
 
 ![Pull vs Event-Driven Integration Patterns](/img/integrations/pull-vs-event-driven.svg)
 
-### Event-Driven (Direct Integration)
+### Event-Driven (Direct)
 
-In an event-driven approach, your ERP system sends events directly to the ERP Toolkit whenever data changes.
+Your ERP or middleware sends events directly to the ERP Toolkit when data changes.
 
-**When to use:**
-- Your ERP system supports webhooks or can send HTTP requests on data changes
-- Data can be sent in the format expected by the ERP Toolkit (JSON)
-- No complex transformations or validations are required beyond what the mapping configuration supports
-
-**Advantages:**
-- Real-time or near-real-time synchronization
-- No additional infrastructure required
-- Simpler architecture with fewer moving parts
+**Best for:** systems that support webhooks, need real-time sync, and require minimal transformation beyond mapping configuration.
 
 ### Pull-Based (Delta Sync with Middleware)
 
-In a pull-based approach, a middleware layer periodically queries your ERP system for changes and pushes them to the ERP Toolkit.
+A middleware layer periodically queries your ERP for changes and pushes them to the ERP Toolkit.
 
-**When to use:**
-- Your ERP system cannot send webhooks or events
-- Complex data transformations are required before sending to epilot
-- Business logic or validations must be applied during synchronization
-- Data from multiple ERP endpoints needs to be aggregated
-- You need to implement retry logic or handle ERP-specific rate limits
+**Best for:** ERPs without webhook support, complex multi-source aggregation, or scenarios requiring custom validation and retry logic.
 
-**Advantages:**
-- Works with any ERP system, regardless of webhook support
-- Full control over transformation and validation logic
-- Can implement custom batching and scheduling strategies
-- Enables delta sync patterns (only sync changed records)
-
-### Choosing the Right Pattern
+<details>
+<summary>Comparison table</summary>
 
 | Requirement | Event-Driven | Pull-Based |
 |-------------|--------------|------------|
-| ERP supports webhooks | ✅ Required | Not required |
-| Real-time sync needed | ✅ Best fit | Depends on polling interval |
-| Complex transformations | Limited to mapping config | ✅ Full flexibility |
-| Custom validation logic | Limited | ✅ Full flexibility |
-| Aggregating multiple sources | Not supported | ✅ Supported |
-| Minimal infrastructure | ✅ Best fit | Requires middleware |
+| ERP supports webhooks | Required | Not required |
+| Real-time sync needed | Best fit | Depends on polling interval |
+| Complex transformations | Limited to mapping config | Full flexibility |
+| Custom validation logic | Limited | Full flexibility |
+| Aggregating multiple sources | Not supported | Supported |
+| Minimal infrastructure | Best fit | Requires middleware |
+
+</details>
 
 :::tip
-Many integrations use a **hybrid approach**: event-driven for simple, real-time updates (like contact changes) and pull-based for complex scenarios (like aggregating invoice data from multiple systems).
+Many integrations use a **hybrid approach**: event-driven for simple, real-time updates (e.g., contact changes) and pull-based for complex scenarios (e.g., aggregating invoice data from multiple systems).
 :::
 
 ## Getting Started
 
-1. **Create an Integration** - Set up a new integration in epilot
-2. **Configure Use Cases** - Define your data flows and mappings
-3. **Send Events** - Push data from your ERP system
-4. **Monitor** - Track synchronization status and errors
+1. **Create an integration** -- register your ERP connection via the [Configuration API](./configuration) or Integration Hub
+2. **Configure use cases** -- define inbound/outbound data flows with entity mappings
+3. **Test mappings** -- use the mapping simulation endpoint to validate before going live
+4. **Send events** -- push data from your ERP to the inbound API
+5. **Monitor** -- track processing status, errors, and ACKs in the Integration Hub
 
-Continue to the [Inbound Integration Guide](./inbound/getting-started) for detailed setup instructions.
-
-## Configuration
-
-Learn how to configure integrations, use cases, and mappings in the [Configuration Guide](./configuration).
+Continue to the [Inbound Integration Guide](./inbound/getting-started) for step-by-step setup.

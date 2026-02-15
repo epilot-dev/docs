@@ -13,9 +13,9 @@ To call epilot APIs, requests must be authorized using a valid _Access Token_.
 
 :::
 
-## Using Access Token Authorization
+## Using Access Tokens
 
-The access token should be passed in the `Authorization` request header.
+Pass the access token in the `Authorization` request header:
 
 ```
 Authorization: Bearer <your-access-token>
@@ -23,11 +23,9 @@ Authorization: Bearer <your-access-token>
 
 ## Creating Access Tokens
 
-Users logged into the epilot portal can manage their Access Tokens from [Integrations > Access Tokens](https://portal.epilot.cloud/app/tokens).
+Manage Access Tokens from [Settings > Access Tokens](https://portal.epilot.cloud/app/tokens) in the epilot 360 app. Creating tokens requires the `token:create` permission.
 
-Creating access tokens requires the `token:create` permission.
-
-When creating an Access Token, the token inherits the roles and permissions of the logged in user.
+By default, a new Access Token inherits the roles and permissions of the creating user.
 
 ![Access Token create view](/img/create-access-token.png)
 
@@ -37,9 +35,7 @@ The generated token is shown only once and must be saved by the user.
 
 ## Revoking Access Tokens
 
-Access Tokens can be deleted from the management view to revoke them.
-
-After revoking a token, it cannot be used anymore to call epilot APIs.
+Delete an Access Token from the management view to revoke it. After revocation, the token is immediately invalidated.
 
 ![Access Token management view](../../static/img/access-token-management.png)
 
@@ -49,7 +45,7 @@ epilot doesn't store and cannot recover lost or revoked access tokens.
 
 ## Access Token API
 
-Authenticated users can generate long-term access tokens for 3rd party applications using the epilot [Access Token API](/api/access-token) `createAccessToken` operation.
+Generate access tokens programmatically using the [Access Token API](/api/access-token) `createAccessToken` operation:
 
 ```
 POST /v1/access-tokens
@@ -61,7 +57,7 @@ POST /v1/access-tokens
 }
 ```
 
-Optionally, you can pass a list of Role IDs, to define the roles the access token will have access to. By default, the access token inherits the caller's roles.
+Optionally, pass a list of Role IDs to scope the token to specific roles. By default, the token inherits the caller's roles.
 
 ```
 POST /v1/access-tokens
@@ -74,7 +70,7 @@ POST /v1/access-tokens
 }
 ```
 
-Each Access Token generated via the API gets a generated a unique ID.
+Each Access Token generated via the API receives a unique ID.
 
 ```json
 // 201 - success
@@ -86,7 +82,7 @@ Each Access Token generated via the API gets a generated a unique ID.
 }
 ```
 
-Access tokens may also be revoked using the `revokeAccessToken` operation
+Revoke access tokens using the `revokeAccessToken` operation:
 
 ```
 DELETE /v1/access-tokens/api_5ZugdRXasLfWBypHi93Fk
@@ -101,3 +97,9 @@ DELETE /v1/access-tokens/api_5ZugdRXasLfWBypHi93Fk
   "assignments": ["123:owner"]
 }
 ```
+
+## See Also
+
+- [Token Types](/docs/auth/token-types) — comparison of all epilot token types
+- [Authentication](/docs/auth/authentication) — OAuth 2.0 login flow
+- [Permissions](/docs/auth/permissions) — role-based access control and grants

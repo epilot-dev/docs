@@ -40,3 +40,75 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 html[data-theme='dark'] .button.button--primary {
   color: white;
 }
+
+/* Navbar layout: center search bar, push buttons right */
+.navbar > .navbar__inner {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.navbar__items--right {
+  flex: 1 1 0;
+  justify-content: flex-end;
+  gap: 0;
+}
+
+.navbar__items--right .navbar__search,
+.navbar__items--right .dsla-search-wrapper {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 300px;
+}
+
+.dsla-search-wrapper .aa-Autocomplete .aa-Form,
+.dsla-search-wrapper .dsla-search-field input,
+.dsla-search-wrapper input[type="search"],
+.navbar__search-input {
+  border-radius: 20px !important;
+}
+
+/* Navbar button links */
+.navbar-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.navbar-button + .navbar-button {
+  margin-left: 8px;
+}
+
+.navbar-button:last-of-type {
+  margin-right: 12px;
+}
+
+.navbar-button--secondary {
+  border: 1px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary) !important;
+  background-color: transparent;
+}
+
+.navbar-button--secondary:hover {
+  background-color: var(--ifm-color-primary);
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.navbar-button--primary {
+  border: 1px solid var(--ifm-color-primary);
+  background-color: var(--ifm-color-primary);
+  color: #fff !important;
+}
+
+.navbar-button--primary:hover {
+  background-color: var(--ifm-color-primary-dark);
+  border-color: var(--ifm-color-primary-dark);
+  color: #fff !important;
+  text-decoration: none;
+}

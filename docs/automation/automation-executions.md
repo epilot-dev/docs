@@ -9,16 +9,29 @@ sidebar_position: 3
 
 When an Automation Flow is triggered, a new **Automation Execution** is created.
 
-The execution can seen viewed on the triggering Entity from the Automation section.
+The execution can be viewed on the triggering entity from the Automation section.
 
 ![Automation Capability with open Execution](../../static/img/automation-execution.png)
 
 ## Actions
 
-An Automation Execution contains a list of actions that will be executed in the same order in which they were defined on the Automation Flow.
+An execution contains a list of actions that run in the same order they were defined on the Automation Flow.
 
-Each Action is executed in sequence, and will only be started if the previous action is succesfully completed.
+Each action executes in sequence and only starts after the previous action completes successfully.
 
-An Action may fail to complete, in which case an error message is shown on the Automation Execution.
+If an action fails, an error message appears on the execution.
 
 ![Automation in error state](../../static/img/automation-error.png)
+
+## Execution Statuses
+
+An execution progresses through the following statuses:
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Execution created, waiting to start |
+| `in_progress` | Actions are being executed |
+| `success` | All actions completed successfully |
+| `failed` | An action encountered an error |
+| `cancelled` | Execution was cancelled |
+| `paused` | Execution is paused (e.g. scheduled for later) |
