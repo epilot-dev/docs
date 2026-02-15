@@ -95,15 +95,6 @@ const apiChangelogPlugins = specs
   plugins: [
     require.resolve('@cmfcmf/docusaurus-search-local'),
     [
-      '@docusaurus/plugin-content-docs',
-      {
-        id: 'apps',
-        path: 'apps',
-        routeBasePath: 'apps',
-        sidebarPath: require.resolve('./sidebars-apps.js'),
-      },
-    ],
-    [
       '@docusaurus/plugin-client-redirects',
       {
         redirects: [
@@ -112,6 +103,13 @@ const apiChangelogPlugins = specs
             to: '/docs/entities/core-entities',
           },
         ],
+        createRedirects(existingPath) {
+          // Redirect old /apps/* paths to /docs/apps/*
+          if (existingPath.includes('/docs/apps')) {
+            return [existingPath.replace('/docs/apps', '/apps')];
+          }
+          return undefined;
+        },
       },
     ],
     ...apiChangelogPlugins, // Spread the dynamically generated changelog plugins
@@ -147,12 +145,9 @@ const apiChangelogPlugins = specs
             position: 'left',
           },
           {
-            position: 'left',
-            type: 'docSidebar',
-            to: '/apps',
-            sidebarId: 'appsSidebar',
+            to: '/docs/apps',
             label: 'Apps',
-            docsPluginId: 'apps',
+            position: 'left',
           },
           {
             href: 'https://marketplace.epilot.cloud/en',
