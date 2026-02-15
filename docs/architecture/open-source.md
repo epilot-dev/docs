@@ -9,6 +9,8 @@ epilot builds on open source and actively gives back. Our product codebase depen
 
 Public repositories live at [github.com/epilot-dev](https://github.com/epilot-dev).
 
+
+
 ## Philosophy
 
 Open source is a core part of how we build software. Our engineering principle [Rent over Build](https://github.com/epilot-dev/engineering-principles#rent-over-build-we-rent-the-necessary-and-focus-on-building-the-important) means we rely heavily on open source libraries and frameworks, then focus engineering effort on what makes epilot unique.
@@ -123,3 +125,5 @@ epilot open source projects typically use the **MIT License**:
 
 - **MIT, BSD, ISC** — Permissive, preferred for most projects
 - **Apache 2.0** — Preferred when patent protection matters
+
+<img src="/img/open-source.png" alt="love open source" width="200" />
