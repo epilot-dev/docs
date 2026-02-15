@@ -7,7 +7,7 @@ title: Continuous Delivery
 
 epilot ships over 200 production deployments per week using trunk-based development and automated pipelines. Every merge to `main` triggers a deployment through staging to production, gated by end-to-end tests.
 
-To balance speed with stability, epilot operates two release channels: **Canary** for continuous updates and **Stable** for curated monthly releases.
+To balance speed with stability, epilot operates two release channels: **Canary** for continuous updates and **Stable** for curated, periodic releases.
 
 ## Release Channels
 
@@ -21,23 +21,24 @@ Canary is suited for:
 - Partner organizations validating upcoming features
 - Customers who want early access to new capabilities
 
-### Stable (Monthly Releases)
+### Stable (Periodic Releases)
 
-The Stable channel receives curated, tested releases on a monthly cadence. Each release goes through a structured acceptance testing period before publication.
+The Stable channel receives curated, tested releases on a regular cadence. Each release goes through a structured acceptance testing period before publication.
 
-**Release timeline:**
+**Release lifecycle:**
 
-| Phase | Timing | What happens |
-|-------|--------|-------------|
-| Feature development | Ongoing | Teams ship continuously to Canary |
-| Acceptance testing | Week before release | QA team + engineers validate the release candidate |
-| Release day | First Monday of the month | Stable import map updated, release notes published |
+| Phase | What happens |
+|-------|-------------|
+| Feature development | Teams ship continuously to Canary |
+| Release candidate assembly | Tested versions of all microfrontends are tagged for inclusion |
+| Acceptance testing | QA team + engineers validate the release candidate |
+| Release | Stable import map updated, release notes published |
 
 Stable releases are assembled by snapshotting tested versions of all frontend microfrontends into a `stable-importmap.json`, which is served to organizations on the Stable channel.
 
 ### How Customers Choose
 
-Organizations select their update frequency in the epilot 360 portal settings. The default is Stable (monthly updates).
+Organizations select their preferred release channel in the epilot 360 portal settings. The default is Stable.
 
 Individual users can also override the organization default from their account settings -- useful for administrators who want to preview upcoming changes without switching the entire organization to Canary.
 
@@ -46,7 +47,11 @@ Individual users can also override the organization default from their account s
 Critical issues affecting Stable customers are addressed immediately through two mechanisms:
 
 - **Hotfix tags** (`hotfix-*`) -- deploy directly to the Stable import map, skipping E2E tests for speed. Reserved for critical production issues.
-- **Patch tags** (`patch-*`) -- deploy to the Stable import map after running the full pipeline with E2E tests and manual approval. Used for non-urgent fixes between monthly releases.
+- **Patch tags** (`patch-*`) -- deploy to the Stable import map after running the full pipeline with E2E tests and manual approval. Used for non-urgent fixes between scheduled releases.
+
+:::caution
+Hotfix deployments bypass E2E tests entirely. Use them only for critical production issues where the risk of the bug outweighs the risk of skipping automated validation.
+:::
 
 ## Deployment Pipeline
 
@@ -91,43 +96,7 @@ Feature flags serve several purposes:
 - **Instant rollback.** Disable a feature without redeploying code.
 - **Per-environment control.** Enable features in staging for testing before production.
 
-<details>
-<summary>Frontend usage</summary>
-
-```typescript
-import { useFlags } from '@epilot360/feature-flags-service'
-
-const MyComponent = () => {
-  const flags = useFlags()
-
-  if (flags.myNewFeature) {
-    return <NewExperience />
-  }
-
-  return <CurrentExperience />
-}
-```
-
-</details>
-
-<details>
-<summary>Backend usage</summary>
-
-```typescript
-import { init } from 'launchdarkly-node-server-sdk'
-
-const client = init(process.env.LD_SDK_KEY)
-
-const isEnabled = await client.variation(
-  'my-feature-flag',
-  { key: orgId },
-  false
-)
-```
-
-</details>
-
-Flags are evaluated at runtime using the organization ID (and optionally user ID) as the targeting context, enabling fine-grained control over who sees what.
+Flags are evaluated at runtime using the organization ID (and optionally user ID) as the targeting context, enabling fine-grained control over feature availability per customer.
 
 ## Testing Strategy
 
@@ -153,7 +122,7 @@ Playwright test durations are monitored via Datadog. Alerts fire when key user f
 
 ## Release Quality Process
 
-Each monthly Stable release follows a structured quality gate:
+Each Stable release follows a structured quality gate:
 
 1. **Release candidate assembly.** Teams tag tested versions of their microfrontends for inclusion.
 2. **Acceptance testing.** A minimum 3-day testing period where QA engineers and cross-functional colleagues validate the release candidate in a production-like environment.

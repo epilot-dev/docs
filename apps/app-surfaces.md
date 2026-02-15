@@ -17,7 +17,7 @@ When you build an app for epilot, it runs inside an iframe embedded within the e
 - **Context** - Entity or action configuration data
 - **Messaging** - Two-way communication with the parent app
 
-```bash
+```bash title="Install the App Bridge"
 npm install @epilot/app-bridge
 ```
 
@@ -108,9 +108,11 @@ Configuration UI for custom automation actions. When users add your custom actio
 
 ### Basic Initialization
 
-Every app must initialize the bridge to establish communication with epilot:
+:::tip
+Every app **must** call `initialize()` before using any other app-bridge functions. This establishes the communication channel with the parent epilot application.
+:::
 
-```typescript
+```typescript title="Basic initialization"
 import { initialize } from '@epilot/app-bridge';
 
 async function main() {
@@ -128,7 +130,7 @@ main().catch(console.error);
 
 ### Initialization Options
 
-```typescript
+```typescript title="Initialization with options"
 const session = await initialize({
   contentHeight: 400,    // Initial iframe height in pixels
   timeout: 5000,         // Timeout in milliseconds (default: 5000)
@@ -143,7 +145,7 @@ For both Entity Capability and Entity Tab surfaces, use the entity-related APIs.
 
 ### Getting Entity Context
 
-```typescript
+```typescript title="Getting entity context"
 import { initialize, getEntityContext } from '@epilot/app-bridge';
 
 async function main() {
@@ -171,7 +173,7 @@ async function main() {
 
 Since your app runs in an iframe, you need to communicate your content height to epilot so it can adjust the iframe size appropriately.
 
-```typescript
+```typescript title="Report content height"
 import { initialize, updateContentHeight } from '@epilot/app-bridge';
 
 async function main() {
@@ -187,7 +189,7 @@ async function main() {
 
 **For dynamic content, use ResizeObserver:**
 
-```typescript
+```typescript title="Auto-update height with ResizeObserver"
 import { initialize, updateContentHeight } from '@epilot/app-bridge';
 
 async function main() {
@@ -209,7 +211,7 @@ async function main() {
 
 For Entity Tab surfaces, the tab may be hidden when the user switches to another tab. Handle visibility changes to optimize performance:
 
-```typescript
+```typescript title="Handle tab visibility changes"
 import {
   initialize,
   getEntityContext,
@@ -247,7 +249,7 @@ For Flow Action Config surfaces, use the action configuration APIs.
 
 ### Reading Action Configuration
 
-```typescript
+```typescript title="Read action config"
 import { initialize, getActionConfig } from '@epilot/app-bridge';
 
 // Define your configuration type
@@ -284,7 +286,7 @@ async function main() {
 
 When the user changes configuration in your UI, update it immediately:
 
-```typescript
+```typescript title="Update action config on change"
 import { initialize, getActionConfig, updateActionConfig } from '@epilot/app-bridge';
 
 interface WebhookConfig {
@@ -315,7 +317,7 @@ async function main() {
 
 If your action performs asynchronous work and the automation should wait for it to complete, use `waitForCallback`:
 
-```typescript
+```typescript title="Enable async callback"
 updateActionConfig(
   { url: 'https://api.example.com/webhook' },
   { waitForCallback: true }
@@ -330,7 +332,7 @@ When `waitForCallback` is true, the automation engine will wait for your action 
 
 The app-bridge provides a convenient way to authorize epilot SDK clients:
 
-```typescript
+```typescript title="Authorize SDK clients"
 import { getClient } from '@epilot/entity-client';
 import { getClient as getFileClient } from '@epilot/file-client';
 import { initialize, authorizeClient } from '@epilot/app-bridge';
@@ -449,7 +451,7 @@ try {
 
 A complete example of an app that displays external CRM data for a contact:
 
-```typescript
+```typescript title="Entity Capability - CRM integration example"
 import {
   initialize,
   getEntityContext,
@@ -519,7 +521,7 @@ main().catch(console.error);
 
 An app that displays a dashboard, refreshing data when the tab becomes visible:
 
-```typescript
+```typescript title="Entity Tab - Dashboard with visibility handling"
 import {
   initialize,
   getEntityContext,
@@ -565,7 +567,7 @@ main().catch(console.error);
 
 A complete configuration UI for a webhook action:
 
-```typescript
+```typescript title="Flow Action Config - Webhook configuration UI"
 import {
   initialize,
   getActionConfig,
@@ -702,6 +704,10 @@ import {
 ---
 
 ## Best Practices
+
+:::caution
+Always wrap `initialize()` in a try-catch block. If the app bridge fails to connect (e.g., the app is loaded outside of epilot), your app should display a user-friendly error message rather than silently failing.
+:::
 
 1. **Always initialize first** - Call `initialize()` before any other app-bridge functions
 2. **Handle errors gracefully** - Wrap initialization in try-catch and show user-friendly errors

@@ -11,7 +11,7 @@ When you select the `Automation Trigger Webhook` event, the webhook fires from w
 The `entity` object always contains the entity the automation was triggered on. For a `Manual trigger: Contact`, this is the contact. For an `Entity update: Opportunity`, this is the opportunity.
 :::
 
-![Automation Trigger](../../../static/img/webhooks//automation-trigger.gif)
+![Automation Trigger](../../../static/img/webhooks/automation-trigger.gif)
 
 :::info
 The example payload playground in the automation action view generates approximate payloads using the [getSchemaExample](/api/entity#tag/Schemas/operation/getSchemaExample) endpoint. This is accurate for manual triggers but may differ for journey submissions, where the payload structure depends on the journey's blocks and configuration.

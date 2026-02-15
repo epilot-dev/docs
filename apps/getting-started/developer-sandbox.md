@@ -14,7 +14,7 @@ Your safe space to experiment, build, and perfect your epilot App
     <div className="col col--6">
       <div className="card margin-bottom--lg" style={{height: '100%'}}>
         <div className="card__body">
-          <h3>🔬 Safe Experimentation</h3>
+          <h3>Safe Experimentation</h3>
           <p>Explore the full capabilities of the epilot platform without risking production environments. Your sandbox is your personal laboratory for innovation.</p>
         </div>
       </div>
@@ -22,7 +22,7 @@ Your safe space to experiment, build, and perfect your epilot App
     <div className="col col--6">
       <div className="card margin-bottom--lg" style={{height: '100%'}}>
         <div className="card__body">
-          <h3>🚀 Rapid Development</h3>
+          <h3>Rapid Development</h3>
           <p>Build, test, and refine your apps in an environment that mimics production but forgives mistakes. Iterate quickly without fear of breaking changes.</p>
         </div>
       </div>
@@ -48,7 +48,7 @@ This is precisely why epilot provides dedicated sandbox accounts—isolated envi
     <div className="step-number">1</div>
     <div className="step-content">
       <h3>Request a Sandbox</h3>
-      <p>Submit your request through our <a href="https://portal.dev.epilot.cloud/request-sandbox" className="button button--primary button--sm">Developer Portal</a></p>
+      <p>Submit your request through our <a href="https://portal.dev.epilot.cloud/request-sandbox" className="button button--primary">Developer Portal</a></p>
     </div>
   </div>
   <div className="step">
@@ -85,19 +85,19 @@ This is precisely why epilot provides dedicated sandbox accounts—isolated envi
 
 <div className="benefits-container">
   <div className="benefit">
-    <h3>🔒 Complete Isolation</h3>
+    <h3>Complete Isolation</h3>
     <p>Experiment freely without affecting other systems or users in the epilot ecosystem</p>
   </div>
   <div className="benefit">
-    <h3>🧪 Comprehensive Testing</h3>
+    <h3>Comprehensive Testing</h3>
     <p>Test your app thoroughly in a realistic environment that matches production</p>
   </div>
   <div className="benefit">
-    <h3>⚙️ Full Configuration</h3>
+    <h3>Full Configuration</h3>
     <p>Access all the necessary tools and features to build sophisticated apps</p>
   </div>
   <div className="benefit">
-    <h3>🐛 Risk-Free Debugging</h3>
+    <h3>Risk-Free Debugging</h3>
     <p>Find and fix issues without concern for production impacts</p>
   </div>
 </div>
@@ -114,7 +114,7 @@ To learn more about transitioning from development to publication, visit our det
 
 <div className="cta-container">
   <h3>Ready to start building?</h3>
-  <a href="https://portal.dev.epilot.cloud/request-sandbox" className="button button--primary button--lg">Request Your Sandbox Today</a>
+  <a href="https://portal.dev.epilot.cloud/request-sandbox" className="button button--primary">Request Your Sandbox Today</a>
 </div>
 
 <style dangerouslySetInnerHTML={{__html: `

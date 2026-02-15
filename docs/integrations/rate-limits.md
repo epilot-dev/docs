@@ -1,3 +1,8 @@
+---
+sidebar_position: 5
+title: Rate Limits
+---
+
 # API Rate Limits
 
 The epilot API enforces rate limits to ensure fair usage and consistent service quality.

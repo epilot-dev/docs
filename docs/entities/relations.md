@@ -7,9 +7,15 @@ sidebar_position: 6
 [[API Docs](/api/entity/#tag/Relations)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
-Relations link epilot entities to each other. Any entity can relate to any other entity, regardless of schema. The Relations tab on each entity detail view shows all linked entities.
+Relations link entities to each other across the epilot platform. Any entity can relate to any other entity, regardless of schema. The Relations tab on each entity detail view shows all linked entities.
 
-![Relation Attribute Example](../../static/img/entity-relation.png)
+```mermaid
+flowchart LR
+    Order -->|"contacts (has_many)"| Contact1[Contact A]
+    Order -->|"contacts (has_many)"| Contact2[Contact B]
+    Order -->|"products (has_many)"| Product
+    Contract -->|"billing_address ($relation_ref)"| Contact1
+```
 
 ## Data Structure
 

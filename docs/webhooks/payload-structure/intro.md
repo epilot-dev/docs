@@ -17,7 +17,7 @@ Webhook payloads vary by trigger type. The two trigger types are:
 
 Every payload contains a `metadata` object with the organization ID and event context. The `entity` object holds the primary entity data. The `relations` and `activity` objects are optional and depend on the webhook configuration.
 
-```json
+```json title="Webhook payload structure"
 {
    "metadata": {
       "organization_id": "org_1234567890",

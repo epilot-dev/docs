@@ -19,8 +19,6 @@ When you're ready to submit your app for review, follow these steps:
 
 2. **Test Thoroughly**: Verify that all components of your app function as expected. 
 
-...
-
 :::info
-This section is in active development. Come back soon for more information on the verification process.
+The complete verification checklist is being finalized. Check back soon for the full guide.
 :::

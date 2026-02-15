@@ -9,7 +9,7 @@ sidebar_position: 3
 Learn how to configure permissions your App requires to function properly. When building an app for the epilot platform, you may need to request specific permissions to access certain features or data. This guide will help you understand how to configure these permissions effectively.
 
 ## What Are Permissions?
-Permissios in epilot are used to control access to various features and data within the platform. When you create an app, you can specify which permissions your app requires to function correctly. This ensures that users have the necessary access rights to use your app without encountering permission-related issues.
+Permissions in epilot control access to various features and data within the platform. When you create an app, you can specify which permissions your app requires to function correctly. This ensures that users have the necessary access rights to use your app without encountering permission-related issues.
 
 ## How to Configure Permissions For Your App
 To configure permissions for your app, you need to create a role in your own organization and specify which grants (permissions) this role should have. This role can then be assigned to users who will be using your app.
@@ -22,7 +22,7 @@ To configure permissions for your app, you need to create a role in your own org
 5. Click **Save** to create the role.
 
 :::info
-We eventually introduce a new dedicated **App Role**, but for now please select the **User Role** for the role type.
+A dedicated **App Role** type is coming soon. For now, please select the **User Role** for the role type.
 :::
 
 ### Step 2: Configure Permissions

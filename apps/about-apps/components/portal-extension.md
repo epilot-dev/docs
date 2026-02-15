@@ -27,7 +27,21 @@ Seamless links enable portal users to access third-party systems directly withou
 
 This provides a smooth user experience where portal users can navigate to external systems without interruption, while you maintain control over the authentication mechanism and security policies.
 
-### How Seamless Links Work
+#### How Seamless Links Work
+
+```mermaid
+sequenceDiagram
+    participant User as Portal User
+    participant epilot as epilot Portal
+    participant Auth as Your Auth Endpoint
+    participant App as Third-Party System
+
+    User->>epilot: Clicks seamless link
+    epilot->>Auth: Authentication request (credentials + headers)
+    Auth-->>epilot: Returns token/credentials
+    epilot->>App: Redirect with token parameters
+    App-->>User: Authenticated page displayed
+```
 
 The seamless link flow consists of two main steps:
 
@@ -40,7 +54,7 @@ All of this happens automatically in the background, so the portal user experien
 
 Seamless links are configured in your app configuration. Each seamless link defines the authentication mechanism and the redirect behavior. The built-in component configuration editor will guide you through the available properties and their format. Here is an example hook configuration:
 
-```json
+```json title="Seamless link configuration"
 {
   "id": "third_party_seamless_link",
   "type": "seamless",
@@ -102,6 +116,10 @@ You can use template variables throughout your seamless link configuration to dy
 
 ### Security Considerations
 
+:::caution
+Never hardcode sensitive credentials in your configuration. Always store API keys and secrets as app options, which are encrypted at rest.
+:::
+
 - **Credentials Storage**: Store sensitive credentials (like API keys) as app options rather than hardcoding them
 - **Token Expiration**: Ensure your authentication tokens have appropriate expiration times
 - **HTTPS**: Always use HTTPS URLs for authentication endpoints and redirects
@@ -155,7 +173,7 @@ All of these enable configuring users to add a Dynamic Tariff or Consumption blo
 
 ##### Price Data Retrieval
 
-```json
+```json title="Price data retrieval hook"
 {
   "id": "price",
   "type": "priceDataRetrieval",
@@ -195,7 +213,7 @@ All of these enable configuring users to add a Dynamic Tariff or Consumption blo
 
 ##### Consumption Data Retrieval
 
-```json
+```json title="Consumption data retrieval hook"
 {
   "id": "consumption",
   "type": "consumptionDataRetrieval",
@@ -235,7 +253,7 @@ All of these enable configuring users to add a Dynamic Tariff or Consumption blo
 
 ##### Cost Data Retrieval
 
-```json
+```json title="Cost data retrieval hook"
 {
   "id": "cost",
   "type": "costDataRetrieval",
@@ -309,9 +327,9 @@ At the same time, it might be necessary to load business entities to epilot befo
 
 Use the registration hook to validate identifiers before creating a portal user. If the registration is valid, you can pass back an epilot Contact UUID that is associated with the portal user.
 
-If no body is specified, all identifiers configured for the portal and provided by the user are passed grouped by the schema. 
+If no body is specified, all identifiers configured for the portal and provided by the user are passed grouped by the schema.
 
-```json
+```json title="Registration hook"
 {
   "id": "registration",
   "type": "registrationIdentifiersCheck",
@@ -336,9 +354,9 @@ Registration hooks support the standard template variables plus the identifiers 
 
 Use the self-assignment hook when portal users attach additional contracts to their account. The hook can also include localized explanations shown to the user.
 
-If no body is specified, all identifiers configured for the portal and provided by the user are passed grouped by the schema. 
+If no body is specified, all identifiers configured for the portal and provided by the user are passed grouped by the schema.
 
-```json
+```json title="Self-assignment hook"
 {
   "id": "CONTRACT_IDENTIFICATION",
   "type": "contractIdentification",
@@ -380,7 +398,7 @@ Self-assignment hooks support the standard template variables plus the identifie
 
 Use the plausibility check hook to validate meter readings before they are submitted and return limits for validation feedback.
 
-```json
+```json title="Meter reading plausibility check hook"
 {
   "id": "PLAUSIBILITY_CHECK",
   "type": "meterReadingPlausibilityCheck",
@@ -415,4 +433,4 @@ Meter reading plausibility hooks support the standard template variables plus me
 - **`Reading.*`**: Access properties of the submitted reading
 - **`CallResponse.*`**: Access data from the call response
 
-For additional help or questions about portal extensions, please [contact our developer support team](https://developers.epilot.cloud/contact).
+For questions about portal extensions, [contact our developer support team](https://developers.epilot.cloud/contact).

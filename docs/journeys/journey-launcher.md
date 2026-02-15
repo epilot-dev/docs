@@ -182,7 +182,7 @@ curl --location --request PUT 'https://journey-config.sls.epilot.io/v1/journey/c
     },
     "rules": [],
     "logics": [],
-    "name": "<your jouney launcher name>",
+    "name": "<your journey launcher name>",
     "organizationId": "<your organisation id>",
     "brandId": "<brand id from the previous step>",
     "steps": [

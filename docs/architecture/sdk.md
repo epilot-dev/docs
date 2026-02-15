@@ -2,6 +2,9 @@
 sidebar_position: 3
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # SDK
 
 [[GitHub](https://github.com/epilot-dev/sdk-js)]
@@ -14,9 +17,29 @@ Every epilot API ships with a typed TypeScript client — full types and Intelli
 
 Install the client for the API you need:
 
+<Tabs>
+  <TabItem value="npm" label="npm" default>
+
 ```sh title="Install"
 npm install --save @epilot/entity-client
 ```
+
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+
+```sh title="Install"
+yarn add @epilot/entity-client
+```
+
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+
+```sh title="Install"
+pnpm add @epilot/entity-client
+```
+
+  </TabItem>
+</Tabs>
 
 Authorize with an [Access Token](/docs/auth/access-tokens) and call an API:
 

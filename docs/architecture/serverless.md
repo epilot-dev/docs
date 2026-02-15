@@ -20,7 +20,7 @@ Most backend microservices run on AWS Lambda, Step Functions, API Gateway, Dynam
 
 epilot also uses [ClickHouse Cloud](https://clickhouse.com/) for the [Datalake](/docs/datalake/epilot-datalake), analytical queries, and complex SQL workloads.
 
-Notable third-party services: Elastic Cloud (search), Momento (caching), Datadog (observability), and GitLab (CI, feature flags, package registry).
+Notable third-party services: Elastic Cloud (search), Momento (caching), and Datadog (observability).
 
 See the [Tech Radar](https://docs.epilot.io/techradar/) for the full technology landscape.
 

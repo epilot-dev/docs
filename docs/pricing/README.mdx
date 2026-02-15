@@ -1,23 +1,46 @@
 ---
-title: Pricing
+title: Overview
+sidebar_position: 0
 ---
-
-<head>
-  <meta property="title" content="epilot | Dev Portal | 360 Pricing" />
-  <meta property="og:type" content="article"/>
-  <meta property="og:title" content="epilot | Dev Portal | 360 Pricing" />
-  <meta property="description" content="Manage products, prices, taxes, orders, and payments on the epilot platform. Full search, filter, and import/export support." />
-  <meta property="og:description" content="Manage products, prices, taxes, orders, and payments on the epilot platform. Full search, filter, and import/export support." />
-  <meta property="og:image" content="https://docs.epilot.io/img/pricing-overview.png" />
-  <meta property="twitter:image:src" content="https://docs.epilot.io/img/pricing-overview.png" />
-
-  <meta charSet="utf-8" />
-  <title>epilot | Dev Portal | 360 Pricing</title>
-</head>
 
 [[API Docs](/api/pricing)] [[SDK](https://www.npmjs.com/package/@epilot/pricing-client)]
 
-Pricing covers products, prices, taxes, orders, and payments on the epilot platform.
+# Pricing
 
-The portal provides UIs for modeling products, prices, and taxes with search, filter, and import/export support. All pricing entities are extendable -- add custom attributes on top of built-in ones, and use webhooks to integrate custom pricing logic from your backends.
+epilot provides a full-featured pricing engine for the energy and utilities industry. It covers the entire commercial lifecycle: product modeling, catalog management, flexible pricing models, tax handling, coupons, order creation, and online checkout.
 
+## Key Capabilities
+
+| Capability | Description |
+|---|---|
+| **Product Catalog** | Centralized catalog for products, prices, and taxes with search, filter, and import/export |
+| **Flexible Pricing Models** | Per-unit, tiered volume, tiered graduated (cumulative), tiered flat-fee, and dynamic tariffs |
+| **Composite Prices** | Bundle multiple price components into a single product offer (e.g., hardware + recurring service) |
+| **Billing Periods** | One-time, weekly, monthly, quarterly, semi-annual, and annual recurrence with automatic normalization |
+| **Tax Management** | Inclusive and exclusive tax modes, regional tax rates, automatic tax breakdowns |
+| **Coupons & Discounts** | Fixed-amount and percentage-based discounts with optional promo codes and usage limits |
+| **Order Management** | Full order lifecycle with automatic total computation and line-item management |
+| **Online Checkout** | End-to-end sales flow from catalog to checkout via [Journeys](/docs/journeys/journey-builder) |
+| **Product Availability** | Location-based and file-based availability checks for catalog items |
+| **Multi-Currency** | ISO 4217 currency support with precise decimal arithmetic |
+
+All pricing entities are built on the [flexible entity](/docs/entities/flexible-entities) system -- add custom attributes, attach workflows, and use webhooks to integrate custom pricing logic from external backends.
+
+## Architecture
+
+The pricing system consists of three layers:
+
+- **Pricing API** -- Server-side order management, price computation, catalog search, and checkout. Wraps the Entity API with pricing-specific business logic (total recomputation, tax breakdowns, coupon application).
+- **Pricing Library** ([`@epilot/pricing`](https://www.npmjs.com/package/@epilot/pricing)) -- Open-source TypeScript library for client-side and server-side price calculations. Used across epilot's APIs, microfrontends, and Journeys.
+- **Entity API** -- Underlying storage for all pricing entities (products, prices, taxes, orders). See [Entity API](/docs/entities/entity-api).
+
+## Further Reading
+
+- [Entities](/docs/pricing/entities) -- Product, Price, and Tax entity models
+- [Catalog](/docs/pricing/catalog) -- Product catalog features
+- [Orders](/docs/pricing/orders) -- Order creation and management
+- [Online Sales](/docs/pricing/ecommerce) -- End-to-end checkout workflows
+- [Pricing Models](/docs/pricing/pricing-models) -- Detailed pricing model reference
+- [Pricing Library](/docs/pricing/pricing-library/) -- Open-source calculation library
+
+<a className="button button--primary" href="/api/pricing">Pricing API Reference</a>

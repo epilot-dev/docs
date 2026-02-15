@@ -937,6 +937,6 @@ Expressions can access the full entity context -- all attributes of the current 
 
 - **Value types:** Only strings and numbers are supported. Object/array comparisons are not supported, but nested properties work: `price_components.value.$relation.length < "1"`
 - **Mixed operators:** A composed expression can only use one type of logical operator (`AND` or `OR`, not both).
-- **No visual builder:** The Entity Builder does not yet support a UI for building expressions. Configure them by editing the schema directly via the [Entity Builder](/api/entity/#tag/Schemas).
+- **No visual builder:** Render conditions are configured by editing the schema JSON directly via the [Schema API](/api/entity/#tag/Schemas).
 
 </details>

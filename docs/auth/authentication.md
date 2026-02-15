@@ -6,7 +6,7 @@ sidebar_position: 1
 
 epilot APIs use bearer tokens for authentication. All requests must include a valid token in the `Authorization` header:
 
-```
+```http title="Authorization header"
 Authorization: Bearer <your-token>
 ```
 
@@ -35,6 +35,21 @@ When a user logs in to the epilot portal, Cognito issues short-lived OAuth token
 
 All tokens are verified by the API Gateway authorizer using JWKS endpoints before reaching backend services.
 
+```mermaid
+sequenceDiagram
+    participant Client
+    participant API Gateway
+    participant Cognito / Access Token Service
+    participant Backend API
+
+    Client->>Cognito / Access Token Service: Authenticate (login or access token)
+    Cognito / Access Token Service-->>Client: JWT Bearer Token
+    Client->>API Gateway: Request + Authorization: Bearer <token>
+    API Gateway->>API Gateway: Verify JWT via JWKS
+    API Gateway->>Backend API: Forward request with verified claims
+    Backend API-->>Client: Response
+```
+
 ## Token Types
 
 | Token | Lifetime | Use case |
@@ -51,5 +66,7 @@ For most integrations, **Access Tokens** are the right choice. See [Token Types]
 - [Token Types](/docs/auth/token-types) — comparison of all epilot token types
 - [Authorization](/docs/auth/authorization) — how API requests are authorized
 - [Permissions](/docs/auth/permissions) — role-based access control and grants
-- [MFA, Passwordless & Passkeys](/docs/auth/mfa) — additional authentication methods
+- [Multi-Factor Authentication](/docs/auth/mfa) -- TOTP and SMS second factor
+- [Passwordless Login](/docs/auth/passwordless) -- email-based sign-in links
+- [Passkeys](/docs/auth/passkeys) -- phishing-resistant biometric and hardware key authentication
 - [SSO](/docs/sso/single-sign-on) — single sign-on with OIDC and SAML

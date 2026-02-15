@@ -8,11 +8,9 @@ sidebar_position: 7
 
 <p align="center">Integrate external product catalogs with epilot</p>
 
-> If you do not have access to this integration in your organization, please contact our support team for assistance.
-
 ## Configuration
 
-To add a **External Product Catalog** component, you need to create a new App or update an existing App.
+To add an **External Product Catalog** component, create a new App or update an existing App.
 
 <img src="/img/apps/external-product-catalog/external-catalog-option-menu.png" width="400" />
 
@@ -53,7 +51,7 @@ You can use template variables throughout your configuration to dynamically inje
 
 Below is an example of a configuration for the `products` hook, assuming a typical OAuth2 authentication flow, where the client credentials are stored in the app options.
 
-```json
+```json title="Products hook with OAuth2 authentication"
 {
   "hooks": [
     {
@@ -89,6 +87,10 @@ Below is an example of a configuration for the `products` hook, assuming a typic
 
 ### Security Considerations
 
+:::caution
+Never hardcode sensitive credentials in your configuration. Always store API keys and secrets as app options, which are encrypted at rest.
+:::
+
 - **Credentials Storage**: Store sensitive credentials (like API keys) as app options rather than hardcoding them
 - **Token Expiration**: Ensure your authentication tokens have appropriate expiration times
 - **HTTPS**: Always use HTTPS URLs for authentication endpoints and redirects
@@ -106,13 +108,13 @@ This allows the journey to dynamically fetch products and pricing from your exte
 
 ## Usage in Portals
 
-After your External Product Catalog component is configured and the app is installed, it can be used within epilot's Portals. Currently we support seamless integration of the external product catalog into the journey via Product Blocks.
+After your External Product Catalog component is configured and the app is installed, it can also be used within epilot's Portals.
 
-When configuring a Portal, they can add a **Product Block** and select the integration as the source for products. Only hooks that are supported for the selected block type will be available.
+When configuring a Portal, you can add a **Product Block** and select the integration as the source for products. Only hooks that are supported for the selected block type will be available.
 
 <img src="/img/apps/external-product-catalog/portal-product-block-config.png" width="500" />
 
-This allows the journey to dynamically fetch products and pricing from your external catalog in journeys.
+This allows the portal to dynamically fetch products and pricing from your external catalog.
 
 ## Integration Interface
 

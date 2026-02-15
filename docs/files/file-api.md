@@ -45,6 +45,20 @@ After uploading, call [`saveFileV2`](/api/file#tag/files/operation/saveFileV2) t
 
 ## Example Upload Flow
 
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FileAPI as File API
+    participant S3 as S3
+
+    Client->>FileAPI: POST /v2/files/upload
+    FileAPI-->>Client: upload_url + s3ref
+    Client->>S3: PUT upload_url (binary)
+    S3-->>Client: 200 OK
+    Client->>FileAPI: POST /v2/files (saveFileV2)
+    FileAPI-->>Client: File entity
+```
+
 ### Step 1: Call uploadFileV2 to get an s3ref
 
 ```

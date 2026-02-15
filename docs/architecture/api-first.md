@@ -19,7 +19,7 @@ All APIs are defined using machine-readable standards:
 
 All core APIs are public. Partners and customers use them to build integrations and extend the platform.
 
-Browse the full [API Reference](/api).
+<a className="button button--primary" href="/api">Browse the API Reference</a>
 
 ## Webhooks & Event Schemas
 
@@ -29,7 +29,9 @@ Webhooks are the primary mechanism for outbound integrations — ERPs, middlewar
 
 ## Accessing APIs with MCP
 
-Developers using LLM clients (Claude Desktop, Cursor, etc.) can explore epilot APIs through the [MCP](https://modelcontextprotocol.io/) server.
+:::tip
+Developers using LLM clients (Claude Desktop, Cursor, etc.) can explore epilot APIs interactively through the [MCP](https://modelcontextprotocol.io/) server — no manual API doc browsing required.
+:::
 
 ### Setup
 

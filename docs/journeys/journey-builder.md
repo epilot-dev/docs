@@ -21,3 +21,7 @@ Journeys can be shared within the epilot portal or embedded on third-party websi
 Completed journeys create [Submission entities](/docs/journeys/submissions) containing the collected data.
 
 [Automation](/docs/automation/automation-flows) and [Entity Mapping](/docs/automation/entity-mapping) then process submissions into business entities like Contacts, Opportunities, and Orders. The Journey Builder includes templates and default configurations for common post-journey automations.
+
+:::tip
+Use the Journey Builder's embed configurator to generate embed snippets for your website. See [Embedding Journeys](/docs/journeys/embedding) for all configuration options.
+:::

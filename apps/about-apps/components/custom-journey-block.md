@@ -38,7 +38,7 @@ Custom Journey Blocks are web components that follow standard web technologies, 
 
 We recommend starting with our React starter template to quickly set up your development environment:
 
-```bash
+```bash title="Clone and run the React starter template"
 # Clone the starter template
 git clone https://github.com/epilot-dev/custom-journey-block-react.git my-custom-block
 
@@ -56,7 +56,11 @@ You can also use our template for [Lit](https://github.com/epilot-dev/custom-jou
 
 ### Technology Recommendations
 
-While Journey Blocks can be built with any framework that compiles to web components, we recommend using **React** for several key advantages:
+:::tip
+While Journey Blocks can be built with any framework that compiles to web components, we recommend **React** for the best developer experience and access to epilot's Concorde UI library.
+:::
+
+React offers several key advantages:
 
 - **Concorde UI Library Access**: Leverage epilot's Concorde component library for consistent styling
 - **Alignment with epilot's Theme**: Ensure your blocks visually match the Journey Builder interface
@@ -115,8 +119,9 @@ This configurability makes your custom blocks more versatile and valuable across
 
 ### Bundling Your Component
 
-Your component should be bundled into a single JavaScript file that can be loaded by the Journey Builder. Right now we only support a single `bundle.js` file.
-This should include all relevant styles and assets, as well as the component itself. 
+:::caution
+Your component must be bundled into a **single `bundle.js` file**. This is the only format currently supported. The bundle must include all styles and assets inline.
+:::
 
 
 ### UI Design Guidelines

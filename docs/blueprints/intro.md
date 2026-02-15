@@ -30,6 +30,14 @@ A common example of a Blueprint is the sale of **heat pumps, PV systems, or elec
 Here is how it works in practice:
 A customer applies through a predefined interactive form on your website. The request is captured in epilot, creating a lead for your team. Agents are notified immediately, and automated workflows (e.g., emails, task assignments) ensure the case is processed smoothly.
 
+```mermaid
+graph LR
+    A[Install Blueprint] --> B[Sandbox Environment]
+    B --> C[Test & Validate]
+    C --> D[Sync to Production]
+    D --> E[Live Use Case]
+```
+
 ---
 
 ### Why Blueprints help you set up Use Cases faster
@@ -73,7 +81,7 @@ If you are using a **Business** or **Starter** license, please contact your sale
 
 ### Installation and sandbox
 
-Epilot Marketplace Blueprints can be installed only in a [sandbox environment](/docs/blueprints/sandboxes).
+epilot Marketplace Blueprints can be installed only in a [sandbox environment](/docs/blueprints/sandboxes).
 
 A sandbox is a safe testing space that allows you to validate configurations without affecting your production environment. Once the Blueprint has been installed and tested successfully, it can be synchronized into your production organization.
 

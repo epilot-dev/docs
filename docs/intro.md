@@ -22,13 +22,19 @@ Entities, authentication, automation, and the serverless platform behind epilot.
 
 Public REST APIs for integrations and extending epilot.
 
-[API First](/docs/architecture/api-first) | [API Reference](/api)
+<a className="button button--secondary" href="/api">Explore API Reference</a>
 
 ## SDK
 
 TypeScript SDK with full type support for all epilot APIs.
 
-[SDK Docs](/docs/architecture/sdk)
+<a className="button button--secondary" href="/docs/architecture/sdk">Get Started with SDK</a>
+
+## Apps
+
+Build and publish extensions for the epilot platform.
+
+<a className="button button--secondaryRe" href="/apps">Build an App</a>
 
 ## Contact
 

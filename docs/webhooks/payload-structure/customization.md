@@ -32,9 +32,9 @@ Given this webhook payload for an opportunity:
   "metadata": {
     "webhook_id": "kT5iDYx373p6v6hWGJVn9j",
     "organization_id": "739224",
-    "webhook_name": "Wewbhook",
+    "webhook_name": "Webhook",
     "automation_name": "FLOW#wfjV8L8-fD#TASK#25bdd4ec-4335-434b-938e-9afd91cdc9d5",
-    "organization_name": "Epilot Dev",
+    "organization_name": "Example Org",
     "correlation_id": "d7fc4288-381c-41cc-ba74-535e3ae84a0b",
     "creation_timestamp": "2025-07-09T11:50:25.933Z",
     "execution_id": "5cc9432c-a2ae-4649-93e5-ec528eb4e1e4",
@@ -134,7 +134,6 @@ Add custom headers to webhook requests for additional authentication or metadata
 The following headers are forbidden and will be removed from the request:
 ```
     'x-epilot-org-id',
-    'x-ivy-org-id',
     'Authorization',
     'A-IM',
     'Accept-Charset',

@@ -3,70 +3,33 @@ sidebar_position: 5
 title: Pricing Models
 ---
 
-Pricing models define how customers are charged. Set the `pricing_model` field on a `Price` entity to one of:
+# Pricing Models
 
-1. `per_unit`
-2. `tiered_volume`
-3. `tiered_cumulative`
-4. `tiered_flatfee`
+Pricing models define how customers are charged. Set the `pricing_model` field on a Price entity to control the calculation method.
 
-Models are either unit-based or flat-fee-based:
+## Overview
 
-<table
-  width="600px"
-  style={{ marginTop: '20px', marginBottom: '30px', backgroundColor: '#fff' }}
->
-  <thead>
-    <tr>
-      <th>
-        <div style={{ width: '110px' }}></div>
-      </th>
-      <th>Unit Based</th>
-      <th>Flat-fee Based</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Standard</td>
-      <td style={{ textAlign: 'center' }}>✅</td>
-      <td style={{ textAlign: 'center' }}>✅</td>
-    </tr>
-    <tr>
-      <td colspan="3">
-        <div style={{ fontWeight: 'bold', color: 'gray' }}>Tiered Pricing</div>
-      </td>
-    </tr>
-    <tr>
-      <td>Volume</td>
-      <td style={{ textAlign: 'center' }}>✅</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>Cumulative</td>
-      <td style={{ textAlign: 'center' }}>✅</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>Flat-fee</td>
-      <td></td>
-      <td style={{ textAlign: 'center' }}>✅</td>
-    </tr>
-  </tbody>
-</table>
+| Model | Type | Description |
+|---|---|---|
+| `per_unit` | Unit-based or flat-fee | Fixed amount per unit of quantity |
+| `tiered_volume` | Unit-based | Single tier applies to all units based on total quantity |
+| `tiered_graduated` | Unit-based | Each tier's rate applies only to units within that tier's range |
+| `tiered_flatfee` | Flat-fee | Flat fee determined by which tier the quantity falls into |
 
-Details for each model follow.
+All models support **variable pricing** -- when `variable_price` is enabled, the total is calculated dynamically from user input (e.g., estimated annual energy consumption).
 
-<hr />
+:::tip
+For energy tariffs, `tiered_graduated` is the most common model -- it mirrors how grid fees and energy prices are typically structured with consumption-based tiers.
+:::
 
-## Standard
+---
 
-Charges a fixed amount per unit. When `variable_price=true`, the total is calculated from user input (e.g. consumption).
+## Standard (`per_unit`)
 
-Example:
+Charges a fixed amount per unit. When `variable_price=true`, the total is calculated from user input (e.g., consumption).
 
 ```json
 {
-  "name": "Standard",
   "pricing_model": "per_unit",
   "variable_price": true,
   "unit_amount_decimal": "0.055",
@@ -75,161 +38,128 @@ Example:
 }
 ```
 
-```js
-Consumption = 2000 kWh
-Amount to pay = 2000 kWh * €0.055/kWh = 110 €
+**Calculation:**
+
+```
+Consumption = 2,000 kWh
+Total = 2,000 kWh x 0.055 EUR/kWh = 110.00 EUR
 ```
 
-## Tiered Volume
+---
 
-The customer lands in a single tier based on total quantity, and that tier's unit price applies to **all** consumed units.
+## Tiered Volume (`tiered_volume`)
 
-Example:
+The customer's total quantity determines a single tier, and that tier's unit price applies to **all** units.
 
 ```json
 {
-  "name": "Tiered Volume",
   "pricing_model": "tiered_volume",
   "variable_price": true,
   "unit_amount_currency": "EUR",
   "tiers": [
-    {
-      "unit_amount_decimal": "0.055",
-      "unit_amount": 6,
-      "up_to": 1000
-    },
-    {
-      "unit_amount_decimal": "0.054",
-      "unit_amount": 5,
-      "up_to": 2000
-    },
-    {
-      "unit_amount_decimal": "0.053",
-      "unit_amount": 5,
-      "up_to": 3000
-    },
-    {
-      "unit_amount_decimal": "0.05",
-      "unit_amount": 5
-    }
+    { "unit_amount_decimal": "0.055", "up_to": 1000 },
+    { "unit_amount_decimal": "0.054", "up_to": 2000 },
+    { "unit_amount_decimal": "0.053", "up_to": 3000 },
+    { "unit_amount_decimal": "0.050" }
   ]
 }
 ```
 
-<img
-  style={{ width: '500px', borderRadius: '5px' }}
-  src="/img/price-tiers-1.png"
-  alt="Price Tiers"
-/>
+**Calculation:**
 
-```js
-Consumption = 2000 kWh
-Amount to pay = 2000 kWh * €0.054/kWh = 108 €
+```
+Consumption = 2,000 kWh → falls in tier 2 (up to 2,000)
+Total = 2,000 kWh x 0.054 EUR/kWh = 108.00 EUR
 ```
 
-## Tiered Cumulative
+The last tier (no `up_to`) acts as a catch-all for quantities exceeding all defined ranges.
 
-Each tier's unit price applies only to units **within that tier's range**. Lower tiers keep their price as consumption crosses into higher tiers.
+---
 
-Example:
+## Tiered Graduated (`tiered_graduated`)
+
+Each tier's unit price applies only to units **within that tier's range**. Lower tiers keep their price as consumption crosses into higher tiers. This is sometimes called "cumulative" or "staircase" pricing.
 
 ```json
 {
-  "name": "Tiered Cumulative",
-  "pricing_model": "tiered_cumulative",
+  "pricing_model": "tiered_graduated",
   "variable_price": true,
   "unit_amount_currency": "EUR",
   "tiers": [
-    {
-      "unit_amount_decimal": "0.055",
-      "unit_amount": 6,
-      "up_to": 1000
-    },
-    {
-      "unit_amount_decimal": "0.054",
-      "unit_amount": 5,
-      "up_to": 2000
-    },
-    {
-      "unit_amount_decimal": "0.053",
-      "unit_amount": 5,
-      "up_to": 3000
-    },
-    {
-      "unit_amount_decimal": "0.05",
-      "unit_amount": 5
-    }
+    { "unit_amount_decimal": "0.055", "up_to": 1000 },
+    { "unit_amount_decimal": "0.054", "up_to": 2000 },
+    { "unit_amount_decimal": "0.053", "up_to": 3000 },
+    { "unit_amount_decimal": "0.050" }
   ]
 }
 ```
 
-<img
-  style={{ width: '500px', borderRadius: '5px' }}
-  src="/img/price-tiers-1.png"
-  alt="Price Tiers"
-/>
+**Calculation:**
 
-```js
-Consumption = 2000 kWh
-Amount to pay = 1000 kWh * €0.055/kWh + 1000 kWh * €0.054/kWh = 109 €
+```
+Consumption = 2,000 kWh
+  Tier 1: 1,000 kWh x 0.055 EUR/kWh =  55.00 EUR
+  Tier 2: 1,000 kWh x 0.054 EUR/kWh =  54.00 EUR
+  Total                                = 109.00 EUR
 ```
 
-## Tiered Flat Fee
+---
 
-Charges a flat fee based on which tier the consumption falls into. The customer pays the tier's flat fee regardless of exact quantity.
+## Tiered Flat Fee (`tiered_flatfee`)
 
-Example:
+Charges a flat fee based on which tier the quantity falls into. The customer pays the tier's flat fee regardless of exact quantity.
 
 ```json
 {
-  "name": "Tiered Flat Fee",
   "pricing_model": "tiered_flatfee",
   "variable_price": true,
   "unit_amount_currency": "EUR",
   "tiers": [
-    {
-      "flat_fee_amount_decimal": "50.00",
-      "flat_fee_amount": 5000,
-      "up_to": 5
-    },
-    {
-      "flat_fee_amount_decimal": "100.00",
-      "flat_fee_amount": 10000,
-      "up_to": 7
-    },
-    {
-      "flat_fee_amount_decimal": "150.00",
-      "flat_fee_amount": 15000,
-      "up_to": 3000
-    },
-    {
-      "flat_fee_amount_decimal": "200.00",
-      "flat_fee_amount": 20000
-    }
+    { "flat_fee_amount_decimal": "50.00", "up_to": 5 },
+    { "flat_fee_amount_decimal": "100.00", "up_to": 7 },
+    { "flat_fee_amount_decimal": "150.00", "up_to": 3000 },
+    { "flat_fee_amount_decimal": "200.00" }
   ]
 }
 ```
 
-<img
-  style={{ width: '500px', borderRadius: '5px' }}
-  src="/img/price-tiers-2.png"
-  alt="Price Tiers"
-/>
+**Calculation:**
 
-```js
-Max peak power = 7 kW
-Amount to pay = 100 €
+```
+Max peak power = 7 kW → falls in tier 2 (up to 7)
+Total = 100.00 EUR (flat fee)
 ```
 
-## Tier selection and input precedence
+---
 
-Tier ranges are defined by the `up_to` field. The customer's consumption determines which tier applies. For cumulative models, all tiers up to the matched tier contribute.
+## Tier Selection and Input Precedence
+
+Tier ranges are defined by the `up_to` field. The customer's consumption determines which tier applies. For graduated models, all tiers up to the matched tier contribute.
 
 Consumption comes from two possible sources:
 
 | Priority | Source | Where it's set |
-| --- | --- | --- |
-| 1 | Mapping input | NumberInputBlock in a [Journey](/docs/journeys/journey-builder), or mapping input on an [Order](/docs/pricing/orders) |
-| 2 | Quantity input | ProductSelectBlock/ShoppingCart in a [Journey](/docs/journeys/journey-builder), or quantity input on an [Order](/docs/pricing/orders) |
+|---|---|---|
+| 1 | Mapping input | Number input block in a [Journey](/docs/journeys/journey-builder), or mapping input on an [Order](/docs/pricing/orders) |
+| 2 | Quantity input | Product selection block in a [Journey](/docs/journeys/journey-builder), or quantity input on an [Order](/docs/pricing/orders) |
 
 If both inputs are provided, the **mapping input takes precedence**. If neither is provided, consumption defaults to `1`.
+
+:::tip
+Use the [Pricing Library](https://www.npmjs.com/package/@epilot/pricing) to perform price calculations client-side in Journeys or server-side in automation flows. It handles all pricing models, tax breakdowns, and billing period normalization.
+:::
+
+## Billing Periods
+
+All pricing models support the following billing periods:
+
+| Period | Value |
+|---|---|
+| One-time | `one_time` |
+| Weekly | `weekly` |
+| Monthly | `monthly` |
+| Quarterly | `every_quarter` |
+| Semi-annual | `every_6_months` |
+| Annual | `yearly` |
+
+The [Pricing Library](https://www.npmjs.com/package/@epilot/pricing) includes normalization utilities for converting amounts between billing periods (e.g., displaying a yearly rate as a monthly equivalent).

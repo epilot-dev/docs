@@ -69,11 +69,11 @@ The current task is indicated by a blue border in the workflow UI.
 
 ### Current phase
 
-The current phase is the phase that contains the current task. In the image below, "Prüfung" is the current phase.
+The current phase is the phase that contains the current task. In the image below, the "Review" phase is the current phase.
 ![workflow current phase](../../static/img/workflows/current_phase.png)
 
-:::warning
-The current task and phase positions are used when updating entity attributes. Workflow configurations can update entity attributes directly from the workflow hub:
+:::info
+The current task and phase positions are used when updating entity attributes. Workflow configurations can update entity attributes directly from the Workflow Builder:
 :::
 ![workflow configure entity update](../../static/img/workflows/configure_entity_update.png)
 ![workflow entity attribute updated](../../static/img/workflows/entity_attribute_updated.png)

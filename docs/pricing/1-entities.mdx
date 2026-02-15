@@ -3,27 +3,72 @@ sidebar_position: 1
 title: Entities
 ---
 
-Three core entities power epilot pricing.
+# Pricing Entities
+
+Three core entity types power epilot pricing. All are built on the [flexible entity](/docs/entities/flexible-entities) system -- extend them with custom attributes, attach workflows, and use [webhooks](/docs/webhooks/intro) to integrate pricing logic from external backends.
 
 ## [Product](/api/pricing#tag/product_schema) {#product}
 
-Products represent items you sell: physical goods, digital goods, services, or subscriptions.
+Products represent anything you sell: physical goods, digital goods, services, or subscriptions.
 
-A product can have multiple **price options** for different billing cycles and price points. Each option uses either a simple or composite price.
+A product can have multiple **price options** for different billing cycles, customer segments, or regional variations. Each option references either a simple or composite price.
+
+Products support:
+
+- **Categories** -- Classify products (e.g., power, gas, solar, services) for catalog filtering and availability rules
+- **Custom attributes** -- Extend the built-in schema with any fields your business needs
+- **Relations** -- Link products to contracts, orders, opportunities, or any other entity
+- **Availability rules** -- Restrict products by location or other criteria
 
 ## [Price](/api/pricing#tag/simple_price_schema) {#price}
 
 A price defines how much a product costs. Two types are supported:
 
-- **[Simple](/api/pricing#tag/simple_price_schema)** -- a fixed amount, paid one-time or recurrently.
+### Simple Price
 
-- **[Composite](/api/pricing#tag/dynamic_price_schema)** -- calculated from a set of component prices, which can span multiple products. Example: a wallbox price + a recurring fast-charging service fee.
+A standalone price with a fixed unit amount. Supports:
+
+- **One-time or recurring** billing (weekly, monthly, quarterly, semi-annual, annual)
+- **Variable pricing** -- when `variable_price` is enabled, the total is calculated from user input (e.g., energy consumption in kWh)
+- **Tiered pricing** -- volume, graduated (cumulative), or flat-fee tiers based on quantity ranges
+- **Built-in units** -- energy-industry units like kWh, kW, m, m&sup2;, plus custom units
+
+See [Pricing Models](/docs/pricing/pricing-models) for the full reference on pricing model types.
+
+### [Composite Price](/api/pricing#tag/dynamic_price_schema)
+
+A composite price is calculated from a set of **component prices**, which can span multiple products. This enables bundled pricing for complex product offerings.
+
+Example: a solar installation offer that combines a one-time hardware price, a recurring maintenance service fee, and a variable energy feed-in tariff -- all as a single composite line item.
+
+Each component can have its own quantity, pricing model, and billing period. The composite price aggregates all components into a unified total.
 
 ## [Tax](/api/pricing#tag/tax_schema) {#tax}
 
-A tax is a percentage applied to a price. Two modes:
+A tax is a percentage rate applied to prices. Two modes are supported:
 
-- **Inclusive** -- the tax is included in the displayed price. A 100 EUR price with 20% inclusive tax displays as 100 EUR.
-- **Exclusive** -- the tax is added on top. A 100 EUR price with 20% exclusive tax displays as 120 EUR.
+| Mode | Behavior | Example |
+|---|---|---|
+| **Inclusive** | Tax is included in the displayed price | A 100 EUR price with 19% inclusive tax displays as 100 EUR (net: 84.03 EUR) |
+| **Exclusive** | Tax is added on top of the displayed price | A 100 EUR price with 19% exclusive tax displays as 119 EUR |
 
-Bind taxes to a jurisdiction by setting the **Tax Region**.
+Tax entities support:
+
+- **Standard rates** -- Common rates like 19% (standard) and 7% (reduced) for the German market
+- **Tax regions** -- Bind taxes to a jurisdiction for region-specific tax handling
+- **Custom tax types** -- Define additional tax categories beyond the built-in standard, reduced, and non-taxable types
+
+## Coupons & Discounts {#coupons}
+
+Coupons apply discounts to prices at the line-item level. Two discount categories and two calculation types are supported:
+
+| | Fixed Amount | Percentage |
+|---|---|---|
+| **Discount** | Flat amount deducted from the price | Percentage deducted from the price |
+| **Cashback** | Fixed cashback amount credited to the customer | Percentage-based cashback |
+
+Coupons optionally support:
+
+- **Promo codes** -- Require the customer to enter a code to apply the discount
+- **Usage limits** -- Cap the number of times a promo code can be redeemed
+- **Selective application** -- Apply coupons to specific prices within an order

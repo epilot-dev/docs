@@ -113,9 +113,11 @@ The example below shows how workflow information is stored inside the entity pay
 }
 ```
 
-## Old Data Structure (Deprecated)
+## Previous Data Structure (Deprecated)
 
-The example below shows the previous `workflows` array structure, which has been replaced by the hashmap structure above.
+:::info
+The array-based `workflows` structure below has been replaced by the hashmap structure shown above. If your integration still uses the old format, refer to the [Migration](#migration) section for field mappings.
+:::
 ```json
 {
     "_id": "11111111-1111-1111-1111-111111111111",

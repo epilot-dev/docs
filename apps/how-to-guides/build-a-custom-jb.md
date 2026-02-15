@@ -42,7 +42,7 @@ If you want to start with a fresh `minimalistic` custom block, then head over to
 
 1. The actual React component you implement is compiled into a web component with
 
-```typescript
+```typescript title="src/main.tsx - Web component registration"
 const componentTag = 'address-map'
 
 const CustomBlock = r2wc(App, {
@@ -66,7 +66,7 @@ It is important to expose these props so the platform can pass data to your comp
 2. The Vite config needs to output a single `bundle.js` file. We host this bundle in our CDN and then point the custom block to it.
 This is a minimal working config.
 
-```typescript
+```typescript title="vite.config.ts"
 import { resolve } from 'path'
 import { defineConfig } from 'Vite'
 import react from '@Vitejs/plugin-react'
@@ -105,14 +105,14 @@ export default defineConfig({
 })
 ```
 
-Install and build the project with 
-```bash
+Install and build the project with
+```bash title="Install and build"
 npm install
 npm run build
 ```
 
 During development you can run a local dev server and point development mode to it:
-```bash
+```bash title="Start local dev server"
 npm run dev
 ```
 
@@ -148,7 +148,7 @@ We want to subscribe to changes in the address block and update the map accordin
 
 To subscribe to changes in other blocks, you can use the `subscribe` function available on the container. This function lets your block react to updates in other blocks.
 
-```typescript
+```typescript title="Subscribe to address block changes"
  const [address, setAddress] = useState<Address | null>(null)
 
   const callback = useCallback((partialState: Address)  => {
@@ -197,7 +197,7 @@ We want to make the map view configurable. This is a very common use case and ca
 
 To add a component argument, you can use the `args` provided via the container. This is a JSON stringified object containing all the args you provide when adding the block.
 
-```typescript
+```typescript title="Parse and use component arguments"
  const args = useMemo(() => {
     return props.container.args ? JSON.parse(props.container.args) : undefined
   }, [props.container.args])
@@ -219,11 +219,11 @@ To add a component argument, you can use the `args` provided via the container. 
 
 The component arguments are available via `props.container.args` in the custom block.
 
-### Step 6: Map the generaed lat/lng output back to the journey submission
+### Step 6: Map the generated lat/lng output back to the journey submission
 
 To submit data from your custom block, call `setValue` with your output. For example, after geocoding the address, you can expose the coordinates:
 
-```typescript
+```typescript title="Set value for journey submission"
 useEffect(() => {
   if (!address) return
   geocode(address).then(({ lat, lng }) => {

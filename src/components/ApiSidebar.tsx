@@ -1,8 +1,6 @@
 // src/components/ApiSidebar.tsx
 import { useLocation } from '@docusaurus/router';
-import DocPageStyles from '@docusaurus/theme-classic/lib-next/theme/DocPage/styles.module.css';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import DocSidebar from '@theme/DocSidebar';
+import DocPageStyles from '@docusaurus/theme-classic/lib-next/theme/DocPage/styles.module.css';Add
 import React from 'react';
 
 interface Spec {

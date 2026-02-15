@@ -10,6 +10,13 @@ Building and publishing an app on the epilot platform follows a straightforward 
 
 ## The App Development Journey
 
+```mermaid
+flowchart LR
+    A[Request Developer Account] --> B[Build Private App]
+    B --> C[Request Review]
+    C --> D[Beta Release]
+```
+
 ## 1. Request Developer Account
 
 Your first step is to obtain a dedicated developer sandbox account:
@@ -60,7 +67,7 @@ Upon approval of your review request:
 - This version becomes immutable to ensure stability for users
 
 During the beta phase, you can gather feedback from users and make necessary adjustments to improve your app's performance and usability. 
-You also get in touch with our team to discuss your app's promotion and marketing.
+You can also get in touch with our team to discuss your app's promotion and marketing.
 
 Once public, you can continue developing new versions with enhanced features while users benefit from your current release.
 

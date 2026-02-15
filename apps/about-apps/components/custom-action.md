@@ -10,9 +10,7 @@ Extend epilot's automation capabilities with custom actions that integrate seaml
 
 ## What Are Custom Actions?
 
-Epilot provides a powerful automation engine that allows you to create complex workflows and processes. Custom Actions are specialized components that can be added to these workflows, enabling you to perform specific tasks or integrations that are not available out-of-the-box. Customers can install these actions to enhance their automation capabilities, allowing for tailored solutions that fit their unique business needs. 
-
-With a custom action you can extend the epilot platform by adding new functionality that can be used in automation workflows. This allows you to create custom processing steps, integrations with external systems, or any other specialized functionality that enhances the epilot experience.
+epilot provides a powerful automation engine for creating complex workflows and processes. Custom Actions are specialized components that you add to these workflows, enabling integrations and processing steps that are not available out-of-the-box. Customers install these actions to extend their automation capabilities with tailored solutions that fit their business needs.
 
 ## Why Use Custom Actions?
 Custom Actions provide several key benefits:
@@ -32,7 +30,7 @@ You can either:
 1. Trigger some asynchronous processing in your system, or
 2. Update epilot data with an access token built from the permission/role you can define (see [Permissions](/apps/about-apps/configure-permissions)).
 
-The payload of the is the follinwg
+The payload of the request is the following:
 ```json
 {
   "type": "external_integration",
@@ -51,7 +49,7 @@ The payload of the is the follinwg
 }
 ```
 
-additional you will get 4 headers specified by epilot:
+Additionally, you will receive 4 headers specified by epilot:
 ```http
 webhook-signature	v1a,puLZGVBm1MhSFz/kpgDsbt56DqanAAEg5Y5pgkVaz2d9WTbp6sGpo64qJFm8DWE8fo85b3cOs0CvV9v4WseUBw==
 webhook-timestamp	1749649159
@@ -64,7 +62,7 @@ The `webhook-*` headers are used to verify and check the authenticity of the req
 
 The `x-epilot-token` is an access token that is generated based on the permissions and roles defined in your app configuration. This token allows you to securely access epilot data and perform actions on behalf of the user. (expires after 10 min)
 
-### Example: Sync Data With Your Platform And Write Back To epilot entites
+### Example: Sync Data With Your Platform and Write Back to epilot Entities
 To create a custom action that syncs data with your platform and writes back to epilot entities, you can follow these steps:
 1. **Define the Action**: Create a new custom action in your app configuration with the type `external_integration`.
 2. **Define the Permissions**: Specify the permissions required for the action to access the necessary data in epilot.

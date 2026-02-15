@@ -8,6 +8,17 @@ description: "Understanding the difference between private and public apps on ep
 
 The epilot app platform distinguishes between private and public apps to support a secure development workflow while ensuring quality in the marketplace. This distinction is central to how apps are developed, tested, and distributed.
 
+```mermaid
+flowchart LR
+    A[Create App] --> B[Private Development]
+    B --> C[Request Review]
+    C --> D{Review}
+    D -->|Approved| E[Public on Marketplace]
+    D -->|Feedback| B
+    E --> F[New Version]
+    F --> B
+```
+
 ## Private Apps: Your Development Sandbox
 
 When you first create an app on epilot, it begins as a private app with an initial version (0.0.1). This private status provides a protected development environment where you can:

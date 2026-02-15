@@ -7,7 +7,7 @@ sidebar_position: 0
 [[API Docs](/api/entity)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
-Everything in epilot is an **entity** — contacts, orders, products, contracts, meters, files, and more. Entities are flexible JSON objects backed by user-definable schemas, so the data model adapts to each tenant's business processes rather than the other way around.
+Everything in epilot is an **entity** -- contacts, orders, products, contracts, meters, files, and more. Entities are flexible JSON objects backed by user-definable schemas, so the data model adapts to each organization's business processes rather than the other way around.
 
 The platform ships with a standard set of [core entities](/docs/entities/core-entities) covering common energy industry objects, but organizations can extend schemas with custom attributes or define entirely new entity types via the [Entity API](/docs/entities/entity-api).
 
@@ -45,6 +45,20 @@ Entities support native relations — any entity can be linked to any other enti
 
 See [Relations](/docs/entities/relations) for details.
 
+## How It Fits Together
+
+```mermaid
+flowchart TB
+    Schema[Schema] -->|defines| Attributes[Attributes]
+    Schema -->|enables| Capabilities[Capabilities]
+    Entity1[Entity A] -- relation --> Entity2[Entity B]
+    Entity1 -.->|conforms to| Schema
+    Entity2 -.->|conforms to| Schema2[Schema]
+    Entity1 -->|logs| Activity[Activity Feed]
+```
+
 ## Activity
 
 Every mutation on an entity is recorded in an append-only **Activity** feed. Each activity item includes a timestamp, the caller identity, a description, and the list of operations performed.
+
+<a className="button button--primary" href="/api/entity">Explore the Entity API</a>

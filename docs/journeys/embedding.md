@@ -34,7 +34,7 @@ The `DataInjectionOptions` type below defines all available options. See the [Em
 
 **Type Definition**
 
-```typescript
+```typescript title="DataInjectionOptions"
 export type DataInjectionOptions = {
   /** the initial step index of the journey. aka, where to start the journey from */
   initialStepIndex?: number
@@ -55,7 +55,7 @@ To populate `initialState` in `DataInjectionOptions` properly, open the journey 
 **Note**: `initialState` must be filled sequentially based on the order of steps; steps that are not injected into must be an **empty object**.
 See example below to inject data into Step 2 and Step 3. Notice that Step 1 needs to be empty for this to work properly
 
-```typescript
+```typescript title="Injecting data into Steps 2 and 3"
   initialState: [
     {},
     {
@@ -259,7 +259,7 @@ The default embed method covers most of the use cases. A button will be placed o
 **Code Snippet**  
 The below code snippet provides the configured embed script and a button opening the journey when clicked. Don’t forget to change the placeholder ids to your own journey ids!
 
-```html
+```html title="Full-screen embed"
 <!-- Clicking this button will open your Journey -->
 <button onclick="__epilot.enterFullScreen('<your-journey-id>')">
   Open Journey
@@ -288,7 +288,7 @@ This method will place the journey into a provided container element, or, if not
 **Code Snippet**  
 The below code snippet provides the configured embed script required to set up the inline mode and a container where the journey is being placed in. Don’t forget to change the placeholder ids to your own journey ids!
 
-```html
+```html title="Inline embed"
 <!-- Your Journey will go into this container -->
 <div id="epilot-journey-<your-journey-id>"></div>
 
@@ -314,7 +314,7 @@ The best way to embed multiple journeys is to use the `__epilot` interface descr
 
 **Code Snippet**
 
-```html
+```html title="Multiple journeys embed"
 <button onclick="__epilot.enterFullScreen('<your-journey-id-1>')">
   Open Journey
 </button>

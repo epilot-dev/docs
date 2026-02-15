@@ -5,9 +5,9 @@ sidebar_position: 1
 
 # AI in epilot
 
-epilot embeds AI directly into the workflows energy companies use every day -- messaging, entity management, search, and process automation. No standalone chatbot. Every AI feature operates within existing platform screens, augmenting the work users already do.
+epilot embeds AI directly into the workflows energy companies use every day -- messaging, entity management, search, and process automation. Rather than a standalone chatbot, every AI feature operates within existing platform screens, augmenting the work users already do.
 
-The system is built on a centralized **GenAI API** backed by AWS Bedrock, a Python-based **GenAI Foundation** for LLM orchestration, and a serverless RAG pipeline for contextual generation. All data stays in the EU region with a zero-retention policy on the LLM provider side.
+The system is built on a centralized **GenAI API** backed by AWS Bedrock, a **GenAI Foundation** for LLM orchestration, and a serverless RAG pipeline for contextual generation. All data stays in the EU region with a zero-retention policy on the LLM provider side.
 
 ## AI Features
 
@@ -176,6 +176,10 @@ epilot uses **AWS Bedrock** as the primary LLM provider:
 - **Cross-region inference**: Endpoints span multiple regions to increase available throughput
 - **Provider flexibility**: Bedrock's multi-model architecture avoids vendor lock-in; migration to alternative providers (e.g., Google Vertex AI) can happen per-feature based on performance data
 
+:::note
+All AI processing runs exclusively in EU AWS regions with a zero-retention policy on the LLM provider side, ensuring compliance with European data residency requirements.
+:::
+
 ### RAG Pipeline
 
 For features that need organizational context (reply suggestions, entity Q&A), epilot runs a Retrieval-Augmented Generation pipeline:
@@ -208,20 +212,17 @@ AI features are monitored through:
 
 ### Rate Limiting
 
-Requests are rate-limited per organization based on pricing tier:
+AI requests are rate-limited per organization to ensure fair usage and consistent performance. Limits scale with your pricing plan.
 
-| Tier | Requests/min | Tokens/min |
-|---|---|---|
-| Starter | 1 | 2,500 |
-| Business | 3 | 3,000 |
-| Professional | 7 | 5,000 |
-| Enterprise | 10 | 7,500 |
-
-Rate limit headers (`X-RateLimit-Limit-Requests`, `X-RateLimit-Remaining-Requests`, `X-RateLimit-Limit-Tokens`, `X-RateLimit-Remaining-Tokens`, `X-RateLimit-Limit-Reset`) are returned on every GenAI API response.
+Rate limit headers (`X-RateLimit-Limit-Requests`, `X-RateLimit-Remaining-Requests`, `X-RateLimit-Limit-Tokens`, `X-RateLimit-Remaining-Tokens`, `X-RateLimit-Limit-Reset`) are returned on every GenAI API response. Contact your account manager for details on the limits for your plan.
 
 ### Human-in-the-Loop
 
-Every AI feature that modifies data enforces human approval. The platform collects structured feedback (ratings, rejection reasons, free-text comments) which feeds back into prompt refinement and retrieval quality improvements. An internal admin portal surfaces feedback for the HITL review team.
+:::tip
+Every AI feature that modifies data enforces human approval. The AI agent never writes data without user confirmation.
+:::
+
+The platform collects structured feedback (ratings, rejection reasons, free-text comments) which feeds back into prompt refinement and retrieval quality improvements. Feedback is continuously reviewed to improve AI quality.
 
 ## GenAI API Reference
 
@@ -281,3 +282,7 @@ graph LR
     A[Phase 1<br/>AI-Augmented<br/>Workflows] --> B[Phase 2<br/>AI Copilot<br/>Conversational UI]
     B --> C[Phase 3<br/>Autonomous<br/>Multi-Agent System]
 ```
+
+---
+
+Interested in building the future of AI for the energy industry? See our [open positions](https://www.epilot.cloud/en/company/careers).

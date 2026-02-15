@@ -29,7 +29,7 @@ Each partner organization is assigned a single **Partner Role** by the vendor or
 
 A partner role contains **grants** — permission rules that specify which actions (view, edit, delete) are allowed on which entity types:
 
-```json
+```json title="Partner role with grants"
 {
   "name": "Installation Partner",
   "type": "partner_role",
@@ -49,7 +49,7 @@ The partner role is configured during partner onboarding and applies to **all us
 
 When an entity is shared with a partner, an `_acl` (Access Control List) field is written to the entity. The ACL specifies which organizations can perform which operations:
 
-```json
+```json title="Entity ACL"
 {
   "_id": "opp-123",
   "_schema": "opportunity",
@@ -72,7 +72,7 @@ This two-layer approach means vendors maintain full control — even if a partne
 
 To access shared entities via API, partner users include the `x-epilot-org-id` header to specify the vendor organization they want to interact with:
 
-```
+```http title="Accessing a shared entity"
 GET /v1/entity/opportunity/opp-123
 Host: entity.sls.epilot.cloud
 Authorization: Bearer <token>

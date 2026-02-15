@@ -18,6 +18,12 @@ Common use cases:
 - Generating documents from templates
 - Starting workflows as part of a business process
 
-Configure automations under [Configuration > Advanced Configuration > Automation](https://portal.epilot.cloud/app/automation-hub).
+```mermaid
+flowchart LR
+    Event[Trigger Event] --> Flow[Automation Flow]
+    Flow --> A1[Action 1]
+    A1 --> A2[Action 2]
+    A2 --> A3[Action N]
+```
 
-[![Automation Hub](../../static/img/automation-hub-empty.png)](https://portal.epilot.cloud/app/automation-hub)
+Configure automations under [Configuration > Advanced Configuration > Automation](https://portal.epilot.cloud/app/automation-hub).

@@ -1,5 +1,6 @@
 ---
-sidebar_position: 10
+sidebar_position: 3
+title: 3rd Party Journeys
 ---
 
 # Example: 3rd Party Journey
@@ -146,17 +147,7 @@ To automatically create entities, send emails, and start workflows from submissi
 
 Create a new automation from [Configuration > Advanced Configuration > Automations > Create](https://portal.epilot.cloud/app/automation-hub/flow/create).
 
-Configure an API Submission trigger with the same `source_id` from your Submission API payload.
-
-![API Submission Trigger](/img/automation-trigger-api.png)
-
-Switch to the _Actions_ Tab and add your first Entity Mapping action.
-
-![Map Entity Action](/img/automation-map-entity-action.png)
-
-Map fields from your submission to business objects. See the [Entity Mapping documentation](/docs/automation/entity-mapping) for details.
-
-![Map Entity Action](/img/automation-entity-mapping.png)
+Configure an API Submission trigger with the same `source_id` from your Submission API payload, then add actions in the _Actions_ tab. See the [Entity Mapping documentation](/docs/automation/entity-mapping) for mapping details.
 
 The recommended order for journey submission automation actions:
 

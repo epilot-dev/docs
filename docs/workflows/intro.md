@@ -22,6 +22,14 @@ From a running workflow task, you can:
 - Mark the task as done or in progress
 - Skip the task
 
+```mermaid
+flowchart LR
+    Define[Define Workflow] --> Start[Start on Entity]
+    Start --> Tasks[Execute Tasks]
+    Tasks --> Complete[Workflow Complete]
+    Tasks -->|"task failed"| Failed[Workflow Failed]
+```
+
 ## Building a Workflow
 
 Define workflows in the builder under [Workflows > Workflow Builder](https://portal.epilot.cloud/app/workflows-hub).

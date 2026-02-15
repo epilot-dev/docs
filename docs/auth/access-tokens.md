@@ -17,7 +17,7 @@ To call epilot APIs, requests must be authorized using a valid _Access Token_.
 
 Pass the access token in the `Authorization` request header:
 
-```
+```http title="Authorization header"
 Authorization: Bearer <your-access-token>
 ```
 
@@ -47,11 +47,11 @@ epilot doesn't store and cannot recover lost or revoked access tokens.
 
 Generate access tokens programmatically using the [Access Token API](/api/access-token) `createAccessToken` operation:
 
-```
+```http title="Create a basic token"
 POST /v1/access-tokens
 ```
 
-```json
+```json title="Request body"
 {
   "name": "Token for my application"
 }
@@ -59,11 +59,11 @@ POST /v1/access-tokens
 
 Optionally, pass a list of Role IDs to scope the token to specific roles. By default, the token inherits the caller's roles.
 
-```
+```http title="Create a scoped token"
 POST /v1/access-tokens
 ```
 
-```json
+```json title="Request body with role assignment"
 {
   "name": "Postman Access Token",
   "assume_roles": ["123:owner"]
@@ -72,8 +72,7 @@ POST /v1/access-tokens
 
 Each Access Token generated via the API receives a unique ID.
 
-```json
-// 201 - success
+```json title="201 response"
 {
   "id": "api_5ZugdRXasLfWBypHi93Fk",
   "created_at": "2019-08-24T14:15:22Z",
@@ -84,12 +83,11 @@ Each Access Token generated via the API receives a unique ID.
 
 Revoke access tokens using the `revokeAccessToken` operation:
 
-```
+```http title="Revoke an access token"
 DELETE /v1/access-tokens/api_5ZugdRXasLfWBypHi93Fk
 ```
 
-```json
-// 200 - success
+```json title="200 response"
 {
   "id": "api_5ZugdRXasLfWBypHi93Fk",
   "created_at": "2019-08-24T14:15:22Z",

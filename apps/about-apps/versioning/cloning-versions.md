@@ -17,7 +17,7 @@ We use [semantic versioning](https://semver.org/) to manage app versions. This s
 
 ![Version Overview](../../../static/img/apps/versions.png)
 
-The version overview lists all available versions and its visibility status.
+The version overview lists all available versions and their visibility status.
 
 
 ## Cloning a Version

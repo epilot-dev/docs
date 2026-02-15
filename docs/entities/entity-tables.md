@@ -7,7 +7,7 @@ sidebar_position: 4
 [[API Docs](/api/entity/#tag/Entities)]
 [[SDK](https://www.npmjs.com/package/@epilot/entity-client)]
 
-Entity tables display entities of a given schema in a configurable list view. They support search, attribute-based filtering, column sorting, saved views, and bulk import/export.
+Entity tables display entities of a given schema in a configurable list view. They support full-text search, attribute-based filtering, column sorting, saved views, and bulk import/export.
 
 ## Search and Filtering
 

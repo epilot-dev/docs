@@ -11,6 +11,15 @@ sidebar_position: 3
 
 The Document Generation API creates documents from templates with dynamic variable substitution. It supports multiple input and output formats, image embedding, Excel generation, and async processing with job tracking.
 
+```mermaid
+flowchart LR
+    Template[Template\n.docx / .xlsx] --> API[Document API]
+    Entity[Entity Data] --> API
+    Variables[Variable Payload] --> API
+    API --> PDF[PDF Output]
+    API --> DOCX[DOCX Output]
+```
+
 ## API Endpoints
 
 ### Extract Template Metadata

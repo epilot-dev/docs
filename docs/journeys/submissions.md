@@ -13,9 +13,7 @@ Submissions are entities that store raw data collected from journeys or other ex
 
 Unlike other business entities, a Submission does not have a fixed schema. It stores the raw JSON payload for further processing.
 
-A typical workflow maps the incoming submission data into business entities like Contacts, Opportunities, and Orders using [Automation](/docs/automation/automation-flows).
-
-![Submission Example](../../static/img/submission.png)
+A typical workflow maps the incoming submission data into business entities like Contacts, Opportunities, and Orders using [Automation](/docs/automation/automation-flows).Ex
 
 ## Submission API
 
@@ -29,14 +27,13 @@ Submission API can be used together with [File API](https://docs.epilot.io/api/f
 
 Use the `uploadFile` or `uploadFilePublic` operation of File API to generate a temporary upload URL and receive an s3ref:
 
-```
+```http title="Generate upload URL"
 POST https://file.sls.epilot.io/v1/files/public/upload
 ```
 
 Request Body:
 
-```json
-// application/json
+```json title="Upload request"
 {
   "filename": "document.pdf",
   "mime_type": "application/pdf"
@@ -45,8 +42,7 @@ Request Body:
 
 Response (200):
 
-```json
-// application/json
+```json title="Upload URL response"
 {
   "s3ref": {
     "bucket": "epilot-user-content",
@@ -58,7 +54,7 @@ Response (200):
 
 Then, upload a file with a `PUT` operation to the generated upload_url. (Hint: make sure you pass the correct Content-Type header and encoding!)
 
-```
+```http title="Upload the file"
 PUT https://epilot-files-prod.s3.eu-central-1.amazonaws.com/123/temp/4d689aeb-1497-4410-a9fe-b36ca9ac4389/document.pdf?AWSParams=123
 ```
 
@@ -70,14 +66,13 @@ Request Body:
 
 After the file has uploaded, pass the `s3ref` in the `entities.*.files` attribute in your Submission API payload:
 
-```
+```http title="Create submission with files"
 POST https://submission.sls.epilot.io/v1/submission/submissions
 ```
 
 Request Body:
 
-```json
-// application/json
+```json title="Submission payload with s3ref"
 {
   "organization_id": "123",
   "source_type": "api",

@@ -7,9 +7,9 @@ sidebar_position: 3
 
 [[API Docs](/api/workflow-execution)]
 [[SDK](https://www.npmjs.com/package/@epilot/workflow-client)]
-[[Notes Docs](https://docs.api.epilot.io/discussion)]
+[[Notes Docs](/api/discussion)]
 
-Workflow Notes use the [Comments API](https://docs.api.epilot.io/discussion#tag/Comments) with a specific `context_id` format.
+Workflow Notes use the [Comments API](/api/discussion#tag/Comments) with a specific `context_id` format.
 
 Set `context_id` to `{entity_id}-workflow-{workflow_id}-{task_id}`.
 

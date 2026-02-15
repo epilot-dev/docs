@@ -20,7 +20,6 @@ The epilot application consists of:
 - [Embeddable Journey Frontends](/docs/journeys/journey-builder) — customer-facing forms and flows
 - [Customer & Installer Portals](/docs/portals/customer-portal) — self-service portals
 - Serverless microservices with [public APIs](/api)
-- Internal Admin Portal
 
 ## Tech Stack
 
@@ -40,6 +39,7 @@ The epilot application consists of:
 | [single-spa](https://single-spa.js.org/) | Micro-frontend orchestration for the epilot portal |
 | [Tailwind CSS](https://tailwindcss.com/) | Utility-first CSS framework |
 | [Volt UI](https://www.npmjs.com/package/@epilot/volt-ui) | epilot design system (React and Svelte) |
+| [Capacitor](https://capacitorjs.com/) | Hybrid native runtime for [portal mobile apps](/docs/portals/mobile-app) |
 | [Axios](https://axios-http.com/) / [openapi-client-axios](https://www.npmjs.com/package/openapi-client-axios) | HTTP client with OpenAPI type generation |
 
 ### Backend

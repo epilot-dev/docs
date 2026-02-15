@@ -78,7 +78,7 @@ epilot supports multiple authentication methods, configurable per organization:
 | **Password + MFA** | Traditional password with TOTP or SMS second factor |
 | **SSO (OIDC/SAML)** | Federated login via corporate identity providers (Azure AD, Okta, Google) |
 
-Organizations enable and combine these methods in **Organization Settings**. See [MFA, Passwordless & Passkeys](/docs/auth/mfa) and [SSO](/docs/sso/single-sign-on) for configuration details.
+Organizations enable and combine these methods in **Organization Settings**. See [MFA](/docs/auth/mfa), [Passwordless Login](/docs/auth/passwordless), [Passkeys](/docs/auth/passkeys), and [SSO](/docs/sso/single-sign-on) for configuration details.
 
 ## Authorization
 
@@ -114,7 +114,7 @@ The permission model has three core concepts:
 
 #### Organization Root Role
 
-Each organization has a mandatory root role that defines the **maximum permission set** any user in that organization can receive. The organization's pricing tier controls this role, and epilot administrators manage it. User roles can only grant permissions up to the ceiling set by the root role.
+Each organization has a mandatory root role that defines the **maximum permission set** any user in that organization can receive. The organization's subscription tier determines this role. User roles can only grant permissions up to the ceiling set by the root role.
 
 <details>
 <summary>Example role definition</summary>
@@ -260,7 +260,9 @@ epilot maintains the following certifications and compliance measures:
 ## Further Reading
 
 - [Authentication](/docs/auth/authentication) — OAuth 2.0 login, Cognito User Pools, SDK usage
-- [MFA, Passwordless & Passkeys](/docs/auth/mfa) — Multi-factor authentication, passwordless login, WebAuthn passkeys
+- [MFA](/docs/auth/mfa) -- Multi-factor authentication with TOTP and SMS
+- [Passwordless Login](/docs/auth/passwordless) -- Email-based sign-in links (default since 2025)
+- [Passkeys](/docs/auth/passkeys) -- Phishing-resistant biometric and hardware key authentication
 - [SSO](/docs/sso/single-sign-on) — Single sign-on with OIDC and SAML identity providers
 - [Authorization](/docs/auth/authorization) — JWT validation, API Gateway authorizer, Permissions API
 - [Access Tokens](/docs/auth/access-tokens) — Creating and managing long-lived API tokens

@@ -8,15 +8,20 @@ import { GetOrderApiSample, GetOrderSample, UpdateOrderSample, UpdateOrderApiSam
 
 # Orders
 
-An Order is a collection of products and prices purchased by a customer. Create orders manually or through automations triggered by events like journey submissions.
+An Order is a collection of products and prices purchased by a customer. Create orders manually, through the UI, or through automations triggered by events like journey submissions.
 
-Orders use the same [flexible entity](/docs/entities/flexible-entities) system as all other epilot entities.
+Orders use the same [flexible entity](/docs/entities/flexible-entities) system as all other epilot entities -- they support custom attributes, relations, workflows, and webhooks.
 
-<img
-  style={{ boxShadow: '#a2a2a2 0px 0px 25px -8px', borderRadius: '5px' }}
-  src="/img/order-detailsview.png"
-  alt="Order Details View"
-/>
+## Order Features
+
+| Feature | Description |
+|---|---|
+| **Automatic Totals** | Line-item and aggregate totals are recomputed on every update |
+| **Tax Breakdowns** | Per-item and order-level tax calculations with inclusive/exclusive support |
+| **Coupon Application** | Discounts and cashback applied at the line-item level |
+| **Billing Period Normalization** | Automatic conversion between different recurrence periods |
+| **Composite Line Items** | Support for bundled products with multiple price components |
+| **Lifecycle Management** | State transitions and approval workflows |
 
 ## Managing Orders via Pricing API {#managing-orders-via-pricing-api}
 
@@ -24,11 +29,20 @@ The [Entity API](/docs/entities/entity-api) handles basic data operations, but o
 
 Use the [Pricing API](/api/pricing) for all programmatic order operations. It wraps the Entity API with this logic.
 
+### Key Endpoints
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/v1/order` | POST | Create a new order with automatic total computation |
+| `/v1/order/{id}` | PUT | Update an existing order (full replacement) |
+| `/v1/pricing:compute` | POST | Calculate pricing details without creating an order |
+| `/v1/public/cart:checkout` | POST | Convert a cart to an order or quote |
+
 ### Example: Updating an Order {#example-updating-an-order}
 
 Order `line_items` changes must go through the [Pricing API](/api/pricing) to recompute totals correctly.
 
-Both examples authenticate with an [Org Access Token (OAT)](/docs/auth/access-tokens):
+Both examples authenticate with an [Access Token](/docs/auth/access-tokens):
 
 <Tabs lazy>
   <TabItem value="api" label="API" default>
@@ -49,3 +63,13 @@ Modify the `line_items` and send a PUT request. The update is a full replacement
     <UpdateOrderSample />
   </TabItem>
 </Tabs>
+
+### Promo Code Validation
+
+Validate promo codes before applying them to an order:
+
+```
+POST /v1/public/validate-promo-codes
+```
+
+This public endpoint checks code validity, usage limits, and applicable price items. Use it in customer-facing journeys to provide real-time feedback on promotional codes.

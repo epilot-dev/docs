@@ -66,14 +66,14 @@ Extensions to the Journey Builder's design capabilities, including:
 
 ## Requesting New Component Types
 
-Have an idea for a new component type that would enhance the epilot platform? We'd love to hear about it!
+Have an idea for a new component type? We welcome feedback from the developer community.
 
 1. **Evaluate Your Need**: Consider if existing component types could address your use case
 2. **Define the Integration Point**: Identify where in epilot your component would integrate
 3. **Describe the Value**: Outline the problems it would solve for epilot users
-4. **Submit a Request**: Contact us with your proposal
+4. **Submit a Request**: [Contact us](https://developers.epilot.cloud/contact) with your proposal
 
-Our product team regularly reviews component requests and prioritizes them based on community interest and strategic alignment.
+Our product team regularly reviews component requests and prioritizes them based on community interest and platform direction.
 
 ## App Surfaces & Communication
 

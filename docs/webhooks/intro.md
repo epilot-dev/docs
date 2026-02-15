@@ -11,6 +11,19 @@ slug: /webhooks
 
 The epilot [Webhooks API](/api/webhooks) lets you subscribe to events in your epilot account. When an event occurs, epilot sends an HTTP POST request to your configured webhook URL. Use webhooks to integrate epilot with external systems, trigger actions based on events, or monitor activity.
 
+```mermaid
+sequenceDiagram
+    participant epilot
+    participant Webhook Service
+    participant Your Server
+
+    epilot->>Webhook Service: Event occurs (e.g., entity:created)
+    Webhook Service->>Webhook Service: Match event to subscriptions
+    Webhook Service->>Your Server: HTTP POST with signed payload
+    Your Server->>Your Server: Verify signature
+    Your Server-->>Webhook Service: 200 OK
+```
+
 ## Data Transmission
 
 epilot sends webhook payloads using `Transfer-Encoding: chunked`. The HTTP request body arrives in parts rather than as a single response, so the total content size does not need to be known in advance.

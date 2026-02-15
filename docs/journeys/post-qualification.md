@@ -27,7 +27,7 @@ The further sections describe the process of how to achieve the above mentioned 
 
 ### Configure Journey 1
 
-Configure this journey meeting your companies requirements. It just needs to create an Opportunity. You can check that by looking into the respective Automation from the Journey-Builder.
+Configure this journey to meet your company's requirements. It just needs to create an Opportunity. You can check that by looking into the respective Automation from the Journey-Builder.
 
 The Journeys automation is already prepared to accept and process the previously described parameter `opportunity_id`
 
@@ -37,7 +37,7 @@ Additionally add a “Send E-Mail” action selecting a template, which later on
 
 ### Configure and embed Journey 2
 
-Configure this journey meeting your companies requirements.
+Configure this journey to meet your company's requirements.
 
 Embedding the post qualification journey differs slightly from the default embed options the Journey Builder provides. The embed code needs to be enriched to take the `opportunity_id` parameter from the website, and pass it to the journey.
 

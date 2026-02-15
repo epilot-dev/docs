@@ -12,7 +12,7 @@ Mapping defines how ERP data transforms into epilot entities. This page covers t
 
 A mapping configuration consists of one or more entity definitions:
 
-```json
+```json title="Mapping configuration"
 {
   "entities": [
     {
@@ -505,9 +505,11 @@ Updates the meter status to "DECOMMISSIONED" while purging associated billing ev
 
 When multiple mapping options are specified, they are evaluated in this order:
 
-1. `constant` - Fixed value (highest priority)
-2. `jsonataExpression` - Computed value
-3. `field` - Direct field mapping (lowest priority)
+:::info
+1. `constant` -- Fixed value (highest priority)
+2. `jsonataExpression` -- Computed value
+3. `field` -- Direct field mapping (lowest priority)
+:::
 
 ## Array Attribute Operations
 

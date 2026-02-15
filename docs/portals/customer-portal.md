@@ -34,6 +34,10 @@ Administrators configure and manage the portal through a set of APIs:
 
 End-users log in to the portal to view and interact with their entities. Using configured entity identifiers, they search for specific records without contacting the organization directly.
 
+:::tip
+Portal permissions are fully configurable per entity type and action. See [Permissions](/docs/auth/permissions) for the underlying RBAC model.
+:::
+
 End-users can also trigger service processes by modifying entity data within the boundaries of their granted permissions. Examples:
 
 1. **Add details to an opportunity** -- An installer adds PV panel specifications (technical details, pricing) to an existing opportunity using edit permissions.

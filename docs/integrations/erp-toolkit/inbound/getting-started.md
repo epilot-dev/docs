@@ -18,7 +18,7 @@ This guide walks you through setting up an inbound integration to synchronize da
 
 Create a new integration to represent your ERP connection:
 
-```bash
+```bash title="Create an integration"
 curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
   -H 'Authorization: Bearer <your-token>' \
   -H 'Content-Type: application/json' \
@@ -30,7 +30,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
 
 **Response:**
 
-```json
+```json title="Integration created"
 {
   "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "orgId": "your-org-id",
@@ -48,7 +48,7 @@ Save the `id` — you'll need it for subsequent API calls.
 
 A use case defines how specific data types are mapped and synchronized. Create an inbound use case for customer data:
 
-```bash
+```bash title="Create a use case"
 curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
   -H 'Authorization: Bearer <your-token>' \
   -H 'Content-Type: application/json' \
@@ -77,7 +77,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 
 Push data from your ERP system using the events endpoint:
 
-```bash
+```bash title="Send an inbound event"
 curl -X POST 'https://erp-integration.sls.epilot.io/v2/erp/updates/events' \
   -H 'Authorization: Bearer <your-token>' \
   -H 'Content-Type: application/json' \
@@ -101,7 +101,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/erp/updates/events' \
 
 **Response:**
 
-```json
+```json title="Event accepted"
 {
   "results": [
     {

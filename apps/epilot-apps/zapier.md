@@ -14,7 +14,7 @@ To use the Zapier integration, you need:
 - A [Zapier.com](https://zapier.com) account (free or paid)
 - An [epilot Access Token](/docs/auth/access-tokens)
 
-:::note
+:::
 
 ---
 

@@ -8,12 +8,10 @@ sidebar_position: 4
 [[SDK](https://www.npmjs.com/package/@epilot/automation-client)]
 
 :::info
-These docs describe the advanced, low-code Entity Mapping feature. For the no-code solution, see the [epilot Help Center](https://help.epilot.cloud/automatisierungen-und-mapping/6304301252242-Mapping-Zuordnung-von-Journey-Daten-zu-Entit%25C3%25A4ten?from_search=202771407).
+These docs describe the advanced, low-code Entity Mapping feature. For the no-code solution, see the [epilot Help Center](https://help.epilot.cloud).
 :::
 
 The **Create/Edit Entity (Advanced)** action allows mapping data from one entity to create or update other entities.
-
-![MapEntityAction](../../static/img/MapEntityAction.png)
 
 ## Create/Edit Entity
 
@@ -21,22 +19,13 @@ The Create/Edit Entity Action (`map-entity`) consists of a Target Entity and a l
 
 You can choose any Entity Schema configured in your organization as the target. An entity with this schema will be created or edited as the output of this automation action.
 
-![Select target entity](../../static/img/automation-select-target.png)
-
 The created entity will be automatically added as a relation to your Automation trigger entity (usually Submission). By default, the relation will be stored in the `mapped_entities` attribute.
 
-You can also define Relation Labels that will be added to the Relation on the trigger entity. 
-
-![Automation Relation Labels](../../static/img/automation-relation-labels.png)
-![Oportunity Relation Labels](../../static/img/opportunity-relation-labels.png)
-
-These labels may be used later to identify previously mapped entities when adding relations between mapped entities.
+You can also define **Relation Labels** that will be added to the Relation on the trigger entity. These labels may be used later to identify previously mapped entities when adding relations between mapped entities.
 
 ## Mappings
 
 To add mappings, choose a target field from the list of attributes of the target entity. This field will be populated with the value you specify below.
-
-![Add Mapping](../../static/img/automation-add-mapping.png)
 
 ## Attribute Mappings
 
@@ -64,8 +53,6 @@ As an example, the following mapping operation will:
   ]
 }
 ```
-
-![Mapping JSON example](../../static/img/mapping-example.png)
 
 ## Mapping Operations
 
@@ -248,5 +235,4 @@ When choosing a relation attribute for mapping, you define which entities from t
 
 Define a filter to select the related entities. For example, to relate a Contact created earlier in the automation with a "primary" label, filter by `Schema: contact` and `Relation Label: primary`.
 
-![Relation Mapping Example](../../static/img/automation-relation.png)
 

@@ -19,12 +19,11 @@ The Entity API is the primary data layer for epilot business objects. It exposes
 
 [[API Docs](/api/entity/#tag/Schemas)]
 
-The Schema API defines the data model for each tenant's business entities. Schemas control how entities like Contacts, Orders, and Products are structured and displayed in the UI.
+The Schema API defines the data model for each organization's business entities. Schemas control how entities like Contacts, Orders, and Products are structured and displayed in the UI.
 
 Schemas support versioning and can be created, updated, or deleted programmatically. See [Core Entities](/docs/entities/core-entities) for the built-in schemas.
 
-```json
-// GET /v1/entity/schemas/contact
+```json title="GET /v1/entity/schemas/contact"
 {
   "id": "5dbbe2c7-43c8-4043-b470-f41882efeefa",
   "name": "Contact",

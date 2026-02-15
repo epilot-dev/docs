@@ -196,10 +196,6 @@ const apiChangelogPlugins = specs
             title: 'Links',
             items: [
               {
-                label: 'Portal login',
-                href: 'https://portal.epilot.cloud',
-              },
-              {
                 label: 'GitHub',
                 href: 'https://github.com/epilot-dev',
               },
@@ -214,6 +210,10 @@ const apiChangelogPlugins = specs
               {
                 label: 'Engineering Principles',
                 href: 'https://github.com/epilot-dev/engineering-principles',
+              },
+              {
+                label: 'Careers',
+                href: 'https://www.epilot.cloud/en/company/careers',
               },
             ],
           },

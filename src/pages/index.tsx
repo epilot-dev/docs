@@ -20,10 +20,10 @@ function HomepageHeader() {
         <h1 className={clsx('hero__title', styles.heroBannerTitle)}>{siteConfig.title}</h1>
         <p className={clsx('hero__subtitle', styles.heroBannerSubtitle)}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link className="button button--primary button--lg" to="/docs/intro">
+          <Link className="button button--primary" to="/docs/intro">
             Read the Docs
           </Link>
-          <Link className="button button--primary button--lg" to="/api">
+          <Link className="button button--primary" to="/api">
             Browse APIs
           </Link>
         </div>

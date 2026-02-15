@@ -7,6 +7,6 @@ sidebar_position: 2
 # Publishing Requirements
 
 :::info
-This section is in active development. Come back soon for more information on the verification process.
+Detailed publishing requirements are being finalized. Check back soon for the complete guide.
 :::
 

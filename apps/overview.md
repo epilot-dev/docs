@@ -12,17 +12,13 @@ description: "Welcome to the epilot Developer Platform documentation!"
 
 <h1 align="center">Building Apps for epilot</h1>
 
-<p align="center">Welcome to the epilot Developer Platform! This comprehensive guide will help you create, publish, and maintain powerful integrations that extend the capabilities of the epilot platform—whether you're a new developer or an experienced partner.</p>
+<p align="center">Build, publish, and monetize integrations that extend the epilot platform — the operating system for energy and utility companies across Europe.</p>
 
-## What are Apps?
-Apps on epilot are customizable extensions that enhance and expand the platform's core functionality. They serve as building blocks that allow developers to create tailored solutions for energy and utility companies without modifying the underlying platform.
+## What Are Apps?
 
-At their core, epilot apps are modular integrations that can be developed, published, and installed by customers through the marketplace. Apps can include various components like custom journey blocks that guide users through specific processes, portal extensions that enhance user interfaces, and integrations with third-party services.
-Each app functions as a self-contained package that can be versioned, updated, and configured by users based on their specific needs. 
+Apps are modular extensions that enhance the epilot platform's core functionality. Developers build apps to add custom journey blocks, portal extensions, automation actions, and third-party integrations — then publish them to the epilot Marketplace where energy and utility companies can discover and install them.
 
-Apps follow a standardized development and publication workflow, making it possible for both epilot's team and external partners to extend the platform's capabilities in consistent and maintainable ways.
-
-Whether you're looking to create a simple integration or build a comprehensive solution, the epilot app framework provides the tools, APIs, and infrastructure needed to develop professional-grade extensions that solve real business problems in the energy and utility space.
+Each app is a self-contained package that can be versioned, configured, and updated independently. Apps follow a standardized development and publication workflow, making it straightforward for external partners and developers to extend the platform in consistent, maintainable ways.
 
 ## App Components on epilot
 
@@ -38,36 +34,43 @@ See the [App Components](/apps/about-apps/components/overview) section for detai
 
 **External Product Catalog**: Components that integrate third-party product catalogs into epilot.
 
-### Upcoming Component Types (Roadmap)
+### Coming Soon
 
-1. **Custom Automation Tasks**: Define custom automation tasks that can be triggered within epilot's automation workflows.
-2. **Custom Journey Design**: Create custom designs for customer journeys, including layouts, styles, and interactive elements.
-3. **Email Plugins**: Extensions for customizing and enhancing email templates and functionality.
+:::note
+These component types are planned for future releases and are not yet available.
+:::
+
+- **Custom Automation Tasks**: Define custom tasks that plug into epilot's automation workflows.
+- **Custom Journey Design**: Create custom designs for customer journeys, including layouts, styles, and interactive elements.
+- **Email Plugins**: Extend and customize email templates and functionality.
 
 ## Why Build on epilot?
 
 ### Industry-Specific Platform
-Build solutions specifically designed for the energy and utility industry, with access to domain-specific data models and workflows that address the unique challenges of this sector.
+Build solutions for the energy and utility industry with access to domain-specific data models, entity schemas, and workflows purpose-built for this sector.
 
 ### API-First Architecture
-Our comprehensive API suite provides access to the full capabilities of the epilot platform, empowering you to build deeply integrated solutions with minimal friction.
+A comprehensive [API suite](https://docs.epilot.io/api) gives you access to the full capabilities of the epilot platform, so you can build deeply integrated solutions with minimal friction.
 
-### Growing Ecosystem
-Join a thriving community of developers and partners building innovative solutions for the energy transition:
+### Growing Marketplace
+Reach hundreds of energy companies across Europe through the epilot Marketplace:
 
-- Access a marketplace of energy industry customers
-- Monetize your innovations through our partner program
-- Collaborate with industry experts
-- Stay at the forefront with regular platform updates
+- Distribute your integrations to epilot's customer base
+- Monetize through our partner program
+- Collaborate with industry experts building for the energy transition
 
 ### Enterprise-Ready Infrastructure
 Your apps run on the same robust infrastructure that powers epilot:
 
-- Secure authentication and authorization
-- Scalable cloud architecture
-- Comprehensive monitoring and logging
-- Compliant with European data regulations
+- Secure OAuth-based authentication and authorization
+- Scalable cloud architecture on AWS
+- Compliant with European data regulations (GDPR)
+
+### Join the Team
+Passionate about building developer platforms for the energy transition? [We're hiring](https://www.epilot.cloud/en/company/careers).
 
 ## Get Started
 
-Ready to build your first epilot app? Our step-by-step guide will walk you through the entire process, from setting up your development environment to publishing your first app.
+Ready to build your first app?
+
+<a className="button button--primary" href="/apps/getting-started/quick-start">Quick Start Guide</a>&nbsp;&nbsp;<a className="button button--outline" href="/apps/getting-started/developer-sandbox">Get a Developer Sandbox</a>

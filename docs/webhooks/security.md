@@ -3,6 +3,10 @@ sidebar_position: 2
 title: "Security"
 ---
 
+:::caution
+Always verify webhook signatures before processing payloads. Without verification, an attacker could send forged requests to your endpoint.
+:::
+
 ## Endpoint Authentication
 
 epilot supports three methods for authenticating requests to your webhook endpoint:
@@ -38,7 +42,7 @@ epilot sends **two** signatures with each webhook request:
 
 Both signatures are computed over the same content:
 
-```
+```text title="Signed content format"
 signed_content = ${webhook-id}.${webhook-timestamp}.${request_body}
 ```
 
@@ -48,7 +52,7 @@ signed_content = ${webhook-id}.${webhook-timestamp}.${request_body}
 
 Use the [`standardwebhooks`](https://www.npmjs.com/package/standardwebhooks) npm package to verify the `v1` signature with your webhook's signing secret.
 
-```typescript
+```typescript title="Symmetric verification (HMAC-SHA256)"
 import { Webhook } from "standardwebhooks";
 
 const signingSecret = "whsec_..."; // from webhook creation response
@@ -83,7 +87,7 @@ function verifyWebhook(req: Request): boolean {
 
 Use Node.js `crypto` to verify the `v1a` Ed25519 signature with your organization's public key. Each tenant has their own key pair.
 
-```typescript
+```typescript title="Asymmetric verification (Ed25519)"
 import crypto from "node:crypto";
 
 // Fetch your organization's public key (per-tenant)
@@ -130,7 +134,7 @@ async function verifyAsymmetric(req: Request, orgId: string): Promise<boolean> {
 
 For maximum security, verify both signatures:
 
-```typescript
+```typescript title="Full verification (both signatures)"
 async function verifyWebhookFull(req: Request, orgId: string): Promise<boolean> {
   // 1. Check timestamp freshness (reject requests older than 5 minutes)
   const timestamp = Number(req.headers["webhook-timestamp"]);
@@ -156,13 +160,13 @@ async function verifyWebhookFull(req: Request, orgId: string): Promise<boolean> 
 
 To fetch your organization's public key, include your organization ID as a query parameter:
 
-```bash
+```bash title="Fetch your organization's public key"
 curl "https://webhooks.sls.epilot.io/v1/webhooks/.well-known/public-key?orgId=YOUR_ORG_ID"
 ```
 
 Response:
 
-```json
+```json title="Public key response"
 {
   "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA...\n-----END PUBLIC KEY-----\n"
 }
@@ -172,4 +176,6 @@ Cache this key — it's unique to your organization and rarely changes. The publ
 
 ## Signing Secret
 
+:::caution
 The `whsec_...` signing secret is returned **only once** in the response when you create a webhook. Store it securely. If lost, you'll need to recreate the webhook to get a new one.
+:::

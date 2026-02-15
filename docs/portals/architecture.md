@@ -73,6 +73,43 @@ Portals backend follows the same principles as any other part of epilot's [serve
 
 ## Flow & Separation
 
+```mermaid
+graph TB
+    subgraph "Per Portal"
+        CF[CloudFront Distribution]
+        CG[Cognito User Pool]
+        R53[Route 53 Custom Domain]
+    end
+
+    subgraph "Shared Frontend"
+        S3[S3 Static Assets]
+        LE[Lambda@Edge]
+    end
+
+    subgraph "Shared Backend"
+        APIGW[API Gateway]
+        Lambda[AWS Lambda]
+        DDB[DynamoDB]
+        SQS[SQS]
+    end
+
+    subgraph "Platform Integration"
+        EB[EventBridge]
+        IAM[Lambda Invoke via IAM]
+    end
+
+    R53 --> CF
+    CF --> S3
+    CF --> LE
+    CF --> APIGW
+    APIGW --> Lambda
+    Lambda --> DDB
+    Lambda --> SQS
+    Lambda --> EB
+    Lambda --> IAM
+    CG --> APIGW
+```
+
 - Each portal has its own **CloudFront distribution, Cognito pool, and Route 53 custom domain**, allowing full branding and identity isolation.
 - Shared front end resources (**S3 and Lambda@Edge**) support all portals collectively.
 - Backend services are centralized (**API Gateway, Lambda, DynamoDB, SQS**) to ensure scalability and easier maintenance.
@@ -102,7 +139,7 @@ Feel free to check our [overall approach to IT security](https://www.epilot.clou
 ### Monitoring & Logging
 - **Amazon CloudWatch** for centralized metrics, logs, and alarms (e.g. API calls, Lambda executions, SQS message flows).
 - **AWS CloudTrail** for auditing API calls and changes in infrastructure.
-- **Datadog** for wider platform observability to monitor and alert, debug, secure, and optimize.
+- **Application Performance Monitoring (APM)** for wider platform observability, alerting, debugging, and optimization.
 
 ### Compliance Alignment
 

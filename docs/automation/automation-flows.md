@@ -19,7 +19,7 @@ Each Automation Flow consists of:
 The following trigger types are supported:
 
 - **Journey Submission** -- fires when a [Journey](/docs/journeys/journey-builder) receives a new [Submission](/docs/journeys/submissions)
-- **Frontend Submission** -- fires when a legacy Frontend receives a new [Submission](/docs/journeys/submissions)
+- **Frontend Submission** -- fires when a Frontend receives a new [Submission](/docs/journeys/submissions)
 - **API Submission** -- fires when a submission arrives via the [Submission API](/api/submission) with a matching `source_id`
 - **Manual** -- triggered by a user from the Entity view
 - **Entity Operation** -- fires on create, update, or delete events for a specific Entity Schema (e.g. Contacts)
@@ -28,7 +28,13 @@ The following trigger types are supported:
 
 ## Automation Actions
 
-![Automation Actions](../../static/img/automation-actions.png)
+```mermaid
+flowchart LR
+    Trigger["Trigger\n(Journey, Entity, Email, Manual)"] --> A1["Map Entity"]
+    A1 --> A2["Send Email"]
+    A2 --> A3["Start Workflow"]
+    A3 --> A4["Trigger Webhook"]
+```
 
 Supported action types:
 

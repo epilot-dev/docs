@@ -3,22 +3,45 @@ sidebar_position: 2
 title: Catalog
 ---
 
-The product catalog manages all products, prices, and tax rates. It serves as the foundation for journeys, orders, and pricing features.
+# Product Catalog
 
-<img
-  style={{ boxShadow: '#a2a2a2 0px 0px 25px -8px', borderRadius: '5px' }}
-  src="/img/catalog-preview.gif"
-  alt="Catalog Preview"
-/>
+The product catalog is the central repository for all products, prices, and tax rates. It serves as the foundation for [Journeys](/docs/journeys/journey-builder), [Orders](/docs/pricing/orders), and integrations with external systems.
 
-## Feature Highlights {#feature-highlights}
+## Catalog Features
 
-All catalog entities support:
+All catalog entities support the full [flexible entity](/docs/entities/flexible-entities) feature set:
 
-- **Relations** -- quick access to related entities
-- **Custom fields** via the Entity Builder
-- **Workflows** -- automate processes around products and prices
-- **Search and filter** -- powerful query options
-- **Multi-currency** support
-- **Notes and attachments**
-- **Metadata view** -- full read/write access to underlying entity data
+| Feature | Description |
+|---|---|
+| **Search & Filter** | Full-text search and attribute-based filtering across products, prices, and taxes |
+| **Relations** | Link catalog items to contracts, orders, opportunities, and any other entity type |
+| **Custom Attributes** | Extend built-in schemas with organization-specific fields via the Entity Builder |
+| **Workflows** | Attach approval workflows, lifecycle management, or automated processes to catalog entities |
+| **Import / Export** | Bulk import and export of catalog data |
+| **Multi-Currency** | Price products in any ISO 4217 currency |
+| **Notes & Attachments** | Attach internal notes and files to catalog entities |
+| **Metadata Access** | Full read/write access to underlying entity data via the [Entity API](/docs/entities/entity-api) |
+
+:::tip
+Use the Entity Builder in epilot 360 to extend catalog schemas with custom attributes specific to your business, such as commodity type, grid area, or regulatory classification.
+:::
+
+## Public Catalog API
+
+The Pricing API exposes a public catalog search endpoint for use in customer-facing applications:
+
+```
+POST /v1/public/catalog
+```
+
+This endpoint supports full-text search across the product catalog and is designed for use with [Publishable Tokens](/docs/auth/token-types) in client-side contexts such as embedded Journeys.
+
+## Product Availability
+
+Products can be restricted to specific locations or conditions using availability checks:
+
+```
+POST /v1/public/availability:check
+```
+
+Availability rules enable scenarios like regional tariff restrictions or location-based product filtering in energy retail workflows.

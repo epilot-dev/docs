@@ -8,12 +8,12 @@ sidebar_position: 1
 
 [[API Docs](/api/email-settings#tag/Domains)]
 [[SDK](https://www.npmjs.com/package/@epilot/email-settings-client)]
-[[Setup Docs](https://help.epilot.cloud/hc/de/articles/5573710208412-E-Mail-Konfigurationsmen%C3%BC-im-Detail-epilot-360-#h_01GA1JYMPGHRE0XDCHW9N61G57)]
+[[Setup Docs](https://help.epilot.cloud)]
 
 epilot supports sending emails from its default domain, but you can also bring your own subdomain. This lets you send and receive messages through epilot on behalf of your organization.
 
 :::tip
-Have someone familiar with DNS records handle this integration.
+We recommend having someone familiar with DNS records handle this integration.
 :::
 
 ### Subdomain Delegation
@@ -22,7 +22,7 @@ The recommended approach is to delegate your subdomain to epilot. With delegatio
 
 - epilot manages the subdomain entirely.
 - Email sending and receiving work out of the box.
-- The subdomain can also serve as a portal domain for end customers or installers. See the [portal domain setup guide](https://help.epilot.cloud/hc/de/articles/4417739340050-Kundenportal-einrichten-epilot-360-#h_01GC9GHGN6788D2GDVE6H0BVVQ).
+- The subdomain can also serve as a portal domain for end customers or installers. See the [portal domain setup guide](https://help.epilot.cloud) for details.
 
 ### Self-Managed Subdomain
 
@@ -64,16 +64,16 @@ All emails are transmitted over TLS by default via AWS SES, protecting message c
 
 ### Attachment Scanning
 
-epilot scans all email attachments using [AWS S3 VirusScan](https://github.com/widdix/aws-s3-virusscan) powered by the ClamAV engine. Malicious files are automatically deleted before delivery. Internal alerts notify the team on every detection event.
+epilot scans all email attachments using [AWS S3 VirusScan](https://github.com/widdix/aws-s3-virusscan) powered by the ClamAV engine. Malicious files are automatically deleted before delivery.
 
 ### Email Receiving
 
-Incoming emails are handled via SES receipt rules. Emails are routed to per-tenant S3 buckets, then processed into message entities with attachments organized under their parent threads.
+Incoming emails are processed via AWS SES receipt rules and stored as message entities with attachments organized under their parent threads. Each tenant's email data is fully isolated.
 
 ## Email Addresses
 
 [[API Docs](/api/email-settings#tag/Settings)]
 [[SDK](https://www.npmjs.com/package/@epilot/email-settings-client)]
-[[Setup Docs](https://help.epilot.cloud/hc/de/articles/5573710208412-E-Mail-Konfigurationsmen%C3%BC-im-Detail-epilot-360-#h_01GA1JYT6TNQ64AJH612WN9J4V)]
+[[Setup Docs](https://help.epilot.cloud)]
 
 Configure specific email addresses within your subdomain for sending and receiving messages.

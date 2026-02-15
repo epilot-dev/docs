@@ -105,6 +105,8 @@ All contributions are public and visible — published on the [epilot dev blog](
 
 :::info
 Open Skies reflects a core belief: the engineers who build epilot should be recognized beyond our walls. Public contributions grow careers, strengthen the ecosystem, and build trust with customers and partners.
+
+Interested in working on open source and energy SaaS? [See open roles on the epilot engineering team.](https://www.epilot.cloud/en/company/careers)
 :::
 
 ## Contributing
