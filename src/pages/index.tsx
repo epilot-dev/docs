@@ -15,7 +15,7 @@ function HomepageHeader() {
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
         <div className={clsx(styles.mainLogoContainer)}>
-          <img src="/img/logo-white.svg" alt="epilot-log" />
+          <img src="/img/logo.png" alt="epilot-logo" />
         </div>
         <h1 className={clsx('hero__title', styles.heroBannerTitle)}>{siteConfig.title}</h1>
         <p className={clsx('hero__subtitle', styles.heroBannerSubtitle)}>{siteConfig.tagline}</p>
@@ -23,7 +23,7 @@ function HomepageHeader() {
           <Link className="button button--primary" to="/docs/intro">
             Read the Docs
           </Link>
-          <Link className="button button--primary" to="/api">
+          <Link className="button button--secondary" to="/api">
             Browse APIs
           </Link>
         </div>

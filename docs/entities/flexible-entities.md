@@ -61,4 +61,4 @@ flowchart TB
 
 Every mutation on an entity is recorded in an append-only **Activity** feed. Each activity item includes a timestamp, the caller identity, a description, and the list of operations performed.
 
-<a className="button button--primary" href="/api/entity">Explore the Entity API</a>
+<a className="button button--secondary" href="/api/entity">Explore the Entity API</a>

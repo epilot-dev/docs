@@ -73,4 +73,4 @@ Passionate about building developer platforms for the energy transition? [We're 
 
 Ready to build your first app?
 
-<a className="button button--primary" href="/apps/getting-started/quick-start">Quick Start Guide</a>&nbsp;&nbsp;<a className="button button--outline" href="/apps/getting-started/developer-sandbox">Get a Developer Sandbox</a>
+<a className="button button--secondary" href="/apps/getting-started/quick-start">Quick Start Guide</a>&nbsp;&nbsp;<a className="button button--secondary" href="/apps/getting-started/developer-sandbox">Get a Developer Sandbox</a>

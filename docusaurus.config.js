@@ -81,7 +81,7 @@ const apiChangelogPlugins = specs
         debug: Boolean(process.env.DEBUG || process.env.CI),
         specs: specs.map((spec) => ({ ...spec, apiDocComponent: '../src/components/RedocPage' })),
         theme: {
-          primaryColor: '#9b91ff',
+          primaryColor: '#4C4CFF',
           redocOptions: {
             hideDownloadButton: false,
             nativeScrollbars: true,

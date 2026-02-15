@@ -92,7 +92,7 @@ Ready to create your own component? Each component type has specific requirement
         <div className="card__body">
           <h3>Journey Blocks</h3>
           <p>Create interactive elements for epilot's Journey Builder</p>
-          <a href="/apps/about-apps/components/custom-journey-block" className="button button--primary button--block">Start Building</a>
+          <a href="/apps/about-apps/components/custom-journey-block" className="button button--secondary button--block">Start Building</a>
         </div>
       </div>
     </div>
@@ -101,7 +101,7 @@ Ready to create your own component? Each component type has specific requirement
         <div className="card__body">
           <h3>Portal Extensions</h3>
           <p>Extend epilot's portals with custom functionality</p>
-          <a href="/apps/about-apps/components/portal-extension" className="button button--primary button--block">Start Building</a>
+          <a href="/apps/about-apps/components/portal-extension" className="button button--secondary button--block">Start Building</a>
         </div>
       </div>
     </div>
@@ -112,7 +112,7 @@ Ready to create your own component? Each component type has specific requirement
         <div className="card__body">
           <h3>External Product Catalog</h3>
           <p>Integrate third-party product catalogs into epilot</p>
-          <a href="/apps/about-apps/components/external-product-catalog" className="button button--primary button--block">Start Building</a>
+          <a href="/apps/about-apps/components/external-product-catalog" className="button button--secondary button--block">Start Building</a>
         </div>
       </div>
     </div>

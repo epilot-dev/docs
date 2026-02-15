@@ -6,24 +6,28 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #9b91ff;
-  --ifm-color-primary-dark: #7769ff;
-  --ifm-color-primary-darker: #6455ff;
-  --ifm-color-primary-darkest: #2e19ff;
-  --ifm-color-primary-light: #bfb9ff;
-  --ifm-color-primary-lighter: #d2cdff;
-  --ifm-color-primary-lightest: #ffffff;
+  --ifm-color-primary: #4C4CFF;
+  --ifm-color-primary-dark: #3636e6;
+  --ifm-color-primary-darker: #2d2dd9;
+  --ifm-color-primary-darkest: #1e1eb3;
+  --ifm-color-primary-light: #6b6bff;
+  --ifm-color-primary-lighter: #8585ff;
+  --ifm-color-primary-lightest: #ababff;
   --ifm-code-font-size: 95%;
+  --epilot-cyan: #00D7FF;
+  --epilot-blue: #4C4CFF;
+  --epilot-dark: #161616;
+  --epilot-gradient: linear-gradient(0deg, #4C4CFF, #00A5FF);
 }
 
 [data-theme='dark'] {
-  --ifm-color-primary: #9b91ff;
-  --ifm-color-primary-dark: #7769ff;
-  --ifm-color-primary-darker: #6455ff;
-  --ifm-color-primary-darkest: #2e19ff;
-  --ifm-color-primary-light: #bfb9ff;
-  --ifm-color-primary-lighter: #d2cdff;
-  --ifm-color-primary-lightest: #ffffff;
+  --ifm-color-primary: #4C8CFF;
+  --ifm-color-primary-dark: #3070e6;
+  --ifm-color-primary-darker: #2060d9;
+  --ifm-color-primary-darkest: #1550b3;
+  --ifm-color-primary-light: #6ba0ff;
+  --ifm-color-primary-lighter: #85b0ff;
+  --ifm-color-primary-lightest: #b0d0ff;
 }
 
 .docusaurus-highlight-code-line {
@@ -38,6 +42,41 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 }
 
 html[data-theme='dark'] .button.button--primary {
+  color: white;
+}
+
+.button.button--primary {
+  background: var(--epilot-gradient);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 15px;
+  color: white;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.button.button--primary:hover {
+  background: var(--epilot-gradient);
+  opacity: 0.9;
+  transform: translateY(-1px);
+  color: white;
+}
+
+.button.button--secondary {
+  border: 1.5px solid var(--ifm-color-primary);
+  border-radius: 20px;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 15px;
+  background: transparent;
+  color: var(--ifm-color-primary);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.button.button--secondary:hover {
+  background: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
   color: white;
 }
 
@@ -91,24 +130,37 @@ html[data-theme='dark'] .button.button--primary {
 .navbar-button--secondary {
   border: 1px solid var(--ifm-color-primary);
   color: var(--ifm-color-primary) !important;
-  background-color: transparent;
+  background: transparent;
+  border-radius: 12px;
 }
 
 .navbar-button--secondary:hover {
-  background-color: var(--ifm-color-primary);
+  background: var(--epilot-gradient);
+  border-color: transparent;
   color: #fff !important;
   text-decoration: none;
 }
 
 .navbar-button--primary {
-  border: 1px solid var(--ifm-color-primary);
-  background-color: var(--ifm-color-primary);
+  border: none;
+  background: var(--epilot-gradient);
   color: #fff !important;
+  border-radius: 12px;
 }
 
 .navbar-button--primary:hover {
-  background-color: var(--ifm-color-primary-dark);
-  border-color: var(--ifm-color-primary-dark);
+  opacity: 0.9;
   color: #fff !important;
   text-decoration: none;
+}
+
+/* Fix search bar colors in dark mode */
+[data-theme='dark'] .aa-DetachedSearchButton {
+  color: #a0a8b4;
+  border-color: rgba(160, 168, 180, 0.4);
+}
+
+[data-theme='dark'] .aa-DetachedSearchButtonIcon,
+[data-theme='dark'] .aa-DetachedSearchButtonPlaceholder {
+  color: #a0a8b4;
 }

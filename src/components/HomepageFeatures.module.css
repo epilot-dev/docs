@@ -19,4 +19,5 @@
   display: block;
   object-fit: contain;
   width: 100px;
+  filter: hue-rotate(-30deg) saturate(1.2);
 }

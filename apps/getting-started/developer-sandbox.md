@@ -48,7 +48,7 @@ This is precisely why epilot provides dedicated sandbox accounts—isolated envi
     <div className="step-number">1</div>
     <div className="step-content">
       <h3>Request a Sandbox</h3>
-      <p>Submit your request through our <a href="https://portal.dev.epilot.cloud/request-sandbox" className="button button--primary">Developer Portal</a></p>
+      <p>Submit your request through our <a href="https://portal.dev.epilot.cloud/request-sandbox" className="button button--secondary">Developer Portal</a></p>
     </div>
   </div>
   <div className="step">
@@ -114,7 +114,7 @@ To learn more about transitioning from development to publication, visit our det
 
 <div className="cta-container">
   <h3>Ready to start building?</h3>
-  <a href="https://portal.dev.epilot.cloud/request-sandbox" className="button button--primary">Request Your Sandbox Today</a>
+  <a href="https://portal.dev.epilot.cloud/request-sandbox" className="button button--secondary">Request Your Sandbox Today</a>
 </div>
 
 <style dangerouslySetInnerHTML={{__html: `
