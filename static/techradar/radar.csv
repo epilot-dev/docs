@@ -42,6 +42,8 @@ AWS SAM,endure,languages and frameworks,false,The AWS Serverless Application Mod
 "DynamoDB",adopt,tools,false,"Amazon DynamoDB is a key-value and document database that delivers single-digit millisecond performance at any scale."
 "Elasticsearch",adopt,tools,false,"Elasticsearch is a distributed, RESTful search and analytics engine capable of addressing a growing number of use cases."
 "AWS Cognito",adopt,tools,false,"Amazon Cognito lets you add user sign-up, sign-in, and access control to your web and mobile apps quickly and easily."
+"Amazon Bedrock",adopt,platform,true,"Managed foundation model service used in genai-foundation."
+"Vertex AI",adopt,platform,true,"Google Vertex AI used via langchain-google-vertexai in genai-foundation."
 "single-spa",adopt,tools,false,"Single-SPA allows multiple frameworks in a single-page application, allowing you to split code by functionality with: Angular, React, Vue.js, etc."
 "Frontend Microservices",adopt,techniques,false,"The idea of Micro Frontends is to break down the frontend monolith into smaller, more manageable pieces, thus each team can own its own features."
 "RFCs",adopt,techniques,false,"RFCs are a transparent way to propose solutions, share knowledge and invite others in the company to collaborate on ideas. An RFC is a document describing a proposed approach for solving a problem."
