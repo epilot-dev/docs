@@ -51,7 +51,6 @@ AWS SAM,endure,languages and frameworks,false,The AWS Serverless Application Mod
 "Python",adopt,languages and frameworks,false,"Python is an interpreted high-level general-purpose programming language. Python's design philosophy emphasizes code readability with its notable use of significant indentation."
 "TanStack Query",adopt,languages and frameworks,false,"TanStack Query is a popular javascript library that offers hooks for fetching, caching and updating asynchronous data in React"
 "Jupyter Notebooks",explore,tools,false,"Jupyter Notebooks is an interactive programming environment great for exploring data e.g. for Business intelligence or prototyping"
-"Data Lake",adopt,techniques,true,"We've built a Data Lake into our product leveraging AWS S3, Firehose, Glue, Redshift and more."
 "Jira",adopt,tools,false,"We use Atlassian JIRA for issue tracking and roadmap."
 "Confluence",adopt,tools,false,"We use Atlassian Confluence for internal product documentation and RFCs"
 "Playwright",adopt,tools,true,"We use Playwright test runner to run browser tests across multiple browsers and environments"
