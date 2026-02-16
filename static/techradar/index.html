@@ -3,13 +3,102 @@
 
 <head>
   <meta charset="utf-8">
-  <link href="images/favicon.ico" rel="icon" />
-  <link href="main.47943b43b12b5b9e7dee.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>epilot Tech Radar</title>
+  <link href="/techradar/images/favicon.ico" rel="icon" />
+  <link rel="preconnect" href="https://rsms.me/" />
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@700&display=swap" rel="stylesheet" />
+  <link href="/techradar/main.de662ed670bdf9683385.css" rel="stylesheet">
+  <style>
+    .hero-banner__subtitle-text { display: none; }
+    .input-sheet__logo { display: none; }
+    body { background-color: #fff; }
+    .hero-banner {
+      background-color: #fff;
+      background-image: url('/img/hero-gradient.png');
+      background-size: cover;
+      background-position: center;
+    }
+    .hero-banner__title-text {
+      color: #000;
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-weight: 500;
+    }
+    .hero-banner__wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .hero-banner__logo {
+      height: 64px;
+      margin-top: 8px !important;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="hero-banner">
+    <div class="hero-banner__wrapper">
+      <img class="hero-banner__logo" src="/img/logo.png" alt="epilot" />
+      <h1 class="hero-banner__title-text">epilot Tech Radar</h1>
+    </div>
+  </div>
+  <main>
+    <div id="pdf-cover-page">
+      <img class="pdf-banner-image" src="/techradar/images/pdf_banner.png" alt="Pdf cover image" width="100%" height="300px" />
+      <h1 class="pdf-title"></h1>
+      <div class="pdf-powered-by-text">
+        <span>Powered by</span>
+        <a href="https://www.thoughtworks.com"><img class="pdf-tw-logo" src="/techradar/images/tw-logo.png" alt="logo" /></a>
+      </div>
+    </div>
+    <div class="helper-description home-page">
+      <p>Loading epilot Tech Radar...</p>
+      <span class="loader-text">
+        <span class="loader-text__title">Building your radar...</span>
+        <p>Your Technology Radar will be available in just a few seconds</p>
+        <div class="loader-wrapper">
+          <div style="animation-delay: 0s"></div>
+          <div style="animation-delay: 0.25s"></div>
+          <div style="animation-delay: 0.75s"></div>
+          <div style="animation-delay: 0.5s"></div>
+        </div>
+      </span>
+    </div>
+    <div id="error-container" class="error-container home-page"></div>
+    <div class="input-sheet-form home-page" style="display:none">
+      <p>Loading...</p>
+      <form id="byor-form-submit">
+        <input name="documentId" id="document-input" />
+      </form>
+    </div>
+    <div class="graph-header"></div>
+    <div id="radar">
+      <p class="no-blip-text">There are no blips on this quadrant, please check your Google sheet/CSV/JSON file once.</p>
+    </div>
+    <div class="all-quadrants-mobile show-all-quadrants-mobile"></div>
+    <div class="graph-footer"></div>
+  </main>
+  <footer class="home-page">
+    <div class="pdf-footer">
+      <div class="pdf-powered-by-text">
+        <span>Powered by</span>
+        <a href="https://www.thoughtworks.com"><img class="pdf-tw-logo" src="/techradar/images/tw-logo.png" alt="logo" /></a>
+        <div class="pdf-footer-title">epilot Tech Radar</div>
+      </div>
+    </div>
+  </footer>
+  <div class="pdf-page-footer">
+    <div class="footer-left">docs.epilot.io/techradar</div>
+    <div class="footer-right">epilot Tech Radar</div>
+  </div>
   <script>history.pushState(null, null, `?sheetId=${window.location.protocol}//${window.location.host}/techradar/radar.csv`)</script>
-  <script type="text/javascript" src="main.47943b43b12b5b9e7dee.js"></script>
+  <script defer src="/techradar/main.b981d194fcf74ce6e6b5.js"></script>
 </body>
 
 </html>

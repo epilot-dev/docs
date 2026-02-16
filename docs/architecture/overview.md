@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Introduction to epilot
+# Tech Stack & Architecture
 
 :::info
 
@@ -18,17 +18,26 @@ The epilot application consists of:
 
 - [The epilot portal](/docs/architecture/microfrontends) — single-spa micro-frontend SPA
 - [Embeddable Journey Frontends](/docs/journeys/journey-builder) — customer-facing forms and flows
-- [Customer & Installer Portals](/docs/portals/customer-portal) — self-service portals
+- [epilot Portals](/docs/portals/customer-portal) — white-label self-service portals for end-users, with [mobile app](/docs/portals/mobile-app) support
 - Serverless microservices with [public APIs](/api)
+
+## Architecture
+
+epilot runs entirely on **AWS** in the EU (Frankfurt) region as a cloud-native, serverless platform.
+
+The backend is composed of independent **microservices** deployed as Lambda functions behind API Gateway. Services communicate asynchronously through EventBridge and SQS. All APIs follow an **API-first** design — OpenAPI contracts are defined before implementation, powering auto-generated SDKs and documentation.
+
+The frontend consists of multiple **independently deployable applications** — the epilot 360 portal (a single-spa micro-frontend SPA), embeddable journey frontends, and white-label end-user portals — all built with React or Svelte and sharing the Volt UI design system.
+
+[![System Architecture Diagram](../../static/img/system-architecture.jpg)](../../static/img/system-architecture.jpg)
 
 ## Tech Stack
 
-### Languages
+<a href="https://docs.epilot.io/techradar/">
+  <img src={require('../../static/img/techradar-screenshot.png').default} alt="epilot Tech Radar" style={{width: '32rem'}} />
+</a>
 
-| | |
-|---|---|
-| **TypeScript** | Primary language for frontend and backend |
-| **Python** | Used in select backend services |
+See the [epilot Tech Radar](https://docs.epilot.io/techradar/) for a detailed technology landscape.
 
 ### Frontend
 
@@ -64,8 +73,13 @@ The epilot application consists of:
 | [ClickHouse Cloud](https://clickhouse.com/) | Analytical queries, [Datalake](/docs/datalake/epilot-datalake), workflow data, audit logs |
 | [Momento](https://www.gomomento.com/) | Caching |
 
-See the [Tech Radar](https://docs.epilot.io/techradar/) for the full technology landscape.
+## Further Reading
 
-## System Architecture Diagram
-
-[![System Architecture Diagram](../../static/img/system-architecture.jpg)](../../static/img/system-architecture.jpg)
+- [API First](/docs/architecture/api-first) — OpenAPI contract-first design and code generation
+- [Microfrontends](/docs/architecture/microfrontends) — single-spa orchestration of the epilot 360 portal
+- [SDK](/docs/architecture/sdk) — Auto-generated TypeScript SDK for epilot APIs
+- [Security](/docs/architecture/security) — Multi-tenant isolation, authentication, authorization, and encryption
+- [Serverless](/docs/architecture/serverless) — AWS Lambda-based microservice architecture
+- [Continuous Delivery](/docs/architecture/continuous-delivery) — Trunk-based development, canary and stable release channels
+- [Design System](/docs/architecture/design-system) — Volt UI component library for React and Svelte
+- [Open Source](/docs/architecture/open-source) — Public repositories and community contributions

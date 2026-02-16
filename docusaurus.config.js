@@ -150,6 +150,11 @@ const apiChangelogPlugins = specs
             position: 'left',
           },
           {
+            href: `${DOCS_URL}/techradar`,
+            label: 'Tech Radar',
+            position: 'left',
+          },
+          {
             href: 'https://marketplace.epilot.cloud/en',
             label: 'Marketplace',
             position: 'right',
