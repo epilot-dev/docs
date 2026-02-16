@@ -28,8 +28,8 @@ They typically rely on your API for the execution of any necessary logic and exp
 ### Supported Hooks / Catalog Types
 
 The interface supports two types of data exchange, depending on the block being used in the journey:
-- **Products**: Returns an array of products.
-- **Product Recommendations**: Returns a source product and a list of offer products.
+- **Products**: Returns an array of products (`type: "products"`).
+- **Product Recommendations**: Returns a source product and a list of offer products (`type: "products-recommendation"`).
 
 ### Template Variables
 
