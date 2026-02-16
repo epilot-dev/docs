@@ -53,6 +53,7 @@ AWS SAM,endure,languages and frameworks,false,The AWS Serverless Application Mod
 "Jupyter Notebooks",explore,tools,false,"Jupyter Notebooks is an interactive programming environment great for exploring data e.g. for Business intelligence or prototyping"
 "Jira",adopt,tools,false,"We use Atlassian JIRA for issue tracking and roadmap."
 "Confluence",adopt,tools,false,"We use Atlassian Confluence for internal product documentation and RFCs"
+"Corgea",adopt,tools,true,"Security/vulnerability scanning replacing Snyk."
 "Playwright",adopt,tools,true,"We use Playwright test runner to run browser tests across multiple browsers and environments"
 "Mob Programming",adopt,techniques,false,"We use pairing mob programming and other teaming techniques in our product teams for effective remote work and knowledge sharing"
 "Monorepo",adopt,tools,false,"We use monorepos to ease our microservices development"
