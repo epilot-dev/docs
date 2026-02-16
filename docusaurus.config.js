@@ -93,6 +93,20 @@ const apiChangelogPlugins = specs
   ],
 
   plugins: [
+    function mermaidAliasPlugin() {
+      return {
+        name: 'mermaid-alias',
+        configureWebpack() {
+          return {
+            resolve: {
+              alias: {
+                'mdx-mermaid/lib/Mermaid': path.resolve(__dirname, 'src/components/Mermaid.js'),
+              },
+            },
+          };
+        },
+      };
+    },
     require.resolve('@cmfcmf/docusaurus-search-local'),
     [
       '@docusaurus/plugin-client-redirects',
