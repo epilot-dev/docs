@@ -19,6 +19,7 @@ AWS SAM,endure,languages and frameworks,false,The AWS Serverless Application Mod
 "Codex",explore,tools,true,"AI coding assistant for code generation and review workflows."
 "LangChain",explore,tools,true,"Framework for building LLM-powered apps and retrieval pipelines."
 "LangGraph",explore,tools,true,"Graph-based agent workflow framework (used in ai-agents-api/genai-foundation)."
+"LangSmith",explore,tools,true,"LLM observability and evaluation tooling used in genai-foundation."
 "SDK",adopt,techniques,true,"We're building a public-facing SDK to help partners build on epilot"
 "Webhooks",explore,techniques,true,"We provide configurable webhooks to allow 3rd parties to subscribe to most epilot business events"
 "GitHub",explore,platform,false,"Our public open source SDK and libraries are hosted on GitHub."
