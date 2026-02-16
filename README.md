@@ -1,6 +1,4 @@
-# Developer Portal
-
-![landing](./static/img/jumbo-splash.png)
+# epilot Dev Center
 
 ## Quick Start
 
