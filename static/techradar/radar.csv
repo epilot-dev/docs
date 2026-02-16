@@ -3,6 +3,7 @@ name,ring,quadrant,isNew,description
 TypeScript,adopt,languages and frameworks,false,"TypeScript provides an advanced type system on top of JavaScript. It also provides highly productive development tools for JavaScript IDEs and practices, like static checking. TypeScript makes code easier to read and understand."
 React,adopt,languages and frameworks,false,"Most of our frontend codebase is written in React. Arguably the safe choice."
 Svelte,adopt,languages and frameworks,true,"Some of our new frontend microservices are being written in Svelte. Many frontend engineers really seem to enjoy this."
+AWS SAM,adopt,languages and frameworks,false,The AWS Serverless Application Model (SAM) is an open-source framework for building serverless applications.
 "GitLab CI",adopt,platform,false,"GitLab CI is a powerful tool built into GitLab that allows us to apply various CI/CD (Continuous Integration, Delivery, and Deployment) strategies."
 "prettier",adopt,techniques,false,"We use prettier to lint and standardise code style across our projects"
 "Continuous Integration",adopt,techniques,false,"We use continuous integration pipelines to automate building, testing and analysis our codebase."
@@ -18,7 +19,7 @@ Svelte,adopt,languages and frameworks,true,"Some of our new frontend microservic
 "GitHub",explore,platform,false,"Our public open source SDK and libraries are hosted on GitHub."
 "AWS",adopt,platform,false,"AWS is the cloud provider of choice. The rich ecosystem for building serverless applications makes it a perfect fit for a SaaS solution."
 "AWS CDK",adopt,languages and frameworks,false,"<a href='https://docs.aws.amazon.com/cdk/latest/guide/home.html'>AWS CDK</a> is a software development framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation"
-"SST",adopt,languages and frameworks,true,"SST (Serverless Stack) is a framework for building and deploying serverless apps on AWS."
+"SST",endure,languages and frameworks,true,"SST (Serverless Stack) is a framework for building and deploying serverless apps on AWS."
 "AWS Well-Architected Framework",adopt,techniques,false,"AWS Well-Architected helps cloud architects build secure, high-performing, resilient, and efficient infrastructure for their applications and workloads. See <a href='https://aws.amazon.com/architecture/well-architected/?wa-lens-whitepapers.sort-by=item.additionalFields.sortDate&wa-lens-whitepapers.sort-order=desc'>AWS Well-Architected</a>"
 "Lambda",adopt,platform,false,"AWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers, creating workload-aware cluster scaling logic, maintaining event integrations, or managing runtimes."
 "Step Functions",adopt,tools,false,"AWS Step Functions is a serverless function orchestrator that makes it easy to sequence AWS Lambda functions and multiple AWS services into business-critical applications."
