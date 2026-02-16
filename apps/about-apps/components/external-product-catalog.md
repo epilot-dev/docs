@@ -100,11 +100,15 @@ Never hardcode sensitive credentials in your configuration. Always store API key
 
 After your External Product Catalog component is configured and the app is installed, it can be used within epilot's Journeys. Currently we support seamless integration of the external product catalog into the journey via Product Blocks and Product Recommendations Blocks (beta).
 
-When a journey creator adds a **Product Block** or **Product Recommendations Block** in a journey, they can select the integration as the source for products. Only hooks that are supported for the selected block type will be available (e.g. only `products` hook for Product Block, only `productRecommendations` hook for Product Recommendations Block).
+When a journey creator adds a **Product Block** or **Product Recommendations Block** in a journey, they can select the integration as the source for products. Only hooks that are supported for the selected block type will be available (e.g. only `products` hook for Product Block, only `products-recommendation` hook for Product Recommendations Block).
 
 <img src="/img/apps/external-product-catalog/journey-product-block-config.png" width="500" />
 
 This allows the journey to dynamically fetch products and pricing from your external catalog in journeys.
+
+By default, only data from preceding steps (in their defined order) is passed to the steps/blocks data context. While this works for most use cases, you can configure the data context to also include data from subsequent steps, enabling non-linear journey flows. This configuration also makes the data each integration passes to the journey more explicit, lighter and easier to manage.
+
+<img src="/img/apps/external-product-catalog/blocks-data-selection.png" width="500" />
 
 ## Usage in Portals
 
