@@ -137,23 +137,14 @@ const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({ event, apiLink, i
 
   const displayName = eventConfig?.event_title ?? event;
   const description = eventConfig?.event_description ?? '';
-  const tags = (eventConfig?.event_tags ?? []).filter((tag) => tag !== 'builtin');
 
   return (
-    <div className={`${styles.container} entitySchemaViewer`}>
+    <div id={event} className={`${styles.container} entitySchemaViewer`}>
       <div className={styles.header}>
         <div className={styles.titleRow}>
           {icon && <Icon name={icon as keyof typeof IconComponentsMap} size={24} />}
           <h4 className={styles.entityTitle}>{displayName}</h4>
-          {tags.length > 0 && (
-            <div className={styles.tagContainer}>
-              {tags.map((tag) => (
-                <span key={tag} className={styles.tag}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          <code className={styles.eventName}>{event}</code>
         </div>
         <p className={styles.description}>{description}</p>
         {apiLink && (

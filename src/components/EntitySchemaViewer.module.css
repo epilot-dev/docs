@@ -51,6 +51,17 @@
   color: var(--ifm-heading-color);
 }
 
+.eventName {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ifm-color-content-secondary);
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  font-family: var(--ifm-font-family-monospace);
+}
+
 .description {
   margin: 0 0 0.75rem 0;
   color: var(--ifm-color-content);

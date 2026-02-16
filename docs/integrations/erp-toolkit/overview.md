@@ -27,7 +27,7 @@ The ERP Toolkit is composed of the following components. Each plays a specific r
 | **[Integration Hub](#integration-hub)** | Admin UI in epilot 360 to configure and monitor integrations | In progress |
 | **[ERP Integration API](#erp-integration-api)** | CRUD API to manage integrations, use cases, and mappings | Stable |
 | **[ERP Inbound API](#inbound-api)** | Dedicated API to receive and simulate inbound ERP events | Stable |
-| **[Use Cases](#use-cases)** | Documented integration flows with testing support | In progress |
+| **[Use Cases](./use-cases)** | Documented integration flows with testing support | Stable |
 | **[Core Entities](/docs/entities/core-entities)** | Standardized entity schemas for mapping targets | Stable |
 | **[Core Events](/docs/webhooks/core-events)** | Standardized event payloads for outbound notifications | Stable |
 | **[Webhooks](/docs/webhooks)** | Push events from epilot to ERPs via core events | Stable |
@@ -58,7 +58,7 @@ Two dedicated endpoints for receiving ERP data:
 
 | Endpoint | Purpose |
 |----------|---------|
-| `/v2/erp/updates/events` | Receive raw ERP data as events for processing |
+| `/v3/erp/updates/events` | Receive raw ERP data as events for processing |
 | `/v2/erp/updates/mapping_simulation` | Dry-run events to verify mappings before going live |
 
 See the [Inbound Integration Guide](./inbound/getting-started) for setup instructions.
@@ -71,6 +71,8 @@ A **use case** is a documented ERP integration flow: a description of how epilot
 - Which core events are sent or received
 - Expected ERP behavior and response
 - Testing via simulated events or webhook test triggers with ACK confirmation
+
+See the [Use Cases](./use-cases) page for a complete list of inbound and outbound integration flows.
 
 ### JSONata Mapping
 
@@ -173,7 +175,7 @@ Many integrations use a **hybrid approach**: event-driven for simple, real-time 
 
 1. **Create an integration** -- register your ERP connection via the [Configuration API](./configuration) or Integration Hub
 2. **Configure use cases** -- define inbound/outbound data flows with entity mappings
-3. **Test mappings** -- use the mapping simulation endpoint to validate before going live
+3. **Test mappings** -- use the mapping simulation endpoint to validate before going live. See the [Mapping Examples](./mapping-examples) repo for a TDD approach
 4. **Send events** -- push data from your ERP to the inbound API
 5. **Monitor** -- track processing status, errors, and ACKs in the Integration Hub
 

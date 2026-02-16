@@ -114,7 +114,7 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
   const icon = schema in IconComponentsMap ? schema : 'entity';
 
   return (
-    <div className={`${styles.container} entitySchemaViewer`}>
+    <div id={schema} className={`${styles.container} entitySchemaViewer`}>
       <div className={styles.header}>
         <div className={styles.titleRow}>
           {icon && <Icon name={icon as keyof typeof IconComponentsMap} size={24} />}

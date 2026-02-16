@@ -78,7 +78,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 Push data from your ERP system using the events endpoint:
 
 ```bash title="Send an inbound event"
-curl -X POST 'https://erp-integration.sls.epilot.io/v2/erp/updates/events' \
+curl -X POST 'https://erp-integration.sls.epilot.io/v3/erp/updates/events' \
   -H 'Authorization: Bearer <your-token>' \
   -H 'Content-Type: application/json' \
   -d '{
