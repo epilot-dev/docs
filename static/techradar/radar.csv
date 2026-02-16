@@ -38,6 +38,7 @@ AWS SAM,endure,languages and frameworks,false,The AWS Serverless Application Mod
 "Biome",adopt,tools,true,"Fast formatter/linter for TypeScript/JavaScript."
 "Material UI",endure,languages and frameworks,false,"We use Material UI from Google as the basis of our design system and component libraries."
 "Radix UI",explore,languages and frameworks,true,"Unstyled, accessible UI primitives for building custom component libraries."
+"XYFlow (React Flow)",adopt,tools,true,"Graph/flow UI library used across epilot360 flows and editors."
 "Distributed Tracing",adopt,techniques,false,"We use correlation ids across our services to trace transactions within our distributed architecture."
 "DynamoDB",adopt,tools,false,"Amazon DynamoDB is a key-value and document database that delivers single-digit millisecond performance at any scale."
 "Elasticsearch",adopt,tools,false,"Elasticsearch is a distributed, RESTful search and analytics engine capable of addressing a growing number of use cases."
