@@ -13,7 +13,7 @@ Webhook payloads vary by trigger type. The two trigger types are:
 - **Automation Trigger Webhook** — Fires when an automation action sends a webhook request. This is the most common trigger.
 - **Portal User Access** — Fires when a user accesses an entity in the portal.
 
-![Trigger](../../../static/img/webhooks/trigger.gif)
+![Trigger](../../../../static/img/webhooks/trigger.gif)
 
 Every payload contains a `metadata` object with the organization ID and event context. The `entity` object holds the primary entity data. The `relations` and `activity` objects are optional and depend on the webhook configuration.
 
@@ -51,7 +51,7 @@ The overall flow works as follows:
 3. **Automation Trigger** triggers fire when connected to an automation action
 4. Optionally configure a JSONata expression to transform the payload before delivery
 
-![Simple Overview](../../../static/img/webhooks/intro.png)
+![Simple Overview](../../../../static/img/webhooks/intro.png)
 
 ## Main Entity
 

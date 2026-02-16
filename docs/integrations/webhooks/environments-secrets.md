@@ -22,8 +22,8 @@ Keys use dot-separated namespacing to group related variables:
 erp_api.oauth_token_url
 erp_api.oauth_app_id
 erp_api.oauth_secret
-erp_lima.base_url
-erp_lima.api_key
+my_webhook.base_url
+my_webhook.api_key
 ```
 
 Key format: lowercase alphanumeric with dots, underscores, and hyphens. Max 128 characters. Pattern: `^[a-z0-9][a-z0-9_.-]{0,127}$`

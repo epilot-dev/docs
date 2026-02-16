@@ -6,7 +6,7 @@ description: Common ERP integration use cases for inbound and outbound flows
 
 # Use Cases
 
-This page describes the standard ERP integration use cases that the ERP Toolkit supports. Each use case is classified as **inbound** (ERP to epilot) or **outbound** (epilot to ERP) and documents what happens on each side, which [Core Entities](/docs/entities/core-entities) are involved, and which [Core Events](/docs/webhooks/core-events) are emitted or consumed.
+This page describes the standard ERP integration use cases that the ERP Toolkit supports. Each use case is classified as **inbound** (ERP to epilot) or **outbound** (epilot to ERP) and documents what happens on each side, which [Core Entities](/docs/entities/core-entities) are involved, and which [Core Events](/docs/integrations/core-events) are emitted or consumed.
 
 :::tip
 Most integrations start with inbound use cases (syncing master data into epilot) and then add outbound use cases (self-service actions from portals and journeys).
@@ -30,14 +30,14 @@ Most integrations start with inbound use cases (syncing master data into epilot)
 
 | Use Case | Core Event | Core Entities | Typical Trigger |
 |----------|------------|---------------|-----------------|
-| [Submit Meter Reading](#submit-meter-reading) | [`MeterReadingAdded`](/docs/webhooks/core-events#MeterReadingAdded) | [`meter`](/docs/entities/core-entities#meter), [`meter_counter`](/docs/entities/core-entities#meter_counter) | Portal / Journey / 360 |
-| [Change Installment](#change-installment-amount) | [`InstallmentUpdated`](/docs/webhooks/core-events#InstallmentUpdated) | [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account) | Portal / 360 |
-| [Change Payment Method](#change-payment-method-sepaiban) | [`PaymentMethodUpdated`](/docs/webhooks/core-events#PaymentMethodUpdated) | [`billing_account`](/docs/entities/core-entities#billing_account), [`contact`](/docs/entities/core-entities#contact) | Portal / Journey / 360 |
-| [Change Billing Address](#change-billing-address) | [`BillingAddressUpdated`](/docs/webhooks/core-events#BillingAddressUpdated) | [`billing_account`](/docs/entities/core-entities#billing_account), [`contact`](/docs/entities/core-entities#contact) | Portal / 360 |
-| [Update Customer Details](#update-customer-details) | [`CustomerDetailsUpdated`](/docs/webhooks/core-events#CustomerDetailsUpdated) | [`contact`](/docs/entities/core-entities#contact) | Portal / 360 |
+| [Submit Meter Reading](#submit-meter-reading) | [`MeterReadingAdded`](/docs/integrations/core-events#MeterReadingAdded) | [`meter`](/docs/entities/core-entities#meter), [`meter_counter`](/docs/entities/core-entities#meter_counter) | Portal / Journey / 360 |
+| [Change Installment](#change-installment-amount) | [`InstallmentUpdated`](/docs/integrations/core-events#InstallmentUpdated) | [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account) | Portal / 360 |
+| [Change Payment Method](#change-payment-method-sepaiban) | [`PaymentMethodUpdated`](/docs/integrations/core-events#PaymentMethodUpdated) | [`billing_account`](/docs/entities/core-entities#billing_account), [`contact`](/docs/entities/core-entities#contact) | Portal / Journey / 360 |
+| [Change Billing Address](#change-billing-address) | [`BillingAddressUpdated`](/docs/integrations/core-events#BillingAddressUpdated) | [`billing_account`](/docs/entities/core-entities#billing_account), [`contact`](/docs/entities/core-entities#contact) | Portal / 360 |
+| [Update Customer Details](#update-customer-details) | [`CustomerDetailsUpdated`](/docs/integrations/core-events#CustomerDetailsUpdated) | [`contact`](/docs/entities/core-entities#contact) | Portal / 360 |
 | [Request Data Sync](#request-data-sync) | custom webhook | varies | Portal login / 360 |
-| [Contract Move](#contract-move-move-in--move-out) | [`LocationMoveRequested`](/docs/webhooks/core-events#LocationMoveRequested) | [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`meter`](/docs/entities/core-entities#meter) | Journey |
-| [Terminate Contract](#terminate-contract) | [`TerminateContractRequested`](/docs/webhooks/core-events#TerminateContractRequested) | [`contract`](/docs/entities/core-entities#contract), [`contact`](/docs/entities/core-entities#contact) | Portal / Journey |
+| [Contract Move](#contract-move-move-in--move-out) | [`LocationMoveRequested`](/docs/integrations/core-events#LocationMoveRequested) | [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`meter`](/docs/entities/core-entities#meter) | Journey |
+| [Terminate Contract](#terminate-contract) | [`TerminateContractRequested`](/docs/integrations/core-events#TerminateContractRequested) | [`contract`](/docs/entities/core-entities#contract), [`contact`](/docs/entities/core-entities#contact) | Portal / Journey |
 
 ---
 
@@ -251,7 +251,7 @@ flowchart LR
 
 ## Outbound Use Cases (epilot to ERP)
 
-Outbound use cases push epilot events to your ERP via [Webhooks](/docs/webhooks). When a user performs a self-service action in a portal, journey, or epilot 360, an automation triggers a [Core Event](/docs/webhooks/core-events) which is delivered to your middle layer webhook endpoint. Your middle layer then processes the event and calls the appropriate ERP API.
+Outbound use cases push epilot events to your ERP via [Webhooks](/docs/integrations/webhooks). When a user performs a self-service action in a portal, journey, or epilot 360, an automation triggers a [Core Event](/docs/integrations/core-events) which is delivered to your middle layer webhook endpoint. Your middle layer then processes the event and calls the appropriate ERP API.
 
 ### Submit Meter Reading
 
@@ -275,7 +275,7 @@ flowchart LR
 - Middle layer calls the ERP API to submit the reading (e.g., meter reading endpoint)
 - Middle layer sends an [ACK](/docs/integrations/erp-toolkit/overview#monitoring-and-acks) back to epilot to confirm processing
 
-**Core Event:** [`MeterReadingAdded`](/docs/webhooks/core-events#MeterReadingAdded)
+**Core Event:** [`MeterReadingAdded`](/docs/integrations/core-events#MeterReadingAdded)
 
 **Core Entities:** [`meter`](/docs/entities/core-entities#meter), [`meter_counter`](/docs/entities/core-entities#meter_counter)
 
@@ -305,7 +305,7 @@ flowchart LR
 - Middle layer calls the ERP API to update the installment amount on the contract
 - Middle layer sends an ACK back to epilot
 
-**Core Event:** [`InstallmentUpdated`](/docs/webhooks/core-events#InstallmentUpdated)
+**Core Event:** [`InstallmentUpdated`](/docs/integrations/core-events#InstallmentUpdated)
 
 **Core Entities:** [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account)
 
@@ -335,7 +335,7 @@ flowchart LR
 - Middle layer calls the ERP API to update the payment method
 - Middle layer sends an ACK back to epilot
 
-**Core Event:** [`PaymentMethodUpdated`](/docs/webhooks/core-events#PaymentMethodUpdated)
+**Core Event:** [`PaymentMethodUpdated`](/docs/integrations/core-events#PaymentMethodUpdated)
 
 **Core Entities:** [`billing_account`](/docs/entities/core-entities#billing_account), [`contact`](/docs/entities/core-entities#contact)
 
@@ -369,7 +369,7 @@ flowchart LR
 - Middle layer calls the ERP API to update the billing address
 - Middle layer sends an ACK back to epilot
 
-**Core Event:** [`BillingAddressUpdated`](/docs/webhooks/core-events#BillingAddressUpdated)
+**Core Event:** [`BillingAddressUpdated`](/docs/integrations/core-events#BillingAddressUpdated)
 
 **Core Entities:** [`billing_account`](/docs/entities/core-entities#billing_account), [`contact`](/docs/entities/core-entities#contact)
 
@@ -399,7 +399,7 @@ flowchart LR
 - Middle layer calls the ERP API to update the business partner record
 - Middle layer sends an ACK back to epilot
 
-**Core Event:** [`CustomerDetailsUpdated`](/docs/webhooks/core-events#CustomerDetailsUpdated)
+**Core Event:** [`CustomerDetailsUpdated`](/docs/integrations/core-events#CustomerDetailsUpdated)
 
 **Core Entities:** [`contact`](/docs/entities/core-entities#contact)
 
@@ -465,7 +465,7 @@ flowchart LR
 - Middle layer calls the ERP API to initiate the move workflow (terminate old contract, create new contract)
 - Middle layer sends an ACK back to epilot
 
-**Core Event:** [`LocationMoveRequested`](/docs/webhooks/core-events#LocationMoveRequested)
+**Core Event:** [`LocationMoveRequested`](/docs/integrations/core-events#LocationMoveRequested)
 
 **Core Entities:** [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`meter`](/docs/entities/core-entities#meter)
 
@@ -495,7 +495,7 @@ flowchart LR
 - Middle layer calls the ERP API to schedule the contract termination
 - Middle layer sends an ACK back to epilot
 
-**Core Event:** [`TerminateContractRequested`](/docs/webhooks/core-events#TerminateContractRequested)
+**Core Event:** [`TerminateContractRequested`](/docs/integrations/core-events#TerminateContractRequested)
 
 **Core Entities:** [`contract`](/docs/entities/core-entities#contract), [`contact`](/docs/entities/core-entities#contact)
 
@@ -524,5 +524,5 @@ This enables end-to-end monitoring in the Integration Hub: per-use-case status i
 - [Examples](./inbound/examples) -- Complete working examples
 - [Mapping Examples](./mapping-examples) -- Open source example repo with TDD patterns
 - [Core Entities](/docs/entities/core-entities) -- Entity schema reference
-- [Core Events](/docs/webhooks/core-events) -- Event schema reference
-- [Webhooks](/docs/webhooks) -- Configure outbound event delivery
+- [Core Events](/docs/integrations/core-events) -- Event schema reference
+- [Webhooks](/docs/integrations/webhooks) -- Configure outbound event delivery

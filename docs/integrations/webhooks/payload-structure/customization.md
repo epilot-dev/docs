@@ -123,13 +123,13 @@ You can include optional data sections in the webhook payload. The base structur
 - **Include Activity** — Adds activity data to the payload.
 - **Include Relations** — Adds hydrated relations to other entities. Note: this can significantly increase payload size.
 
-![Custom Webhook Payload Configuration](../../../static/img/webhooks/custom-payload.png)
+![Custom Webhook Payload Configuration](../../../../static/img/webhooks/custom-payload.png)
 
 ## Custom Headers
 
 Add custom headers to webhook requests for additional authentication or metadata.
 
-![Custom Webhook Header](../../../static/img/webhooks/custom-header.png)
+![Custom Webhook Header](../../../../static/img/webhooks/custom-header.png)
 
 The following headers are forbidden and will be removed from the request:
 ```
@@ -182,4 +182,4 @@ The following headers are forbidden and will be removed from the request:
 
 Add custom parameters to the OAuth token request as body, query, or header parameters. This is useful when your authorization server requires additional context beyond the standard OAuth fields.
 
-![Custom Webhook OAuth Parameter](../../../static/img/webhooks/custom-oauth.png)
+![Custom Webhook OAuth Parameter](../../../../static/img/webhooks/custom-oauth.png)

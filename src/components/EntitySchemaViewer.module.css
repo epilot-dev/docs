@@ -51,6 +51,24 @@
   color: var(--ifm-heading-color);
 }
 
+.anchorLink {
+  opacity: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+  padding: 0.1rem 0.25rem;
+  transition: opacity 0.2s ease;
+}
+
+.container:hover .anchorLink {
+  opacity: 1;
+}
+
+.anchorLink:hover {
+  text-decoration: underline;
+}
+
 .eventName {
   font-size: 0.8rem;
   font-weight: 500;

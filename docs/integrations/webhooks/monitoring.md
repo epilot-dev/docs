@@ -17,4 +17,4 @@ Events are retained for 4 weeks by default.
 
 This is useful for debugging — you can see the exact payload sent to your endpoint, the request origin, and the response status code without re-triggering the original event.
 
-![Webhook Events](../../static/img/webhooks/events.gif)
+![Webhook Events](../../../static/img/webhooks/events.gif)

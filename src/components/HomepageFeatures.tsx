@@ -28,8 +28,8 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         All platform features available via <Link to="/api">REST APIs</Link> documented with OpenAPI specs.
-        Subscribe to platform events through <Link to="/docs/webhooks">Webhooks</Link> with{' '}
-        standardized <Link to="/docs/webhooks/core-events">event schemas</Link>.
+        Subscribe to platform events through <Link to="/docs/integrations/webhooks">Webhooks</Link> with{' '}
+        standardized <Link to="/docs/integrations/core-events">event schemas</Link>.
       </>
     ),
   },

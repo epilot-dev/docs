@@ -23,9 +23,9 @@ All core APIs are public. Partners and customers use them to build integrations 
 
 ## Webhooks & Event Schemas
 
-epilot publishes platform events through [Webhooks](/docs/webhooks), enabling real-time push notifications to external systems. Events follow a standardized schema defined in [Core Events](/docs/webhooks/core-events), covering entity lifecycle changes, workflow transitions, portal actions, and more.
+epilot publishes platform events through [Webhooks](/docs/integrations/webhooks), enabling real-time push notifications to external systems. Events follow a standardized schema defined in [Core Events](/docs/integrations/core-events), covering entity lifecycle changes, workflow transitions, portal actions, and more.
 
-Webhooks are the primary mechanism for outbound integrations — ERPs, middleware, and third-party systems subscribe to the events they care about and receive structured payloads as they happen. See [Payload Structure](/docs/webhooks/payload-structure/intro) for format details and [Security](/docs/webhooks/security) for signature verification.
+Webhooks are the primary mechanism for outbound integrations — ERPs, middleware, and third-party systems subscribe to the events they care about and receive structured payloads as they happen. See [Payload Structure](/docs/integrations/webhooks/payload-structure/intro) for format details and [Security](/docs/integrations/webhooks/security) for signature verification.
 
 ## Accessing APIs with MCP
 

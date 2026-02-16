@@ -11,7 +11,7 @@ When you select the `Automation Trigger Webhook` event, the webhook fires from w
 The `entity` object always contains the entity the automation was triggered on. For a `Manual trigger: Contact`, this is the contact. For an `Entity update: Opportunity`, this is the opportunity.
 :::
 
-![Automation Trigger](../../../static/img/webhooks/automation-trigger.gif)
+![Automation Trigger](../../../../static/img/webhooks/automation-trigger.gif)
 
 :::info
 The example payload playground in the automation action view generates approximate payloads using the [getSchemaExample](/api/entity#tag/Schemas/operation/getSchemaExample) endpoint. This is accurate for manual triggers but may differ for journey submissions, where the payload structure depends on the journey's blocks and configuration.
@@ -25,7 +25,7 @@ For triggers like `Manual Trigger: Contact` or `Entity Created: Contact`, the `e
 
 You can also use the Entity API to retrieve a [JSON schema](/api/entity#tag/Schemas/operation/getJsonSchema) or a [JSON example](/api/entity#tag/Schemas/operation/getSchemaExample) programmatically.
 
-![Export Entity Schema](../../../static/img/export-entity-schema.png)
+![Export Entity Schema](../../../../static/img/export-entity-schema.png)
 
 ## 2. Journey Submissions
 
@@ -36,7 +36,7 @@ Key attributes in the submission payload:
 - **`mapped_entities`** — Array of entities created during the automation execution
 - **`line_items`** — Array of orders configured in the journey
 
-![Action Webhook Payload](../../../static/img/webhooks/automation-action-payload.png)
+![Action Webhook Payload](../../../../static/img/webhooks/automation-action-payload.png)
 
 
 ### Example Journey Submission
