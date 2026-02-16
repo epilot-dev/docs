@@ -63,5 +63,6 @@ AWS SAM,endure,languages and frameworks,false,The AWS Serverless Application Mod
 "TanStack Table",adopt,tools,true,"Headless UI for building powerful tables."
 "Handlebars",adopt,languages and frameworks,false,"Handlebars is extensively used on multiple projects to perform dynamic variable replacements on Document and Email Templates."
 "Zustand",explore,languages and frameworks,false,"Zustand offers a robust and efficient state-management solution that simplifies setup by eliminating unnecessary boilerplate."
+"Jotai",explore,languages and frameworks,true,"Atomic state management used in epilot360 UI modules."
 "Speakeasy",adopt,tools,true,"API tooling for robust SDKs, Terraform Providers and End to End Testing. OpenAPI Native."
 "OpenAPI Stack",adopt,tools,false,"Collection of open source libraries and tools for full stack Typescript development inspired by modern alternatives like GraphQL and tRPC."
