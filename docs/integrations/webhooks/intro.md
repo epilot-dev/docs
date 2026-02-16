@@ -1,7 +1,7 @@
 ---
 title: Overview
 sidebar_position: 0
-slug: /webhooks
+slug: /integrations/webhooks
 ---
 
 # Webhooks
