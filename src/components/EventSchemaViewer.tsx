@@ -145,7 +145,9 @@ const EventSchemaViewer: React.FC<EventSchemaViewerProps> = ({ event, apiLink, i
           {icon && <Icon name={icon as keyof typeof IconComponentsMap} size={24} />}
           <h4 className={styles.entityTitle}>{displayName}</h4>
           <code className={styles.eventName}>{event}</code>
-          <a href={`#${event}`} className={styles.anchorLink} aria-label={`Link to ${displayName}`}>#</a>
+          <a href={`#${event}`} className={styles.anchorLink} aria-label={`Link to ${displayName}`}>
+            #
+          </a>
         </div>
         <p className={styles.description}>{description}</p>
         {apiLink && (

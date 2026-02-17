@@ -21,6 +21,14 @@ When you build an app for epilot, it runs inside an iframe embedded within the e
 npm install @epilot/app-bridge
 ```
 
+:::tip Use the epilot component library
+When building UI surfaces for epilot, use the [`@epilot/volt-ui`](/docs/architecture/design-system) component library to ensure a consistent look and feel with the rest of the epilot platform.
+
+```bash
+npm install @epilot/volt-ui
+```
+:::
+
 ## Available Surface Types
 
 ### Entity Capability

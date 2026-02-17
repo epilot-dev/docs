@@ -1,10 +1,10 @@
 ---
-title: Custom Action
+title: Custom Workflow Task
 hide_title: true
 sidebar_position: 5
 ---
 
-# Custom Automated Action
+# Custom Workflow Action
 
 Extend epilot's automation capabilities with custom actions that integrate seamlessly into the platform's workflow engine.
 

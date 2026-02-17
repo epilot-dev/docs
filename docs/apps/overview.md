@@ -34,13 +34,14 @@ See the [App Components](/docs/apps/about-apps/components/overview) section for 
 
 **External Product Catalog**: Components that integrate third-party product catalogs into epilot.
 
+**Custom Workflow Task**: Either call an external endpoint or run your own code in a sandboxed workflow task
+
 ### Coming Soon
 
 :::note
 These component types are planned for future releases and are not yet available.
 :::
 
-- **Custom Automation Tasks**: Define custom tasks that plug into epilot's automation workflows.
 - **Custom Journey Design**: Create custom designs for customer journeys, including layouts, styles, and interactive elements.
 - **Email Plugins**: Extend and customize email templates and functionality.
 

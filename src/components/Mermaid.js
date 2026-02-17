@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
 import mermaid from 'mermaid';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 
 let idCounter = 0;
 let initialized = false;
@@ -7,6 +7,7 @@ let initialized = false;
 const getTheme = (html, config) => {
   const htmlTheme = html?.getAttribute('data-theme') ?? 'light';
   const defaultTheme = htmlTheme === 'dark' ? 'dark' : 'default';
+
   return config?.theme?.[htmlTheme] ?? config?.mermaid?.theme ?? defaultTheme;
 };
 
@@ -15,10 +16,7 @@ const Mermaid = ({ chart, config: configSrc }) => {
   const idRef = useRef(`mermaid-${idCounter++}`);
   const [svg, setSvg] = useState('');
 
-  const config = useMemo(
-    () => (typeof configSrc === 'string' ? JSON.parse(configSrc) : configSrc),
-    [configSrc],
-  );
+  const config = useMemo(() => (typeof configSrc === 'string' ? JSON.parse(configSrc) : configSrc), [configSrc]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -75,6 +73,7 @@ const Mermaid = ({ chart, config: configSrc }) => {
     });
 
     observer.observe(html, { attributes: true });
+
     return () => observer.disconnect();
   }, [chart, config]);
 

@@ -27,9 +27,9 @@ const FeatureList: FeatureItem[] = [
     image: '/img/cogwheel.webp',
     description: (
       <>
-        All platform features available via <Link to="/api">REST APIs</Link> documented with OpenAPI specs.
-        Subscribe to platform events through <Link to="/docs/integrations/webhooks">Webhooks</Link> with{' '}
-        standardized <Link to="/docs/integrations/core-events">event schemas</Link>.
+        All platform features available via <Link to="/api">REST APIs</Link> documented with OpenAPI specs. Subscribe to
+        platform events through <Link to="/docs/integrations/webhooks">Webhooks</Link> with standardized{' '}
+        <Link to="/docs/integrations/core-events">event schemas</Link>.
       </>
     ),
   },

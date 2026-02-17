@@ -119,7 +119,9 @@ const EntitySchemaViewer: React.FC<EntitySchemaViewerProps> = ({ schema, display
         <div className={styles.titleRow}>
           {icon && <Icon name={icon as keyof typeof IconComponentsMap} size={24} />}
           <h4 className={styles.entityTitle}>{displayName}</h4>
-          <a href={`#${schema}`} className={styles.anchorLink} aria-label={`Link to ${displayName}`}>#</a>
+          <a href={`#${schema}`} className={styles.anchorLink} aria-label={`Link to ${displayName}`}>
+            #
+          </a>
         </div>
         <p className={styles.description}>{description}</p>
         {apiLink && (

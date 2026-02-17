@@ -1,7 +1,7 @@
 // src/components/ApiSidebar.tsx
 import { useLocation } from '@docusaurus/router';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import DocPageStyles from '@docusaurus/theme-classic/lib-next/theme/DocPage/styles.module.css';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import DocSidebar from '@theme/DocSidebar';
 import React from 'react';
 
