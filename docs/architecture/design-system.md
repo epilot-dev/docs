@@ -17,7 +17,7 @@ A [Svelte version](https://www.npmjs.com/package/@epilot/volt-ui-svelte) is also
 | **Styling** | Tailwind CSS v4 |
 | **CSS Prefix** | `volt-` |
 | **Icons** | `@epilot360/icons` — [Browse Icons](https://portal.epilot.cloud/epilot360-icons) |
-| **Docs (React)** | [React Documentation](https://docs-two-inky.vercel.app/) |
+| **Docs (React)** | [React Documentation](https://volt-ui.epilot.io/) |
 | **Docs (Svelte)** | [Svelte Documentation](https://grand-yeot-414eb4.netlify.app/) |
 
 import Tabs from '@theme/Tabs';
