@@ -34,7 +34,7 @@ TypeScript SDK with full type support for all epilot APIs.
 
 Build and publish extensions for the epilot platform.
 
-<a className="button button--secondaryRe" href="/apps">Build an App</a>
+<a className="button button--secondary" href="/apps">Build an App</a>
 
 ## Contact
 
