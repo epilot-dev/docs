@@ -328,6 +328,30 @@ The standard parameters `orgId`, `integrationId`, and `useCaseId` are always req
 
 When a user views the file, epilot's file service adds a short-lived signature to the URL and redirects the browser. The proxy verifies this signature via the file service's `verifyCustomDownloadUrl` operation.
 
+### Automated URL Construction via Inbound Mapping
+
+Instead of manually constructing `custom_download_url` values in your mapping configuration, you can use the `file_proxy_url` field type to auto-construct the proxy URL. The `orgId` and `integrationId` parameters are injected automatically from the processing context:
+
+```json
+{
+  "attribute": "custom_download_url",
+  "file_proxy_url": {
+    "use_case_id": "uuid-of-file-proxy-use-case",
+    "params": {
+      "documentId": { "field": "documentId" },
+      "tenantId": { "constant": "ACME" }
+    }
+  }
+}
+```
+
+This generates a URL like:
+```
+https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseId=uuid-of-file-proxy-use-case&documentId=DOC-001&tenantId=ACME
+```
+
+See the [Inbound Mapping Specification](./inbound/mapping#file-proxy-url-mapping) for the full reference on parameter resolution modes.
+
 ## Large File Handling
 
 Files larger than 5 MB exceed the Lambda response payload limit. In these cases, the proxy automatically:

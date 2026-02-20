@@ -114,6 +114,52 @@ Use the `enabled` property to conditionally map fields:
 }
 ```
 
+### File Proxy URL Mapping {#file-proxy-url-mapping}
+
+When syncing file entities via inbound use cases, you can use the `file_proxy_url` field type to auto-construct the file proxy download URL. This avoids manually assembling the URL with boilerplate query parameters — `orgId` and `integrationId` are injected automatically from the processing context.
+
+**Configuration:**
+```json
+{
+  "attribute": "custom_download_url",
+  "file_proxy_url": {
+    "use_case_id": "uuid-of-file-proxy-use-case",
+    "params": {
+      "documentId": { "field": "documentId" },
+      "tenantId": { "constant": "ACME" }
+    }
+  }
+}
+```
+
+**Input:**
+```json
+{
+  "documentId": "DOC-00034157"
+}
+```
+
+**Output:**
+```json
+{
+  "attributes": {
+    "custom_download_url": "https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseId=uuid-of-file-proxy-use-case&documentId=DOC-00034157&tenantId=ACME"
+  }
+}
+```
+
+The `params` object maps URL parameter names to values resolved from the payload. Each param value supports three resolution modes:
+
+| Mode | Description | Example |
+|------|-------------|---------|
+| `field` | Source field name or JSONPath expression (if starts with `$`) | `{ "field": "documentId" }` |
+| `constant` | Fixed value (any type, stringified for URL) | `{ "constant": "ACME" }` |
+| `jsonataExpression` | JSONata expression for transformation | `{ "jsonataExpression": "doc.id" }` |
+
+> **Note:** The standard parameters `orgId`, `integrationId`, and `useCaseId` are always included automatically. You only need to configure additional custom parameters in `params`. If no `integrationContext` is available (e.g., in mapping simulation mode), the `file_proxy_url` field is silently skipped.
+
+See also: [File Proxy Configuration](../file-proxy#proxy-url-generation) for details on the proxy URL format and parameter requirements.
+
 ## Repeatable Fields
 
 Email and phone fields in epilot are stored as arrays. Use `_type` to specify the field type:
