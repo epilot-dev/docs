@@ -182,6 +182,10 @@ epilot retrieves external files on the fly with a short-lived signature and stre
 Download requests for external files come from the user's browser. Do not include sensitive data (internal tokens, credentials) in the response -- the end user can inspect all response headers and content.
 :::
 
+### File Proxy for ERP Integrations
+
+When integrating with ERP document archives that require authentication or multi-step API calls to fetch files, use the **[File Proxy](/docs/integrations/erp-toolkit/file-proxy)** from the ERP Toolkit. The file proxy handles OAuth2 authentication, secret management, and complex download flows declaratively — file entities are created with a `custom_download_url` pointing to the proxy, and files are fetched on demand when users view them.
+
 
 ## Updating Files
 

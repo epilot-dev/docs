@@ -32,6 +32,7 @@ The ERP Toolkit is composed of the following components. Each plays a specific r
 | **[Core Events](/docs/integrations/core-events)** | Standardized event payloads for outbound notifications | Stable |
 | **[Webhooks](/docs/integrations/webhooks)** | Push events from epilot to ERPs via core events | Stable |
 | **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
+| **[File Proxy](./file-proxy)** | Serve files from external archives on demand without migrating them into epilot | Stable |
 | **[Monitoring and ACKs](#monitoring-and-acks)** | Central logging, error tracking, and event replay | In progress |
 | **[Blueprints](https://marketplace.epilot.cloud/en/blueprints)** | Packaged, installable integration setups | Stable |
 | **[Apps](https://marketplace.epilot.cloud/en/apps)** | Custom automation actions and portal extensions for ERP logic | In progress |
@@ -73,6 +74,10 @@ A **use case** is a documented ERP integration flow: a description of how epilot
 - Testing via simulated events or webhook test triggers with ACK confirmation
 
 See the [Use Cases](./use-cases) page for a complete list of inbound and outbound integration flows.
+
+### File Proxy
+
+The [File Proxy](./file-proxy) enables epilot to serve files from external document systems (e.g., ERP archives, DMS) on demand. Instead of migrating file content during inbound sync, file entities are created with a `custom_download_url` pointing to the proxy. When a user views the file, the proxy fetches the document from the external system in real time using a declarative, multi-step HTTP configuration.
 
 ### JSONata Mapping
 

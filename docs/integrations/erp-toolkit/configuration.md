@@ -75,9 +75,13 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
 | `name` | string | Yes | Display name for the use case |
-| `type` | string | Yes | Either `inbound` or `outbound` |
+| `type` | string | Yes | `inbound`, `outbound`, or `file_proxy` |
 | `enabled` | boolean | Yes | Whether the use case is active |
-| `configuration` | object | Yes | Mapping configuration |
+| `configuration` | object | Yes | Mapping configuration (for inbound/outbound) or [File Proxy configuration](./file-proxy) (for `file_proxy`) |
+
+:::info
+The `file_proxy` type is used for on-demand file serving from external document systems. See the [File Proxy guide](./file-proxy) for configuration details.
+:::
 
 ### Enabling/Disabling a Use Case
 

@@ -218,6 +218,10 @@ flowchart LR
 
 **Typical fields mapped:** file name, document type, MIME type, document date, file content (binary or URL)
 
+:::tip[File Proxy Alternative]
+When migrating a large document archive is impractical, use the **[File Proxy](./file-proxy)** instead. During inbound sync, only document metadata is synced — file entities are created with a `custom_download_url` pointing to the file proxy. The actual file content is fetched on demand when a user views the document. See the [File Proxy configuration guide](./file-proxy) for setup details.
+:::
+
 :::info
 For portals, documents should be synced periodically (e.g., hourly) so that portal users receive notifications for new documents. Lazy loading on login is not sufficient because notifications require the documents to exist in epilot.
 :::
