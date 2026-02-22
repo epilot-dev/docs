@@ -9,6 +9,8 @@ import EntitySchemaViewer from '@site/src/components/EntitySchemaViewer';
 
 epilot ships with a set of built-in entity schemas that model common business objects. This page lists all core schemas with their descriptions, relationship diagram, and links to API docs.
 
+See the [API Changelog](/api/changelog) for recent changes to entities and APIs.
+
 ## Relationship Diagram
 
 ```mermaid

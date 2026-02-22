@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// Changed the text labels.
-
 import Translate, { translate } from '@docusaurus/Translate';
 import type { Props } from '@theme/BlogPostPaginator';
 import PaginatorNavLink from '@theme/PaginatorNavLink';
@@ -20,7 +11,7 @@ export default function ChangelogPaginator(props: Props): JSX.Element {
       className="pagination-nav docusaurus-mt-lg"
       aria-label={translate({
         id: 'theme.changelog.post.paginator.navAriaLabel',
-        message: 'Changelog item navigation',
+        message: 'Changelog navigation',
         description: 'The ARIA label for the changelog pagination',
       })}
     >
@@ -29,10 +20,10 @@ export default function ChangelogPaginator(props: Props): JSX.Element {
           {...prevItem}
           subLabel={
             <Translate
-              id="theme.changelog.post.paginator.newerRelease"
-              description="The changelog button label to navigate to the newer release"
+              id="theme.changelog.post.paginator.newer"
+              description="The changelog button label to navigate to newer changes"
             >
-              Newer release
+              Newer
             </Translate>
           }
         />
@@ -42,10 +33,10 @@ export default function ChangelogPaginator(props: Props): JSX.Element {
           {...nextItem}
           subLabel={
             <Translate
-              id="theme.changelog.post.paginator.olderRelease"
-              description="The changelog button label to navigate to the older release"
+              id="theme.changelog.post.paginator.older"
+              description="The changelog button label to navigate to older changes"
             >
-              Older release
+              Older
             </Translate>
           }
           isNext

@@ -20,6 +20,8 @@ All APIs are defined using machine-readable standards:
 All core APIs are public. Partners and customers use them to build integrations and extend the platform.
 
 <a className="button button--secondary" href="/api">Browse the API Reference</a>
+{' '}
+<a className="button button--secondary" href="/api/changelog">API Changelog</a>
 
 ## Webhooks & Event Schemas
 

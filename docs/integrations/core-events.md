@@ -9,6 +9,8 @@ import EventSchemaViewer from '@site/src/components/EventSchemaViewer';
 
 epilot's core event catalog with built-in event schemas, examples, and schema definitions.
 
+See the [API Changelog](/api/changelog) for recent changes to events and APIs.
+
 ## Event Architecture
 
 Events follow a consistent structure with common metadata fields and event-specific payloads. Each event may include hydrated entity data from the entity graph.

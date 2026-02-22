@@ -1,18 +1,11 @@
 
-.changelogBlogContainer {
-  width: 100%;
+.changelogContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
   min-height: 100vh;
 }
 
-.changelogBlogContainer > div {
-  max-width: 100%;
-}
-@media screen and (min-width: 997px) {
-  .changelogBlogContainer > div {
-    max-width: calc(100vw - var(--doc-sidebar-width) - 15px);
-  }
-}
-
 :global(.blog-post-page) {
-  display:flex
+  display: flex;
 }

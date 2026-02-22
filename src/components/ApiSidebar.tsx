@@ -20,20 +20,19 @@ export default function ApiSidebar() {
   const redocusaurusOpts = siteConfig.presets.find((preset) => preset[0] === 'redocusaurus');
   const specs: Spec[] = redocusaurusOpts?.[1]?.['specs'] ?? [];
 
-  const sidebar = specs.map((spec) => ({
-    type: 'link',
-    href: spec.routePath,
-    label: spec.layout.title,
-  }));
-
-  const pathname = location.pathname;
-  // Match /api/{api-name}/changelog or /api/{api-name}/changelog/... and extract /api/{api-name}
-  const changelogMatch = pathname.match(/^\/api\/([^/]+)\/changelog(\/|$)/);
-  const highlightPath = changelogMatch ? `/api/${changelogMatch[1]}` : pathname;
+  const sidebar = [
+    { type: 'link', href: '/api', label: 'Getting Started' },
+    { type: 'link', href: '/api/changelog', label: 'Changelog' },
+    ...specs.map((spec) => ({
+      type: 'link',
+      href: spec.routePath,
+      label: spec.layout.title,
+    })),
+  ];
 
   return (
     <aside className={DocPageStyles.docSidebarContainer} role="complementary">
-      <DocSidebar path={highlightPath} isHidden={false} onCollapse={() => null} sidebar={sidebar} />
+      <DocSidebar path={location.pathname} isHidden={false} onCollapse={() => null} sidebar={sidebar} />
     </aside>
   );
 }

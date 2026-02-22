@@ -1,13 +1,5 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 import Link from '@docusaurus/Link';
 import { ThemeClassNames } from '@docusaurus/theme-common';
-import ApiSidebar from '@site/src/components/ApiSidebar';
 import BlogLayout from '@theme/BlogLayout';
 import type { Props } from '@theme/BlogPostPage';
 import ChangelogItem from '@theme/ChangelogItem';
@@ -39,8 +31,7 @@ function ChangelogPage(props: Props): JSX.Element {
       wrapperClassName={ThemeClassNames.wrapper.blogPages}
       pageClassName={ThemeClassNames.page.blogPostPage}
     >
-      <ApiSidebar />
-      <main className={styles.changelogBlogContainer}>
+      <main className={styles.changelogContainer}>
         <BlogLayout
           wrapperClassName={ThemeClassNames.wrapper.blogPages}
           pageClassName={ThemeClassNames.page.blogPostPage}
@@ -73,8 +64,8 @@ function ChangelogPage(props: Props): JSX.Element {
           </Seo>
 
           <div style={{ marginBottom: '1rem' }}>
-            <Link to={metadata.listPageLink || metadata.permalink || '/'}>
-              ← Back to {metadata.blogTitle || 'Changelog Index'}
+            <Link to={metadata.listPageLink || '/api/changelog'}>
+              ← Back to Changelog
             </Link>
           </div>
 

@@ -1,24 +1,16 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-import { ThemeClassNames } from '@docusaurus/theme-common';
+import DocPageStyles from '@docusaurus/theme-classic/lib-next/theme/DocPage/styles.module.css';
+import { ThemeClassNames, useWindowSize } from '@docusaurus/theme-common';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import ApiSidebar from '@site/src/components/ApiSidebar';
-import BlogLayout from '@theme/BlogLayout';
-import type { Props } from '@theme/BlogListPage';
 import BlogListPaginator from '@theme/BlogListPaginator';
-import BlogPostItem from '@theme/BlogPostItem';
 import Layout from '@theme/Layout';
+import TOC from '@theme/TOC';
 import React from 'react';
 
 import styles from './styles.module.css';
 
-function ChangelogList(props: Props): JSX.Element {
-  const { metadata, items, sidebar } = props;
+function ChangelogList(props): JSX.Element {
+  const { metadata, items } = props;
   const {
     siteConfig: { title: siteTitle },
   } = useDocusaurusContext();
@@ -26,57 +18,70 @@ function ChangelogList(props: Props): JSX.Element {
   const isBlogOnlyMode = permalink === '/';
   const title = isBlogOnlyMode ? siteTitle : blogTitle;
 
-  return (
-    <Layout
-      title={title}
-      description={blogDescription}
-      wrapperClassName={ThemeClassNames.wrapper.blogPages}
-      pageClassName={ThemeClassNames.page.blogListPage}
-    >
-      <ApiSidebar />
-      <main className={styles.changelogBlogContainer}>
-        <BlogLayout
-          title={title}
-          description={blogDescription}
-          wrapperClassName={ThemeClassNames.wrapper.blogPages}
-          pageClassName={ThemeClassNames.page.blogListPage}
-          searchMetadata={{ tag: 'blog_posts_list' }}
-          sidebar={sidebar}
-          hideNavBar
-          noFooter
-        >
-          <a href={permalink.replace(/\/changelog.*/, '')} style={{ display: 'inline-block', marginBottom: 16 }}>
-            ← Back to API definition
-          </a>
-          <h1>{title}</h1>
-          <a
-            href={permalink.replace(/\/$/, '') + '/rss.xml'}
-            style={{ display: 'inline-block', marginBottom: 16 }}
-            target="_blank"
-          >
-            Get changelog updates via RSS Feed
-          </a>
-          {items.map(({ content: BlogPostContent }) => {
-            const meta = BlogPostContent.metadata;
-            if (!meta) return null;
+  const toc = items
+    .map(({ content: BlogPostContent }) => {
+      const meta = BlogPostContent.metadata;
+      if (!meta) return null;
+      const titleParts = meta.title.match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
+      const label = titleParts ? `${titleParts[1]} ${titleParts[2]}` : meta.title;
+      const slug = titleParts
+        ? `${titleParts[1]}-${titleParts[2].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`
+        : meta.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
-            return (
-              <BlogPostItem
-                key={meta.permalink}
-                frontMatter={BlogPostContent.frontMatter}
-                assets={BlogPostContent.assets}
-                metadata={meta}
-                truncated={meta.truncated}
-              >
-                <header>
-                  <h2>{meta.title}</h2>
-                </header>
-                <BlogPostContent truncated />
-              </BlogPostItem>
-            );
-          })}
-          <BlogListPaginator metadata={metadata} />
-        </BlogLayout>
+      return { value: label, id: slug, children: [], level: 2 };
+    })
+    .filter(Boolean);
+
+  const windowSize = useWindowSize();
+  const renderTocDesktop = toc.length > 0 && (windowSize === 'desktop' || windowSize === 'ssr');
+
+  return (
+    <Layout title={title} description={blogDescription} pageClassName={DocPageStyles.docPage}>
+      <ApiSidebar />
+      <main className={styles.changelogMain}>
+        <div className="container padding-top--md padding-bottom--lg">
+          <div className="row">
+            <div className={`col ${renderTocDesktop ? styles.docItemCol : ''}`}>
+              <article>
+                <div className={`${ThemeClassNames.docs.docMarkdown} markdown`}>
+                  <header>
+                    <h1>{title}</h1>
+                  </header>
+                  <p>
+                    {blogDescription}{' '}
+                    <a href={permalink.replace(/\/$/, '') + '/rss.xml'} target="_blank">
+                      Subscribe via RSS
+                    </a>
+                  </p>
+                  {items.map(({ content: BlogPostContent }) => {
+                    const meta = BlogPostContent.metadata;
+                    if (!meta) return null;
+
+                    const titleParts = meta.title.match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
+                    const date = titleParts ? titleParts[1] : meta.formattedDate;
+                    const apiName = titleParts ? titleParts[2] : meta.title;
+                    const anchorId = titleParts
+                      ? `${titleParts[1]}-${titleParts[2].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`
+                      : meta.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+                    return (
+                      <section key={meta.permalink}>
+                        <h2 id={anchorId}>{date} {apiName}</h2>
+                        <BlogPostContent />
+                      </section>
+                    );
+                  })}
+                </div>
+                <BlogListPaginator metadata={metadata} />
+              </article>
+            </div>
+            {renderTocDesktop && (
+              <div className="col col--3">
+                <TOC toc={toc} className={ThemeClassNames.docs.docTocDesktop} />
+              </div>
+            )}
+          </div>
+        </div>
       </main>
     </Layout>
   );

@@ -1,50 +1,12 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const fs = require('fs');
 const path = require('path');
 
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
 const { specs } = require('./redoc.config');
-const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
-
-const changelogProcessingDir = path.join(__dirname, 'changelog-processing');
-
-const apiChangelogPlugins = specs
-  .filter((spec) => {
-    // Use the last segment after the last slash as the id, e.g. access-token
-    const id = spec.routePath.replace('/api/', '').replace(/\/$/, '');
-    const changelogFile = path.join(changelogProcessingDir, `${id}.md`);
-
-    return spec.specUrl && fs.existsSync(changelogFile);
-  })
-  .map((spec) => {
-    const id = `${spec.routePath.replace('/api/', '').replace(/\/$/, '')}`;
-    const changelogFilename = path.join(changelogProcessingDir, `${id}.md`);
-
-    return [
-      require.resolve('./src/plugins/changelog/index.js'),
-      {
-        id: id,
-        blogTitle: `${spec.layout.title} Changelog`,
-        blogDescription: `Changelog for ${spec.layout.title}`,
-        blogSidebarCount: 'ALL',
-        blogSidebarTitle: 'Changelog',
-        routeBasePath: `${spec.routePath}/changelog`,
-        changelogFilename: changelogFilename,
-        showReadingTime: false,
-        postsPerPage: 20,
-        archiveBasePath: null,
-        feedOptions: {
-          type: 'all',
-          title: `${spec.layout.title} Changelog`,
-          description: `Changelog for ${spec.layout.title}`,
-          language: 'en',
-        },
-      },
-    ];
-  });
+const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
@@ -126,7 +88,27 @@ const apiChangelogPlugins = specs
         },
       },
     ],
-    ...apiChangelogPlugins, // Spread the dynamically generated changelog plugins
+    [
+      require.resolve('./src/plugins/changelog/index.js'),
+      {
+        id: 'api-changelog',
+        blogTitle: 'API Changelog',
+        blogDescription: 'Breaking changes, new features, and significant updates to epilot APIs',
+        blogSidebarCount: 'ALL',
+        blogSidebarTitle: 'Changelog',
+        routeBasePath: '/api/changelog',
+        changelogFilename: path.join(__dirname, 'CHANGELOG.md'),
+        showReadingTime: false,
+        postsPerPage: 25,
+        archiveBasePath: null,
+        feedOptions: {
+          type: 'all',
+          title: 'epilot API Changelog',
+          description: 'Breaking changes, new features, and significant updates to epilot APIs',
+          language: 'en',
+        },
+      },
+    ],
   ],
 
   themeConfig:
