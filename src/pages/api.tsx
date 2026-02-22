@@ -20,7 +20,7 @@ const toc = [
   { value: 'Data Model', id: 'data-model', children: [], level: 2 },
   { value: 'Webhooks', id: 'webhooks', children: [], level: 2 },
   { value: 'Changelog', id: 'changelog', children: [], level: 2 },
-  { value: 'API List', id: 'api-list', children: [], level: 2 },
+  { value: 'API Reference', id: 'api-reference', children: [], level: 2 },
 ];
 
 function ApiIntro(): JSX.Element {
@@ -52,18 +52,18 @@ function ApiIntro(): JSX.Element {
                   </p>
                   <p>
                     <Link
-                      className="button button--secondary button--lg"
-                      to="/docs/entities/core-entities"
+                      className="button button--primary button--lg"
+                      to="#api-reference"
                       style={{ marginRight: '0.5rem', marginBottom: '0.5rem' }}
                     >
-                      Core Entities
+                      Explore APIs
                     </Link>
                     <Link
                       className="button button--secondary button--lg"
-                      to="/docs/integrations/core-events"
+                      to="/docs/architecture/sdk"
                       style={{ marginRight: '0.5rem', marginBottom: '0.5rem' }}
                     >
-                      Core Events
+                      SDK Reference
                     </Link>
                     <Link
                       className="button button--secondary button--lg"
@@ -131,7 +131,7 @@ yarn add @epilot/entity-client`}</code>
                     to stay up to date.
                   </p>
 
-                  <h2 id="api-list">API List</h2>
+                  <h2 id="api-reference">API Reference</h2>
                   <table>
                     <thead>
                       <tr>

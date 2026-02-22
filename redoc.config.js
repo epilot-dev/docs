@@ -140,11 +140,6 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/notes.yaml',
   },
   {
-    layout: { title: 'Notes API' },
-    routePath: '/api/notes',
-    specUrl: 'https://docs.api.epilot.io/notes.yaml',
-  },
-  {
     layout: { title: 'Consent API' },
     routePath: '/api/consent',
     specUrl: 'https://docs.api.epilot.io/consent.yaml',
