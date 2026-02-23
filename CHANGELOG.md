@@ -2,6 +2,10 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-02-23 Message API
+
+- New `POST /v2/message/threads/{id}/assign:users` endpoint was added, allowing users to be added or removed from a message thread
+
 ## 2026-02-23 Workflows Execution API
 
 - `PhaseMarkedInProgress` and `PhaseSkipped` enum values were removed from the `trigger/event` field in entity sync responses — affects `POST /v2/flows/executions`, `GET /v2/flows/executions/{execution_id}`, `PATCH /v2/flows/executions/{execution_id}`, and `POST /v2/flows/executions:search`
@@ -9,6 +13,11 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-02-23 Meter Entity
 
 - New `me_lo_id` field was added for storing the MeLo-ID (Messlokation) measurement location identifier
+
+## 2026-02-22 Blueprint Manifest API
+
+- New optional `archived` query parameter was added to `GET /v2/blueprint-manifest/blueprints` to filter by archived status
+- New optional `archived` field was added to blueprint objects, indicating whether a blueprint is soft-deleted and hidden from the main list
 
 ## 2026-02-22 Entity API
 
