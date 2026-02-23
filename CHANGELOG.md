@@ -2,6 +2,10 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-02-23 Meter Entity
+
+- New `me_lo_id` field was added for storing the MeLo-ID (Messlokation) measurement location identifier
+
 ## 2026-02-22 Entity API
 
 - New `table` schema attribute type was added
