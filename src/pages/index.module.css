@@ -57,11 +57,7 @@ html[data-theme='dark'] .heroBannerSubtitle {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
-}
-
-.buttons>* {
-  margin: .25rem;
+  gap: 0.5rem;
 }
 
 .mainLogoContainer {

@@ -17,7 +17,7 @@ interface Spec {
 const toc = [
   { value: 'Authentication', id: 'authentication', children: [], level: 2 },
   { value: 'SDK', id: 'sdk', children: [], level: 2 },
-  { value: 'Data Model', id: 'data-model', children: [], level: 2 },
+  { value: 'Entities', id: 'entities', children: [], level: 2 },
   { value: 'Webhooks', id: 'webhooks', children: [], level: 2 },
   { value: 'Changelog', id: 'changelog', children: [], level: 2 },
   { value: 'API Reference', id: 'api-reference', children: [], level: 2 },
@@ -56,14 +56,7 @@ function ApiIntro(): JSX.Element {
                       to="#api-reference"
                       style={{ marginRight: '0.5rem', marginBottom: '0.5rem' }}
                     >
-                      Explore APIs
-                    </Link>
-                    <Link
-                      className="button button--secondary button--lg"
-                      to="/docs/architecture/sdk"
-                      style={{ marginRight: '0.5rem', marginBottom: '0.5rem' }}
-                    >
-                      SDK Reference
+                      API Reference
                     </Link>
                     <Link
                       className="button button--secondary button--lg"
@@ -85,8 +78,7 @@ function ApiIntro(): JSX.Element {
   -H "Authorization: Bearer <token>"`}</code>
                   </pre>
                   <p>
-                    Generate tokens from the epilot portal or programmatically via the{' '}
-                    <Link to="/api/access-token">Access Token API</Link>. See{' '}
+                    Generate API tokens from the epilot portal. See{' '}
                     <Link to="/docs/auth/access-tokens">Access Tokens</Link> for details.
                   </p>
 
@@ -101,11 +93,13 @@ function ApiIntro(): JSX.Element {
 yarn add @epilot/entity-client`}</code>
                   </pre>
 
-                  <h2 id="data-model">Data Model</h2>
+                  <h2 id="entities">Entities</h2>
                   <p>
-                    All data in epilot is stored as entities following a{' '}
-                    <Link to="/docs/entities/core-entities">standard data model</Link>. Core entity types like Contacts,
-                    Organizations, Orders, and Products come built-in and can be extended with custom schemas.
+                    Business objects like contacts, orders, products, and contracts are represented as{' '}
+                    <Link to="/docs/entities/flexible-entities">entities</Link>. Flexible JSON objects backed by
+                    user-definable schemas. The platform ships with a standard set of{' '}
+                    <Link to="/docs/entities/core-entities">core entities</Link>, and organizations can extend schemas
+                    or define entirely new entity types via the <Link to="/api/entity">Entity API</Link>.
                   </p>
 
                   <h2 id="webhooks">Webhooks</h2>

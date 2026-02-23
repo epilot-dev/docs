@@ -1,3 +1,4 @@
+import Link from '@docusaurus/Link';
 import DocPageStyles from '@docusaurus/theme-classic/lib-next/theme/DocPage/styles.module.css';
 import { ThemeClassNames, useWindowSize } from '@docusaurus/theme-common';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -66,7 +67,11 @@ function ChangelogList(props): JSX.Element {
 
                     return (
                       <section key={meta.permalink}>
-                        <h2 id={anchorId}>{date} {apiName}</h2>
+                        <h2 id={anchorId}>
+                          <Link to={meta.permalink} style={{ color: 'inherit' }}>
+                            {date} {apiName}
+                          </Link>
+                        </h2>
                         <BlogPostContent />
                       </section>
                     );

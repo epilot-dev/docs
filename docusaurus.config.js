@@ -93,7 +93,7 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
       {
         id: 'api-changelog',
         blogTitle: 'API Changelog',
-        blogDescription: 'Breaking changes, new features, and significant updates to epilot APIs',
+        blogDescription: 'Breaking changes, new features, and significant updates to epilot APIs.',
         blogSidebarCount: 'ALL',
         blogSidebarTitle: 'Changelog',
         routeBasePath: '/api/changelog',
@@ -104,7 +104,7 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
         feedOptions: {
           type: 'all',
           title: 'epilot API Changelog',
-          description: 'Breaking changes, new features, and significant updates to epilot APIs',
+          description: 'Breaking changes, new features, and significant updates to epilot APIs.',
           language: 'en',
         },
       },

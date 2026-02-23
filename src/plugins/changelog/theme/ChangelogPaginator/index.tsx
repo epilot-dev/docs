@@ -16,31 +16,35 @@ export default function ChangelogPaginator(props: Props): JSX.Element {
       })}
     >
       {prevItem && (
-        <PaginatorNavLink
-          {...prevItem}
-          subLabel={
-            <Translate
-              id="theme.changelog.post.paginator.newer"
-              description="The changelog button label to navigate to newer changes"
-            >
-              Newer
-            </Translate>
-          }
-        />
+        <div className="pagination-nav__item">
+          <PaginatorNavLink
+            {...prevItem}
+            subLabel={
+              <Translate
+                id="theme.changelog.post.paginator.newer"
+                description="The changelog button label to navigate to newer changes"
+              >
+                Newer
+              </Translate>
+            }
+          />
+        </div>
       )}
       {nextItem && (
-        <PaginatorNavLink
-          {...nextItem}
-          subLabel={
-            <Translate
-              id="theme.changelog.post.paginator.older"
-              description="The changelog button label to navigate to older changes"
-            >
-              Older
-            </Translate>
-          }
-          isNext
-        />
+        <div className="pagination-nav__item">
+          <PaginatorNavLink
+            {...nextItem}
+            subLabel={
+              <Translate
+                id="theme.changelog.post.paginator.older"
+                description="The changelog button label to navigate to older changes"
+              >
+                Older
+              </Translate>
+            }
+            isNext
+          />
+        </div>
       )}
     </nav>
   );
