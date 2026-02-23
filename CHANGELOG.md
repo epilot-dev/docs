@@ -10,10 +10,6 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - `PhaseMarkedInProgress` and `PhaseSkipped` enum values were removed from the `trigger/event` field in entity sync responses — affects `POST /v2/flows/executions`, `GET /v2/flows/executions/{execution_id}`, `PATCH /v2/flows/executions/{execution_id}`, and `POST /v2/flows/executions:search`
 
-## 2026-02-23 Message API
-
-- New `POST /v2/message/threads/{id}/assign:users` endpoint was added for assigning and removing users from a message thread
-
 ## 2026-02-23 Meter Entity
 
 - New `me_lo_id` field was added for storing the MeLo-ID (Messlokation) measurement location identifier
