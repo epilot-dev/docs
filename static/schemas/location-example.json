@@ -1,21 +1,34 @@
 {
-  "_schema": "meter_counter",
+  "_schema": "location",
   "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_org": "123",
   "_title": "Entity Title",
   "_tags": [
     "family:label"
   ],
-  "_purpose": [
-    "7675dc56-fd1b-46ee-9c35-defe0667b32e"
-  ],
-  "obis_number": "string",
-  "direction": "feed-in",
-  "tariff_type": "ht",
-  "transformer_ratio": "string",
-  "unit": "w",
-  "conversion_factor": "string",
-  "meter": {
+  "address": {
+    "_tags": [
+      "billing"
+    ],
+    "street": "Hauptstraße",
+    "street_number": "123",
+    "postal_code": "50668",
+    "city": "Cologne",
+    "country": "DE",
+    "additional_info": "string",
+    "company_name": "string",
+    "first_name": "string",
+    "last_name": "string",
+    "salutation": "string",
+    "title": "string",
+    "coordinates": "50.948484, 6.943147",
+    "plot_of_land": "string",
+    "plot_area": "string",
+    "start_date": "1970-01-01",
+    "end_date": "1970-01-01"
+  },
+  "address_hash": "string",
+  "entity_relations": {
     "$relation": [
       {
         "entity_id": "123e4567-e89b-12d3-a456-426614174000",
@@ -25,7 +38,6 @@
       }
     ]
   },
-  "external_id": "string",
   "_files": {
     "$relation": [
       {

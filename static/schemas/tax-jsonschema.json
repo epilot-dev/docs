@@ -29,7 +29,7 @@
       "readOnly": true,
       "type": "string",
       "nullable": true,
-      "example": "John Doe",
+      "example": "Entity Title",
       "description": "Generated title for the entity based on schema title_template"
     },
     "_tags": {
@@ -60,7 +60,7 @@
       "description": "Description"
     },
     "rate": {
-      "type": "string",
+      "type": "number",
       "description": "Tax Rate (%)"
     },
     "active": {

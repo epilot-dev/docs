@@ -2,7 +2,7 @@
   "_schema": "contract",
   "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_org": "123",
-  "_title": "John Doe",
+  "_title": "Entity Title",
   "_tags": [
     "family:label"
   ],
@@ -150,6 +150,16 @@
   "balance_decimal": "123.45",
   "balance": 0,
   "meters": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "assets": {
     "$relation": [
       {
         "entity_id": "123e4567-e89b-12d3-a456-426614174000",

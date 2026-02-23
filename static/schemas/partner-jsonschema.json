@@ -32,7 +32,7 @@
       "readOnly": true,
       "type": "string",
       "nullable": true,
-      "example": "John Doe",
+      "example": "Entity Title",
       "description": "Generated title for the entity based on schema title_template"
     },
     "_tags": {
@@ -170,10 +170,6 @@
       },
       "description": "Address"
     },
-    "activity_radius": {
-      "type": "string",
-      "description": "Activity Radius (km)"
-    },
     "customer": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Customer"
@@ -191,9 +187,6 @@
     "_availability_files": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Availability File"
-    },
-    "workflows": {
-      "$ref": "#/definitions/WorkflowOverview"
     },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
@@ -319,152 +312,6 @@
               }
             }
           }
-        }
-      }
-    },
-    "WorkflowStatus": {
-      "type": "string",
-      "enum": [
-        "STARTED",
-        "DONE",
-        "CLOSED"
-      ]
-    },
-    "StepType": {
-      "type": "string",
-      "enum": [
-        "MANUAL",
-        "AUTOMATION"
-      ]
-    },
-    "StepStatus": {
-      "type": "string",
-      "enum": [
-        "UNASSIGNED",
-        "ASSIGNED",
-        "COMPLETED",
-        "SKIPPED",
-        "IN_PROGRESS"
-      ]
-    },
-    "PhaseInEntity": {
-      "type": "object",
-      "description": "Workflow phase information",
-      "properties": {
-        "phase_id": {
-          "type": "string"
-        },
-        "phase_name": {
-          "type": "string"
-        },
-        "phase_progress": {
-          "type": "number"
-        }
-      },
-      "required": [
-        "phase_id",
-        "phase_name",
-        "phase_progress"
-      ]
-    },
-    "WorkflowInEntity": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "definition_id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/definitions/WorkflowStatus"
-        },
-        "assignees": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "progress": {
-          "type": "number"
-        },
-        "phases_in_progress": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PhaseInEntity"
-          }
-        },
-        "last_update_time": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "upcoming_tasks_assignees": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "task_id": {
-          "type": "string"
-        },
-        "task_name": {
-          "type": "string"
-        },
-        "task_assignees": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "task_duedate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "task_execution_type": {
-          "$ref": "#/definitions/StepType"
-        },
-        "task_status": {
-          "$ref": "#/definitions/StepStatus"
-        },
-        "phase_id": {
-          "type": "string"
-        },
-        "phase_name": {
-          "type": "string"
-        },
-        "phase_assignees": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "phase_progress": {
-          "type": "number"
-        }
-      },
-      "required": [
-        "id",
-        "definition_id",
-        "name",
-        "status",
-        "assignees",
-        "last_update_time"
-      ]
-    },
-    "WorkflowOverview": {
-      "type": "object",
-      "properties": {
-        "primary": {
-          "$ref": "#/definitions/WorkflowInEntity"
-        }
-      },
-      "additionalProperties": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/WorkflowInEntity"
         }
       }
     }

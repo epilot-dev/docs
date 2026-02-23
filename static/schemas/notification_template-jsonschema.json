@@ -2,17 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "_schema",
-    "type",
-    "billing_amount",
-    "booking_date"
+    "_schema"
   ],
   "properties": {
     "_schema": {
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "billing_event",
+      "example": "notification_template",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -46,83 +43,33 @@
       ],
       "description": "Entity Labels"
     },
+    "name": {
+      "type": "string",
+      "description": "Name: Internal template name. Example: 'New Message Received'"
+    },
     "type": {
       "type": "string",
-      "enum": [
-        "payment",
-        "installment",
-        "reimbursement",
-        "dunning_fee",
-        "chargeback",
-        "final_bill",
-        "bonus",
-        "correction"
-      ],
-      "description": "Type"
+      "description": "Type: Notification type key. Example: 'email_received'"
     },
-    "billing_amount_currency": {
+    "notification_title": {
       "type": "string",
-      "description": "Three-letter ISO currency code, in lowercase. Must be a supported currency.",
-      "example": "EUR"
+      "description": "Notification Title: Notification title as Lexical editor JSON (supports variables)"
     },
-    "billing_amount_decimal": {
+    "message": {
       "type": "string",
-      "description": "The currency value as a decimal string",
-      "example": "123.45"
+      "description": "Message: Notification body as Lexical editor JSON (supports variables)"
     },
-    "billing_amount": {
-      "type": "number",
-      "description": "Billing Amount"
-    },
-    "direction": {
+    "action_label": {
       "type": "string",
-      "enum": [
-        "debit",
-        "credit"
-      ],
-      "description": "Direction"
+      "description": "Action Label: CTA button text (supports variables)"
     },
-    "booking_date": {
+    "action_url": {
       "type": "string",
-      "format": "date",
-      "example": "2025-01-01",
-      "description": "Booking Date"
+      "description": "Action URL: CTA button URL (supports variables)"
     },
-    "due_date": {
+    "style": {
       "type": "string",
-      "format": "date",
-      "example": "2025-01-01",
-      "description": "Due date"
-    },
-    "paid_date": {
-      "type": "string",
-      "format": "date",
-      "example": "2025-01-01",
-      "description": "Paid date"
-    },
-    "external_id": {
-      "type": "string",
-      "description": "External ID"
-    },
-    "external_link": {
-      "$ref": "#/definitions/LinkAttribute",
-      "description": "External Link"
-    },
-    "note": {
-      "type": "string",
-      "description": "Note"
-    },
-    "internal_note": {
-      "type": "string",
-      "description": "Internal Note"
-    },
-    "contract": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Billing Account"
-    },
-    "related_event": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Related Event"
+      "description": "Style: JSON string with style config"
     },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
@@ -205,27 +152,6 @@
     }
   },
   "definitions": {
-    "LinkAttribute": {
-      "type": "object",
-      "description": "Link with title and href",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "link"
-          ]
-        },
-        "title": {
-          "type": "string",
-          "example": "Visit Website"
-        },
-        "href": {
-          "type": "string",
-          "format": "uri",
-          "example": "https://example.com"
-        }
-      }
-    },
     "BaseUUID": {
       "type": "string",
       "format": "uuid",

@@ -1,5 +1,5 @@
 {
-  "_schema": "target",
+  "_schema": "notification_template",
   "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_org": "123",
   "_title": "Entity Title",
@@ -7,8 +7,12 @@
     "family:label"
   ],
   "name": "string",
-  "description": "string",
-  "entity_schema": "string",
+  "type": "string",
+  "notification_title": "string",
+  "message": "string",
+  "action_label": "string",
+  "action_url": "string",
+  "style": "string",
   "_files": {
     "$relation": [
       {

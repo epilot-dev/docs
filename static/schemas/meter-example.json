@@ -2,7 +2,7 @@
   "_schema": "meter",
   "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_org": "123",
-  "_title": "John Doe",
+  "_title": "Entity Title",
   "_tags": [
     "family:label"
   ],
@@ -10,6 +10,7 @@
     "7675dc56-fd1b-46ee-9c35-defe0667b32e"
   ],
   "ma_lo_id": "string",
+  "me_lo_id": "string",
   "meter_type": "three-phase-meter",
   "tariff_type": "string",
   "meter_number": "string",
