@@ -119,6 +119,16 @@
       ],
       "description": "Category"
     },
+    "file_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "File Date"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },

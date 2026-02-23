@@ -29,6 +29,8 @@
   "public_url": "string",
   "shared_with_end_customer": true,
   "category": "address-suggestions",
+  "file_date": "2025-01-01",
+  "external_id": "string",
   "_files": {
     "$relation": [
       {

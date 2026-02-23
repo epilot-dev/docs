@@ -496,6 +496,10 @@
       "$ref": "#/definitions/BaseRelation",
       "description": "Contracts"
     },
+    "external_id": {
+      "type": "string",
+      "description": "External ID"
+    },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"
     },
