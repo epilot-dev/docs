@@ -10,6 +10,11 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - `PhaseMarkedInProgress` and `PhaseSkipped` enum values were removed from the `trigger/event` field in entity sync responses — affects `POST /v2/flows/executions`, `GET /v2/flows/executions/{execution_id}`, `PATCH /v2/flows/executions/{execution_id}`, and `POST /v2/flows/executions:search`
 
+## 2026-02-23 Workflows Definition API
+
+- `PhaseMarkedInProgress` and `PhaseSkipped` enum values were removed from the `entity_sync/trigger/event` field across all flow template endpoints — affects request body of `POST` and `PUT /v2/flows/templates/{flowId}`, and responses of `GET`, `POST`, `PUT /v2/flows/templates`, `POST /v2/flows/templates:search`
+- New `TaskMarkedOnHold` trigger event value was added to `entity_sync/trigger/event`, enabling entity sync rules to fire when a task is placed on hold
+
 ## 2026-02-23 Meter Entity
 
 - New `me_lo_id` field was added for storing the MeLo-ID (Messlokation) measurement location identifier
