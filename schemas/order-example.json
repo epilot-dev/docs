@@ -1,0 +1,421 @@
+{
+  "_schema": "order",
+  "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_org": "123",
+  "_title": "John Doe",
+  "_tags": [
+    "family:label"
+  ],
+  "_purpose": [
+    "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+  ],
+  "order_number": "string",
+  "status": "draft",
+  "expires_at": "2025-01-01",
+  "source": {
+    "type": "link",
+    "title": "Visit Website",
+    "href": "https://example.com"
+  },
+  "payment_method": {
+    "type": "payment_sepa",
+    "data": {
+      "bank_name": "Deutsche Bank",
+      "iban": "DE89370400440532013000",
+      "bic_number": "DEUTDEFF",
+      "fullname": "John Doe"
+    }
+  },
+  "customer": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "billing_contact": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "billing_first_name": "string",
+  "billing_last_name": "string",
+  "billing_email": "string",
+  "billing_phone": "string",
+  "billing_company_name": "string",
+  "billing_vat": "string",
+  "billing_address": [
+    {
+      "_tags": [
+        "billing"
+      ],
+      "street": "Hauptstraße",
+      "street_number": "123",
+      "postal_code": "50668",
+      "city": "Cologne",
+      "country": "DE",
+      "additional_info": "string",
+      "company_name": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "salutation": "string",
+      "title": "string",
+      "coordinates": "50.948484, 6.943147",
+      "plot_of_land": "string",
+      "plot_area": "string",
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01"
+    }
+  ],
+  "delivery_address": [
+    {
+      "_tags": [
+        "billing"
+      ],
+      "street": "Hauptstraße",
+      "street_number": "123",
+      "postal_code": "50668",
+      "city": "Cologne",
+      "country": "DE",
+      "additional_info": "string",
+      "company_name": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "salutation": "string",
+      "title": "string",
+      "coordinates": "50.948484, 6.943147",
+      "plot_of_land": "string",
+      "plot_area": "string",
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01"
+    }
+  ],
+  "additional_addresses": [
+    {
+      "_tags": [
+        "billing"
+      ],
+      "street": "Hauptstraße",
+      "street_number": "123",
+      "postal_code": "50668",
+      "city": "Cologne",
+      "country": "DE",
+      "additional_info": "string",
+      "company_name": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "salutation": "string",
+      "title": "string",
+      "coordinates": "50.948484, 6.943147",
+      "plot_of_land": "string",
+      "plot_area": "string",
+      "start_date": "1970-01-01",
+      "end_date": "1970-01-01"
+    }
+  ],
+  "dates": [
+    {
+      "_tags": [
+        "string"
+      ],
+      "value": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "memo": "string",
+  "footer_notes": "string",
+  "currency": "string",
+  "amount_total": 0,
+  "amount_subtotal": 0,
+  "amount_tax": 0,
+  "products": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "prices": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "coupons": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "opportunities": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "contracts": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "workflows": {
+    "primary": {
+      "id": "string",
+      "definition_id": "string",
+      "name": "string",
+      "status": "STARTED",
+      "assignees": [
+        "string"
+      ],
+      "progress": 0,
+      "phases_in_progress": [
+        {
+          "phase_id": "string",
+          "phase_name": "string",
+          "phase_progress": 0
+        }
+      ],
+      "last_update_time": "1970-01-01T00:00:00.000Z",
+      "upcoming_tasks_assignees": [
+        "string"
+      ],
+      "task_id": "string",
+      "task_name": "string",
+      "task_assignees": [
+        "string"
+      ],
+      "task_duedate": "1970-01-01T00:00:00.000Z",
+      "task_execution_type": "MANUAL",
+      "task_status": "UNASSIGNED",
+      "phase_id": "string",
+      "phase_name": "string",
+      "phase_assignees": [
+        "string"
+      ],
+      "phase_progress": 0
+    }
+  },
+  "consents": {
+    "_isValid": true
+  },
+  "line_items": [
+    {
+      "price_id": "123e4567-e89b-12d3-a456-426614174000",
+      "product_id": "123e4567-e89b-12d3-a456-426614174000",
+      "quantity": 0,
+      "description": "string",
+      "unit_amount": 0,
+      "unit_amount_decimal": "string",
+      "pricing_model": "per_unit",
+      "_price": {
+        "_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_title": "string",
+        "description": "string",
+        "unit_amount": 0,
+        "unit_amount_decimal": "string",
+        "unit_amount_currency": "string",
+        "active": true,
+        "sales_tax": "string",
+        "tax_behavior": "string",
+        "price_display_in_journeys": "string",
+        "type": "string",
+        "billing_period": "string",
+        "billing_duration_unit": "string",
+        "notice_time_unit": "string",
+        "termination_time_unit": "string",
+        "renewal_duration_unit": "string",
+        "internal_description": "string",
+        "pricing_model": "string",
+        "is_tax_inclusive": true,
+        "headline": "string",
+        "subHeadline": "string",
+        "group": "string"
+      },
+      "_product": {
+        "type": "product",
+        "_title": "string",
+        "name": "string",
+        "description": "string",
+        "price_options": [
+          {
+            "_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_title": "string",
+            "description": "string",
+            "unit_amount": 0,
+            "unit_amount_decimal": "string",
+            "unit_amount_currency": "string",
+            "active": true,
+            "_schema": "string",
+            "_org": "string",
+            "_created_at": "1970-01-01T00:00:00.000Z",
+            "_updated_at": "1970-01-01T00:00:00.000Z",
+            "sales_tax": "string",
+            "tax_behavior": "string",
+            "price_display_in_journeys": "string",
+            "type": "string",
+            "billing_period": "string",
+            "billing_duration_unit": "string",
+            "notice_time_unit": "string",
+            "termination_time_unit": "string",
+            "renewal_duration_unit": "string",
+            "internal_description": "string",
+            "_owners": [
+              {
+                "org_id": "string"
+              }
+            ],
+            "pricing_model": "string",
+            "is_tax_inclusive": true,
+            "_acl": {
+              "view": [
+                "string"
+              ],
+              "edit": [
+                "string"
+              ],
+              "delete": [
+                "string"
+              ]
+            },
+            "$relation": {
+              "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+              "_schema": "string",
+              "_tags": [
+                "string"
+              ]
+            }
+          }
+        ],
+        "_id": "123e4567-e89b-12d3-a456-426614174000"
+      },
+      "taxes": [
+        {
+          "rate": "string",
+          "rateValue": 0,
+          "amount": 0
+        }
+      ],
+      "currency": "string",
+      "unit_amount_net": 0,
+      "unit_amount_net_decimal": "string",
+      "unit_amount_gross": 0,
+      "unit_amount_gross_decimal": "string",
+      "amount_subtotal": 0,
+      "amount_total": 0,
+      "amount_tax": 0,
+      "is_tax_inclusive": true,
+      "amount_subtotal_decimal": "string",
+      "amount_total_decimal": "string"
+    }
+  ],
+  "total_details": {
+    "amount_shipping": 0,
+    "amount_tax": 0,
+    "breakdown": {
+      "taxes": [
+        {
+          "amount": 0,
+          "rate": "string",
+          "rateValue": 0,
+          "tax": {
+            "rate": 0,
+            "type": "VAT",
+            "_id": "string"
+          }
+        }
+      ],
+      "recurrences": [
+        {
+          "type": "string",
+          "billing_period": "weekly",
+          "unit_amount_gross": 0,
+          "unit_amount_net": 0,
+          "amount_tax": 0,
+          "currency": "EUR",
+          "amount_subtotal": 0,
+          "amount_subtotal_decimal": "string",
+          "amount_total": 0,
+          "amount_total_decimal": "string"
+        }
+      ],
+      "recurrencesByTax": [
+        {
+          "type": "string",
+          "billing_period": "weekly",
+          "amount_total": 0,
+          "amount_subtotal": 0,
+          "amount_tax": 0,
+          "tax": {
+            "amount": 0,
+            "rate": "string",
+            "rateValue": 0,
+            "tax": {
+              "rate": 0,
+              "type": "VAT",
+              "_id": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_files": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "_created_at": "1970-01-01T00:00:00.000Z",
+  "_updated_at": "1970-01-01T00:00:00.000Z",
+  "_owners": [
+    {
+      "org_id": "123",
+      "user_id": "456"
+    }
+  ],
+  "_acl": {
+    "view": [
+      "org:456"
+    ],
+    "edit": [
+      "org:456"
+    ],
+    "delete": [
+      "org:456"
+    ]
+  },
+  "_manifest": [
+    "123e4567-e89b-12d3-a456-426614174000"
+  ]
+}

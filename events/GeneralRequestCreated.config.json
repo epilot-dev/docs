@@ -1,0 +1,56 @@
+{
+  "event_name": "GeneralRequestCreated",
+  "event_title": "Contact Form",
+  "event_description": "Customer request via contact form",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "automation",
+    "ticket",
+    "general-request"
+  ],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "ticket",
+        "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "submission",
+        "schema": "submission",
+        "cardinality": "one",
+        "fields": [
+          "_id"
+        ]
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ticket",
+        "to": "submission"
+      },
+      {
+        "from": "ticket",
+        "to": "contact"
+      },
+      {
+        "from": "ticket",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "automation_trigger": true
+}

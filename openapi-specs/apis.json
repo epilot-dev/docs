@@ -1,0 +1,387 @@
+{
+  "name": "Epilot APIs",
+  "description": "Collection of Epilot API specifications",
+  "url": "https://docs.epilot.io",
+  "apis": [
+    {
+      "name": "Access Token API",
+      "baseURL": "https://access-token.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/access-token.yaml"
+        }
+      ]
+    },
+    {
+      "name": "User API",
+      "baseURL": "https://user.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/user.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Organization API",
+      "baseURL": "https://organization-v2.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/organization-v2.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Entity API",
+      "baseURL": "https://entity.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/entity.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Purpose API",
+      "baseURL": "https://purpose.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/purpose.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Batch API",
+      "baseURL": "https://batch.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/batch.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Submission API",
+      "baseURL": "https://submission.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/submission-api.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Pricing API",
+      "baseURL": "https://pricing-api.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/pricing-api.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Dashboard API",
+      "baseURL": "https://dashboard.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/dashboard.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Query API",
+      "baseURL": "https://query.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/query.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Webhooks API",
+      "baseURL": "https://webhooks.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/webhooks.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Permissions API",
+      "baseURL": "https://permissions.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/permissions.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Email Settings API",
+      "baseURL": "https://email-settings.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/email-settings.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Message API",
+      "baseURL": "https://message.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/message.yaml"
+        }
+      ]
+    },
+    {
+      "name": "File API",
+      "baseURL": "https://file.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/file.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Journey API",
+      "baseURL": "https://journey-config.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/journey-config.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Address Suggestions API",
+      "baseURL": "https://address-suggestions-api.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/address-suggestions-api.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Document API",
+      "baseURL": "https://document.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/document.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Automation API",
+      "baseURL": "https://automation.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/automation.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Entity Mapping API",
+      "baseURL": "https://entity-mapping.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/entity-mapping-api.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Template Variables API",
+      "baseURL": "https://template-variables-api.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/template-variables.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Portal API",
+      "baseURL": "https://customer-portal-api.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/customer-portal.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Metering API",
+      "baseURL": "https://metering.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/metering.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Billing API",
+      "baseURL": "https://billing.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/billing.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Email Template API",
+      "baseURL": "https://email-template.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/email-template.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Workflow Definition API",
+      "baseURL": "https://workflows-definition.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/workflows-definition.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Workflow Execution API",
+      "baseURL": "https://workflows-execution.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/workflows-execution.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Notes API",
+      "baseURL": "https://notes.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/notes.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Consent API",
+      "baseURL": "https://consent.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/consent.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Partner API",
+      "baseURL": "https://partner-directory-api.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/partner-directory-api.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Notification API",
+      "baseURL": "https://notification.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/svc-notification-api.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Blueprint Manifest API",
+      "baseURL": "https://blueprint-manifest.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/blueprint-manifest.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Design API",
+      "baseURL": "https://design-builder-api.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/design-builder-api.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Product API",
+      "baseURL": "https://product.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/product.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Customer API",
+      "baseURL": "https://customer.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/customer.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Opportunity API",
+      "baseURL": "https://opportunity.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/opportunity.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Order API",
+      "baseURL": "https://order.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/order.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Kanban API",
+      "baseURL": "https://kanban.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/kanban.yaml"
+        }
+      ]
+    }
+  ]
+}

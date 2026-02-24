@@ -1,0 +1,56 @@
+{
+  "event_name": "BillingAccountConnectionRemoved",
+  "event_title": "Disassociate Billing Account",
+  "event_description": "Customer request to disassociate a billing account from a contact",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "automation",
+    "ticket",
+    "billing-account"
+  ],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "ticket",
+        "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "submission",
+        "schema": "submission",
+        "cardinality": "one",
+        "fields": [
+          "_id"
+        ]
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ticket",
+        "to": "submission"
+      },
+      {
+        "from": "ticket",
+        "to": "contact"
+      },
+      {
+        "from": "ticket",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "automation_trigger": true
+}

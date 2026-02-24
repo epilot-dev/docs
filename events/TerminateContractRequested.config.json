@@ -1,0 +1,65 @@
+{
+  "event_name": "TerminateContractRequested",
+  "event_title": "Terminate Contract Request",
+  "event_description": "Customer request to terminate a contract",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "automation",
+    "ticket",
+    "contract"
+  ],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "ticket",
+        "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      },
+      {
+        "id": "submission",
+        "schema": "submission",
+        "cardinality": "one",
+        "fields": [
+          "_id"
+        ]
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ticket",
+        "to": "contract"
+      },
+      {
+        "from": "ticket",
+        "to": "submission"
+      },
+      {
+        "from": "ticket",
+        "to": "contact"
+      },
+      {
+        "from": "ticket",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "automation_trigger": true
+}

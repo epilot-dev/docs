@@ -1,0 +1,74 @@
+{
+  "event_name": "LocationMoveRequested",
+  "event_title": "Move Request",
+  "event_description": "Customer request to move or relocate a service",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "automation",
+    "ticket",
+    "move"
+  ],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "ticket",
+        "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      },
+      {
+        "id": "meter",
+        "schema": "meter",
+        "cardinality": "one"
+      },
+      {
+        "id": "submission",
+        "schema": "submission",
+        "cardinality": "one",
+        "fields": [
+          "_id"
+        ]
+      },
+      {
+        "id": "meter_counter",
+        "schema": "meter_counter",
+        "cardinality": "one"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ticket",
+        "to": "contract"
+      },
+      {
+        "from": "ticket",
+        "to": "meter"
+      },
+      {
+        "from": "ticket",
+        "to": "submission"
+      },
+      {
+        "from": "ticket",
+        "to": "meter_counter"
+      },
+      {
+        "from": "contract",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "automation_trigger": true
+}

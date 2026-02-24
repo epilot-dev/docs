@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkepilot_dev_handbook=self.webpackChunkepilot_dev_handbook||[]).push([[24538],{40699:e=>{e.exports=JSON.parse('{"specUrl":"https://docs.api.epilot.io/erp-integration.yaml","type":"url","content":"https://docs.api.epilot.io/erp-integration.yaml"}')}}]);

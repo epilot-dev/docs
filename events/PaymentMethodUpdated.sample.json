@@ -1,0 +1,239 @@
+{
+  "_org_id": "123",
+  "_event_time": "1970-01-01T00:00:00.000Z",
+  "_event_id": "string",
+  "_event_name": "PaymentMethodUpdated",
+  "_event_version": "1.0.0",
+  "_event_source": "string",
+  "_trigger_source_type": "api",
+  "_trigger_source": "api_123456",
+  "operation": "updateEntity",
+  "activity_id": "01F130Q52Q6MWSNS8N2AVXV4JN",
+  "activity_type": "EntityUpdated",
+  "trigger_entity": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "billing_account": {
+    "_schema": "billing_account",
+    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "billing_account_number": "string",
+    "balance_currency": "EUR",
+    "balance_decimal": "123.45",
+    "balance": 0,
+    "billing_contact": {},
+    "billing_address": {},
+    "payment_method": [
+      {
+        "type": "payment_sepa",
+        "data": {
+          "bank_name": "Deutsche Bank",
+          "iban": "DE89370400440532013000",
+          "bic_number": "DEUTDEFF",
+          "fullname": "John Doe"
+        }
+      }
+    ],
+    "contracts": {},
+    "external_id": "string",
+    "workflows": {},
+    "_files": {},
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
+  },
+  "contracts": [
+    {
+      "_schema": "contract",
+      "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "_org": "123",
+      "_title": "John Doe",
+      "_tags": [
+        "family:label"
+      ],
+      "_purpose": {},
+      "contract_name": "string",
+      "contract_number": "string",
+      "assignee": {},
+      "payment": {},
+      "status": "draft",
+      "description": "string",
+      "billing_account": {},
+      "account_number": "string",
+      "branch": "power",
+      "move_in_date": "2025-01-01",
+      "move_out_date": "2025-01-01",
+      "billing_address": {},
+      "delivery_address": [
+        {
+          "_tags": [
+            "billing"
+          ],
+          "street": "Hauptstraße",
+          "street_number": "123",
+          "postal_code": "50668",
+          "city": "Cologne",
+          "country": "DE",
+          "additional_info": "string",
+          "company_name": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "salutation": "string",
+          "title": "string",
+          "coordinates": "50.948484, 6.943147",
+          "plot_of_land": "string",
+          "plot_area": "string",
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01"
+        }
+      ],
+      "additional_addresses": {},
+      "termination_date": "2025-01-01",
+      "termination_reason": "string",
+      "start_date": "2025-01-01",
+      "end_date": "2025-01-01",
+      "customer": {},
+      "order": {},
+      "type": "one_time",
+      "billing_period": "weekly",
+      "billing_duration_amount": "string",
+      "billing_duration_unit": "weeks",
+      "notice_time_amount": "string",
+      "notice_time_unit": "weeks",
+      "termination_time_amount": "string",
+      "termination_time_unit": "weeks",
+      "renewal_duration_amount": "string",
+      "renewal_duration_unit": "weeks",
+      "billing_due_day": "string",
+      "installment_amount_currency": "EUR",
+      "installment_amount_decimal": "123.45",
+      "installment_amount": 0,
+      "balance_currency": "EUR",
+      "balance_decimal": "123.45",
+      "balance": 0,
+      "meters": {},
+      "last_sync_at": "2025-01-01",
+      "external_id": "string",
+      "workflows": {},
+      "line_items": {},
+      "total_details": {},
+      "_files": {},
+      "_created_at": "1970-01-01T00:00:00.000Z",
+      "_updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "customer": {
+    "_schema": "contact",
+    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "_purpose": {},
+    "salutation": "null",
+    "title": "null",
+    "first_name": "string",
+    "last_name": "string",
+    "customer_number": "string",
+    "birthdate": "2025-01-01",
+    "email": [
+      {
+        "_tags": [
+          "string"
+        ],
+        "email": "user@example.com"
+      }
+    ],
+    "phone": [
+      {
+        "_tags": [
+          "string"
+        ],
+        "phone": "+491234567890"
+      }
+    ],
+    "communication_preference": "postal",
+    "address": [
+      {
+        "_tags": [
+          "billing"
+        ],
+        "street": "Hauptstraße",
+        "street_number": "123",
+        "postal_code": "50668",
+        "city": "Cologne",
+        "country": "DE",
+        "additional_info": "string",
+        "company_name": "string",
+        "first_name": "string",
+        "last_name": "string",
+        "salutation": "string",
+        "title": "string",
+        "coordinates": "50.948484, 6.943147",
+        "plot_of_land": "string",
+        "plot_area": "string",
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01"
+      }
+    ],
+    "payment": [
+      {
+        "type": "payment_sepa",
+        "data": {
+          "bank_name": "Deutsche Bank",
+          "iban": "DE89370400440532013000",
+          "bic_number": "DEUTDEFF",
+          "fullname": "John Doe"
+        }
+      }
+    ],
+    "account": {},
+    "marketing_permission": true,
+    "contact_owner": {},
+    "consent_email_marketing": {},
+    "consent_sms_marketing": {},
+    "consent_phone_call": {},
+    "consent_print_marketing": {},
+    "portal_users": {},
+    "opportunities": {},
+    "orders": {},
+    "contracts": {},
+    "external_id": "string",
+    "workflows": {},
+    "_files": {},
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
+  },
+  "portal_user": {
+    "_schema": "portal_user",
+    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "_purpose": {},
+    "email": [
+      {
+        "_tags": [
+          "string"
+        ],
+        "email": "user@example.com"
+      }
+    ],
+    "secondary_identifier": "string",
+    "origin": "string",
+    "access_status": true,
+    "expires_at": "2025-01-01",
+    "mapping_status": "Pending",
+    "registration_status": "Registration Pending",
+    "external_id": "string",
+    "mapped_contact": {},
+    "represents": {},
+    "_files": {},
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
+  }
+}

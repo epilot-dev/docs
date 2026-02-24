@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkepilot_dev_handbook=self.webpackChunkepilot_dev_handbook||[]).push([[93472],{93472:(e,c,r)=>{r.r(c),r.d(c,{ArchitectureModule:()=>t.s,createArchitectureServices:()=>t.i});var t=r(21775);r(9423)}}]);

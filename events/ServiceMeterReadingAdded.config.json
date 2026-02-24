@@ -1,0 +1,206 @@
+{
+  "event_name": "ServiceMeterReadingAdded",
+  "event_title": "Service: Meter Reading Added",
+  "event_description": "Service request to add a new meter reading via ticket",
+  "event_version": "1.1.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "automation",
+    "service",
+    "ticket",
+    "meter"
+  ],
+  "schema_fields": {
+    "value": {
+      "json_schema": {
+        "type": "number",
+        "description": "The meter reading value"
+      },
+      "required": false,
+      "graph_source": "ticket.value ?? ticket.meter_readings[0].value"
+    },
+    "reading_timestamp": {
+      "json_schema": {
+        "type": "string",
+        "format": "date-time",
+        "description": "ISO 8601 timestamp when the meter reading was taken"
+      },
+      "required": false,
+      "graph_source": "ticket.reading_timestamp ?? ticket.meter_readings[0].reading_timestamp ?? ticket._created_at"
+    },
+    "counter_id": {
+      "json_schema": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Entity ID of the meter counter"
+      },
+      "required": false,
+      "graph_source": "ticket.counter_id ?? ticket.meter_readings[0].counter_id"
+    },
+    "direction": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "feed-in",
+          "feed-out"
+        ],
+        "description": "Direction of energy flow"
+      },
+      "required": false,
+      "graph_source": "ticket.direction ?? ticket.meter_readings[0].direction"
+    },
+    "read_by": {
+      "json_schema": {
+        "type": "string",
+        "description": "Name of the person who submitted the reading"
+      },
+      "required": false,
+      "graph_source": "ticket.read_by ?? ticket.meter_readings[0].read_by"
+    },
+    "status": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "valid",
+          "invalid",
+          "pending"
+        ],
+        "description": "Status of the meter reading"
+      },
+      "required": false,
+      "graph_source": "ticket.status ?? ticket.meter_readings[0].status"
+    },
+    "reading_source": {
+      "json_schema": {
+        "type": "string",
+        "description": "Source of the meter reading (e.g., ECP, portal)"
+      },
+      "required": false,
+      "graph_source": "ticket.reading_source"
+    },
+    "meter_readings": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "counter_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Entity ID of the meter counter"
+            },
+            "value": {
+              "type": "number",
+              "description": "The meter reading value"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "feed-in",
+                "feed-out"
+              ],
+              "description": "Direction of energy flow"
+            },
+            "reading_timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO 8601 timestamp when the reading was taken"
+            },
+            "read_by": {
+              "type": "string",
+              "description": "Name of the person who submitted the reading"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "valid",
+                "invalid",
+                "pending"
+              ],
+              "description": "Status of the meter reading"
+            }
+          },
+          "additionalProperties": false
+        },
+        "description": "Array of all meter readings from the ticket"
+      },
+      "required": false,
+      "graph_source": "ticket.meter_readings"
+    },
+    "meter_reading_status": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "valid",
+            "invalid",
+            "pending"
+          ],
+          "description": "Status of the meter reading"
+        },
+        "description": "Status array for meter readings"
+      },
+      "required": false,
+      "graph_source": "ticket.meter_reading_status"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "ticket",
+        "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      },
+      {
+        "id": "meter",
+        "schema": "meter",
+        "cardinality": "one"
+      },
+      {
+        "id": "meter_counters",
+        "schema": "meter_counter",
+        "cardinality": "many"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ticket",
+        "to": "contract"
+      },
+      {
+        "from": "ticket",
+        "to": "meter"
+      },
+      {
+        "from": "ticket",
+        "to": "meter_counters"
+      },
+      {
+        "from": "contract",
+        "to": "billing_account"
+      },
+      {
+        "from": "billing_account",
+        "to": "contact"
+      }
+    ]
+  },
+  "automation_trigger": true
+}

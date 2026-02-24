@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://docs.epilot.io/api/changelog</id>
+    <title>epilot API Changelog</title>
+    <updated>2026-02-22T23:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://docs.epilot.io/api/changelog"/>
+    <subtitle>Breaking changes, new features, and significant updates to epilot APIs.</subtitle>
+    <icon>https://docs.epilot.io/img/favicon.svg</icon>
+    <entry>
+        <title type="html"><![CDATA[2026-02-22 Entity API]]></title>
+        <id>/api/changelog/2026-02-22-entity-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-22-entity-api"/>
+        <updated>2026-02-22T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New table schema attribute type was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-20 ERP Integration API]]></title>
+        <id>/api/changelog/2026-02-20-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-20-erp-integration-api"/>
+        <updated>2026-02-20T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Integration create/update/get response schemas restructured — fields now composed via allOf[IntegrationEditableFields]; SDK consumers should regenerate types]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-20 Core Events]]></title>
+        <id>/api/changelog/2026-02-20-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-20-core-events"/>
+        <updated>2026-02-20T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New TariffChange event was introduced]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-19 ERP Integration API]]></title>
+        <id>/api/changelog/2026-02-19-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-19-erp-integration-api"/>
+        <updated>2026-02-19T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New file_proxy use case type was added — FileProxyUseCase is now a valid variant alongside InboundUseCase/OutboundUseCase]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-19 Webhooks API]]></title>
+        <id>/api/changelog/2026-02-19-webhooks-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-19-webhooks-api"/>
+        <updated>2026-02-19T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New filterConditions field was added to webhook configs, allowing event delivery to be filtered by conditions]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-18 Customer Portal API]]></title>
+        <id>/api/changelog/2026-02-18-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-18-customer-portal-api"/>
+        <updated>2026-02-18T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New EntitySlugConfig support was added to entity search — accepts per-slug configuration objects with slug, targets, and templates]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-18 Workflows Definition API]]></title>
+        <id>/api/changelog/2026-02-18-workflows-definition-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-18-workflows-definition-api"/>
+        <updated>2026-02-18T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- assigned_to field type changed from plain string to oneOf[string, VariableAssignment] — unlocks dynamic variable-based assignment]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-18 Metering API]]></title>
+        <id>/api/changelog/2026-02-18-metering-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-18-metering-api"/>
+        <updated>2026-02-18T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- POST /v2/metering/readings request now uses a discriminated union on the operation field (CreateOrUpdateBatchReading or DeleteBatchReading)]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-13 Workflows Definition API]]></title>
+        <id>/api/changelog/2026-02-13-workflows-definition-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-13-workflows-definition-api"/>
+        <updated>2026-02-13T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New additional_triggers field was added to flow templates, enabling multiple trigger configurations per flow]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-12 ERP Integration API]]></title>
+        <id>/api/changelog/2026-02-12-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-12-erp-integration-api"/>
+        <updated>2026-02-12T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/integrations//monitoring/timeseries endpoint was added for querying time-series event counts]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-11 ERP Integration API]]></title>
+        <id>/api/changelog/2026-02-11-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-11-erp-integration-api"/>
+        <updated>2026-02-11T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- POST /v1/erp/updates/events (v1) and POST /v2/erp/updates/events (v2) are now deprecated — migrate to POST /v3/erp/updates/events]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-11 Webhooks API]]></title>
+        <id>/api/changelog/2026-02-11-webhooks-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-11-webhooks-api"/>
+        <updated>2026-02-11T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- GET /v1/webhooks/.well-known/public-key endpoint was reactivated with a new required orgId query parameter]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-10 ERP Integration API]]></title>
+        <id>/api/changelog/2026-02-10-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-10-erp-integration-api"/>
+        <updated>2026-02-10T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v3/erp/updates/events endpoint was added — v3 event processing using integration-based authentication]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-10 Webhooks API]]></title>
+        <id>/api/changelog/2026-02-10-webhooks-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-10-webhooks-api"/>
+        <updated>2026-02-10T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New signingSecret field was added to webhook config responses (returned once at creation time)]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-09 Email Settings API]]></title>
+        <id>/api/changelog/2026-02-09-email-settings-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-09-email-settings-api"/>
+        <updated>2026-02-09T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v2/outlook/connection:resolve endpoint was added to look up an Outlook connection by email address]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-06 Entity API]]></title>
+        <id>/api/changelog/2026-02-06-entity-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-06-entity-api"/>
+        <updated>2026-02-06T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: POST /v1/entity/taxonomies//classifications — deleted response type changed from object to array]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-06 Customer Portal API]]></title>
+        <id>/api/changelog/2026-02-06-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-06-customer-portal-api"/>
+        <updated>2026-02-06T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v2/portal/entity//{id}/workflows endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-06 Order Entity]]></title>
+        <id>/api/changelog/2026-02-06-order-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-06-order-entity"/>
+        <updated>2026-02-06T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New coupons relation was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-05 Pricing API]]></title>
+        <id>/api/changelog/2026-02-05-pricing-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-05-pricing-api"/>
+        <updated>2026-02-05T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New coupons field was added to order responses]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-05 Automation API]]></title>
+        <id>/api/changelog/2026-02-05-automation-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-05-automation-api"/>
+        <updated>2026-02-05T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New NewEmailThreadTrigger trigger type was added to automation flows]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-05 Query API]]></title>
+        <id>/api/changelog/2026-02-05-query-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-05-query-api"/>
+        <updated>2026-02-05T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v2/query/semantic-model endpoint was added, returning available entity tables, relationships, and query capabilities]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-05 Contract Entity]]></title>
+        <id>/api/changelog/2026-02-05-contract-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-05-contract-entity"/>
+        <updated>2026-02-05T20:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New assets relation was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-05 Order Entity]]></title>
+        <id>/api/changelog/2026-02-05-order-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-05-order-entity"/>
+        <updated>2026-02-05T19:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New opportunities and contracts relations were added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-04 Entity API]]></title>
+        <id>/api/changelog/2026-02-04-entity-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-04-entity-api"/>
+        <updated>2026-02-04T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New exclude query parameter was added to GET /v1/entity/schemas for excluding schemas by slug]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-04 Customer Portal API]]></title>
+        <id>/api/changelog/2026-02-04-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-04-customer-portal-api"/>
+        <updated>2026-02-04T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New PUT /v2/portal/notifications/entity:status endpoint was added for batch-updating notification status]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-03 Webhooks API]]></title>
+        <id>/api/changelog/2026-02-03-webhooks-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-03-webhooks-api"/>
+        <updated>2026-02-03T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New NONE auth type was added, allowing webhook endpoints using standard signature auth only]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-02-03 Core Events]]></title>
+        <id>/api/changelog/2026-02-03-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-02-03-core-events"/>
+        <updated>2026-02-03T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New OnDemandSyncContractRequested event was introduced]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-30 ERP Integration API]]></title>
+        <id>/api/changelog/2026-01-30-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-30-erp-integration-api"/>
+        <updated>2026-01-30T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Monitoring endpoints split — POST .../monitoring/events replaced by separate POST .../monitoring/inbound-events and POST .../monitoring/outbound-events endpoints]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-30 Customer Portal API]]></title>
+        <id>/api/changelog/2026-01-30-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-30-customer-portal-api"/>
+        <updated>2026-01-30T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v2/portal/metering/reading/allowed-range/ endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-30 Core Events]]></title>
+        <id>/api/changelog/2026-01-30-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-30-core-events"/>
+        <updated>2026-01-30T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New required ackid field was added to all event payloads for delivery acknowledgement tracking]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-29 Partner Directory API]]></title>
+        <id>/api/changelog/2026-01-29-partner-directory-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-29-partner-directory-api"/>
+        <updated>2026-01-29T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v2/partners//roles and PUT /v2/partners/{orgId}/roles/{roleId} endpoints were added for partner role management]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-28 ERP Integration API]]></title>
+        <id>/api/changelog/2026-01-28-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-28-erp-integration-api"/>
+        <updated>2026-01-28T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v1/integrations//outbound-status endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-27 ERP Integration API]]></title>
+        <id>/api/changelog/2026-01-27-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-27-erp-integration-api"/>
+        <updated>2026-01-27T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/integrations//monitoring/access-logs endpoint was added for API access log analytics]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-27 Workflows Definition API]]></title>
+        <id>/api/changelog/2026-01-27-workflows-definition-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-27-workflows-definition-api"/>
+        <updated>2026-01-27T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New messageemailaddress attribute type and attributesubfield were added to decision task conditions]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-27 Event: Service Meter Reading Added]]></title>
+        <id>/api/changelog/2026-01-27-event-service-meter-reading-added</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-27-event-service-meter-reading-added"/>
+        <updated>2026-01-27T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Payload restructured — single reading fields replaced by meterreadings array; reason/note removed; counterid, direction, status, readingsource added; metercounter replaced by meter_counters array]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-26 User API]]></title>
+        <id>/api/changelog/2026-01-26-user-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-26-user-api"/>
+        <updated>2026-01-26T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v2/user/navigations and GET /v2/user/navigations/ endpoints were added for navigation configurations]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-23 ERP Integration API]]></title>
+        <id>/api/changelog/2026-01-23-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-23-erp-integration-api"/>
+        <updated>2026-01-23T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST .../monitoring/events and POST .../monitoring/stats endpoints were added for integration monitoring]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-23 Email Settings API]]></title>
+        <id>/api/changelog/2026-01-23-email-settings-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-23-email-settings-api"/>
+        <updated>2026-01-23T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New Microsoft 365/Outlook integration endpoints were added: connect, disconnect, connection status, shared mailbox management, and OAuth callback]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-23 Pricing API]]></title>
+        <id>/api/changelog/2026-01-23-pricing-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-23-pricing-api"/>
+        <updated>2026-01-23T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/public/external-catalog/products and POST /v1/public/external-catalog/products-recommendation public endpoints were added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-22 Automation API]]></title>
+        <id>/api/changelog/2026-01-22-automation-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-22-automation-api"/>
+        <updated>2026-01-22T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New TriggerEventAction action type was added for explicitly triggering event catalog events from automation flows]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-22 Permissions API]]></title>
+        <id>/api/changelog/2026-01-22-permissions-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-22-permissions-api"/>
+        <updated>2026-01-22T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New parent_role field was added to user roles, allowing inheritance from a parent role]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-22 Notification Template Entity]]></title>
+        <id>/api/changelog/2026-01-22-notification-template-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-22-notification-template-entity"/>
+        <updated>2026-01-22T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New notification_template entity was introduced]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-22 Core Events]]></title>
+        <id>/api/changelog/2026-01-22-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-22-core-events"/>
+        <updated>2026-01-22T20:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- operation, activityid, activitytype, and trigger_entity fields were removed from event payloads]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-21 Workflows Execution API]]></title>
+        <id>/api/changelog/2026-01-21-workflows-execution-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-21-workflows-execution-api"/>
+        <updated>2026-01-21T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New AI_AGENT task type was added with AiAgentTask schema]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-21 Core Events]]></title>
+        <id>/api/changelog/2026-01-21-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-21-core-events"/>
+        <updated>2026-01-21T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New triggersourcetype and trigger_source fields were added to all event payloads, identifying the system and source that triggered each event]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-20 Notification API]]></title>
+        <id>/api/changelog/2026-01-20-notification-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-20-notification-api"/>
+        <updated>2026-01-20T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/notification/templates/send-preview endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-16 Notification API]]></title>
+        <id>/api/changelog/2026-01-16-notification-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-16-notification-api"/>
+        <updated>2026-01-16T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New notification template CRUD endpoints were added: list, create, get, update, patch, and delete]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-15 ERP Integration API]]></title>
+        <id>/api/changelog/2026-01-15-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-15-erp-integration-api"/>
+        <updated>2026-01-15T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New v2 integration endpoints were added: GET/PUT/DELETE /v2/integrations/ — v2 integrations embed use cases directly in the response]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-15 Core Events]]></title>
+        <id>/api/changelog/2026-01-15-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-15-core-events"/>
+        <updated>2026-01-15T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New CustomerDetailsUpdated event was introduced]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-14 Data Management API]]></title>
+        <id>/api/changelog/2026-01-14-data-management-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-14-data-management-api"/>
+        <updated>2026-01-14T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: relatedentitiesanyinclosedorcancelled_status filter type was removed]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-12 Blueprint Manifest API]]></title>
+        <id>/api/changelog/2026-01-12-blueprint-manifest-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-12-blueprint-manifest-api"/>
+        <updated>2026-01-12T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v2/blueprint-manifest/blueprints:preview/ endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-09 Customer Portal API]]></title>
+        <id>/api/changelog/2026-01-09-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-09-customer-portal-api"/>
+        <updated>2026-01-09T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New v3 portal management endpoints were added: distribution config, email templates, entity access, extensions, external links, portal config, SSO login, user management, and CAA record validation]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-09 Core Events]]></title>
+        <id>/api/changelog/2026-01-09-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-09-core-events"/>
+        <updated>2026-01-09T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New BillingAccountConnectionRemoved event was introduced]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-08 Pricing API]]></title>
+        <id>/api/changelog/2026-01-08-pricing-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-08-pricing-api"/>
+        <updated>2026-01-08T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- postal_code is now required in availability location filter objects]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-08 Kanban API]]></title>
+        <id>/api/changelog/2026-01-08-kanban-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-08-kanban-api"/>
+        <updated>2026-01-08T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New PUT /v1/kanban/org/default-board and DELETE /v1/kanban/org/default-board endpoints were added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-08 Metering API]]></title>
+        <id>/api/changelog/2026-01-08-metering-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-08-metering-api"/>
+        <updated>2026-01-08T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/metering/readings/ endpoint was added for portal-authenticated meter reading submissions]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2026-01-07 Data Management API]]></title>
+        <id>/api/changelog/2026-01-07-data-management-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2026-01-07-data-management-api"/>
+        <updated>2026-01-07T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /data-management/v1/configs//jobs endpoint was added to manually trigger job runs]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-31 Event Catalog API]]></title>
+        <id>/api/changelog/2025-12-31-event-catalog-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-31-event-catalog-api"/>
+        <updated>2025-12-31T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New Event Catalog API launched with endpoints to list events, retrieve configurations and schemas, generate sample payloads, update configuration, search event history, and trigger events]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-30 Customer Portal API]]></title>
+        <id>/api/changelog/2025-12-30-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-30-customer-portal-api"/>
+        <updated>2025-12-30T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- GET /v2/portal/user/files and GET /v2/portal/user/files/count-by-entity are now deprecated]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-30 Blueprint Manifest API]]></title>
+        <id>/api/changelog/2025-12-30-blueprint-manifest-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-30-blueprint-manifest-api"/>
+        <updated>2025-12-30T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v2/blueprint-manifest/blueprints:marketplace endpoint was added for listing installed marketplace blueprints]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-30 Metering API]]></title>
+        <id>/api/changelog/2025-12-30-metering-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-30-metering-api"/>
+        <updated>2025-12-30T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- note field was renamed to remark on meter reading create and update operations]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-26 Location Entity]]></title>
+        <id>/api/changelog/2025-12-26-location-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-26-location-entity"/>
+        <updated>2025-12-26T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New location entity was introduced with address, addresshash, and entityrelations properties]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-23 Pricing API]]></title>
+        <id>/api/changelog/2025-12-23-pricing-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-23-pricing-api"/>
+        <updated>2025-12-23T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New public external catalog endpoints were added for products and product recommendations]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-22 Customer Portal API]]></title>
+        <id>/api/changelog/2025-12-22-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-22-customer-portal-api"/>
+        <updated>2025-12-22T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: Meter reading note field was renamed to remark]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-19 Customer Portal API]]></title>
+        <id>/api/changelog/2025-12-19-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-19-customer-portal-api"/>
+        <updated>2025-12-19T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New selfregistrationsetting values were added: ALWAYSCREATECONTACT, BLOCKIFPORTALUSEREXISTS, DISALLOW_COMPLETELY]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-19 Data Management API]]></title>
+        <id>/api/changelog/2025-12-19-data-management-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-19-data-management-api"/>
+        <updated>2025-12-19T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New endpoints were added: get config by ID, list jobs with filtering, and job report download URL]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-18 Customer Portal API]]></title>
+        <id>/api/changelog/2025-12-18-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-18-customer-portal-api"/>
+        <updated>2025-12-18T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- meter_id is now optional (deprecated) on consumption, costs, and prices endpoints]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-17 ERP Integration API]]></title>
+        <id>/api/changelog/2025-12-17-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-17-erp-integration-api"/>
+        <updated>2025-12-17T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/integrations//events/replay endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-14 Data Management API]]></title>
+        <id>/api/changelog/2025-12-14-data-management-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-14-data-management-api"/>
+        <updated>2025-12-14T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: Schedule schema simplified from daily/weekly/monthly variants to a single interval-based schedule with frequency and interval_days]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-12 Customer Portal API]]></title>
+        <id>/api/changelog/2025-12-12-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-12-customer-portal-api"/>
+        <updated>2025-12-12T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New assignment_mode field was added to contract identification hook configuration]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-12 Product API]]></title>
+        <id>/api/changelog/2025-12-12-product-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-12-product-api"/>
+        <updated>2025-12-12T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- tax field on Price changed from an untyped schema to a BaseRelation reference]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-11 Workflows Execution API]]></title>
+        <id>/api/changelog/2025-12-11-workflows-execution-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-11-workflows-execution-api"/>
+        <updated>2025-12-11T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New DELETE /v2/flows/executions//tasks/{taskid}/schedule endpoint was added to cancel scheduled tasks]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-11 Tax Entity]]></title>
+        <id>/api/changelog/2025-12-11-tax-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-11-tax-entity"/>
+        <updated>2025-12-11T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- rate property type changed from string to number]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-10 File API]]></title>
+        <id>/api/changelog/2025-12-10-file-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-10-file-api"/>
+        <updated>2025-12-10T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Multiple deprecated folder and collection endpoints were removed]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-10 Email Template API]]></title>
+        <id>/api/changelog/2025-12-10-email-template-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-10-email-template-api"/>
+        <updated>2025-12-10T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New json_template field was added to template create, update, and response schemas]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-10 Core Events]]></title>
+        <id>/api/changelog/2025-12-10-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-10-core-events"/>
+        <updated>2025-12-10T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New PaymentMethodUpdated event was introduced]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-09 ERP Integration API]]></title>
+        <id>/api/changelog/2025-12-09-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-09-erp-integration-api"/>
+        <updated>2025-12-09T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/integrations//events endpoint was added for querying integration events]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-09 Core Events]]></title>
+        <id>/api/changelog/2025-12-09-core-events</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-09-core-events"/>
+        <updated>2025-12-09T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New InstallmentUpdated event was introduced]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-08 Data Management API]]></title>
+        <id>/api/changelog/2025-12-08-data-management-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-08-data-management-api"/>
+        <updated>2025-12-08T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /data-management/v1/configs and POST /data-management/v1//configs endpoints were added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-08 IBAN API]]></title>
+        <id>/api/changelog/2025-12-08-iban-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-08-iban-api"/>
+        <updated>2025-12-08T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breakingvalidate to POST /v1/public/iban:validate]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-05 ERP Integration API]]></title>
+        <id>/api/changelog/2025-12-05-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-05-erp-integration-api"/>
+        <updated>2025-12-05T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v2/erp/updates/mapping_simulation endpoint was added for v2 mapping format simulation]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-02 ERP Integration API]]></title>
+        <id>/api/changelog/2025-12-02-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-02-erp-integration-api"/>
+        <updated>2025-12-02T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: Use case create/update request body changed to a discriminated union (CreateInboundUseCaseRequest | CreateOutboundUseCaseRequest)]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-02 Webhooks API]]></title>
+        <id>/api/changelog/2025-12-02-webhooks-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-02-webhooks-api"/>
+        <updated>2025-12-02T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/webhooks/configs//events/replay-batch endpoint was added for batch event replay]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-12-01 ERP Integration API]]></title>
+        <id>/api/changelog/2025-12-01-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-12-01-erp-integration-api"/>
+        <updated>2025-12-01T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v2/erp/updates/events endpoint was added — v2 event processing using integration_id]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-30 Data Management API]]></title>
+        <id>/api/changelog/2025-11-30-data-management-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-30-data-management-api"/>
+        <updated>2025-11-30T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /data-management/v1//query endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-28 Template Variables API]]></title>
+        <id>/api/changelog/2025-11-28-template-variables-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-28-template-variables-api"/>
+        <updated>2025-11-28T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v2/template:replace endpoint was added, preserving original data types instead of stringifying]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-27 Workflows Execution API]]></title>
+        <id>/api/changelog/2025-11-27-workflows-execution-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-27-workflows-execution-api"/>
+        <updated>2025-11-27T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New ON_HOLD status value was added to step and task status enum]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-26 Customer Portal API]]></title>
+        <id>/api/changelog/2025-11-26-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-26-customer-portal-api"/>
+        <updated>2025-11-26T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v3/portal/partner//disable and POST /v3/portal/partner/{id}/enable endpoints were added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-26 Partner Directory API]]></title>
+        <id>/api/changelog/2025-11-26-partner-directory-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-26-partner-directory-api"/>
+        <updated>2025-11-26T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New partner user management endpoints were added: list users, create user, delete user, list roles, assign/unassign roles]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-26 GenAI API]]></title>
+        <id>/api/changelog/2025-11-26-genai-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-26-genai-api"/>
+        <updated>2025-11-26T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/genai/erp/mapping:generate endpoint was added for AI-generated ERP mapping configurations]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-25 File API]]></title>
+        <id>/api/changelog/2025-11-25-file-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-25-file-api"/>
+        <updated>2025-11-25T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New File Collections API was introduced with CRUD endpoints, replacing the deprecated File Folders API]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-25 Pricing API]]></title>
+        <id>/api/changelog/2025-11-25-pricing-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-25-pricing-api"/>
+        <updated>2025-11-25T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/public/integration//products-recommendation endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-25 Pricing API External Catalog]]></title>
+        <id>/api/changelog/2025-11-25-pricing-api-external-catalog</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-25-pricing-api-external-catalog"/>
+        <updated>2025-11-25T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: catalog_type field is now required in the request context]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-24 Entity API]]></title>
+        <id>/api/changelog/2025-11-24-entity-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-24-entity-api"/>
+        <updated>2025-11-24T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/entity:graph endpoint was added for traversing entity relationship graphs with configurable node schemas, edges, and cardinality]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-23 Customer Portal API]]></title>
+        <id>/api/changelog/2025-11-23-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-23-customer-portal-api"/>
+        <updated>2025-11-23T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: appid, hookid, and extension_id fields are now required in extension hook configuration (previously optional)]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-20 Portal User Entity]]></title>
+        <id>/api/changelog/2025-11-20-portal-user-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-20-portal-user-entity"/>
+        <updated>2025-11-20T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New represents relation was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-20 Contact Entity]]></title>
+        <id>/api/changelog/2025-11-20-contact-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-20-contact-entity"/>
+        <updated>2025-11-20T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- represents_contact relation was removed]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-19 Pricing API]]></title>
+        <id>/api/changelog/2025-11-19-pricing-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-19-pricing-api"/>
+        <updated>2025-11-19T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- days was added as a billing duration unit across all duration fields (billing, notice, renewal, termination)]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-19 Ticket Entity]]></title>
+        <id>/api/changelog/2025-11-19-ticket-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-19-ticket-entity"/>
+        <updated>2025-11-19T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- title was renamed to ticket_title]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-19 Notes API]]></title>
+        <id>/api/changelog/2025-11-19-notes-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-19-notes-api"/>
+        <updated>2025-11-19T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- createdby field changed from a plain string/number ID to a structured object with type, userid, display_name, and other fields]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-18 Workflows Execution API]]></title>
+        <id>/api/changelog/2025-11-18-workflows-execution-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-18-workflows-execution-api"/>
+        <updated>2025-11-18T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New revert_execution option was added to task patch — resets succeeding tasks to PENDING when updating a previous task]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-17 Pricing API]]></title>
+        <id>/api/changelog/2025-11-17-pricing-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-17-pricing-api"/>
+        <updated>2025-11-17T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New reference_date parameter was added to compute-price requests]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-17 Webhooks API]]></title>
+        <id>/api/changelog/2025-11-17-webhooks-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-17-webhooks-api"/>
+        <updated>2025-11-17T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Three deprecated v1 failure endpoints were removed]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-17 Journey Config API]]></title>
+        <id>/api/changelog/2025-11-17-journey-config-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-17-journey-config-api"/>
+        <updated>2025-11-17T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New logicsV4 field was added, supporting a more expressive logic rule format with per-rule IDs, conditions, actions, and settings]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-14 ERP Integration API]]></title>
+        <id>/api/changelog/2025-11-14-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-14-erp-integration-api"/>
+        <updated>2025-11-14T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New Integration management CRUD endpoints were added: GET/POST/PUT/DELETE /v1/integrations]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-12 Asset Entity]]></title>
+        <id>/api/changelog/2025-11-12-asset-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-12-asset-entity"/>
+        <updated>2025-11-12T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New asset entity was introduced with properties including title, serial number, manufacturer, model, maintenance dates, and relations to customer, contract, meter, and ticket]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-10 ERP Integration API]]></title>
+        <id>/api/changelog/2025-11-10-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-10-erp-integration-api"/>
+        <updated>2025-11-10T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- payload field in event processing and mapping simulation now accepts a JSON object directly (previously only serialised strings)]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-10 Customer Portal API]]></title>
+        <id>/api/changelog/2025-11-10-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-10-customer-portal-api"/>
+        <updated>2025-11-10T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New partner management endpoints were added: invite, list, resend invitation, and revoke]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-07 Customer Portal API]]></title>
+        <id>/api/changelog/2025-11-07-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-07-customer-portal-api"/>
+        <updated>2025-11-07T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v2/portal/entity:get endpoint was added for retrieving a single entity by ID]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-06 Customer Portal API]]></title>
+        <id>/api/changelog/2025-11-06-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-06-customer-portal-api"/>
+        <updated>2025-11-06T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: Enum constraints on the schema field in page configuration were removed — now accepts any string slug]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-06 Core Entities]]></title>
+        <id>/api/changelog/2025-11-06-core-entities</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-06-core-entities"/>
+        <updated>2025-11-06T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New external_id property was added to Contact, Contract, Billing Account, Meter, and Meter Counter entities]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-06 Billing Account Entity]]></title>
+        <id>/api/changelog/2025-11-06-billing-account-entity</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-06-billing-account-entity"/>
+        <updated>2025-11-06T21:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- billing_address field type changed from a relation reference to an inline address object]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-04 Email Settings API]]></title>
+        <id>/api/changelog/2025-11-04-email-settings-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-04-email-settings-api"/>
+        <updated>2025-11-04T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v2/email-settings/inbox-buckets endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-11-03 Webhooks API]]></title>
+        <id>/api/changelog/2025-11-03-webhooks-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-11-03-webhooks-api"/>
+        <updated>2025-11-03T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v2/webhooks/configs//events endpoint was added for listing and filtering webhook events]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-31 Message API]]></title>
+        <id>/api/changelog/2025-10-31-message-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-31-message-api"/>
+        <updated>2025-10-31T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/message/threads/:move endpoint was added for moving threads between inboxes]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-30 ERP Integration API]]></title>
+        <id>/api/changelog/2025-10-30-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-30-erp-integration-api"/>
+        <updated>2025-10-30T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- v2 mapping format support was added to mapping simulation with events mapping object]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-29 Automation API]]></title>
+        <id>/api/changelog/2025-10-29-automation-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-29-automation-api"/>
+        <updated>2025-10-29T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New entityexists and entitydoesnotexist condition operations were added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-22 ERP Integration API]]></title>
+        <id>/api/changelog/2025-10-22-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-22-erp-integration-api"/>
+        <updated>2025-10-22T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New POST /v1/erp/updates/mapping_simulation endpoint was added for dry-running payload transformations]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-22 GenAI API]]></title>
+        <id>/api/changelog/2025-10-22-genai-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-22-genai-api"/>
+        <updated>2025-10-22T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v1/genai/entity//{entity_id}/summary endpoint was added for retrieving AI-generated entity summaries]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-17 ERP Integration API]]></title>
+        <id>/api/changelog/2025-10-17-erp-integration-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-17-erp-integration-api"/>
+        <updated>2025-10-17T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New deduplication_id field was added to event payloads for idempotency control]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-15 Customer Portal API]]></title>
+        <id>/api/changelog/2025-10-15-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-15-customer-portal-api"/>
+        <updated>2025-10-15T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New GET /v2/portal/billing/accounts/ endpoint was added]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-14 Customer Portal API]]></title>
+        <id>/api/changelog/2025-10-14-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-14-customer-portal-api"/>
+        <updated>2025-10-14T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: contracts and filtersschema were removed from entity search request; replaced by filterscontext]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-13 Blueprint Manifest API]]></title>
+        <id>/api/changelog/2025-10-13-blueprint-manifest-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-13-blueprint-manifest-api"/>
+        <updated>2025-10-13T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- All v1 blueprint manifest endpoints were deprecated in favor of v2]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-09 Workflows Definition API]]></title>
+        <id>/api/changelog/2025-10-09-workflows-definition-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-09-workflows-definition-api"/>
+        <updated>2025-10-09T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New JourneyAutomationTrigger was added for journey-based automation triggers on flow templates]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-08 Customer Portal API]]></title>
+        <id>/api/changelog/2025-10-08-customer-portal-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-08-customer-portal-api"/>
+        <updated>2025-10-08T23:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- Breaking: ENDCUSTOMERPORTAL and INSTALLER_PORTAL enum values were removed from the origin parameter — now accepts any string]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2025-10-08 Email Settings API]]></title>
+        <id>/api/changelog/2025-10-08-email-settings-api</id>
+        <link href="https://docs.epilot.io/api/changelog/api/changelog/2025-10-08-email-settings-api"/>
+        <updated>2025-10-08T22:00:00.000Z</updated>
+        <summary type="html"><![CDATA[- New email address management endpoints were added: list, create, get, update, delete, provision, and set primary]]></summary>
+    </entry>
+</feed>

@@ -1,0 +1,44 @@
+{
+  "_schema": "target",
+  "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_org": "123",
+  "_title": "John Doe",
+  "_tags": [
+    "family:label"
+  ],
+  "name": "string",
+  "description": "string",
+  "entity_schema": "string",
+  "_files": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "_created_at": "1970-01-01T00:00:00.000Z",
+  "_updated_at": "1970-01-01T00:00:00.000Z",
+  "_owners": [
+    {
+      "org_id": "123",
+      "user_id": "456"
+    }
+  ],
+  "_acl": {
+    "view": [
+      "org:456"
+    ],
+    "edit": [
+      "org:456"
+    ],
+    "delete": [
+      "org:456"
+    ]
+  },
+  "_manifest": [
+    "123e4567-e89b-12d3-a456-426614174000"
+  ]
+}

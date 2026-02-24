@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkepilot_dev_handbook=self.webpackChunkepilot_dev_handbook||[]).push([[50521],{17210:e=>{e.exports=JSON.parse('{"specUrl":"https://docs.api.epilot.io/validation-rules.yaml","type":"url","content":"https://docs.api.epilot.io/validation-rules.yaml"}')}}]);

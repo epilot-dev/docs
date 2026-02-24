@@ -1,0 +1,97 @@
+{
+  "event_name": "BillingAddressUpdated",
+  "event_title": "Billing Address Updated",
+  "event_description": "Triggered when the billing address on a billing account is updated",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "billing",
+    "address"
+  ],
+  "schema_fields": {
+    "operation": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "updateEntity"
+        ],
+        "description": "The entity operation type that triggered this event"
+      },
+      "required": true
+    },
+    "activity_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Activity ID associated with this operation (ULID)",
+        "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
+      },
+      "required": false
+    },
+    "activity_type": {
+      "json_schema": {
+        "type": "string",
+        "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
+        "example": "EntityUpdated"
+      },
+      "required": false
+    },
+    "trigger_entity": {
+      "json_schema": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Entity ID of the entity that triggered this event"
+      },
+      "required": true
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      },
+      {
+        "id": "contracts",
+        "schema": "contract",
+        "cardinality": "many"
+      },
+      {
+        "id": "customer",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "portal_user",
+        "schema": "portal_user",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "billing_account",
+        "to": "contracts"
+      },
+      {
+        "from": "billing_account",
+        "to": "customer"
+      },
+      {
+        "from": "customer",
+        "to": "portal_user"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": [
+      "updateEntity"
+    ],
+    "schema": [
+      "billing_account"
+    ],
+    "attribute": [
+      "billing_address"
+    ]
+  }
+}
