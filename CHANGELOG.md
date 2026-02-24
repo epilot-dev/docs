@@ -2,6 +2,11 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-02-24 ERP Integration API
+
+- **Breaking:** `payload` field on event update endpoints now enforces stricter validation — string payloads require `minLength: 2` and object payloads require `minProperties: 1`; affects `POST /v1/erp/updates/events`, `POST /v2/erp/updates/events`, and `POST /v3/erp/updates/events`
+- New `warnings` array was added to mapping simulation responses (`POST /v1/erp/updates/mapping_simulation`, `POST /v2/erp/updates/mapping_simulation`), reporting validation issues about the configuration such as unique ID fields referencing non-indexed attributes
+
 ## 2026-02-23 Message API
 
 - New `POST /v2/message/threads/{id}/assign:users` endpoint was added, allowing users to be added or removed from a message thread
@@ -14,6 +19,10 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - `PhaseMarkedInProgress` and `PhaseSkipped` enum values were removed from the `entity_sync/trigger/event` field across all flow template endpoints — affects request body of `POST` and `PUT /v2/flows/templates/{flowId}`, and responses of `GET`, `POST`, `PUT /v2/flows/templates`, `POST /v2/flows/templates:search`
 - New `TaskMarkedOnHold` trigger event value was added to `entity_sync/trigger/event`, enabling entity sync rules to fire when a task is placed on hold
+
+## 2026-02-23 Customer Portal API
+
+- New `allowed_portal_entities` field was added to portal config request and response schemas — accepts an array of entity slugs (e.g., `contact`, `contract`) to restrict which entity types are accessible in the portal; available across all v2 and v3 portal config endpoints
 
 ## 2026-02-23 Meter Entity
 
