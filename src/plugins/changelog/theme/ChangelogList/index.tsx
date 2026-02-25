@@ -26,7 +26,10 @@ function ChangelogList(props): JSX.Element {
       const titleParts = meta.title.match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
       const label = titleParts ? `${titleParts[1]} ${titleParts[2]}` : meta.title;
       const slug = titleParts
-        ? `${titleParts[1]}-${titleParts[2].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`
+        ? `${titleParts[1]}-${titleParts[2]
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')}`
         : meta.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
       return { value: label, id: slug, children: [], level: 2 };
@@ -62,7 +65,10 @@ function ChangelogList(props): JSX.Element {
                     const date = titleParts ? titleParts[1] : meta.formattedDate;
                     const apiName = titleParts ? titleParts[2] : meta.title;
                     const anchorId = titleParts
-                      ? `${titleParts[1]}-${titleParts[2].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`
+                      ? `${titleParts[1]}-${titleParts[2]
+                          .toLowerCase()
+                          .replace(/[^a-z0-9]+/g, '-')
+                          .replace(/(^-|-$)/g, '')}`
                       : meta.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
                     return (
