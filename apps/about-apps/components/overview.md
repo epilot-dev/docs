@@ -51,13 +51,25 @@ External Product Catalog components integrate third-party product catalogs into 
 Use cases: Custom product catalogs, journey products, journey product recommendations
 ```
 
+### [Custom Workflow Action](/apps/about-apps/components/custom-action)
+
+Custom Workflow Actions integrate into epilot's automation engine, enabling custom processing steps or external integrations that are triggered as part of automated workflows.
+
+```
+Use cases: External webhooks, third-party service integrations, custom data processing
+```
+
+### [Custom Page](/apps/about-apps/components/custom-page)
+
+Custom Pages register full, standalone routes within the epilot 360 portal. Pages use the standard 360 layout (sidebar + topbar) and appear as navigation items in the Custom workplace. They support sub-pages and deep-linking.
+
+```
+Use cases: Dashboards, data explorers, admin panels, full-page integrations
+```
+
 ## On the Horizon
 
 The epilot platform continues to evolve, with new component types planned for future releases:
-
-### Custom Automation Tasks
-
-These will allow you to define specialized tasks that can be triggered within epilot's automation workflows, enabling custom processing or integration steps in automated sequences.
 
 ### Custom Journey Design Elements
 
@@ -113,6 +125,15 @@ Ready to create your own component? Each component type has specific requirement
           <h3>External Product Catalog</h3>
           <p>Integrate third-party product catalogs into epilot</p>
           <a href="/apps/about-apps/components/external-product-catalog" className="button button--secondary button--block">Start Building</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--6">
+      <div className="card" style={{height: '100%'}}>
+        <div className="card__body">
+          <h3>Custom Pages</h3>
+          <p>Add full standalone pages to the 360 portal</p>
+          <a href="/apps/about-apps/components/custom-page" className="button button--secondary button--block">Start Building</a>
         </div>
       </div>
     </div>

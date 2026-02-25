@@ -14,7 +14,7 @@ When you build an app for epilot, it runs inside an iframe embedded within the e
 
 - **Authentication** - OAuth tokens for epilot API calls
 - **Localization** - Access to the user's language preference
-- **Context** - Entity or action configuration data
+- **Context** - Entity, page, or action configuration data
 - **Messaging** - Two-way communication with the parent app
 
 ```bash title="Install the App Bridge"
@@ -101,6 +101,18 @@ Configuration UI for custom automation actions. When users add your custom actio
 - Set up third-party service credentials
 - Define action parameters
 - Map data fields
+
+### Custom Page
+
+A full standalone page within the epilot 360 portal. Custom Pages register their own `/app/<slug>` route, use the standard 360 layout (sidebar navigation + topbar), and appear as navigation items in the **Custom** workplace. They support sub-pages and deep-linking.
+
+**Use cases:**
+- Data dashboards and explorers
+- Admin panels and settings pages
+- Multi-step wizards or onboarding flows
+- Full-page third-party integrations
+
+**See also:** [Custom Page component docs](/apps/about-apps/components/custom-page) for component configuration details.
 
 ---
 
@@ -325,6 +337,116 @@ updateActionConfig(
 ```
 
 When `waitForCallback` is true, the automation engine will wait for your action to signal completion before proceeding to the next step.
+
+---
+
+## Page Surface Implementation
+
+For Custom Page surfaces, use the page-related APIs. These APIs let you read the current page context, navigate between sub-pages, and respond to browser back/forward navigation.
+
+### Getting Page Context
+
+```typescript title="Get page context"
+import { initialize, getPageContext } from '@epilot/app-bridge';
+
+async function main() {
+  const { token, lang } = await initialize();
+
+  // Get the page context
+  const { slug, subPath, path } = await getPageContext();
+
+  console.log('Page slug:', slug);      // e.g., "energy-prices"
+  console.log('Sub-path:', subPath);     // e.g., "/dashboard"
+  console.log('Full path:', path);       // e.g., "/app/energy-prices/dashboard"
+
+  // Render based on current sub-path
+  renderPage(subPath);
+}
+```
+
+**Context Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `slug` | `string` | The page slug from the URL (e.g., `'energy-prices'`) |
+| `subPath` | `string` | Sub-path after the slug (e.g., `'/dashboard'`, `'/settings/advanced'`) |
+| `path` | `string` | Full URL path (e.g., `'/app/energy-prices/dashboard'`) |
+
+### Sub-Page Navigation
+
+Use `navigate()` to change the parent frame URL when users interact with your app's internal navigation. This enables deep-linking and updates the browser address bar.
+
+```typescript title="Navigate between sub-pages"
+import { navigate } from '@epilot/app-bridge';
+
+// Navigate to sub-pages within your app
+navigate('/dashboard');           // URL becomes /app/<slug>/dashboard
+navigate('/settings/advanced');   // URL becomes /app/<slug>/settings/advanced
+navigate('/');                    // URL becomes /app/<slug>
+```
+
+:::tip
+`navigate()` triggers a `history.pushState` in the parent frame. It does not reload the page or the iframe - your app stays mounted. Update your UI in response to the navigation.
+:::
+
+### Handling Browser Back/Forward
+
+When the user clicks the browser back or forward button, the parent frame detects the `popstate` event and notifies your app:
+
+```typescript title="React to browser navigation"
+import { onLocationChange } from '@epilot/app-bridge';
+
+const unsubscribe = onLocationChange((subPath) => {
+  console.log('Browser navigated to:', subPath);
+  renderPage(subPath);
+});
+
+// Clean up when your app unmounts
+// unsubscribe();
+```
+
+### Combining Navigate and Location Change
+
+A typical pattern is to use `navigate()` for user-initiated navigation and `onLocationChange()` for browser-initiated navigation:
+
+```typescript title="Full navigation pattern"
+import {
+  initialize,
+  getPageContext,
+  navigate,
+  onLocationChange,
+  updateContentHeight,
+} from '@epilot/app-bridge';
+
+async function main() {
+  await initialize();
+  const { subPath } = await getPageContext();
+
+  // Initial render
+  renderPage(subPath);
+
+  // Handle browser back/forward
+  onLocationChange((newSubPath) => {
+    renderPage(newSubPath);
+  });
+
+  // Handle user clicks on your internal nav
+  document.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement).closest('[data-route]');
+    if (link) {
+      e.preventDefault();
+      const route = link.getAttribute('data-route')!;
+      navigate(route);
+      renderPage(route);
+    }
+  });
+}
+
+function renderPage(subPath: string) {
+  // Your routing logic here
+  updateContentHeight(document.body.scrollHeight);
+}
+```
 
 ---
 
@@ -638,56 +760,198 @@ function renderForm(config: WebhookActionConfig) {
 main().catch(console.error);
 ```
 
+### Custom Page App
+
+A complete example of a custom page app with sub-page navigation:
+
+```typescript title="Custom Page - Multi-page app with navigation"
+import {
+  initialize,
+  getPageContext,
+  navigate,
+  onLocationChange,
+  updateContentHeight,
+  authorizeClient,
+} from '@epilot/app-bridge';
+import { getClient } from '@epilot/entity-client';
+
+type Route = '/' | '/dashboard' | '/settings';
+
+async function main() {
+  // 1. Initialize app bridge
+  const { token, lang } = await initialize();
+
+  // 2. Set up API client
+  const entityClient = getClient();
+  authorizeClient(entityClient, token);
+
+  // 3. Get page context
+  const { slug, subPath } = await getPageContext();
+
+  // 4. Render initial page
+  renderPage(subPath as Route);
+
+  // 5. Handle browser back/forward
+  onLocationChange((newSubPath) => {
+    renderPage(newSubPath as Route);
+  });
+
+  // 6. Set up internal navigation
+  setupNavigation();
+}
+
+function setupNavigation() {
+  document.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement).closest('[data-route]');
+    if (link) {
+      e.preventDefault();
+      const route = link.getAttribute('data-route') as Route;
+      navigate(route);
+      renderPage(route);
+    }
+  });
+}
+
+function renderPage(route: Route) {
+  const app = document.getElementById('app')!;
+
+  const nav = `
+    <nav>
+      <a data-route="/" ${route === '/' ? 'class="active"' : ''}>Home</a>
+      <a data-route="/dashboard" ${route === '/dashboard' ? 'class="active"' : ''}>Dashboard</a>
+      <a data-route="/settings" ${route === '/settings' ? 'class="active"' : ''}>Settings</a>
+    </nav>
+  `;
+
+  switch (route) {
+    case '/dashboard':
+      app.innerHTML = nav + '<h1>Dashboard</h1><p>Your data here</p>';
+      break;
+    case '/settings':
+      app.innerHTML = nav + '<h1>Settings</h1><p>Configuration options</p>';
+      break;
+    default:
+      app.innerHTML = nav + '<h1>Welcome</h1><p>Choose a section above</p>';
+  }
+
+  updateContentHeight(document.body.scrollHeight);
+}
+
+main().catch(console.error);
+```
+
+:::tip Sample App
+For a complete, production-ready example of a Custom Page app, see the **Energy Spot Price Explorer** sample:
+
+[github.com/epilot-dev/epilot-app-sample-energy-prices](https://github.com/epilot-dev/epilot-app-sample-energy-prices)
+:::
+
 ---
 
 ## API Reference
 
 ### Session Management
 
-| Function | Description |
-|----------|-------------|
-| `initialize(options?)` | Initialize app bridge and get auth token |
-| `getSession()` | Get cached session (throws if not initialized) |
-| `isInitialized()` | Check if app bridge is initialized |
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `initialize(options?)` | `Promise<AppBridgeSession>` | Initialize the app bridge and establish the postMessage channel with the parent epilot app. Returns session data with an OAuth token and the user's language. Safe to call multiple times - subsequent calls return the cached session. |
+| `getSession()` | `AppBridgeSession` | Get the cached session synchronously. Throws `AppBridgeNotInitializedError` if called before `initialize()`. |
+| `isInitialized()` | `boolean` | Check whether the app bridge has been initialized. |
+
+**InitOptions:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `contentHeight` | `number` | `document.body.scrollHeight` | Initial iframe height in pixels to report to the parent |
+| `timeout` | `number` | `5000` | Timeout in milliseconds for the initialization handshake |
 
 ### Entity Surface API
 
-| Function | Description |
-|----------|-------------|
-| `getEntityContext(options?)` | Get entity ID, schema, and capability info |
-| `updateContentHeight(height)` | Update iframe height |
-| `onVisibilityChange(handler)` | Subscribe to tab visibility changes |
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `getEntityContext(options?)` | `Promise<EntityContext>` | Get the entity being viewed. Available on Entity Capability and Entity Tab surfaces. |
+| `updateContentHeight(height)` | `void` | Report your content height to the parent so it can resize the iframe. Call after rendering or when content size changes. |
+| `onVisibilityChange(handler)` | `Unsubscribe` | Subscribe to visibility changes on Entity Tab surfaces. The handler receives `true` when the tab becomes visible, `false` when hidden. Returns an unsubscribe function. |
 
 ### Action Config API
 
-| Function | Description |
-|----------|-------------|
-| `getActionConfig<T>(options?)` | Get action configuration |
-| `updateActionConfig<T>(config, options?)` | Update action configuration |
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `getActionConfig<T>(options?)` | `Promise<ActionConfig<T>>` | Get the current action configuration. Available on Flow Action Config surfaces. |
+| `updateActionConfig<T>(config, options?)` | `void` | Update the action configuration. The parent automation UI receives the new config immediately. |
+
+**UpdateConfigOptions:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `waitForCallback` | `boolean` | `false` | If true, the automation engine waits for an async callback before proceeding to the next action |
+
+### Page Surface API
+
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `getPageContext(options?)` | `Promise<PageContext>` | Get the page context including slug, sub-path, and full path. Available on Custom Page surfaces. |
+| `navigate(subPath)` | `void` | Navigate to a sub-path within the current page. Triggers `history.pushState` in the parent frame, updating the browser URL. Does not reload the iframe. |
+| `onLocationChange(handler)` | `Unsubscribe` | Subscribe to browser back/forward navigation. The handler receives the new sub-path. Returns an unsubscribe function. |
 
 ### Generic Event API
 
-| Function | Description |
-|----------|-------------|
-| `on<T>(event, handler)` | Subscribe to events (supports wildcards) |
-| `send(event, data?)` | Send custom messages |
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `on<T>(event, handler)` | `Unsubscribe` | Subscribe to events from the parent app. Supports wildcard patterns (e.g., `'custom-*'` or `'*'`). Returns an unsubscribe function. |
+| `send(event, data?)` | `void` | Send a custom event to the parent app. Use for custom communication not covered by the high-level APIs. |
 
-### Utilities
+### Client Authorization
 
-| Function | Description |
-|----------|-------------|
-| `authorizeClient(client, session)` | Authorize epilot SDK clients |
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `authorizeClient(client, sessionOrToken)` | `void` | Authorize an `@epilot/*-client` SDK client with the session token. Accepts either an `AppBridgeSession` object or a token string. Sets the `Authorization: Bearer <token>` header on the client. |
+
+### Low-Level Messaging API
+
+For advanced use cases, the `epilot` object provides direct access to the postMessage transport:
+
+```typescript
+import { epilot } from '@epilot/app-bridge';
+
+// Send a raw message to the parent
+epilot.sendMessageToParent('my-event', { key: 'value' });
+
+// Subscribe to raw messages from the parent (supports wildcards)
+const unsubscribe = epilot.subscribeToParentMessages('my-event', (data) => {
+  console.log('Received:', data);
+});
+```
+
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `epilot.sendMessageToParent(event, detail?)` | `void` | Send a raw postMessage to the parent window |
+| `epilot.subscribeToParentMessages(event, handler)` | `Unsubscribe` | Subscribe to raw postMessage events from the parent. Supports wildcard matching with `*`. |
 
 ### Types
 
 ```typescript
 import type {
+  // Session
   AppBridgeSession,    // { token: string; lang: string }
-  EntityContext,       // { entityId, schema, capability, isVisible }
-  EntityCapability,    // { name?, app_id?, ... }
-  ActionConfig<T>,     // { custom_action_config?, description?, app_id? }
-  InitOptions,         // { contentHeight?, timeout? }
-  UpdateConfigOptions, // { waitForCallback? }
+  InitOptions,         // { contentHeight?: number; timeout?: number }
+  RequestOptions,      // { timeout?: number }
+
+  // Entity Surface
+  EntityContext,       // { entityId: string; schema: string; capability?: EntityCapability; isVisible?: boolean }
+  EntityCapability,    // { name?: string; app_id?: string; [key: string]: unknown }
+
+  // Page Surface
+  PageContext,         // { slug: string; subPath: string; path: string }
+
+  // Action Config Surface
+  ActionConfig<T>,     // { custom_action_config?: T; description?: string; app_id?: string }
+  UpdateConfigOptions, // { waitForCallback?: boolean }
+
+  // Event Handlers
+  MessageHandler<T>,   // (data: T) => void
+  VisibilityHandler,   // (isVisible: boolean) => void
+  Unsubscribe,         // () => void
 } from '@epilot/app-bridge';
 ```
 
@@ -695,11 +959,17 @@ import type {
 
 ```typescript
 import {
-  AppBridgeError,              // Base error class
-  AppBridgeTimeoutError,       // Request timeout
-  AppBridgeNotInitializedError // Not initialized
+  AppBridgeError,              // Base error class for all app-bridge errors
+  AppBridgeTimeoutError,       // Thrown when a request times out (has .event and .timeout properties)
+  AppBridgeNotInitializedError // Thrown when calling functions before initialize()
 } from '@epilot/app-bridge';
 ```
+
+| Error | Properties | Description |
+|-------|------------|-------------|
+| `AppBridgeError` | `message` | Base error class. All app-bridge errors extend this. |
+| `AppBridgeTimeoutError` | `event: string`, `timeout: number` | A request/response operation timed out. The `event` property identifies which operation failed and `timeout` is the duration in ms. |
+| `AppBridgeNotInitializedError` | - | `getSession()` or other functions were called before `initialize()`. |
 
 ---
 

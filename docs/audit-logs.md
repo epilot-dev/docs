@@ -4,7 +4,6 @@ sidebar_position: 14
 
 # Audit Logs
 
-[[API Docs](/api/audit-logs)]
 [[SDK](https://www.npmjs.com/package/@epilot/audit-logs-client)]
 
 Audit logs provide a tamper-resistant record of activity across your epilot organization. They capture **who** did **what**, **when**, and on **which resource** — giving you the visibility you need for security reviews, compliance, and troubleshooting.
