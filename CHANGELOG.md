@@ -6,6 +6,13 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - New `last_used` field was added to access token responses, indicating the date the token was last used (`YYYY-MM-DD` format, 1-day accuracy); available in `GET /v1/access-tokens`, `POST /v1/access-tokens`, and `DELETE /v1/access-tokens/{id}` responses
 
+## 2026-02-25 Billing API
+
+- **Breaking:** `booking_date` (date) is now a required field when creating or updating billing events — affects `POST /v1/billing/events` and `PATCH /v1/billing/events/{id}`
+- **Breaking:** `due_date` on `InstallmentEvent` changed from `date-time` to `date` format
+- Six new billing event types were added to the `BillingEvent` union: `payment`, `dunning_fee`, `final_bill`, `bonus`, `correction`, and `custom` — clients parsing event responses should handle these new variants
+- New optional fields were added to all billing event types: `direction` (debit/credit), `status` (open/closed), `related_event`, `external_link`, `attachments`, `note`, and `internal_note`
+
 ## 2026-02-24 ERP Integration API
 
 - **Breaking:** `payload` field on event update endpoints now enforces stricter validation — string payloads require `minLength: 2` and object payloads require `minProperties: 1`; affects `POST /v1/erp/updates/events`, `POST /v2/erp/updates/events`, and `POST /v3/erp/updates/events`
