@@ -33,12 +33,6 @@ The frontend consists of multiple **independently deployable applications** — 
 
 ## Tech Stack
 
-<a href="https://docs.epilot.io/techradar/">
-  <img src={require('../../static/img/techradar-screenshot.png').default} alt="epilot Tech Radar" style={{width: '32rem'}} />
-</a>
-
-See the [epilot Tech Radar](https://docs.epilot.io/techradar/) for a detailed technology landscape.
-
 ### Frontend
 
 | Technology | Role |
@@ -72,6 +66,14 @@ See the [epilot Tech Radar](https://docs.epilot.io/techradar/) for a detailed te
 | [Elastic Cloud](https://www.elastic.co/cloud) | Full-text search and indexing for business entities |
 | [ClickHouse Cloud](https://clickhouse.com/) | Analytical queries, [Datalake](/docs/datalake/epilot-datalake), workflow data, audit logs |
 | [Momento](https://www.gomomento.com/) | Caching |
+
+### Tech Radar
+
+<a href="https://docs.epilot.io/techradar/">
+  <img src={require('../../static/img/techradar-screenshot.png').default} alt="epilot Tech Radar" style={{width: '32rem'}} />
+</a>
+
+See the [epilot Tech Radar](https://docs.epilot.io/techradar/) for a detailed technology landscape.
 
 ## Further Reading
 
