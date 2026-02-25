@@ -17,7 +17,7 @@ Custom CSS lets you:
 - **Create unique designs** — go beyond the Design Builder's built-in controls.
 
 :::info
-Custom CSS applies only to journeys using the **Concorde** design (not the End Customer Portal or legacy design). It is available on the **Professional** pricing plan and above.
+Custom CSS applies only to journeys (not the End Customer Portal or legacy design). It is available on the **Professional** pricing plan and above.
 :::
 
 If you plan to use Custom CSS with dark mode, see the [dark mode section](#dark-mode) below.
