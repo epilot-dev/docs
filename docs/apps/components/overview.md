@@ -27,7 +27,7 @@ This modular approach offers several key advantages:
 
 epilot currently supports these component types:
 
-### [Custom Journey Blocks](/docs/apps/about-apps/components/custom-journey-block)
+### [Custom Journey Blocks](/docs/apps/components/custom-journey-block)
 
 These web components integrate directly into epilot's Journey Builder, allowing you to create specialized elements for data collection, visualization, or process automation. Journey Blocks appear in the Journey Builder palette and can be placed anywhere in a customer journey flow.
 
@@ -35,7 +35,7 @@ These web components integrate directly into epilot's Journey Builder, allowing 
 Use cases: Data collection forms, calculators, visualizations, third-party integrations
 ```
 
-### [Portal Extensions](/docs/apps/about-apps/components/portal-extension)
+### [Portal Extensions](/docs/apps/components/portal-extension)
 
 Portal Extensions enhance epilot's customer and installer portals with new sections, tools, or visualizations. They can be added to dashboards or specific sections to extend the portal's functionality with custom features.
 
@@ -43,7 +43,7 @@ Portal Extensions enhance epilot's customer and installer portals with new secti
 Use cases: Custom dashboard widgets, specialized tools, data visualizations
 ```
 
-### [External Product Catalog](/docs/apps/about-apps/components/external-product-catalog)
+### [External Product Catalog](/docs/apps/components/external-product-catalog)
 
 External Product Catalog components integrate third-party product catalogs into epilot. They enable Product Blocks to fetch and display products and pricing from external systems, allowing customers to browse and select items from external catalogs directly within their journey experience.
 
@@ -51,13 +51,25 @@ External Product Catalog components integrate third-party product catalogs into 
 Use cases: Custom product catalogs, journey products, journey product recommendations
 ```
 
+### [Custom Workflow Action](/apps/about-apps/components/custom-action)
+
+Custom Workflow Actions integrate into epilot's automation engine, enabling custom processing steps or external integrations that are triggered as part of automated workflows.
+
+```
+Use cases: External webhooks, third-party service integrations, custom data processing
+```
+
+### [Custom Page](/apps/about-apps/components/custom-page)
+
+Custom Pages register full, standalone routes within the epilot 360 portal. Pages use the standard 360 layout (sidebar + topbar) and appear as navigation items in the Custom workplace. They support sub-pages and deep-linking.
+
+```
+Use cases: Dashboards, data explorers, admin panels, full-page integrations
+```
+
 ## On the Horizon
 
 The epilot platform continues to evolve, with new component types planned for future releases:
-
-### Custom Automation Tasks
-
-These will allow you to define specialized tasks that can be triggered within epilot's automation workflows, enabling custom processing or integration steps in automated sequences.
 
 ### Custom Journey Design Elements
 
@@ -92,7 +104,7 @@ Ready to create your own component? Each component type has specific requirement
         <div className="card__body">
           <h3>Journey Blocks</h3>
           <p>Create interactive elements for epilot's Journey Builder</p>
-          <a href="/docs/apps/about-apps/components/custom-journey-block" className="button button--secondary button--block">Start Building</a>
+          <a href="/docs/apps/components/custom-journey-block" className="button button--secondary button--block">Start Building</a>
         </div>
       </div>
     </div>
@@ -101,7 +113,7 @@ Ready to create your own component? Each component type has specific requirement
         <div className="card__body">
           <h3>Portal Extensions</h3>
           <p>Extend epilot's portals with custom functionality</p>
-          <a href="/docs/apps/about-apps/components/portal-extension" className="button button--secondary button--block">Start Building</a>
+          <a href="/docs/apps/components/portal-extension" className="button button--secondary button--block">Start Building</a>
         </div>
       </div>
     </div>
@@ -112,7 +124,16 @@ Ready to create your own component? Each component type has specific requirement
         <div className="card__body">
           <h3>External Product Catalog</h3>
           <p>Integrate third-party product catalogs into epilot</p>
-          <a href="/docs/apps/about-apps/components/external-product-catalog" className="button button--secondary button--block">Start Building</a>
+          <a href="/docs/apps/components/external-product-catalog" className="button button--secondary button--block">Start Building</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--6">
+      <div className="card" style={{height: '100%'}}>
+        <div className="card__body">
+          <h3>Custom Pages</h3>
+          <p>Add full standalone pages to the 360 portal</p>
+          <a href="/apps/about-apps/components/custom-page" className="button button--secondary button--block">Start Building</a>
         </div>
       </div>
     </div>

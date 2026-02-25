@@ -28,7 +28,7 @@ Custom Actions provide several key benefits:
 A custom action with an external integration is basically a webhook (POST) request to your defined system. 
 You can either:
 1. Trigger some asynchronous processing in your system, or
-2. Update epilot data with an access token built from the permission/role you can define (see [Permissions](/apps/about-apps/configure-permissions)).
+2. Update epilot data with an access token built from the permission/role you can define (see [Permissions](/docs/apps/configure-permissions)).
 
 The payload of the request is the following:
 ```json

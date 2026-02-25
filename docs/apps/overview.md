@@ -24,7 +24,7 @@ Each app is a self-contained package that can be versioned, configured, and upda
 
 Apps on epilot consist of modular components that extend platform functionality in specific ways. Each component type addresses different integration needs and can be combined within a single app to create comprehensive solutions.
 
-See the [App Components](/docs/apps/about-apps/components/overview) section for detailed information on each component type, and [App Surfaces](/docs/apps/app-surfaces) to learn how your app communicates with the epilot platform using the `@epilot/app-bridge` library.
+See the [App Components](/docs/apps/components/overview) section for detailed information on each component type, and [App Surfaces](/docs/apps/app-surfaces) to learn how your app communicates with the epilot platform using the `@epilot/app-bridge` library.
 
 ### Current Component Types
 

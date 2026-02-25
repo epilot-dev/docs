@@ -11,7 +11,7 @@ sidebar_position: 1
 
 - Basic understanding about the concept of an App inside the epilot platform. See the [App documentation](/docs/apps) for more information.
 
-- Understand what a custom journey block is and how it works. See the [Custom Journey Block documentation](/docs/apps/about-apps/components/custom-journey-block) for more information.
+- Understand what a custom journey block is and how it works. See the [Custom Journey Block documentation](/docs/apps/components/custom-journey-block) for more information.
 
 ### What we are building
 

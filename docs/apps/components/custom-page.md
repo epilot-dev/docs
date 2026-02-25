@@ -208,7 +208,7 @@ main().catch(console.error);
 
 ## Permissions
 
-Custom Pages inherit permissions from the app's configured grants. Users can only access your page if they have the app installed and the appropriate permissions. See [Configure Permissions](/apps/about-apps/configure-permissions) for details.
+Custom Pages inherit permissions from the app's configured grants. Users can only access your page if they have the app installed and the appropriate permissions. See [Configure Permissions](/docs/apps/configure-permissions) for details.
 
 ## Sample App
 

@@ -1,7 +1,7 @@
 ---
-title: Cloning Versions
+title: Versioning
 hide_title: true
-sidebar_position: 1
+sidebar_position: 4
 description: "Learn how to clone the version of an epilot app."
 ---
 
@@ -15,7 +15,7 @@ Cloning versions is a critical step in the app development lifecycle. It allows 
 
 We use [semantic versioning](https://semver.org/) to manage app versions. This system allows you to indicate the type of changes in each version and ensure that users understand the impact of updating to a new version. By following these guidelines, you can maintain a clear version history and provide a smooth transition for users when updating your app.
 
-![Version Overview](../../../static/img/apps/versions.png)
+![Version Overview](/img/apps/versions.png)
 
 The version overview lists all available versions and their visibility status.
 
@@ -24,7 +24,7 @@ The version overview lists all available versions and their visibility status.
 
 When you clone a version, you create a new version of your app that is based on an existing version. This new version is a copy of the original version and allows you to make changes without affecting the installed version. 
 
-![Version Overview](../../../static/img/apps/version-clone-modal.png)
+![Version Overview](/img/apps/version-clone-modal.png)
 
 A new version is basically a snapshot of the existing version. You can make changes to the new version without affecting the original version. This allows you to experiment with new features, fix bugs, or make other improvements without impacting users who have already installed your app.
 
