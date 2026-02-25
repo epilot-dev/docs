@@ -2,6 +2,10 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-02-25 Access Token API
+
+- New `last_used` field was added to access token responses, indicating the date the token was last used (`YYYY-MM-DD` format, 1-day accuracy); available in `GET /v1/access-tokens`, `POST /v1/access-tokens`, and `DELETE /v1/access-tokens/{id}` responses
+
 ## 2026-02-24 ERP Integration API
 
 - **Breaking:** `payload` field on event update endpoints now enforces stricter validation — string payloads require `minLength: 2` and object payloads require `minProperties: 1`; affects `POST /v1/erp/updates/events`, `POST /v2/erp/updates/events`, and `POST /v3/erp/updates/events`
@@ -23,6 +27,10 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-02-23 Customer Portal API
 
 - New `allowed_portal_entities` field was added to portal config request and response schemas — accepts an array of entity slugs (e.g., `contact`, `contract`) to restrict which entity types are accessible in the portal; available across all v2 and v3 portal config endpoints
+
+## 2026-02-23 Automation API
+
+- New `assign-thread` automation action type was added — `AssignThreadAction` and `AssignThreadConfig` schemas allow automations to add or remove assignees from message threads
 
 ## 2026-02-23 Meter Entity
 
