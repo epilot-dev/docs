@@ -14,6 +14,7 @@
   "booking_date": "2025-01-01",
   "due_date": "2025-01-01",
   "paid_date": "2025-01-01",
+  "status": "closed",
   "external_id": "string",
   "external_link": {
     "type": "link",

@@ -100,6 +100,14 @@
       "example": "2025-01-01",
       "description": "Paid date"
     },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "closed"
+      ],
+      "description": "Payment status. Use 'open' for unpaid/pending billing events and 'closed' for paid/settled billing events. When not set, the UI may derive the status from the presence of paid_date."
+    },
     "external_id": {
       "type": "string",
       "description": "External ID"

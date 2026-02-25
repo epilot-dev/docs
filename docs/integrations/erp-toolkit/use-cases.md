@@ -249,7 +249,20 @@ flowchart LR
 
 **Core Entities:** [`billing_event`](/docs/entities/core-entities#billing_event), [`billing_account`](/docs/entities/core-entities#billing_account)
 
-**Typical fields mapped:** event type, amount, currency, date, due date, invoice number, payment reference
+**Typical fields mapped:** event type, amount, currency, date, due date, status (open/closed), invoice number, payment reference
+
+:::warning[Setting the status field]
+To correctly display billing events as "open" (pending) or "closed" (paid/settled) in epilot, you **must explicitly set the `status` field** in your mapping:
+
+```json
+{
+  "attribute": "status",
+  "jsonataExpression": "$exists(augdt) and augdt != '' ? 'closed' : 'open'"
+}
+```
+
+Where `augdt` is the clearing date from your ERP (e.g., SAP AUGDT field). Without this mapping, billing events may incorrectly appear as closed. The `paid_date` field alone does not control the open/closed display status.
+:::
 
 ---
 

@@ -456,6 +456,103 @@ Handle different entity types based on payload conditions.
 
 ---
 
+## Example 6: Billing Events (Installments/Payments)
+
+Synchronize billing events such as installments and payments, correctly setting the open/closed status.
+
+### Use Case
+
+- Sync budget billing plan (Abschlagsplan) installments from SAP
+- Set payment status as `open` or `closed` based on clearing date
+- Link to contract entity
+
+### Input Payload
+
+```json
+{
+  "vertrag": "CTR-2024-0001",
+  "budgetBillingPlan": {
+    "position": [
+      {
+        "opbel": "INV-001",
+        "opupw": "001",
+        "betrw": 150.00,
+        "waers": "EUR",
+        "faedn": "2024-02-15",
+        "augdt": ""
+      },
+      {
+        "opbel": "INV-001",
+        "opupw": "002",
+        "betrw": 150.00,
+        "waers": "EUR",
+        "faedn": "2024-03-15",
+        "augdt": "2024-03-14"
+      }
+    ]
+  }
+}
+```
+
+### Mapping Configuration
+
+```json
+{
+  "entities": [
+    {
+      "entity_schema": "billing_event",
+      "unique_ids": ["external_id"],
+      "jsonataExpression": "budgetBillingPlan.($v := $$.vertrag; position.{ \"_vertrag\": $v, \"opbel\": opbel, \"opupw\": opupw, \"betrw\": betrw, \"waers\": waers, \"faedn\": faedn, \"augdt\": augdt }[])",
+      "fields": [
+        {
+          "attribute": "external_id",
+          "jsonataExpression": "opbel & '-' & opupw"
+        },
+        { "attribute": "type", "constant": "installment" },
+        {
+          "attribute": "billing_amount",
+          "jsonataExpression": "$exists(betrw) ? $number(betrw) * 100 : undefined"
+        },
+        { "attribute": "billing_amount_currency", "field": "waers" },
+        {
+          "attribute": "billing_amount_decimal",
+          "jsonataExpression": "$string(betrw)"
+        },
+        { "attribute": "due_date", "field": "faedn" },
+        { "attribute": "booking_date", "field": "faedn" },
+        {
+          "attribute": "paid_date",
+          "jsonataExpression": "$exists(augdt) and augdt != '' ? augdt : undefined"
+        },
+        {
+          "attribute": "status",
+          "jsonataExpression": "$exists(augdt) and augdt != '' ? 'closed' : 'open'"
+        },
+        { "attribute": "direction", "constant": "debit" },
+        {
+          "attribute": "contract",
+          "relation": {
+            "entity_schema": "contract",
+            "unique_ids": ["contract_number"],
+            "source_field": "_vertrag"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+:::warning[Important: Setting the status field]
+The `status` field must be explicitly set to `'open'` or `'closed'`. Without this mapping, billing events may incorrectly appear as closed in the UI.
+
+- `augdt` (AUGDT in SAP) is the clearing date - when this has a value, the item is settled
+- Set `status: 'closed'` when `augdt` has a value
+- Set `status: 'open'` when `augdt` is empty or doesn't exist
+:::
+
+---
+
 ## Testing with Mapping Simulation
 
 Before deploying your mapping, test it using the simulation endpoint:
