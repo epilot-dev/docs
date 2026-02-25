@@ -29,7 +29,7 @@ They typically rely on your API for the execution of any necessary logic and exp
 
 The interface supports two types of data exchange, depending on the block being used in the journey:
 - **Products**: Returns an array of products (`type: "products"`).
-- **Product Recommendations**: Returns a source product and a list of offer products (`type: "products-recommendation"`).
+- **Product Recommendations**: Returns a source product and a list of offer products (`type: "product-recommendations"`).
 
 ### Template Variables
 
@@ -100,7 +100,7 @@ Never hardcode sensitive credentials in your configuration. Always store API key
 
 After your External Product Catalog component is configured and the app is installed, it can be used within epilot's Journeys. Currently we support seamless integration of the external product catalog into the journey via Product Blocks and Product Recommendations Blocks (beta).
 
-When a journey creator adds a **Product Block** or **Product Recommendations Block** in a journey, they can select the integration as the source for products. Only hooks that are supported for the selected block type will be available (e.g. only `products` hook for Product Block, only `products-recommendation` hook for Product Recommendations Block).
+When a journey creator adds a **Product Block** or **Product Recommendations Block** in a journey, they can select the integration as the source for products. Only hooks that are supported for the selected block type will be available (e.g. only `products` hook for Product Block, only `product-recommendations` hook for Product Recommendations Block).
 
 <img src="/img/apps/external-product-catalog/journey-product-block-config.png" width="500" />
 

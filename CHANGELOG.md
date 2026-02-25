@@ -217,7 +217,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-01-23 Pricing API
 
-- New `POST /v1/public/external-catalog/products` and `POST /v1/public/external-catalog/products-recommendation` public endpoints were added
+- New `POST /v1/public/external-catalog/products` and `POST /v1/public/external-catalog/product-recommendations` public endpoints were added
 
 ## 2026-01-22 Automation API
 
@@ -455,7 +455,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2025-11-25 Pricing API
 
-- New `POST /v1/public/integration/{integrationId}/products-recommendation` endpoint was added
+- New `POST /v1/public/integration/{integrationId}/product-recommendations` endpoint was added
 
 ## 2025-11-25 Pricing API External Catalog
 
