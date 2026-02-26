@@ -128,7 +128,7 @@ To ensure seamless communication between epilot and your external catalog, your 
 
 The integration works as a request to your service endpoint with the following request and response:
 
-1.  **Request**: A payload containing the `context` of the journey or a custom one defined by you/epilot.
+1.  **Request**: A payload containing the `context` of the journey, portal, or a custom one defined by you/epilot.
 2.  **Response**: A list of products or product recommendations in a specific format.
 
 For detailed information on the request and response schemas, please refer to the [External Catalog Integration Interface documentation](https://docs.api.epilot.io/pricing-api-external-catalog).
