@@ -29,6 +29,16 @@ Place the following script tag in your page, preferably within the `<head>` sect
 ></script>
 ```
 
+For Canary updates, use the canary script
+
+```html title="Canary Embed script"
+<script
+  src="https://journey.epilot.io/canary/assets/embed.js"
+  type="module"
+  async
+></script>
+```
+
 Loading the script with `async` ensures it downloads without blocking your page and executes as soon as it's available. The script auto-registers the `<epilot-journey>` custom element on load.
 
 ### 2. Add the Journey element
@@ -59,12 +69,13 @@ All attributes are set as standard HTML attributes on the `<epilot-journey>` ele
 | `journey-id`             | `string`                      | —               | **Required.** The ID of the Journey to render.                                                                                                                          |
 | `mode`                   | `"inline"` \| `"full-screen"` | `"full-screen"` | The display mode. `inline` renders the Journey within the page flow. `full-screen` renders it as an overlay.                                                            |
 | `lang`                   | `"de"` \| `"en"` \| `"fr"`    | `"de"`          | Overrides the UI language. This affects UI labels and copy, but does not automatically translate static content configured in the Journey Builder.                      |
-| `top-bar`                | `"true"` \| `"false"`         | `"false"`       | Whether to show the top navigation bar.                                                                                                                                 |
+| `top-bar`                | `"true"` \| `"false"`         | `"true"`        | Whether to show the top navigation bar.                                                                                                                                 |
 | `scroll-to-top`          | `"true"` \| `"false"`         | `"true"`        | Whether to scroll the page to the top of the Journey when the user navigates to a new step.                                                                             |
 | `close-button`           | `"true"` \| `"false"`         | `"true"`        | Whether to show the close button in the top bar.                                                                                                                        |
 | `context-data`           | JSON string                   | —               | Additional contextual data passed to the Journey and included with the submission. Must be a JSON-encoded string of key-value pairs. See [Context Data](#context-data). |
 | `data-injection-options` | JSON string                   | —               | Pre-fill Journey fields and control the starting step. Must be a JSON-encoded string. See [Data Injection](#data-injection).                                            |
 | `journey-token`          | `string`                      | —               | A JWT token used for [post-qualification Journeys](./post-qualification).                                                                                               |
+| `is-full-screen-entered` | `"true"` \| `"false"`         | `"false"`       | Controls whether a full-screen Journey is visible. Set to `"true"` to open it. Only applies when `mode` is `"full-screen"`.                                             |
 | `is-embedded`            | `"true"` \| `"false"`         | `"false"`       | Indicates the Journey is embedded on a host app.                                                                                                                        |
 | `debug`                  | `"true"` \| `"false"`         | `"false"`       | Enables debug mode for development and troubleshooting.                                                                                                                 |
 
@@ -86,7 +97,7 @@ Render the Journey directly within the page flow:
 
 ### Full-Screen Mode
 
-In full-screen mode, the Journey does not open automatically. You need to post a message to the window to trigger it:
+In full-screen mode, the Journey is hidden by default. Use the `is-full-screen-entered` attribute to control its visibility:
 
 ```html title="Full-screen mode"
 <epilot-journey
@@ -101,52 +112,53 @@ In full-screen mode, the Journey does not open automatically. You need to post a
 
 <script>
   function openJourney() {
-    window.postMessage(
-      {
-        type: 'EPILOT/ENTER_FULLSCREEN',
-        journeyId: '<your-journey-id>',
-      },
-      '*'
-    )
+    const el = document.querySelector('epilot-journey')
+    el.setAttribute('is-full-screen-entered', 'true')
   }
 </script>
 ```
 
-To close the Journey programmatically, post an `EPILOT/EXIT_FULLSCREEN` message in the same way:
+To close the Journey, set the attribute back to `"false"`:
 
 ```javascript title="Closing the Journey"
-window.postMessage(
-  {
-    type: 'EPILOT/EXIT_FULLSCREEN',
-    journeyId: '<your-journey-id>',
-  },
-  '*'
-)
+document
+  .querySelector('epilot-journey')
+  .setAttribute('is-full-screen-entered', 'false')
 ```
 
-### Multiple Journeys
+:::info Live Examples
 
-You can embed multiple Journeys on the same page. Each one operates independently:
+Interactive examples are available at [Storybook Examples](https://embed.journey.epilot.io/stories/?path=/story/next-web-component-inline--inline) for only **Public Journeys**, where you can browse different embedding scenarios and configurations.
 
-```html title="Multiple journeys"
+:::
+
+## Limitations
+
+### Single instance per page
+
+Only one `<epilot-journey>` element is supported per page. Placing multiple instances on the same page is not supported and may lead to unexpected behavior.
+
+To load a different Journey, update the attributes on the existing element rather than adding a new one:
+
+```html title="Single element"
 <epilot-journey
   journey-id="<journey-id-1>"
   mode="inline"
   lang="de"
 ></epilot-journey>
 
-<epilot-journey
-  journey-id="<journey-id-2>"
-  mode="inline"
-  lang="en"
-></epilot-journey>
+<button onclick="switchJourney()">Load another Journey</button>
+
+<script>
+  function switchJourney() {
+    const el = document.querySelector('epilot-journey')
+    el.setAttribute('journey-id', '<journey-id-2>')
+    el.setAttribute('lang', 'en')
+  }
+</script>
 ```
 
-:::info Live Examples
-
-Interactive examples are available at `{{embed URL}}/stories`, where you can browse different embedding scenarios and configurations.
-
-:::
+If you need multiple Journeys visible simultaneously, use the [iframe embedding](./embedding) approach instead.
 
 ## Context Data
 
@@ -262,11 +274,23 @@ document.querySelector('epilot-journey').refresh()
 
 ## Content-Security-Policy (CSP)
 
-If your website uses a Content-Security-Policy, you will need to allow epilot domains. Since Web Components don't use iframes, you only need the `script-src` rule — the `frame-src` rule from the [Content-Security-Policy](./content-security-policy) page is not required:
+If you don’t have Content-Security-Policy defined for your pages, you can skip this. If you have but can temporarily disable to perform the this test, go for that. Otherwise, please ensure you update your policy to allow the below
 
 ```text title="Minimum CSP for Web Components"
-script-src 'self' https://*.epilot.io https://*.epilot.cloud;
+  script-src https://journey.epilot.io;
+  style-src  'unsafe-inline' https://journey.epilot.io https://fonts.googleapis.com;
+  img-src    data: blob: https://file.sls.epilot.io https://file-preview.sls.epilot.io https://journey.epilot.io;
+  font-src   data: https://journey.epilot.io https://fonts.gstatic.com;
+  connect-src 'self' https://*.sls.epilot.io https://*.epilot.io https://portal.epilot.cloud https://epilot-dev-user-content.s3.eu-central-1.amazonaws.com;
+  frame-src  https://journey.epilot.io https://portal.epilot.cloud;
+  form-action https://submission.sls.epilot.io https://journey.epilot.io;
 ```
+
+:::tip
+
+These rules are subject to change as we’re rolling out new features and web components themselves. Depending on your Journey setups, you might also need to give additional permissions in case you’re using third-party apps or apps of your own.
+
+:::
 
 See the dedicated [Content-Security-Policy](./content-security-policy) page for additional guidance on nonces and inline script handling.
 
@@ -278,7 +302,7 @@ If you are currently embedding Journeys using iframes with the `__epilot` embed 
 
    ```diff
    - <script src="https://embed.journey.epilot.io/bundle.js"></script>
-   + <script src="https://embed.journey.epilot.io/embed.js" type="module" async></script>
+   + <script src="https://journey.epilot.io/stable/assets/embed.js" type="module" async></script>
    ```
 
 2. **Replace the initialization code** — instead of calling `__epilot.init()`, use the `<epilot-journey>` custom element directly:
