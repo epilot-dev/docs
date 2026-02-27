@@ -638,4 +638,5 @@ Transform and validate in one expression:
 
 - [Unique Identifiers](./unique-identifiers) - Advanced entity lookup strategies
 - [Relations](./relations) - Link entities together
+- [Pricing](./pricing) - Map ERP line items and calculate prices
 - [Meter Readings](./meter-readings) - Handle meter reading data

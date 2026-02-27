@@ -467,5 +467,6 @@ Pre-validate relation data with JSONata:
 
 ## Next Steps
 
+- [Pricing](./pricing) - Map ERP line items and calculate prices
 - [Meter Readings](./meter-readings) - Handle meter reading data
 - [Examples](./examples) - Complete integration examples
