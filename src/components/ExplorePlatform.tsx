@@ -331,7 +331,7 @@ const groups: PlatformGroup[] = [
     items: [
       {
         label: 'Pricing',
-        href: '/docs/pricing/1-entities',
+        href: '/docs/pricing/entities',
         description: 'Products, catalogs, and pricing models',
         icon: <TagIcon />,
       },
