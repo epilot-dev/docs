@@ -20,6 +20,76 @@ html[data-theme='dark'] .hero {
   margin: 0 auto;
 }
 
+/* Logo container */
+.logoWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  transform-origin: center center;
+  animation: logoEntry 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Each blade fades in + slides from center with stagger */
+.blade1,
+.blade2,
+.blade3 {
+  opacity: 0;
+  transform-origin: 37px 35px; /* center of the 73.9x70.3 viewBox */
+  animation: bladeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.blade1 {
+  animation-delay: 0.15s;
+}
+
+.blade2 {
+  animation-delay: 0.3s;
+}
+
+.blade3 {
+  animation-delay: 0.45s;
+}
+
+@keyframes bladeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(-60deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes logoEntry {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logo {
+  transition: filter 0.4s ease;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 12px rgba(0, 165, 255, 0.35));
+}
+
+html[data-theme='dark'] .logo:hover {
+  filter: drop-shadow(0 0 14px rgba(0, 215, 255, 0.4));
+}
+
+/* Title, subtitle, actions */
 .title {
   font-size: 3.5rem;
   font-weight: 700;
@@ -56,11 +126,28 @@ html[data-theme='dark'] .subtitle {
     padding: 3rem 1.5rem 2.5rem;
   }
 
+  .logo {
+    width: 64px;
+    height: 64px;
+  }
+
   .title {
     font-size: 2.2rem;
   }
 
   .subtitle {
     font-size: 1.05rem;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .logo,
+  .blade1,
+  .blade2,
+  .blade3 {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
