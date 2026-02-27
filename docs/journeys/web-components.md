@@ -128,7 +128,7 @@ document
 
 :::info Live Examples
 
-Interactive examples are available at [Storybook Examples](https://embed.journey.epilot.io/stories/?path=/docs/next-web-component--docs) for only **Public Journeys**, where you can browse different embedding scenarios and configurations.
+Interactive examples are available at [Storybook Examples](https://embed.journey.epilot.io/stories/?path=/docs/next-web-component--docs) for only **Public Journeys**, where you can browse different embedding scenarios and configurations. Remember to update the controls section with your own parameters (journey-id, top-bar etc.) to see it in action.
 
 :::
 
