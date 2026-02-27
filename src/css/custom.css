@@ -189,3 +189,50 @@ html[data-theme='dark'] .button.button--primary {
 [data-theme='dark'] .aa-DetachedSearchButtonPlaceholder {
   color: #a0a8b4;
 }
+
+/* Compact inline footer */
+.footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  background: transparent;
+}
+
+.footer--dark {
+  background: transparent;
+}
+
+.footer .container {
+  max-width: 1200px;
+}
+
+.footer__links.text--center {
+  margin-bottom: 0.5rem;
+}
+
+.footer__link-item {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--ifm-font-color-secondary);
+  transition: color 0.15s;
+}
+
+.footer__link-item:hover {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.footer__link-separator {
+  color: var(--ifm-color-emphasis-300);
+  margin: 0 0.5rem;
+}
+
+.footer__bottom {
+  padding-top: 0;
+}
+
+.footer__copyright {
+  font-size: 0.78rem;
+  color: var(--ifm-font-color-secondary);
+  opacity: 0.6;
+  margin-top: 0.25rem;
+}
