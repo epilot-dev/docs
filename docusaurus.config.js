@@ -163,50 +163,32 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
         style: 'light',
         links: [
           {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Documentation',
-                to: '/docs/intro',
-              },
-              {
-                label: 'REST API Docs',
-                to: '/api',
-              },
-              {
-                label: 'SDK',
-                to: '/docs/architecture/sdk',
-              },
-              {
-                label: 'Open Source',
-                to: '/docs/architecture/open-source',
-              },
-            ],
+            label: 'Documentation',
+            to: '/docs/intro',
           },
           {
-            title: 'Links',
-            items: [
-              {
-                label: 'GitHub',
-                href: 'https://github.com/epilot-dev',
-              },
-              {
-                label: 'Blog',
-                href: 'https://dev.to/epilot',
-              },
-              {
-                label: 'Tech Radar',
-                href: `${DOCS_URL}/techradar`,
-              },
-              {
-                label: 'Engineering Principles',
-                href: 'https://github.com/epilot-dev/engineering-principles',
-              },
-              {
-                label: 'Careers',
-                href: 'https://www.epilot.cloud/en/company/careers',
-              },
-            ],
+            label: 'REST API',
+            to: '/api',
+          },
+          {
+            label: 'SDK',
+            to: '/docs/architecture/sdk',
+          },
+          {
+            label: 'GitHub',
+            href: 'https://github.com/epilot-dev',
+          },
+          {
+            label: 'Blog',
+            href: 'https://dev.to/epilot',
+          },
+          {
+            label: 'Changelog',
+            to: '/api/changelog',
+          },
+          {
+            label: 'Careers',
+            href: 'https://www.epilot.cloud/en/company/careers',
           },
         ],
         copyright: `&copy; epilot.cloud ${new Date().getFullYear()}`,
