@@ -2,6 +2,23 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-02-26 User API
+
+- New passkey authentication and management endpoints were added: `POST /v2/users/public/passkeys:authenticateBegin` and `:authenticateBeginDiscoverable` start a WebAuthn authentication flow; `POST /v2/users/public/passkeys:resolveCredential` resolves user identity from a discoverable assertion; `POST /v2/users/me/passkeys:registerBegin` and `:registerComplete` handle passkey registration; `GET /v2/users/me/passkeys` lists registered passkeys; `DELETE /v2/users/me/passkeys/{credentialId}` removes a passkey
+- New `passkey_enabled` boolean field was added to `LoginParameters` responses, indicating whether passkey login is available for the organization
+
+## 2026-02-26 ERP Integration API
+
+- **Breaking:** The `requires_vpc` field in File Proxy use-case configuration is now read-only after creation — it can no longer be set or updated via the API; affects `POST /v1/integrations/{integrationId}/use-cases`, `PUT /v1/integrations/{integrationId}/use-cases/{useCaseId}`, and their v2 equivalents
+
+## 2026-02-26 Workflows Definition API
+
+- `PhaseMarkedInProgress` and `PhaseSkipped` entity sync trigger event values were re-added to flow templates (reverting the 2026-02-23 removal) — affects all `/v2/flows/templates` endpoints
+
+## 2026-02-26 Workflows Execution API
+
+- `PhaseMarkedInProgress` and `PhaseSkipped` entity sync trigger event values were re-added to execution responses (reverting the 2026-02-23 removal); `TaskMarkedOnHold` entity sync trigger event value was also added — affects `POST /v2/flows/executions`, `GET /v2/flows/executions/{execution_id}`, `PATCH /v2/flows/executions/{execution_id}`, and `POST /v2/flows/executions:search`
+
 ## 2026-02-25 Access Token API
 
 - New `last_used` field was added to access token responses, indicating the date the token was last used (`YYYY-MM-DD` format, 1-day accuracy); available in `GET /v1/access-tokens`, `POST /v1/access-tokens`, and `DELETE /v1/access-tokens/{id}` responses
@@ -12,6 +29,18 @@ This changelog covers breaking changes, new features, and significant updates to
 - **Breaking:** `due_date` on `InstallmentEvent` changed from `date-time` to `date` format
 - Six new billing event types were added to the `BillingEvent` union: `payment`, `dunning_fee`, `final_bill`, `bonus`, `correction`, and `custom` — clients parsing event responses should handle these new variants
 - New optional fields were added to all billing event types: `direction` (debit/credit), `status` (open/closed), `related_event`, `external_link`, `attachments`, `note`, and `internal_note`
+
+## 2026-02-25 App API
+
+- New `CUSTOM_PAGE` app component type was added — the new `CustomPageComponent` schema includes a required `slug` field (URL route, e.g. `"zapier"`) and optional `nav_label`, `nav_icon`, and `nav_description` navigation fields; supported across all app and app-configuration endpoints
+
+## 2026-02-25 GenAI API
+
+- New `POST /v1/genai/entity/{slug}/{entity_id}/summary` endpoint was added to generate AI summaries for entities, streaming the response via `text/event-stream`; supports optional `language` (`de`/`en`), `variant` (`short`/`detailed`/`action_points`), and `current_summary` parameters
+
+## 2026-02-25 Workflows Definition API
+
+- Automation triggers and tasks in flow templates now support inline configuration: new optional `trigger_config` array on `AutomationTrigger` and new optional `action_config` object on `AutomationTask.automation_config` allow automation flows to be created or updated in place without a pre-existing ID — `automation_id` on triggers and `flow_id` on automation configs are now optional; affects all `/v2/flows/templates` endpoints
 
 ## 2026-02-24 ERP Integration API
 
@@ -217,7 +246,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-01-23 Pricing API
 
-- New `POST /v1/public/external-catalog/products` and `POST /v1/public/external-catalog/product-recommendations` public endpoints were added
+- New `POST /v1/public/external-catalog/products` and `POST /v1/public/external-catalog/products-recommendation` public endpoints were added
 
 ## 2026-01-22 Automation API
 
@@ -455,7 +484,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2025-11-25 Pricing API
 
-- New `POST /v1/public/integration/{integrationId}/product-recommendations` endpoint was added
+- New `POST /v1/public/integration/{integrationId}/products-recommendation` endpoint was added
 
 ## 2025-11-25 Pricing API External Catalog
 
