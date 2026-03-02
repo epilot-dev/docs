@@ -46,6 +46,10 @@
       ],
       "description": "Entity Labels"
     },
+    "_purpose": {
+      "$ref": "#/definitions/PurposeAttribute",
+      "description": "Purposes"
+    },
     "name": {
       "type": "string",
       "description": "Name"
@@ -177,6 +181,16 @@
     }
   },
   "definitions": {
+    "PurposeAttribute": {
+      "type": "array",
+      "description": "List of purpose ids",
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+      ]
+    },
     "BaseUUID": {
       "type": "string",
       "format": "uuid",
