@@ -139,4 +139,4 @@ epilot's API-first architecture means backend services maintain strict backward 
 
 - [Architecture Overview](/docs/architecture/overview) -- epilot's tech stack and system design
 - [API First](/docs/architecture/api-first) -- API design philosophy and backward compatibility
-- [Security Architecture](/docs/architecture/security) -- multi-tenant isolation and encryption
+- [Security Architecture](/docs/auth/security) -- multi-tenant isolation and encryption

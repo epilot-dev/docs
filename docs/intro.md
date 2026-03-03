@@ -16,7 +16,7 @@ sidebar_position: 1
 
 Entities, authentication, automation, and the serverless platform behind epilot.
 
-[Overview](/docs/architecture/overview) | [Tech Stack](/docs/architecture/overview#tech-stack) | [Security](/docs/architecture/security)
+[Overview](/docs/architecture/overview) | [Tech Stack](/docs/architecture/overview#tech-stack) | [Security](/docs/auth/security)
 
 ## APIs
 

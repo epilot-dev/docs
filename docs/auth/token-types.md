@@ -161,6 +161,6 @@ The epilot API Gateway authorizer verifies all tokens automatically using JWKS (
 ## See Also
 
 - [Authentication](/docs/auth/authentication) — OAuth 2.0 login flows and SDK usage
-- [Security Architecture](/docs/architecture/security) — Platform security overview
+- [Security Architecture](/docs/auth/security) — Platform security overview
 - [Access Tokens](/docs/auth/access-tokens) — Creating and managing Access Tokens
 - [Permissions](/docs/auth/permissions) — Role-based access control and grants

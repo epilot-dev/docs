@@ -81,4 +81,4 @@ Cross-device authentication (using a phone to sign in on a laptop) is supported 
 - [Passwordless Login](/docs/auth/passwordless) -- email-based sign-in links
 - [Multi-Factor Authentication](/docs/auth/mfa) -- TOTP and SMS second factor
 - [SSO](/docs/sso/single-sign-on) -- federated login with corporate identity providers
-- [Security Architecture](/docs/architecture/security) -- platform security overview
+- [Security Architecture](/docs/auth/security) -- platform security overview
