@@ -248,38 +248,38 @@ document.querySelector('epilot-journey').refresh()
 
 ## Events
 
-The `<epilot-journey>` Web Component dispatches custom events on the `window` object that you can listen for. These events correspond to the iframe `postMessage` events used by the [iframe embed script](./embedding), translated into standard DOM custom events.
+The `<epilot-journey>` Web Component dispatches custom events on the `window` object that you can listen for. The event names are the same as the iframe `postMessage` events used by the [iframe embed script](./embedding), so you can use the same event names regardless of the embedding method.
 
 ### Event Reference
 
-| iframe postMessage Event       | Web Component Custom Event      | Description                                          |
-| ------------------------------ | ------------------------------- | ---------------------------------------------------- |
-| `EPILOT/JOURNEY_LOADED`        | `epilot:journey-loaded`         | The Journey has finished loading.                    |
-| `EPILOT/EXIT_FULLSCREEN`       | `epilot:exit-fullscreen`        | The Journey exited full-screen mode.                 |
-| `EPILOT/ENTER_FULLSCREEN`      | `epilot:enter-fullscreen`       | The Journey entered full-screen mode.                |
-| `EPILOT/CLOSE_JOURNEY`         | `epilot:close-journey`          | The user closed the Journey.                         |
-| `EPILOT/FORM_EVENT`            | `epilot:form-event`             | A form-level event occurred (e.g. submission).       |
-| `EPILOT/USER_EVENT/PAGE_VIEW`  | `epilot:user-event:page-view`   | The user navigated to a new step.                    |
-| `EPILOT/USER_EVENT/PROGRESS`   | `epilot:user-event:progress`    | The user made progress in the Journey.               |
-| `ExitFullScreen`               | `exitfullscreen`                | Legacy event for exiting full-screen mode.           |
+| Event                          | Description                                          |
+| ------------------------------ | ---------------------------------------------------- |
+| `EPILOT/JOURNEY_LOADED`        | The Journey has finished loading.                    |
+| `EPILOT/EXIT_FULLSCREEN`       | The Journey exited full-screen mode.                 |
+| `EPILOT/ENTER_FULLSCREEN`      | The Journey entered full-screen mode.                |
+| `EPILOT/CLOSE_JOURNEY`         | The user closed the Journey.                         |
+| `EPILOT/FORM_EVENT`            | A form-level event occurred (e.g. submission).       |
+| `EPILOT/USER_EVENT/PAGE_VIEW`  | The user navigated to a new step.                    |
+| `EPILOT/USER_EVENT/PROGRESS`   | The user made progress in the Journey.               |
+| `ExitFullScreen`               | Legacy event for exiting full-screen mode.           |
 
 ### Listening for Events
 
 ```javascript title="Listening for journey events"
 // React when the journey finishes loading
-window.addEventListener('epilot:journey-loaded', () => {
+window.addEventListener('EPILOT/JOURNEY_LOADED', () => {
   console.log('Journey has loaded!')
 })
 
 // React when the user navigates to a new step
-window.addEventListener('epilot:user-event:page-view', (event) => {
+window.addEventListener('EPILOT/USER_EVENT/PAGE_VIEW', (event) => {
   console.log('User navigated to a new step', event.detail)
 })
 ```
 
 ### Example: Showing a Skeleton Loader
 
-A common use case is to display a loading skeleton while the Journey loads, then reveal the Journey once it's ready. You can listen for the `epilot:user-event:page-view` event (for inline mode) or `epilot:journey-loaded` (for full-screen mode) to know when the Journey is ready to be shown.
+A common use case is to display a loading skeleton while the Journey loads, then reveal the Journey once it's ready. You can listen for the `EPILOT/USER_EVENT/PAGE_VIEW` event (for inline mode) or `EPILOT/JOURNEY_LOADED` (for full-screen mode) to know when the Journey is ready to be shown.
 
 ```html title="Skeleton loader with web component"
 <!-- Skeleton placeholder -->
@@ -300,7 +300,7 @@ A common use case is to display a loading skeleton while the Journey loads, then
 ></epilot-journey>
 
 <script>
-  window.addEventListener('epilot:user-event:page-view', function onLoad() {
+  window.addEventListener('EPILOT/USER_EVENT/PAGE_VIEW', function onLoad() {
     const skeleton = document.getElementById('journey-skeleton')
     const journey = document.getElementById('my-journey')
 
@@ -310,7 +310,7 @@ A common use case is to display a loading skeleton while the Journey loads, then
     journey.style.opacity = '1'
 
     // Clean up — only need to handle this once
-    window.removeEventListener('epilot:user-event:page-view', onLoad)
+    window.removeEventListener('EPILOT/USER_EVENT/PAGE_VIEW', onLoad)
   })
 </script>
 ```
@@ -396,7 +396,7 @@ If you are currently embedding Journeys using iframes with the `__epilot` embed 
    + ></epilot-journey>
    ```
 
-3. **Migrate event listeners** — replace `__epilot.on()` calls with standard `window.addEventListener()` using the new custom event names. See the [Events](#events) section for the full mapping.
+3. **Migrate event listeners** — replace `__epilot.on()` calls with standard `window.addEventListener()`. The event names are the same as the iframe postMessage events, so no renaming is needed. See the [Events](#events) section for the full list.
 
 4. **Update CSP rules** — the same epilot domain rules apply. See [Content-Security-Policy](./content-security-policy).
 
