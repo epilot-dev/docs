@@ -2,6 +2,27 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-03-03 Message API
+
+- New `GET /v1/message/messages/{id}/eml` endpoint was added, returning a `302` redirect to a pre-signed URL for downloading the message as an EML file
+- New optional `complete_thread` field was added to message creation and draft endpoints (`POST /v1/message/messages`, `POST /v1/message/drafts`), marking the thread as Done immediately after the message is sent
+
+## 2026-03-02 Blueprint Manifest API
+
+- New `POST /v2/blueprint-manifest/blueprints/{blueprint_id}:format-description` endpoint was added, which formats a blueprint description as markdown using AI (accepts a `text` field, returns `markdown`)
+- **Breaking:** `compatible_apps` field was removed from `MarketplaceBlueprint` and replaced by `recommended_apps` across all blueprint endpoints
+- New optional fields `docs_url`, `recommended_apps`, `required_features`, and `zip_file_name` were added to all blueprint types (`AppBlueprint`, `CustomBlueprint`, `DeployedBlueprint`, `FileBlueprint`, `MarketplaceBlueprint`)
+
+## 2026-03-02 Workflows Definition API
+
+- New `GET /v2/flows/templates/{flowId}/export` endpoint was added, exporting a flow template with all referenced automations resolved and bundled
+- New `POST /v2/flows/templates/import` endpoint was added, importing a flow template from an export payload and creating all referenced automations in the caller's organization
+- Two new `due_date_config/type` enum values were added to flow templates: `A_PRECEDING_TASK_COMPLETED` and `ALL_PRECEDING_TASKS_COMPLETED`, enabling task and phase due dates to be relative to predecessor task completion; affects all `/v2/flows/templates` endpoints
+
+## 2026-02-27 Workflows Execution API
+
+- The `assigned_to` field on executions, phases, and tasks now accepts variable assignment objects (`{ variable, value }`) in addition to plain user ID strings, enabling dynamic assignee resolution during workflow execution; affects `POST /v2/flows/executions`, `GET` and `PATCH /v2/flows/executions/{execution_id}`, `PATCH /v2/flows/executions/{execution_id}/phases/{phase_id}`, and task creation/update endpoints
+
 ## 2026-02-26 User API
 
 - New passkey authentication and management endpoints were added: `POST /v2/users/public/passkeys:authenticateBegin` and `:authenticateBeginDiscoverable` start a WebAuthn authentication flow; `POST /v2/users/public/passkeys:resolveCredential` resolves user identity from a discoverable assertion; `POST /v2/users/me/passkeys:registerBegin` and `:registerComplete` handle passkey registration; `GET /v2/users/me/passkeys` lists registered passkeys; `DELETE /v2/users/me/passkeys/{credentialId}` removes a passkey
