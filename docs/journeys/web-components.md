@@ -132,34 +132,6 @@ Interactive examples are available at [Storybook Examples](https://embed.journey
 
 :::
 
-## Limitations
-
-### Single instance per page
-
-Only one `<epilot-journey>` element is supported per page. Placing multiple instances on the same page is not supported and may lead to unexpected behavior.
-
-To load a different Journey, update the attributes on the existing element rather than adding a new one:
-
-```html title="Single element"
-<epilot-journey
-  journey-id="<journey-id-1>"
-  mode="inline"
-  lang="de"
-></epilot-journey>
-
-<button onclick="switchJourney()">Load another Journey</button>
-
-<script>
-  function switchJourney() {
-    const el = document.querySelector('epilot-journey')
-    el.setAttribute('journey-id', '<journey-id-2>')
-    el.setAttribute('lang', 'en')
-  }
-</script>
-```
-
-If you need multiple Journeys visible simultaneously, use the [iframe embedding](./embedding) approach instead.
-
 ## Context Data
 
 Use the `context-data` attribute to pass additional key-value pairs to the Journey. This data is included with the submission and can be used for tracking, attribution, or pre-configuring behavior.
@@ -175,6 +147,8 @@ The value must be a JSON-encoded string. Only **string** and **numeric** values 
 ```
 
 Numeric values are coerced to strings internally.
+
+The Journey also automatically picks up **URL search query parameters** from the host page and includes them as context data. For example, if the page URL is `https://example.com/energy?utm_source=google&campaign=summer`, the `utm_source` and `campaign` values will be included in the context data automatically. Values passed explicitly via the `context-data` attribute take precedence over query parameters when keys overlap.
 
 ## Data Injection
 
@@ -272,9 +246,106 @@ You can also call the `refresh()` method on the element to force a re-render:
 document.querySelector('epilot-journey').refresh()
 ```
 
+## Events
+
+The `<epilot-journey>` Web Component dispatches custom events on the `window` object that you can listen for. The event names are the same as the iframe `postMessage` events used by the [iframe embed script](./embedding), so you can use the same event names regardless of the embedding method.
+
+### Event Reference
+
+| Event                          | Description                                          |
+| ------------------------------ | ---------------------------------------------------- |
+| `EPILOT/JOURNEY_LOADED`        | The Journey has finished loading.                    |
+| `EPILOT/EXIT_FULLSCREEN`       | The Journey exited full-screen mode.                 |
+| `EPILOT/ENTER_FULLSCREEN`      | The Journey entered full-screen mode.                |
+| `EPILOT/CLOSE_JOURNEY`         | The user closed the Journey.                         |
+| `EPILOT/FORM_EVENT`            | A form-level event occurred (e.g. submission).       |
+| `EPILOT/USER_EVENT/PAGE_VIEW`  | The user navigated to a new step.                    |
+| `EPILOT/USER_EVENT/PROGRESS`   | The user made progress in the Journey.               |
+| `ExitFullScreen`               | Legacy event for exiting full-screen mode.           |
+
+### Listening for Events
+
+```javascript title="Listening for journey events"
+// React when the journey finishes loading
+window.addEventListener('EPILOT/JOURNEY_LOADED', () => {
+  console.log('Journey has loaded!')
+})
+
+// React when the user navigates to a new step
+window.addEventListener('EPILOT/USER_EVENT/PAGE_VIEW', (event) => {
+  console.log('User navigated to a new step', event.detail)
+})
+```
+
+### Example: Showing a Skeleton Loader
+
+A common use case is to display a loading skeleton while the Journey loads, then reveal the Journey once it's ready. You can listen for the `EPILOT/USER_EVENT/PAGE_VIEW` event (for inline mode) or `EPILOT/JOURNEY_LOADED` (for full-screen mode) to know when the Journey is ready to be shown.
+
+```html title="Skeleton loader with web component"
+<!-- Skeleton placeholder -->
+<div id="journey-skeleton" style="padding: 20px; max-width: 800px;">
+  <div style="height: 24px; width: 60%; background: #e0e0e0; border-radius: 4px; margin-bottom: 16px;"></div>
+  <div style="height: 16px; width: 80%; background: #e0e0e0; border-radius: 4px; margin-bottom: 12px;"></div>
+  <div style="height: 16px; width: 70%; background: #e0e0e0; border-radius: 4px; margin-bottom: 12px;"></div>
+  <div style="height: 40px; width: 100%; background: #e0e0e0; border-radius: 4px;"></div>
+</div>
+
+<!-- Journey (hidden initially) -->
+<epilot-journey
+  id="my-journey"
+  journey-id="<your-journey-id>"
+  mode="inline"
+  lang="de"
+  style="opacity: 0; height: 0; display: block; transition: opacity 0.3s ease-in;"
+></epilot-journey>
+
+<script>
+  window.addEventListener('EPILOT/USER_EVENT/PAGE_VIEW', function onLoad() {
+    const skeleton = document.getElementById('journey-skeleton')
+    const journey = document.getElementById('my-journey')
+
+    // Fade out skeleton and reveal the journey
+    skeleton.style.display = 'none'
+    journey.style.height = ''
+    journey.style.opacity = '1'
+
+    // Clean up — only need to handle this once
+    window.removeEventListener('EPILOT/USER_EVENT/PAGE_VIEW', onLoad)
+  })
+</script>
+```
+
+## Limitations
+
+### Single instance per page
+
+Only one `<epilot-journey>` element is supported per page. Placing multiple instances on the same page is not supported and may lead to unexpected behavior.
+
+To load a different Journey, update the attributes on the existing element rather than adding a new one:
+
+```html title="Single element"
+<epilot-journey
+  journey-id="<journey-id-1>"
+  mode="inline"
+  lang="de"
+></epilot-journey>
+
+<button onclick="switchJourney()">Load another Journey</button>
+
+<script>
+  function switchJourney() {
+    const el = document.querySelector('epilot-journey')
+    el.setAttribute('journey-id', '<journey-id-2>')
+    el.setAttribute('lang', 'en')
+  }
+</script>
+```
+
+If you need multiple Journeys visible simultaneously, use the [iframe embedding](./embedding) approach instead.
+
 ## Content-Security-Policy (CSP)
 
-If you don’t have Content-Security-Policy defined for your pages, you can skip this. If you have but can temporarily disable to perform the this test, go for that. Otherwise, please ensure you update your policy to allow the below
+If you don't have Content-Security-Policy defined for your pages, you can skip this. If you have but can temporarily disable to perform the this test, go for that. Otherwise, please ensure you update your policy to allow the below
 
 ```text title="Minimum CSP for Web Components"
   script-src https://journey.epilot.io;
@@ -288,7 +359,7 @@ If you don’t have Content-Security-Policy defined for your pages, you can skip
 
 :::tip
 
-These rules are subject to change as we’re rolling out new features and web components themselves. Depending on your Journey setups, you might also need to give additional permissions in case you’re using third-party apps or apps of your own.
+These rules are subject to change as we're rolling out new features and web components themselves. Depending on your Journey setups, you might also need to give additional permissions in case you're using third-party apps or apps of your own.
 
 :::
 
@@ -325,6 +396,8 @@ If you are currently embedding Journeys using iframes with the `__epilot` embed 
    + ></epilot-journey>
    ```
 
-3. **Update CSP rules** — the same epilot domain rules apply. See [Content-Security-Policy](./content-security-policy).
+3. **Migrate event listeners** — replace `__epilot.on()` calls with standard `window.addEventListener()`. The event names are the same as the iframe postMessage events, so no renaming is needed. See the [Events](#events) section for the full list.
+
+4. **Update CSP rules** — the same epilot domain rules apply. See [Content-Security-Policy](./content-security-policy).
 
 The attribute names on the Web Component map directly to the options you previously passed to `__epilot.init()`, converted to kebab-case (e.g. `topBar` becomes `top-bar`, `scrollToTop` becomes `scroll-to-top`).

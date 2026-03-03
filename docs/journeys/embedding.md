@@ -336,3 +336,9 @@ In this example, no `data-ep-` attributes are needed because the `__epilot.init(
 **Outcome**
 
 ![Embedding Multiple Outcome](../../static/img/journey-embed-outcome-multiple.gif)
+
+## Web Components Alternative
+
+If you're starting a new integration, consider using the [Web Component embed](./web-components) instead of iframes. Web Components render the Journey directly in your page using the Shadow DOM, offering better performance, accessibility, and tighter integration with your host application — no cross-frame messaging required.
+
+See the [Web Components documentation](./web-components) for the full setup guide, attribute reference, and event handling.
