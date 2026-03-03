@@ -1,6 +1,6 @@
 ---
-sidebar_position: 4
-title: Security
+sidebar_position: 0
+title: Security Architecture
 ---
 
 # Security Architecture
@@ -211,8 +211,25 @@ epilot runs entirely on **AWS** in the **EU (Frankfurt, `eu-central-1`) region**
 - **Serverless architecture** — Lambda-based microservices eliminate the need to manage and patch servers
 - **Infrastructure as Code** — All infrastructure is provisioned through CloudFormation and Terraform, enabling version-controlled, auditable infrastructure changes
 - **Centralized logging** — Application logs, access logs, and security events are aggregated in Datadog and AWS CloudTrail for monitoring and incident response
-- **Automated security scanning** — CI/CD pipelines include static application security testing (SAST), dependency vulnerability scanning, and secret detection
+- **Automated security scanning** — CI/CD pipelines include SAST, dependency vulnerability scanning, and secret detection powered by [Corgea](https://corgea.com)
+- **Automated remediation** — Corgea continuously monitors all repositories and automatically opens pull requests to fix detected vulnerabilities and keep dependencies up to date, reviewed and merged by the engineering team
 - **Penetration testing** — Independent third-party penetration tests are conducted regularly against all platform components
+
+## Supply Chain Security
+
+### Software Bill of Materials (SBOM)
+
+epilot maintains a Software Bill of Materials (SBOM) for its platform components in standard formats (CycloneDX / SPDX). The SBOM is available on request for supply chain security assessments and compliance purposes.
+
+To request an SBOM, contact your epilot account manager or the epilot support team.
+
+### Automated Vulnerability Management
+
+epilot uses **[Corgea](https://corgea.com)** to automate vulnerability and dependency management across all service repositories:
+
+- **SAST (Static Application Security Testing)** — Corgea continuously scans source code for security weaknesses using static analysis, integrated directly into the CI/CD pipeline
+- **Automated fix PRs** — When vulnerabilities are detected, Corgea automatically opens pull requests with fixes that are reviewed and merged by the engineering team — no manual triage required
+- **Dependency updates** — Outdated or vulnerable dependencies are flagged and patched through automated PRs, minimizing exposure to known CVEs across the supply chain
 
 ## Backup and Recovery
 
