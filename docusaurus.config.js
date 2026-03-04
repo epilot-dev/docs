@@ -89,6 +89,28 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
       },
     ],
     [
+      require.resolve('./src/plugins/llms-txt/index.js'),
+      {
+        siteDescription: `epilot is a cloud-native SaaS platform (Energy XRM) designed for energy suppliers and service providers in the German energy market.
+
+The platform provides:
+- **Entity Management**: Flexible data modeling with schemas for contacts, products, orders, opportunities, and custom entities
+- **Journey Builder**: Visual designer for customer onboarding journeys, self-service portals, and multi-step forms
+- **Workflow Engine**: Configurable workflows for business process automation with task management and SLA tracking
+- **Automation Engine**: Rule-based automation for entity mapping, document generation, and integrations
+- **Portal Framework**: Customer (ECP) and installer portals with granular permissions and self-service capabilities
+- **Messaging Hub**: Centralized email and messaging with templates and shared inboxes
+- **Integration Hub (ERP Toolkit)**: Pre-built connectors for SAP, Wilken, and other ERP/billing systems
+- **REST APIs & SDK**: Comprehensive APIs for all platform capabilities with TypeScript SDK
+- **Document Generation**: Template-based document creation with variable support
+- **Pricing & Product Catalog**: Flexible product management with tiered pricing and availability rules
+- **AI Features**: AI-powered copilot for entity management, messaging, and workflow automation
+- **Apps & Marketplace**: Extensibility platform for third-party and custom applications
+
+This documentation covers all aspects of the epilot platform for developers, administrators, and integration partners.`,
+      },
+    ],
+    [
       require.resolve('./src/plugins/changelog/index.js'),
       {
         id: 'api-changelog',
