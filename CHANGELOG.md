@@ -2,6 +2,14 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-03-03 Customer Portal API
+
+- New `PRODUCT_RECOMMENDATIONS_WIDGET` widget type was added; the new `ProductRecommendationsWidget` schema (extending `TeaserWidget` with a `campaign_id` field) is now available across the `GET /v2/portal/widgets`, `GET /v2/portal/public-widgets`, and `POST /v2/portal/widgets` endpoints
+
+## 2026-03-03 Pricing API External Catalog
+
+- **Breaking:** The `catalog_type` enum values on `POST /integration/external-service` were renamed: `products` → `product` and `products-recommendation` → `product-recommendations`; the corresponding response schema was also renamed from `ExternalCatalogProductsRecommendationResponse` to `ExternalCatalogProductRecommendationsResponse`
+
 ## 2026-03-03 Message API
 
 - New `GET /v1/message/messages/{id}/eml` endpoint was added, returning a `302` redirect to a pre-signed URL for downloading the message as an EML file
