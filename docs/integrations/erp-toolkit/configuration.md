@@ -162,7 +162,8 @@ curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationI
   "events": [
     {
       "event_type": "CREATE | UPDATE | DELETE",
-      "object_type": "string",
+      "use_case_slug": "string (recommended, 1-255 chars, pattern: ^[a-z0-9][a-z0-9_-]*$, required if event_name is not provided)",
+      "event_name": "string (legacy fallback, required if use_case_slug is not provided)",
       "timestamp": "ISO 8601 datetime",
       "format": "json | xml",
       "payload": "string (JSON or XML)",
@@ -171,6 +172,10 @@ curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationI
   ]
 }
 ```
+
+For each event, include `use_case_slug` whenever possible. `event_name` is supported as a legacy fallback, and `use_case_slug` takes precedence if both are present.
+
+`use_case_slug` format: `^[a-z0-9][a-z0-9_-]*$` with length `1..255` (must start with a lowercase letter or digit; then lowercase letters, digits, `_`, `-`).
 
 ### Event Types
 

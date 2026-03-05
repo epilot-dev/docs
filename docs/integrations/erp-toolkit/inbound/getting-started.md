@@ -89,7 +89,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v3/erp/updates/events' \
     "events": [
       {
         "event_type": "UPDATE",
-        "object_type": "customer",
+        "use_case_slug": "customer-sync",
         "timestamp": "2024-01-15T10:35:00Z",
         "format": "json",
         "payload": "{\"customerId\":\"C001\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john.doe@example.com\"}",
@@ -98,6 +98,8 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v3/erp/updates/events' \
     ]
   }'
 ```
+
+Use `use_case_slug` for event routing (recommended). `event_name` remains available for backward compatibility, and `use_case_slug` takes precedence when both are provided. Format: `^[a-z0-9][a-z0-9_-]*$` (1-255 chars; must start with lowercase letter or digit).
 
 **Response:**
 

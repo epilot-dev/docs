@@ -118,7 +118,21 @@ Use the `enabled` property to conditionally map fields:
 
 When syncing file entities via inbound use cases, you can use the `file_proxy_url` field type to auto-construct the file proxy download URL. This avoids manually assembling the URL with boilerplate query parameters — `orgId` and `integrationId` are injected automatically from the processing context.
 
-**Configuration:**
+**Configuration (using slug — portable):**
+```json
+{
+  "attribute": "custom_download_url",
+  "file_proxy_url": {
+    "use_case_slug": "document-download",
+    "params": {
+      "documentId": { "field": "documentId" },
+      "tenantId": { "constant": "ACME" }
+    }
+  }
+}
+```
+
+**Configuration (using UUID — legacy):**
 ```json
 {
   "attribute": "custom_download_url",
@@ -132,6 +146,9 @@ When syncing file entities via inbound use cases, you can use the `file_proxy_ur
 }
 ```
 
+Exactly one of `use_case_id` or `use_case_slug` must be provided. Using `use_case_slug` is recommended as it makes the configuration portable across environments.
+Slug format: `^[a-z0-9][a-z0-9_-]*$` (1-255 chars).
+
 **Input:**
 ```json
 {
@@ -143,7 +160,7 @@ When syncing file entities via inbound use cases, you can use the `file_proxy_ur
 ```json
 {
   "attributes": {
-    "custom_download_url": "https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseId=uuid-of-file-proxy-use-case&documentId=DOC-00034157&tenantId=ACME"
+    "custom_download_url": "https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseSlug=document-download&documentId=DOC-00034157&tenantId=ACME"
   }
 }
 ```
@@ -156,7 +173,7 @@ The `params` object maps URL parameter names to values resolved from the payload
 | `constant` | Fixed value (any type, stringified for URL) | `{ "constant": "ACME" }` |
 | `jsonataExpression` | JSONata expression for transformation | `{ "jsonataExpression": "doc.id" }` |
 
-> **Note:** The standard parameters `orgId`, `integrationId`, and `useCaseId` are always included automatically. You only need to configure additional custom parameters in `params`. If no `integrationContext` is available (e.g., in mapping simulation mode), the `file_proxy_url` field is silently skipped.
+> **Note:** The standard parameters `orgId`, `integrationId`, and `useCaseId`/`useCaseSlug` are always included automatically. You only need to configure additional custom parameters in `params`. If no `integrationContext` is available (e.g., in mapping simulation mode), the `file_proxy_url` field is silently skipped.
 
 See also: [File Proxy Configuration](../file-proxy#proxy-url-generation) for details on the proxy URL format and parameter requirements.
 

@@ -26,7 +26,7 @@ sequenceDiagram
 
     User->>FS: Click file download
     FS->>FS: Sign URL, redirect browser
-    User->>FP: GET /download?orgId=...&integrationId=...&useCaseId=...&documentId=...
+    User->>FP: GET /download?orgId=...&integrationId=...&useCaseSlug=...&documentId=...
     FP->>FS: Verify signed URL (verifyCustomDownloadUrl)
     FS-->>FP: Valid
     FP->>FP: Load use case configuration
@@ -90,7 +90,18 @@ Currently, only **OAuth2 Client Credentials** is supported.
     "token_url": "\\{{env.erp.token_url}}",
     "client_id": "\\{{env.erp.client_id}}",
     "client_secret": "\\{{env.erp.client_secret}}",
-    "scope": "openid"
+    "scope": "openid",
+    "audience": "https://api.example.com",
+    "resource": "urn:example:resource",
+    "body_params": {
+      "custom_field": "custom_value"
+    },
+    "headers": {
+      "X-Custom-Header": "\\{{env.erp.custom_header}}"
+    },
+    "query_params": {
+      "tenant": "my-tenant"
+    }
   }
 }
 ```
@@ -102,6 +113,11 @@ Currently, only **OAuth2 Client Credentials** is supported.
 | `client_id` | **Yes** | Handlebars template for the OAuth2 client ID |
 | `client_secret` | **Yes** | Handlebars template for the OAuth2 client secret |
 | `scope` | No | OAuth2 scope string (e.g., `"openid"`) |
+| `audience` | No | Handlebars template for the OAuth2 audience parameter |
+| `resource` | No | Handlebars template for the OAuth2 resource parameter |
+| `body_params` | No | Additional key-value pairs to include in the token request body. Values support Handlebars templates. |
+| `headers` | No | Additional headers to include in the token request. Values support Handlebars templates. |
+| `query_params` | No | Additional query parameters to append to the token URL. Values support Handlebars templates. |
 
 All `auth` fields support Handlebars templates, allowing credentials to be resolved from environment secrets at runtime. See [Credentials and Secrets](#credentials-and-secrets).
 
@@ -127,7 +143,7 @@ The `params` array declares which query parameters the proxy URL must contain. T
 | `required` | **Yes** | Whether the parameter must be present |
 | `description` | No | Human-readable description |
 
-All query parameters (including `integrationId`, `useCaseId`, and any custom ones) are available in the Handlebars context under `params`.
+All query parameters (including `integrationId`, and either `useCaseSlug` or `useCaseId`, plus any custom ones) are available in the Handlebars context under `params`.
 
 ## Steps
 
@@ -197,7 +213,7 @@ The Handlebars context is an object that grows as steps execute:
   "params": {
     "orgId": "123",
     "integrationId": "abc-123",
-    "useCaseId": "def-456",
+    "useCaseSlug": "document-download",
     "tenantId": "ACME",
     "documentId": "DOC-00034157"
   },
@@ -315,22 +331,42 @@ Use a prefix that identifies the external system, with dot notation for grouping
 During inbound sync, file entities are created with a `custom_download_url` that points to the file proxy. The URL includes the organization context, integration context, and any document-specific parameters:
 
 ```
-https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseId=def&tenantId=ACME&documentId=DOC-00034157
+https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseSlug=document-download&tenantId=ACME&documentId=DOC-00034157
 ```
 
-The standard parameters `orgId`, `integrationId`, and `useCaseId` are always required. Any additional parameters (like `tenantId`, `documentId`) must match the `params` declared in the configuration.
+The standard parameters `orgId`, `integrationId`, and either `useCaseSlug` (recommended) or `useCaseId` (legacy UUID) are always required. Any additional parameters (like `tenantId`, `documentId`) must match the `params` declared in the configuration.
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | `orgId` | **Yes** | epilot organization ID. Included in the signed URL to establish org context without requiring authentication. |
 | `integrationId` | **Yes** | Integration ID that owns the file proxy use case |
-| `useCaseId` | **Yes** | Use case ID within the integration |
+| `useCaseSlug` | **Yes**\* | Recommended. Human-readable slug identifying the use case (portable across environments). Format: `^[a-z0-9][a-z0-9_-]*$` (1-255 chars). |
+| `useCaseId` | **Yes**\* | Legacy. Use case UUID within the integration |
+
+\* Exactly one of `useCaseSlug` or `useCaseId` is required. Prefer `useCaseSlug` for portability across environments.
 
 When a user views the file, epilot's file service adds a short-lived signature to the URL and redirects the browser. The proxy verifies this signature via the file service's `verifyCustomDownloadUrl` operation.
 
 ### Automated URL Construction via Inbound Mapping
 
-Instead of manually constructing `custom_download_url` values in your mapping configuration, you can use the `file_proxy_url` field type to auto-construct the proxy URL. The `orgId` and `integrationId` parameters are injected automatically from the processing context:
+Instead of manually constructing `custom_download_url` values in your mapping configuration, you can use the `file_proxy_url` field type to auto-construct the proxy URL. The `orgId` and `integrationId` parameters are injected automatically from the processing context.
+
+You can reference the file proxy use case by UUID or by slug (portable across environments):
+
+```json
+{
+  "attribute": "custom_download_url",
+  "file_proxy_url": {
+    "use_case_slug": "document-download",
+    "params": {
+      "documentId": { "field": "documentId" },
+      "tenantId": { "constant": "ACME" }
+    }
+  }
+}
+```
+
+Or using UUID (legacy):
 
 ```json
 {
@@ -347,7 +383,7 @@ Instead of manually constructing `custom_download_url` values in your mapping co
 
 This generates a URL like:
 ```
-https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseId=uuid-of-file-proxy-use-case&documentId=DOC-001&tenantId=ACME
+https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseSlug=document-download&documentId=DOC-001&tenantId=ACME
 ```
 
 See the [Inbound Mapping Specification](./inbound/mapping#file-proxy-url-mapping) for the full reference on parameter resolution modes.
@@ -494,6 +530,8 @@ The following rules are enforced when creating or updating a file proxy use case
 ### Auth
 - `auth.type` must be `"oauth2_client_credentials"` if auth is provided
 - `auth.token_url`, `auth.client_id`, and `auth.client_secret` are required strings
+- `auth.scope`, `auth.audience`, and `auth.resource` are optional strings
+- `auth.body_params`, `auth.headers`, and `auth.query_params` are optional string-to-string maps
 - Handlebars templates must have balanced braces (`{{` and `}}`)
 
 ### Params

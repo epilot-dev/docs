@@ -92,7 +92,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v3/erp/updates/events' \
     "meta": { "correlation_id": "customer-sync-001" },
     "events": [{
       "event_type": "UPDATE",
-      "object_type": "customer",
+      "use_case_slug": "customer-sync",
       "timestamp": "2024-01-15T10:00:00Z",
       "format": "json",
       "payload": "{\"customerId\":\"C-10042\",\"salutation\":\"Mr\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john.doe@example.com\",\"phone\":\"+49 123 456789\",\"dateOfBirth\":\"1985-03-15\",\"address\":{\"street\":\"Hauptstraße 42\",\"zip\":\"50667\",\"city\":\"Köln\",\"country\":\"DE\"},\"accountId\":\"ACC-5001\",\"status\":\"active\"}",
@@ -468,7 +468,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/erp/updates/mapping_simul
     "integration_id": "<integration-id>",
     "event": {
       "event_type": "UPDATE",
-      "object_type": "customer",
+      "use_case_slug": "customer-sync",
       "format": "json",
       "payload": "{\"customerId\":\"C-10042\",\"firstName\":\"John\",\"lastName\":\"Doe\"}"
     }
