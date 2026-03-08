@@ -7,7 +7,46 @@ title: Overview
 
 [[GitHub](https://github.com/epilot-dev/sdk-js)] [[npm](https://www.npmjs.com/package/@epilot/sdk)]
 
+:::tip
+Every epilot API ships with a typed TypeScript client. Full types and IntelliSense out of the box.
+:::
+
+:::info 
+**Not using TypeScript?** All epilot APIs are published with standard [OpenAPI definitions](/api). You can generate a typed client in any language using tools like [openapi-generator](https://openapi-generator.tech/), [Speakeasy](https://speakeasyapi.dev/), or [Kiota](https://learn.microsoft.com/en-us/openapi/kiota/).
+:::
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Install
+
+<Tabs>
+  <TabItem value="npm" label="npm" default>
+
+```bash
+npm i @epilot/sdk axios openapi-client-axios
+```
+
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+
+```bash
+yarn add @epilot/sdk axios openapi-client-axios
+```
+
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+
+```bash
+pnpm add @epilot/sdk axios openapi-client-axios
+```
+
+  </TabItem>
+</Tabs>
+
+
 `@epilot/sdk` is the official TypeScript SDK for the epilot platform. One package, 30+ API clients, full type safety.
+
 
 - **Typed operations**: every endpoint has typed params and responses, generated from OpenAPI specs
 - **Tree-shakeable**: import only the APIs you use; unused clients never touch your bundle
@@ -15,11 +54,6 @@ title: Overview
 - **Batteries included**: automatic retries, large response handling, and auth management out of the box
 - **Just an axios client**: every client is a standard [axios](https://axios-http.com/docs/intro) instance with typed methods from [openapi-client-axios](https://openapistack.co/docs/openapi-client-axios/intro/). Interceptors, defaults, and all other axios features work as expected.
 
-## Install
-
-```bash
-npm install @epilot/sdk axios openapi-client-axios
-```
 
 ## Quick start
 
@@ -42,7 +76,8 @@ const { data: executions } = await epilot.workflow.getExecutions()
 
 Each operation is forwarded to a lazy singleton. The spec is loaded and the client initialized on first use, then cached.
 
-:::tip Only import what you need
+## Only import what you need
+
 For smaller bundles, use tree-shakeable subpath imports:
 
 ```ts
@@ -53,7 +88,6 @@ const { data } = await entity.getEntity({ slug: 'contact', id: '123' })
 ```
 
 See [Client Usage](client-usage) for all import patterns.
-:::
 
 ## Available APIs
 
@@ -102,3 +136,4 @@ See [Client Usage](client-usage) for all import patterns.
 | `epilot.workflow` | `@epilot/sdk/workflow` | [SDK](clients/workflow) · [API](/api/workflow-execution) |
 | `epilot.workflowDefinition` | `@epilot/sdk/workflow-definition` | [SDK](clients/workflow-definition) · [API](/api/workflow-definition) |
 <!-- /sdk-reference-table -->
+
