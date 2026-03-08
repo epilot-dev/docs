@@ -79,7 +79,7 @@ See the [epilot Tech Radar](https://docs.epilot.io/techradar/) for a detailed te
 
 - [API First](/docs/architecture/api-first) — OpenAPI contract-first design and code generation
 - [Microfrontends](/docs/architecture/microfrontends) — single-spa orchestration of the epilot 360 portal
-- [SDK](/docs/architecture/sdk) — Auto-generated TypeScript SDK for epilot APIs
+- [SDK](/docs/sdk/overview) — Auto-generated TypeScript SDK for epilot APIs
 - [Security](/docs/auth/security) — Multi-tenant isolation, authentication, authorization, and encryption
 - [Serverless](/docs/architecture/serverless) — AWS Lambda-based microservice architecture
 - [Continuous Delivery](/docs/architecture/continuous-delivery) — Trunk-based development, canary and stable release channels

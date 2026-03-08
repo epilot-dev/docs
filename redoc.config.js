@@ -204,4 +204,24 @@ module.exports.specs = [
     routePath: '/api/app',
     specUrl: 'https://docs.api.epilot.io/app.yaml',
   },
+  {
+    layout: { title: 'Audit Log API' },
+    routePath: '/api/audit-logs',
+    specUrl: 'https://docs.api.epilot.io/audit-logs.yaml',
+  },
+  {
+    layout: { title: 'Environments API' },
+    routePath: '/api/environments',
+    specUrl: 'https://docs.api.epilot.io/environments.yaml',
+  },
+  {
+    layout: { title: 'Event Catalog API' },
+    routePath: '/api/event-catalog',
+    specUrl: 'https://docs.api.epilot.io/event-catalog.yaml',
+  },
+  {
+    layout: { title: 'Targeting API' },
+    routePath: '/api/targeting',
+    specUrl: 'https://docs.api.epilot.io/targeting.yaml',
+  },
 ];

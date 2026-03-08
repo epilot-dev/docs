@@ -55,9 +55,9 @@ Authorization: Bearer <your-access-token>
 Create tokens in the epilot portal under **Settings > Access Tokens**, or programmatically via the [Access Token API](/api/access-token):
 
 ```typescript title="create-access-token.ts"
-import { authorize, getClient } from '@epilot/access-token-client';
+import { authorize, getClient } from '@epilot/sdk/access-token';
 
-const accessTokenClient = getClient();
+const accessTokenClient = await getClient();
 authorize(accessTokenClient, cognitoIdToken);
 
 const { data } = await accessTokenClient.createAccessToken(null, {

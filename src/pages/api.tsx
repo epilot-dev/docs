@@ -84,7 +84,7 @@ function ApiIntro(): JSX.Element {
 
                   <h2 id="sdk">SDK</h2>
                   <p>
-                    The <Link to="/docs/architecture/sdk">epilot SDK</Link> provides typed TypeScript clients for every
+                    The <Link to="/docs/sdk/overview">epilot SDK</Link> provides typed TypeScript clients for every
                     API.
                   </p>
                   <pre>

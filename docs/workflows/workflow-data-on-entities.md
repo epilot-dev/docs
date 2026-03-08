@@ -6,7 +6,7 @@ sidebar_position: 2
 # Workflow data on entities
 
 [[API Docs](/api/workflow-execution)]
-[[SDK](https://www.npmjs.com/package/@epilot/workflow-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 
 ## Workflow data structure

@@ -6,7 +6,7 @@ sidebar_position: 3
 
 [[Document Generation API](/docs/files/document-generation)]
 [[API Docs](/api/document)]
-[[SDK](https://www.npmjs.com/package/@epilot/document-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 Document templates let you generate PDF, DOCX, and XLSX documents populated with dynamic data from epilot entities. You author templates in familiar tools (Microsoft Word or Excel), embed Handlebars variables, upload them to epilot, and generate documents on demand or automatically via automations.
 

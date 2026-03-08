@@ -5,7 +5,7 @@ sidebar_position: 0
 # Template Variables
 
 [[API Docs](/api/template-variables)]
-[[SDK](https://www.npmjs.com/package/@epilot/template-variables-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 The Template Variables API handles variable discovery and substitution for email and document templates using [Handlebars](https://handlebarsjs.com/).
 

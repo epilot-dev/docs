@@ -5,7 +5,7 @@ sidebar_position: 2
 # Email Templates
 
 [[API Docs](/api/email-template)]
-[[SDK](https://www.npmjs.com/package/@epilot/email-template-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 The Email Template API manages reusable email templates in epilot. Templates define the structure and content of outgoing emails, supporting HTML content, variable substitution, branding, and file attachments.
 

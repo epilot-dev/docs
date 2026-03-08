@@ -6,7 +6,7 @@ sidebar_position: 3
 # Workflow Notes
 
 [[API Docs](/api/workflow-execution)]
-[[SDK](https://www.npmjs.com/package/@epilot/workflow-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 [[Notes Docs](/api/notes)]
 
 Workflow Notes use the [Comments API](/api/notes#tag/Comments) with a specific `context_id` format.

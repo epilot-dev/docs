@@ -6,7 +6,7 @@ sidebar_position: 1
 # Workflows
 
 [[API Docs](/api/workflow-execution)]
-[[SDK](https://www.npmjs.com/package/@epilot/workflow-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 Workflows are structured collections of tasks used to track progress and execute operations across a business process.
 

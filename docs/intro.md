@@ -28,7 +28,7 @@ Public REST APIs for integrations and extending epilot.
 
 TypeScript SDK with full type support for all epilot APIs.
 
-<a className="button button--secondary" href="/docs/architecture/sdk">Get Started with SDK</a>
+<a className="button button--secondary" href="/docs/sdk/overview">Get Started with SDK</a>
 
 ## Apps
 

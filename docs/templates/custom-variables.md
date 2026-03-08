@@ -5,7 +5,7 @@ sidebar_position: 5
 # Custom Variables
 
 [[API Docs](/api/template-variables#tag/CustomVariables)]
-[[SDK](https://www.npmjs.com/package/@epilot/template-variables-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 Custom Variables allow you to create reusable template logic stored at the organization level. They encapsulate Handlebars expressions, order table configurations, journey links, and text snippets into named variables that can be referenced across email and document templates.
 

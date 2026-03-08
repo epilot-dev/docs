@@ -5,7 +5,7 @@ sidebar_position: 2
 # Access Tokens
 
 [[API Docs](/api/access-token)]
-[[SDK](https://www.npmjs.com/package/@epilot/access-token-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 :::info
 

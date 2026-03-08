@@ -158,7 +158,7 @@ This documentation covers all aspects of the epilot platform for developers, adm
             position: 'left',
           },
           {
-            to: '/docs/architecture/sdk',
+            to: '/docs/sdk/overview',
             label: 'SDK',
             position: 'left',
           },
@@ -194,7 +194,7 @@ This documentation covers all aspects of the epilot platform for developers, adm
           },
           {
             label: 'SDK',
-            to: '/docs/architecture/sdk',
+            to: '/docs/sdk/overview',
           },
           {
             label: 'GitHub',

@@ -6,7 +6,7 @@ sidebar_position: 4
 # Workflow in progress
 
 [[API Docs](/api/workflow-execution)]
-[[SDK](https://www.npmjs.com/package/@epilot/workflow-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 Workflows consist of two primary components, and their progression depends on the status of each.
 

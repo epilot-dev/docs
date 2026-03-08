@@ -29,7 +29,7 @@ We publish our own tools as open source when they solve general problems that ot
 
 Both `openapi-backend` and `openapi-client-axios` are part of the [OpenAPI Stack](https://github.com/openapistack) project, created and maintained by epilot's Head of Engineering. They form the backbone of our [API-first architecture](/docs/architecture/api-first).
 
-See the [SDK documentation](/docs/architecture/sdk) for usage details.
+See the [SDK documentation](/docs/sdk/overview) for usage details.
 
 ### Terraform Providers
 

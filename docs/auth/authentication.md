@@ -19,13 +19,77 @@ The recommended way to authenticate with epilot APIs is using **Access Tokens** 
 3. Pass the token as a bearer token in your API requests
 
 ```typescript
-import { getClient } from '@epilot/entity-client';
+import { epilot } from '@epilot/sdk'
 
-const entityClient = getClient();
-entityClient.defaults.headers['Authorization'] = 'Bearer <your-access-token>';
+epilot.authorize('<your-access-token>')
+
+const { data } = await epilot.entity.createEntity(
+  { slug: 'contact' },
+  { first_name: 'Example', last_name: 'Contact' },
+)
 ```
 
 See [Access Tokens](/docs/auth/access-tokens) for full details on creating, scoping and revoking tokens.
+
+## SDK Auth Patterns
+
+The SDK's `authorize()` accepts a string or a function. The function form is preferred — it is called on every request, so tokens stay fresh.
+
+### Global authorization
+
+Applies to all clients resolved from the SDK:
+
+```ts
+import { epilot } from '@epilot/sdk'
+
+epilot.authorize(() => '<my-token>')                          // function (recommended)
+epilot.authorize(async () => await getTokenFromSession())     // async function
+epilot.authorize('my-static-api-token')                       // static string
+```
+
+### Per-client authorization
+
+```ts
+import { authorize } from '@epilot/sdk'
+import { getClient } from '@epilot/sdk/entity'
+
+const entityClient = await getClient()
+authorize(entityClient, () => '<my-token>')
+```
+
+### Frontend (epilot360)
+
+```ts
+import { epilot } from '@epilot/sdk'
+import { getTokenSync } from '@epilot360/auth-service'
+
+epilot.authorize(() => getTokenSync())
+```
+
+### Backend internal calls
+
+Pass the caller's headers to downstream APIs for permission checks:
+
+```ts
+import { getClient } from '@epilot/sdk/entity'
+import { getLambdaRunner } from 'openapi-lambda-adapter'
+
+const getEntityClient = async (passedHeaders: Headers) => {
+  const client = await getClient()
+  client.api.registerRunner(getLambdaRunner(process.env.ENTITY_LAMBDA_NAME))
+  client.defaults.headers.common = {
+    authorization: passedHeaders['authorization'],
+    ['x-ivy-org-id']: passedHeaders['x-ivy-org-id'],
+    ['x-epilot-org-id']: passedHeaders['x-epilot-org-id'],
+    ['x-epilot-user-id']: passedHeaders['x-epilot-user-id'],
+  }
+  return client
+}
+```
+
+For admin-privileged internal calls, use `@epilot/internal-auth` tokens and set `x-epilot-org-id` (or `x-ivy-org-id`).
+
+See the [SDK documentation](/docs/sdk/overview) for the full SDK reference.
 
 ## How It Works
 

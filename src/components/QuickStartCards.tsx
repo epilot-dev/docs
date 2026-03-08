@@ -87,7 +87,7 @@ const items = [
   {
     title: 'SDK',
     description: 'Typed TypeScript clients for every API. One npm install away.',
-    href: '/docs/architecture/sdk',
+    href: '/docs/sdk/overview',
     icon: <PackageIcon />,
   },
   {
