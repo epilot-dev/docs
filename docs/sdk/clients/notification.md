@@ -21,7 +21,7 @@ const { data } = await epilot.notification.getNotificationsV2(...)
 ```ts
 import { getClient, authorize } from '@epilot/sdk/notification'
 
-const notificationClient = await getClient()
+const notificationClient = getClient()
 authorize(notificationClient, () => '<token>')
 const { data } = await notificationClient.getNotificationsV2(...)
 ```

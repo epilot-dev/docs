@@ -21,7 +21,7 @@ const { data } = await epilot.consent.publishConsentEvent(...)
 ```ts
 import { getClient, authorize } from '@epilot/sdk/consent'
 
-const consentClient = await getClient()
+const consentClient = getClient()
 authorize(consentClient, () => '<token>')
 const { data } = await consentClient.publishConsentEvent(...)
 ```

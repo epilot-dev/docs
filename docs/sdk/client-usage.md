@@ -39,17 +39,17 @@ const { data } = await entityClient.get('/v2/entity/schemas/contact/123')
 Use `getClient()` when you need direct access to the underlying axios instance, for example to set custom headers or add interceptors.
 
 ```ts
-const entityClient = await epilot.entity.getClient()
+const entityClient = epilot.entity.getClient()
 const { data } = await entityClient.getEntity({ slug: 'contact', id: '123' })
 ```
 
-`getClient()` returns a cached singleton. Calling it multiple times returns the same instance (until config changes).
+`getClient()` is synchronous and returns a cached singleton. Calling it multiple times returns the same instance (until config changes).
 
 :::warning Stale references
 If you hold a client reference and then change config, your reference still points to the old client:
 
 ```ts
-const entityClient = await epilot.entity.getClient()
+const entityClient = epilot.entity.getClient()
 
 epilot.authorize(() => 'new-token') // invalidates cached clients
 
@@ -67,7 +67,7 @@ Use `createClient()` when you need a completely independent client that is not s
 ```ts
 import { createClient, authorize } from '@epilot/sdk/entity'
 
-const entityClient = await createClient()
+const entityClient = createClient()
 authorize(entityClient, () => '<my-token>')
 entityClient.defaults.headers.common['x-epilot-org-id'] = 'org-123'
 ```
@@ -79,7 +79,7 @@ Import only the APIs you use. Other APIs never touch your bundle.
 ```ts
 import { getClient, authorize } from '@epilot/sdk/entity'
 
-const entityClient = await getClient()
+const entityClient = getClient()
 authorize(entityClient, () => '<my-token>')
 
 const { data } = await entityClient.getEntity({ slug: 'contact', id: '123' })
@@ -141,5 +141,19 @@ When you call `authorize()`, `headers()`, `retry()`, `largeResponse()`, or `inte
 | Pattern | Always up to date? | Notes |
 | --- | --- | --- |
 | `epilot.entity.getEntity(...)` | Yes | Re-resolves the client on every call |
-| `await epilot.entity.getClient()` | At time of call | Can go stale after config changes |
-| `await createClient()` | Independent | Not affected by SDK config changes |
+| `epilot.entity.getClient()` | At time of call | Can go stale after config changes |
+| `createClient()` | Independent | Not affected by SDK config changes |
+
+## Migration from `@epilot/*-client`
+
+Drop-in replacement — just change the import path:
+
+```ts
+// Before
+import { getClient, createClient, authorize } from '@epilot/entity-client'
+import type { Client, Entity } from '@epilot/entity-client'
+
+// After
+import { getClient, createClient, authorize } from '@epilot/sdk/entity'
+import type { Client, Entity } from '@epilot/sdk/entity'
+```

@@ -20,7 +20,7 @@ const { data } = await epilot.pricingTier.getCurrentPricingTier(...)
 ```ts
 import { getClient, authorize } from '@epilot/sdk/pricing-tier'
 
-const pricingTierClient = await getClient()
+const pricingTierClient = getClient()
 authorize(pricingTierClient, () => '<token>')
 const { data } = await pricingTierClient.getCurrentPricingTier(...)
 ```

@@ -53,7 +53,7 @@ epilot.authorize('my-static-api-token')                       // static string
 import { authorize } from '@epilot/sdk'
 import { getClient } from '@epilot/sdk/entity'
 
-const entityClient = await getClient()
+const entityClient = getClient()
 authorize(entityClient, () => '<my-token>')
 ```
 
@@ -74,8 +74,8 @@ Pass the caller's headers to downstream APIs for permission checks:
 import { getClient } from '@epilot/sdk/entity'
 import { getLambdaRunner } from 'openapi-lambda-adapter'
 
-const getEntityClient = async (passedHeaders: Headers) => {
-  const client = await getClient()
+const getEntityClient = (passedHeaders: Headers) => {
+  const client = getClient()
   client.api.registerRunner(getLambdaRunner(process.env.ENTITY_LAMBDA_NAME))
   client.defaults.headers.common = {
     authorization: passedHeaders['authorization'],

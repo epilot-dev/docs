@@ -21,7 +21,7 @@ const { data } = await epilot.webhooks.getPublicKey(...)
 ```ts
 import { getClient, authorize } from '@epilot/sdk/webhooks'
 
-const webhooksClient = await getClient()
+const webhooksClient = getClient()
 authorize(webhooksClient, () => '<token>')
 const { data } = await webhooksClient.getPublicKey(...)
 ```

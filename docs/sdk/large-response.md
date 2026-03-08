@@ -26,7 +26,7 @@ For tree-shakeable imports, apply the interceptor manually:
 import { getClient, authorize } from '@epilot/sdk/entity'
 import { applyLargeResponseInterceptor } from '@epilot/sdk'
 
-const entityClient = await getClient()
+const entityClient = getClient()
 authorize(entityClient, () => '<my-token>')
 applyLargeResponseInterceptor({ client: entityClient, config: { enabled: true } })
 ```
@@ -58,7 +58,7 @@ For tree-shakeable imports, apply the interceptor manually:
 import { getClient, authorize } from '@epilot/sdk/entity'
 import { applyRetryInterceptor } from '@epilot/sdk'
 
-const entityClient = await getClient()
+const entityClient = getClient()
 authorize(entityClient, () => '<my-token>')
 applyRetryInterceptor({ client: entityClient, config: { maxRetries: 3 } })
 ```

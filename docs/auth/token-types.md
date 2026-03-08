@@ -57,7 +57,7 @@ Create tokens in the epilot portal under **Settings > Access Tokens**, or progra
 ```typescript title="create-access-token.ts"
 import { authorize, getClient } from '@epilot/sdk/access-token';
 
-const accessTokenClient = await getClient();
+const accessTokenClient = getClient();
 authorize(accessTokenClient, cognitoIdToken);
 
 const { data } = await accessTokenClient.createAccessToken(null, {
