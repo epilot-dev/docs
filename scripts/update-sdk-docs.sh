@@ -79,34 +79,39 @@ REDOC_CONFIG="$DOCS_ROOT/redoc.config.js"
 
 # Build a lookup of available API routes from redoc.config.js
 # Maps SDK slug -> API route path (some slugs differ, e.g. blueprint-manifest -> blueprints)
-declare -A API_ROUTES
+API_ROUTES=""
 if [ -f "$REDOC_CONFIG" ]; then
   while IFS= read -r route; do
-    # Extract the last segment as the API slug: /api/entity -> entity
     api_slug="${route##*/}"
-    API_ROUTES["$api_slug"]="$route"
+    API_ROUTES="$API_ROUTES $api_slug=$route"
   done < <(grep "routePath:" "$REDOC_CONFIG" | sed "s/.*routePath: *'\([^']*\)'.*/\1/")
 fi
 
 # SDK slug -> API route overrides (where they differ)
-declare -A SLUG_TO_API_ROUTE
-SLUG_TO_API_ROUTE[blueprint-manifest]="/api/blueprints"
-SLUG_TO_API_ROUTE[partner-directory]="/api/partner"
-SLUG_TO_API_ROUTE[workflow]="/api/workflow-execution"
+SLUG_OVERRIDES=" blueprint-manifest=/api/blueprints partner-directory=/api/partner workflow=/api/workflow-execution"
+
+_lookup() {
+  local key="$1" list="$2"
+  # Match " key=value" in the space-delimited list
+  if [[ "$list" =~ [[:space:]]${key}=([^[:space:]]+) ]]; then
+    echo "${BASH_REMATCH[1]}"
+  fi
+}
 
 get_api_route() {
-  local slug="$1"
+  local slug="$1" result
   # Check explicit override first
-  if [[ -n "${SLUG_TO_API_ROUTE[$slug]+x}" ]]; then
-    echo "${SLUG_TO_API_ROUTE[$slug]}"
+  result="$(_lookup "$slug" "$SLUG_OVERRIDES")"
+  if [ -n "$result" ]; then
+    echo "$result"
     return
   fi
   # Check if route exists in redoc config
-  if [[ -n "${API_ROUTES[$slug]+x}" ]]; then
-    echo "${API_ROUTES[$slug]}"
+  result="$(_lookup "$slug" "$API_ROUTES")"
+  if [ -n "$result" ]; then
+    echo "$result"
     return
   fi
-  # No API route found
   echo ""
 }
 
@@ -160,13 +165,16 @@ fi
 
 # Replace the table between markers in overview.md
 if grep -q '<!-- sdk-reference-table -->' "$OVERVIEW_FILE"; then
+  TABLE_FILE="$(mktemp)"
+  printf '%s\n' "$TABLE_LINES" > "$TABLE_FILE"
   # Use awk to replace content between markers
-  awk -v table="$TABLE_LINES" '
-    /<!-- sdk-reference-table -->/ { print; print ""; print table; found=1; next }
+  awk -v tfile="$TABLE_FILE" '
+    /<!-- sdk-reference-table -->/ { print; print ""; while ((getline l < tfile) > 0) print l; found=1; next }
     /<!-- \/sdk-reference-table -->/ { found=0 }
     found { next }
     { print }
   ' "$OVERVIEW_FILE" > "$OVERVIEW_FILE.tmp"
+  rm -f "$TABLE_FILE"
   mv "$OVERVIEW_FILE.tmp" "$OVERVIEW_FILE"
   echo "Updated reference table in $OVERVIEW_FILE"
 else

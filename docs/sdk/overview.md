@@ -106,6 +106,7 @@ See [Client Usage](client-usage) for all import patterns.
 | `epilot.blueprintManifest` | `@epilot/sdk/blueprint-manifest` | [SDK](clients/blueprint-manifest) · [API](/api/blueprints) |
 | `epilot.consent` | `@epilot/sdk/consent` | [SDK](clients/consent) · [API](/api/consent) |
 | `epilot.customerPortal` | `@epilot/sdk/customer-portal` | [SDK](clients/customer-portal) · [API](/api/customer-portal) |
+| `epilot.dashboard` | `@epilot/sdk/dashboard` | [SDK](clients/dashboard) · [API](/api/dashboard) |
 | `epilot.design` | `@epilot/sdk/design` | [SDK](clients/design) · [API](/api/design) |
 | `epilot.document` | `@epilot/sdk/document` | [SDK](clients/document) · [API](/api/document) |
 | `epilot.emailSettings` | `@epilot/sdk/email-settings` | [SDK](clients/email-settings) · [API](/api/email-settings) |

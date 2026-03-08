@@ -200,16 +200,6 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/erp-integration.yaml',
   },
   {
-    layout: { title: 'App API' },
-    routePath: '/api/app',
-    specUrl: 'https://docs.api.epilot.io/app.yaml',
-  },
-  {
-    layout: { title: 'Audit Log API' },
-    routePath: '/api/audit-logs',
-    specUrl: 'https://docs.api.epilot.io/audit-logs.yaml',
-  },
-  {
     layout: { title: 'Environments API' },
     routePath: '/api/environments',
     specUrl: 'https://docs.api.epilot.io/environments.yaml',
@@ -223,5 +213,15 @@ module.exports.specs = [
     layout: { title: 'Targeting API' },
     routePath: '/api/targeting',
     specUrl: 'https://docs.api.epilot.io/targeting.yaml',
+  },
+  {
+    layout: { title: 'App API' },
+    routePath: '/api/app',
+    specUrl: 'https://docs.api.epilot.io/app.yaml',
+  },
+  {
+    layout: { title: 'Audit Log API' },
+    routePath: '/api/audit-logs',
+    specUrl: 'https://docs.api.epilot.io/audit-logs.yaml',
   },
 ];
