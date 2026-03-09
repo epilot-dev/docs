@@ -9,7 +9,7 @@ The SDK gives you three ways to call epilot APIs, from simplest to most flexible
 
 ## Operation methods (recommended)
 
-The fastest way to get started. Call operation methods directly on the `epilot` singleton. The SDK handles client creation, caching, and auth for you.
+Call operation methods directly on the SDK client. The SDK handles client creation, caching, and auth for you.
 
 ```ts
 import { epilot } from '@epilot/sdk'
@@ -22,8 +22,83 @@ const { data: user } = await epilot.user.getMe()
 
 Operation methods always use the latest config. If you call `epilot.authorize()` with a new token, every subsequent call picks it up automatically.
 
+### Function arguments
+
+Every operation method accepts up to three positional arguments:
+
+```ts
+client.operationId(parameters?, data?, config?)
+```
+
+| Argument | Purpose | Example |
+| --- | --- | --- |
+| `parameters` | Path and query parameters | `{ slug: 'contact', id: '123' }` |
+| `data` | Request body (JSON payload, FormData, etc.) | `{ name: 'John' }` |
+| `config` | Axios request config overrides | `{ headers: { 'x-custom': 'value' } }` |
+
+**When the operation has path/query params and a body**, pass both:
+
+```ts
+// PATCH /v1/entity/{slug}/{id}
+await epilot.entity.patchEntity(
+  { slug: 'contact', id: '123' },  // parameters
+  { name: 'Jane Doe' },             // request body
+)
+```
+
+**When the operation has path/query params but no body**, pass only parameters:
+
+```ts
+// GET /v1/entity/{slug}/{id}
+await epilot.entity.getEntity({ slug: 'contact', id: '123' })
+```
+
+**When the operation has a body but no path/query params**, pass `null` as the first argument:
+
+```ts
+// POST /v1/entity/search
+await epilot.entity.searchEntities(
+  null,                              // no parameters — pass null
+  { q: '_schema:contact AND John' }, // request body
+)
+```
+
+:::caution Forgetting to pass `null`
+This is a common mistake. If you skip the first argument, the request body gets interpreted as parameters and the API call will fail silently or return unexpected results:
+
+```ts
+// Wrong — body is treated as parameters
+await epilot.entity.searchEntities({ q: '_schema:contact AND John' })
+
+// Correct — null tells the client "no parameters"
+await epilot.entity.searchEntities(null, { q: '_schema:contact AND John' })
+```
+:::
+
+**When the operation has no params and no body** (e.g. a simple GET), call with no arguments:
+
+```ts
+await epilot.user.getMe()
+```
+
+### IntelliSense and types
+
+Operation methods are fully typed. Your editor will autocomplete operation names, parameter keys, request bodies, and response shapes.
+
+```ts
+// Parameters and response are both typed — hover to see the shape
+const { data } = await epilot.entity.getEntity({ slug: 'contact', id: '123' })
+//      ^? { entity: Entity; relations: Entity[] }
+```
+
+You can also import the generated types directly for use in your own code:
+
+```ts
+import type { Client, Entity, EntityItem } from '@epilot/sdk/entity'
+```
+
 :::tip Prefer operation methods over raw axios methods
-Always use the generated operation methods. They give you full type safety and auto-complete.
+Operation methods give you type safety and autocomplete. Raw axios calls don't.
 
 ```ts
 // Good: typed params, typed response
@@ -33,44 +108,6 @@ const { data } = await epilot.entity.getEntity({ slug: 'contact', id: '123' })
 const { data } = await entityClient.get('/v2/entity/schemas/contact/123')
 ```
 :::
-
-## Cached client reference
-
-Use `getClient()` when you need direct access to the underlying axios instance, for example to set custom headers or add interceptors.
-
-```ts
-const entityClient = epilot.entity.getClient()
-const { data } = await entityClient.getEntity({ slug: 'contact', id: '123' })
-```
-
-`getClient()` is synchronous and returns a cached singleton. Calling it multiple times returns the same instance (until config changes).
-
-:::warning Stale references
-If you hold a client reference and then change config, your reference still points to the old client:
-
-```ts
-const entityClient = epilot.entity.getClient()
-
-epilot.authorize(() => 'new-token') // invalidates cached clients
-
-// entityClient still uses the old token!
-// epilot.entity.getEntity(...) already uses the new one
-```
-
-Re-call `getClient()` after config changes, or use operation methods directly to avoid this entirely.
-:::
-
-## Fresh client instance
-
-Use `createClient()` when you need a completely independent client that is not shared or cached. Useful for one-off requests with different credentials or headers.
-
-```ts
-import { createClient, authorize } from '@epilot/sdk/entity'
-
-const entityClient = createClient()
-authorize(entityClient, () => '<my-token>')
-entityClient.defaults.headers.common['x-epilot-org-id'] = 'org-123'
-```
 
 ## Tree-shakeable imports
 
@@ -143,6 +180,44 @@ When you call `authorize()`, `headers()`, `retry()`, `largeResponse()`, or `inte
 | `epilot.entity.getEntity(...)` | Yes | Re-resolves the client on every call |
 | `epilot.entity.getClient()` | At time of call | Can go stale after config changes |
 | `createClient()` | Independent | Not affected by SDK config changes |
+
+## Cached client reference
+
+Use `getClient()` when you need direct access to the underlying axios instance, for example to set custom headers or add interceptors.
+
+```ts
+const entityClient = epilot.entity.getClient()
+const { data } = await entityClient.getEntity({ slug: 'contact', id: '123' })
+```
+
+`getClient()` is synchronous and returns a cached singleton. Calling it multiple times returns the same instance (until config changes).
+
+:::warning Stale references
+If you hold a client reference and then change config, your reference still points to the old client:
+
+```ts
+const entityClient = epilot.entity.getClient()
+
+epilot.authorize(() => 'new-token') // invalidates cached clients
+
+// entityClient still uses the old token!
+// epilot.entity.getEntity(...) already uses the new one
+```
+
+Re-call `getClient()` after config changes, or use operation methods directly to avoid this entirely.
+:::
+
+## Fresh client instance
+
+Use `createClient()` when you need a completely independent client that is not shared or cached. Useful for one-off requests with different credentials or headers.
+
+```ts
+import { createClient, authorize } from '@epilot/sdk/entity'
+
+const entityClient = createClient()
+authorize(entityClient, () => '<my-token>')
+entityClient.defaults.headers.common['x-epilot-org-id'] = 'org-123'
+```
 
 ## Migration from `@epilot/*-client`
 
