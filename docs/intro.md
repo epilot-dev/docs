@@ -30,6 +30,12 @@ TypeScript SDK with full type support for all epilot APIs.
 
 <a className="button button--secondary" href="/docs/sdk/overview">Get Started with SDK</a>
 
+## CLI
+
+Call any epilot API from the command line. Built for quick lookups, automation scripts, and AI agents.
+
+<a className="button button--secondary" href="/docs/cli/overview">Get Started with CLI</a>
+
 ## Apps
 
 Build and publish extensions for the epilot platform.
