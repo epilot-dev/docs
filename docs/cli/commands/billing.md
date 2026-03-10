@@ -19,6 +19,24 @@ epilot billing
 epilot billing getBillingEvents
 ```
 
+## Common Flags
+
+| Flag | Description |
+| ---- | ----------- |
+| `-p key=value` | Set a named parameter |
+| `-d '{...}'` | Request body JSON |
+| `-H 'Key: Value'` | Custom header |
+| `-t, --token <token>` | Bearer token for authentication |
+| `--profile <name>` | Use a named profile |
+| `-s, --server <url>` | Override server base URL |
+| `-i, --include` | Include response headers in output |
+| `--json` | Output raw JSON (no formatting) |
+| `-v, --verbose` | Verbose output (show request details) |
+| `--jsonata <expr>` | JSONata expression to transform response |
+| `--definition <file>` | Override OpenAPI spec file/URL |
+| `--guided` | Prompt for all parameters interactively |
+| `--no-interactive` | Disable interactive prompts |
+
 ## Operations
 
 **Billing Events**
@@ -53,24 +71,6 @@ Get and filter billing events such as installments and reimbursements.
 | `event_type` | query | "installment" \| "reimbursement" | No |  |
 | `date_after` | query | string (date-time) | No |  |
 | `date_before` | query | string (date-time) | No |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -129,24 +129,6 @@ Create a new billing event.
 `POST /v1/billing/events`
 
 **Request Body** (required)
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -240,24 +222,6 @@ Get a single billing event by ID.
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string | Yes | ID of the billing event to get |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -323,24 +287,6 @@ Update an existing billing event.
 | `id` | path | string | Yes | ID of the billing event to update |
 
 **Request Body** (required)
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -442,24 +388,6 @@ Delete an existing billing event.
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string | Yes | ID of the billing event to delete |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -492,24 +420,6 @@ Get a single billing event by External ID.
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `external_id` | path | string | Yes | ID of the billing event to get |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -570,24 +480,6 @@ Create a new contract entity.
 `POST /v1/billing/contracts`
 
 **Request Body** (required)
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -698,24 +590,6 @@ Update an existing contract entity.
 | `id` | path | string | Yes | ID of the contract entity to update |
 
 **Request Body** (required)
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -833,24 +707,6 @@ Delete an existing contract entity.
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string | Yes | ID of the contract entity to delete |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -883,24 +739,6 @@ Get total balance across all contracts and orders of a customer entity.
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string | Yes | Customer entity ID (contact or account) |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 

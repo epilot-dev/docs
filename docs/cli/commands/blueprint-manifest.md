@@ -19,6 +19,24 @@ epilot blueprint-manifest
 epilot blueprint-manifest getJob -p job_id=4854bb2a-94f9-424d-a968-3fb17fb0bf89
 ```
 
+## Common Flags
+
+| Flag | Description |
+| ---- | ----------- |
+| `-p key=value` | Set a named parameter |
+| `-d '{...}'` | Request body JSON |
+| `-H 'Key: Value'` | Custom header |
+| `-t, --token <token>` | Bearer token for authentication |
+| `--profile <name>` | Use a named profile |
+| `-s, --server <url>` | Override server base URL |
+| `-i, --include` | Include response headers in output |
+| `--json` | Output raw JSON (no formatting) |
+| `-v, --verbose` | Verbose output (show request details) |
+| `--jsonata <expr>` | JSONata expression to transform response |
+| `--definition <file>` | Override OpenAPI spec file/URL |
+| `--guided` | Prompt for all parameters interactively |
+| `--no-interactive` | Disable interactive prompts |
+
 ## Operations
 
 **Import**
@@ -58,24 +76,6 @@ Create pre-signed S3 URL to upload a manifest file.
 `POST /v1/blueprint-manifest:uploadManifest`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -124,24 +124,6 @@ List Custom and Installed Blueprints
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `archived` | query | boolean | No | Filter blueprints by archived status. If true, returns only archived blueprints. If false or not provided, returns only non-archived blueprints. |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -240,24 +222,6 @@ Create a Blueprint
 `POST /v2/blueprint-manifest/blueprints`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -425,24 +389,6 @@ List installed Marketplace Blueprints for the organization.
 
 `GET /v2/blueprint-manifest/blueprints:marketplace`
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -499,24 +445,6 @@ Pre-install a Blueprint based on a blueprint file
 `POST /v2/blueprint-manifest/blueprints:pre-install`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -599,24 +527,6 @@ Get Blueprint Preview by ID
 | ---- | -- | ---- | -------- | ----------- |
 | `preview_id` | path | string | Yes |  |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -694,24 +604,6 @@ Kick off a new blueprint installation job. Returns 202 Accepted with Location he
 
 **Request Body** (required)
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -762,24 +654,6 @@ Get Blueprint by ID
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `blueprint_id` | path | string | Yes |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -886,24 +760,6 @@ Update a Blueprint
 | `blueprint_id` | path | string | Yes |  |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1085,24 +941,6 @@ Delete a Blueprint
 | ---- | -- | ---- | -------- | ----------- |
 | `blueprint_id` | path | string | Yes |  |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1207,24 +1045,6 @@ Start a blueprint validation job. Validates Terraform for the blueprint (all typ
 | ---- | -- | ---- | -------- | ----------- |
 | `blueprint_id` | path | string | Yes |  |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1259,24 +1079,6 @@ Kick off a new blueprint export job. Returns 202 Accepted with Location header p
 | `blueprint_id` | path | string | Yes |  |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1319,24 +1121,6 @@ Format a blueprint description as markdown using AI.
 | `blueprint_id` | path | string | Yes |  |
 
 **Request Body** (required)
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1391,24 +1175,6 @@ Add a resource to a Blueprint
 | `add_dependencies` | query | boolean | No |  |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1498,24 +1264,6 @@ Sync dependencies of all root resources in a Blueprint
 | ---- | -- | ---- | -------- | ----------- |
 | `blueprint_id` | path | string | Yes |  |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1551,24 +1299,6 @@ Bulk Add resources in a Blueprint
 | `add_dependencies` | query | boolean | No |  |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1662,24 +1392,6 @@ Bulk update resources in a Blueprint
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1772,24 +1484,6 @@ Bulk delete resources in a Blueprint
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1859,24 +1553,6 @@ Update a resource in a Blueprint
 | `resource_id` | path | string | Yes |  |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1969,24 +1645,6 @@ Delete a resource from a Blueprint
 | `blueprint_id` | path | string | Yes |  |
 | `resource_id` | path | string | Yes |  |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2041,24 +1699,6 @@ epilot blueprint-manifest deleteBlueprintResource -p blueprint_id=c2d6cac8-bdd5-
 List all blueprint jobs
 
 `GET /v2/blueprint-manifest/jobs`
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -2144,24 +1784,6 @@ Poll current state of a job.
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `job_id` | path | string | Yes |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -2251,24 +1873,6 @@ Continue an installation job if it is waiting for user action.
 | `job_id` | path | string | Yes |  |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -2366,24 +1970,6 @@ Cancel a blueprint job if it is still running.
 | ---- | -- | ---- | -------- | ----------- |
 | `job_id` | path | string | Yes |  |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2458,15 +2044,3 @@ epilot blueprint-manifest cancelBlueprintJob -p job_id=c2d6cac8-bdd5-4ea2-8a6c-1
 </details>
 
 ---
-
-## Deprecated Operations
-
-- ~~`getJob`~~ GET `/v1/blueprint-manifest/jobs/{job_id}`
-- ~~`createExport`~~ POST `/v1/blueprint-manifest/jobs:createExport`
-- ~~`exportManifest`~~ POST `/v1/blueprint-manifest/jobs/{job_id}:exportManifest`
-- ~~`createPlan`~~ POST `/v1/blueprint-manifest/jobs:createPlan`
-- ~~`applyPlan`~~ POST `/v1/blueprint-manifest/jobs/{job_id}:applyPlan`
-- ~~`listInstalledManifests`~~ GET `/v1/blueprint-manifest/manifests`
-- ~~`getManifest`~~ GET `/v1/blueprint-manifest/manifests/{manifest_id}`
-- ~~`updateManifest`~~ PUT `/v1/blueprint-manifest/manifests/{manifest_id}`
-- ~~`deleteManifest`~~ DELETE `/v1/blueprint-manifest/manifests/{manifest_id}`

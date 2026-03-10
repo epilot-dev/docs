@@ -19,19 +19,7 @@ epilot deduplication
 epilot deduplication deduplicate
 ```
 
-## Operations
-
-- [`deduplicate`](#deduplicate) — Deduplicates Entities
-
-### `deduplicate`
-
-Deduplicates Entities
-
-`POST /v1/deduplicate`
-
-**Request Body**
-
-**Flags**
+## Common Flags
 
 | Flag | Description |
 | ---- | ----------- |
@@ -48,6 +36,18 @@ Deduplicates Entities
 | `--definition <file>` | Override OpenAPI spec file/URL |
 | `--guided` | Prompt for all parameters interactively |
 | `--no-interactive` | Disable interactive prompts |
+
+## Operations
+
+- [`deduplicate`](#deduplicate) — Deduplicates Entities
+
+### `deduplicate`
+
+Deduplicates Entities
+
+`POST /v1/deduplicate`
+
+**Request Body**
 
 **Sample Call**
 

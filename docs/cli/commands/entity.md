@@ -19,6 +19,24 @@ epilot entity
 epilot entity listSchemas
 ```
 
+## Common Flags
+
+| Flag | Description |
+| ---- | ----------- |
+| `-p key=value` | Set a named parameter |
+| `-d '{...}'` | Request body JSON |
+| `-H 'Key: Value'` | Custom header |
+| `-t, --token <token>` | Bearer token for authentication |
+| `--profile <name>` | Use a named profile |
+| `-s, --server <url>` | Override server base URL |
+| `-i, --include` | Include response headers in output |
+| `--json` | Output raw JSON (no formatting) |
+| `-v, --verbose` | Verbose output (show request details) |
+| `--jsonata <expr>` | JSONata expression to transform response |
+| `--definition <file>` | Override OpenAPI spec file/URL |
+| `--guided` | Prompt for all parameters interactively |
+| `--no-interactive` | Disable interactive prompts |
+
 ## Operations
 
 **Schemas**
@@ -129,24 +147,6 @@ Get the latest versions of all schemas
 | `unpublished` | query | boolean | No | Return unpublished draft schemas |
 | `exclude` | query | string[] | No | List of schema slugs to exclude from the results. Accepts a comma-separated list of slugs to exclude from the results. |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -215,24 +215,6 @@ By default gets the latest version of the Schema and to get the specific version
 | ---- | -- | ---- | -------- | ----------- |
 | `slug` | path | string | Yes | Entity Type |
 | `id` | query | string (uuid) | No |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -402,24 +384,6 @@ Create or update a schema with a new version
 | `draft` | query | boolean | No |  |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -717,24 +681,6 @@ Delete a schema, or a specific version of a schema
 | ---- | -- | ---- | -------- | ----------- |
 | `slug` | path | string | Yes | Entity Type |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -768,24 +714,6 @@ Get formal JSON schema definition draft 2020-12 for the given epilot schema
 | ---- | -- | ---- | -------- | ----------- |
 | `slug` | path | string | Yes | Entity Type |
 | `dereference` | query | boolean | No |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -933,24 +861,6 @@ Get a full example entity for the given schema
 | ---- | -- | ---- | -------- | ----------- |
 | `slug` | path | string | Yes | Entity Type |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -997,24 +907,6 @@ Get all versions of this schema ordered by the latest versions including drafts.
 | `drafts_from` | query | number | No |  |
 | `drafts_size` | query | number | No |  |
 | `fields` | query | string[] | No |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1125,24 +1017,6 @@ List available capabilities for schema
 | ---- | -- | ---- | -------- | ----------- |
 | `slug` | path | string | Yes | Entity Type |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1194,24 +1068,6 @@ epilot entity listAvailableCapabilities -p slug=contact --jsonata 'results[0]'
 List canonical versions of all available schemas
 
 `GET /v1/entity/schemas/blueprints`
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1276,24 +1132,6 @@ Search for entities. Supports ordering and pagination. [Lucene query syntax](htt
 `POST /v1/entity:search`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1400,24 +1238,6 @@ List entities that meet the specified conditions.
 `POST /v1/entity:list`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -1545,24 +1365,6 @@ Traverse an entity relationship graph starting from a seed entity.
 
 **Request Body** (required)
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1685,24 +1487,6 @@ Pending state on activity is automatically ended when activity is filled.
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1799,24 +1583,6 @@ Validates an entity against the schema.
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -1905,24 +1671,6 @@ Validates an entity against the schema.
 | `slug` | path | unknown | Yes | Entity Type |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -2024,24 +1772,6 @@ Pending state on activity is automatically ended when activity is filled.
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2142,24 +1872,6 @@ Gets Entity by id.
 | `hydrate` | query | boolean | No | When true, enables entity hydration to resolve nested $relation & $relation_ref references in-place. |
 | `fields` | query | string[] | No | List of entity fields to include in results |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2225,24 +1937,6 @@ Restores an entity by id
 | `activity_id` | query | string (ulid) \| "" \| null | No | Activity to include in event feed |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -2316,24 +2010,6 @@ Triggers a reindex for the Entity for search.
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2404,24 +2080,6 @@ Gets Entity and relations by id.
 | `id` | path | string (uuid) | Yes | Entity id |
 | `slug` | path | string | Yes | Entity Type |
 | `hydrate` | query | boolean | No | When true, enables entity hydration to resolve nested $relation & $relation_ref references in-place. |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -2517,24 +2175,6 @@ Pending state on activity is automatically ended when activity is filled.
 | `validate` | query | boolean | No | When true, enables entity validation against the entity schema. |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -2642,24 +2282,6 @@ Pending state on activity is automatically ended when activity is filled.
 
 **Request Body** (required)
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2759,24 +2381,6 @@ Deletes an Entity
 | `activity_id` | query | string (ulid) \| "" \| null | No | Activity to include in event feed |
 | `purge` | query | boolean | No | Permanently deletes the entity when set to `true` |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2814,24 +2418,6 @@ Autocomplete entity attributes
 | `slug` | query | string | No | Limit results to entity schema |
 | `size` | query | number | No | Maximum number of results to return |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2867,24 +2453,6 @@ Creates a request to queue the deletion of all entities in the system. This is a
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -2919,24 +2487,6 @@ Create an activity that can be displayed in activity feeds.
 | `entities` | query | string (uuid)[] | No | Comma-separated list of entities which the activity primarily concerns |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -3035,24 +2585,6 @@ Get activity by id
 | `operations_from` | query | number | No | Pagination offset for operations
  |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -3126,24 +2658,6 @@ Attach existing activity to entity activity feeds
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string (ulid) | Yes | Activity Id |
 | `entities` | query | string (uuid)[] | No | Comma-separated list of entities which the activity primarily concerns |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -3232,24 +2746,6 @@ Get activity feed for an entity
 | `include_relations` | query | boolean | No | Include activities from related entities |
 | `exclude_activity_groups` | query | string | No | Exclude all activity types that are part of an activity group from results |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -3315,24 +2811,6 @@ Returns 1st level direct relations for an entity.
 | `size` | query | number | No | Number of results to return per page |
 | `include_schemas` | query | string[] | No | Filter results to only include schemas |
 | `exclude_schemas` | query | string[] | No | Filter results to exclude schemas |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -3410,24 +2888,6 @@ Relates one or more entities to parent entity by adding items to a relation attr
 | `activity_id` | query | string (ulid) \| "" \| null | No | Activity to include in event feed |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -3508,24 +2968,6 @@ Disassociate one or more entities to parent entity by removing items to a relati
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -3590,24 +3032,6 @@ Returns 1st level direct relations for an entity with pagination.
 | `from` | query | number | No | Starting page number |
 | `size` | query | number | No | Number of results to return per page |
 | `fields` | query | string[] | No | List of entity fields to include in results |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -3702,24 +3126,6 @@ Explanation of possible options:
 - `false`: exclude relations to/from deleted entities (default)
 - `only`: include only relati |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -3797,24 +3203,6 @@ Returns the amount of unique related entities for an entity - includes direct an
 | `id` | path | string (uuid) | Yes | Entity id |
 | `exclude_schemas` | query | string[] | No | Filter results to exclude schemas |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -3866,24 +3254,6 @@ Updates an existing relation between two entities.
 | `activity_id` | query | string (ulid) \| "" \| null | No | Activity to include in event feed |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -3949,24 +3319,6 @@ Removes relation between two entities
 | `async` | query | boolean | No | Don't wait for updated entity to become available in Search API. Useful for large migrations |
 | `activity_id` | query | string (ulid) \| "" \| null | No | Activity to include in event feed |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -4006,24 +3358,6 @@ Export entity data in a CSV-format. The export will export data as close as poss
 | `language` | query | string | No | Export headers translation language |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -4086,24 +3420,6 @@ This endpoint enables the import of entities into the platform.
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -4140,24 +3456,6 @@ Get the Saved Views based on the schema
 | `from` | query | number | No |  |
 | `size` | query | number | No | Number of saved views to return |
 | `fields` | query | string[] | No |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -4221,24 +3519,6 @@ Creates a new saved view
 `POST /v1/entity/view`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -4339,24 +3619,6 @@ Gets Saved View configuration by id.
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string (uuid) | Yes | View id |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -4427,24 +3689,6 @@ Updates a saved view
 | `id` | path | string (uuid) | Yes | View id |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -4558,24 +3802,6 @@ Partially updates a saved view with the provided payload. If an updated_at is pa
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -4683,24 +3909,6 @@ Deletes a saved view
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string (uuid) | Yes | View id |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -4727,24 +3935,6 @@ epilot entity deleteSavedView -p id=123e4567-e89b-12d3-a456-426614174000 --jsona
 Get the Favorite Saved Views for user based on the schema
 
 `GET /v1/entity/views/favorites`
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -4813,24 +4003,6 @@ List taxonomies in an organization
 | `include_disabled` | query | boolean | No | Include disabled taxonomies |
 | `type` | query | "entity" \| "relation" | No | Type of taxonomy to include |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -4880,24 +4052,6 @@ Create a new taxonomy
 `POST /v1/entity/taxonomies`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -4977,24 +4131,6 @@ Get taxonomy by slug
 | ---- | -- | ---- | -------- | ----------- |
 | `taxonomySlug` | path | string | Yes | Taxonomy slug |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -5053,24 +4189,6 @@ Update a taxonomy
 | `taxonomySlug` | path | string | Yes | Taxonomy slug |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -5159,24 +4277,6 @@ Delete a taxonomy
 | `taxonomySlug` | path | string | Yes | Taxonomy slug |
 | `permanent` | query | boolean | No | ⚠️ NOT IMPLEMENTED - If true, the taxonomy will be permanently deleted |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -5211,24 +4311,6 @@ Update the classifications for a taxonomy
 | `taxonomySlug` | path | string | Yes | Taxonomy slug |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -5350,24 +4432,6 @@ Create a new classification for a taxonomy
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -5442,24 +4506,6 @@ Get a classification for a taxonomy by slug
 | ---- | -- | ---- | -------- | ----------- |
 | `classificationSlug` | path | string | Yes | Taxonomy Classification slug |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -5516,24 +4562,6 @@ Update a classification for a taxonomy
 | `classificationSlug` | path | string | Yes | Taxonomy Classification slug |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -5617,24 +4645,6 @@ Delete a classification for a taxonomy
 | ---- | -- | ---- | -------- | ----------- |
 | `classificationSlug` | path | string | Yes | Taxonomy Classification slug |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -5691,24 +4701,6 @@ Taxonomies autocomplete
 | `taxonomySlug` | path | string | Yes | Taxonomy slug |
 | `query` | query | string | No | Input to autocomplete |
 | `size` | query | number | No | Minimum number of results to return |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -5775,24 +4767,6 @@ List taxonomy classifications in an organization based on taxonomy slug
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -5855,24 +4829,6 @@ List taxonomy classifications for a given schema
 | `taxonomySlug` | path | string | Yes | Taxonomy slug |
 | `query` | query | string | No |  |
 | `size` | query | number | No |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -5938,24 +4894,6 @@ Gets bulk actions jobs by job status:
 | `sort_pending_first` | query | boolean | No |  |
 | `scope` | query | "me" \| "all" | No |  |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -6000,24 +4938,6 @@ Gets a bulk action job by job id
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `job_id` | path | string | Yes |  |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -6069,24 +4989,6 @@ Cancels a running bulk action job. The job status will be updated to CANCELLED
 | ---- | -- | ---- | -------- | ----------- |
 | `job_id` | path | string | Yes | Job ID of the bulk operation to cancel |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -6133,24 +5035,6 @@ Moves classifications from one taxonomy to another, through a bulk async operati
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -6191,24 +5075,6 @@ Merges classifications from one taxonomy into one individual classification, thr
 `POST /v1/entity/taxonomies/classifications:merge`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -6251,24 +5117,6 @@ Permanently deletes taxonomy classifications. The classifications are deleted th
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -6309,24 +5157,6 @@ Create a schema attribute
 `POST /v1/entity/schemas/attributes`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -6472,24 +5302,6 @@ Get a schema attribute from given attribute ID
 | ---- | -- | ---- | -------- | ----------- |
 | `composite_id` | path | string | Yes | Schema Slug and the Attribute ID |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -6581,24 +5393,6 @@ Updates an attribute in the schema
 | `composite_id` | path | string | Yes | Schema Slug and the Attribute ID |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -6752,24 +5546,6 @@ Deletes an attribute from a schema
 | ---- | -- | ---- | -------- | ----------- |
 | `composite_id` | path | string | Yes | Schema Slug and the Attribute ID |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -6855,24 +5631,6 @@ Create a schema capability
 `POST /v1/entity/schemas/capabilities`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -7138,24 +5896,6 @@ Get a schema capability from given capability ID
 | ---- | -- | ---- | -------- | ----------- |
 | `composite_id` | path | string | Yes | Schema Slug and the Attribute ID |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -7307,24 +6047,6 @@ Adds or updates an capability in the schema
 | `composite_id` | path | string | Yes | Schema Slug and the Attribute ID |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -7598,24 +6320,6 @@ Deletes a Capability from a schema
 | ---- | -- | ---- | -------- | ----------- |
 | `composite_id` | path | string | Yes | Schema Slug and the Attribute ID |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -7762,24 +6466,6 @@ Create a schema group
 
 **Request Body**
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -7870,24 +6556,6 @@ Get a schema group from given group composite ID
 | ---- | -- | ---- | -------- | ----------- |
 | `composite_id` | path | string | Yes | Schema Slug and the Group ID |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -7952,24 +6620,6 @@ Adds or updates an capability in the schema
 | `composite_id` | path | string | Yes | Schema Slug and the Group ID |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -8069,24 +6719,6 @@ Deletes a Capability from a schema
 | ---- | -- | ---- | -------- | ----------- |
 | `composite_id` | path | string | Yes | Schema Slug and the Group ID |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -8145,24 +6777,6 @@ Create a headline in a schema group
 `POST /v1/entity/schemas/headline`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -8240,24 +6854,6 @@ Get a group headline from schema from given headline composite ID
 | ---- | -- | ---- | -------- | ----------- |
 | `composite_id` | path | string | Yes | Schema Slug and the Schema Group ID |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -8315,24 +6911,6 @@ Adds or updates a group headline in the schema
 | `composite_id` | path | string | Yes | Schema Slug and the Schema Group ID |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -8417,24 +6995,6 @@ Deletes a group headline from a schema
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `composite_id` | path | string | Yes | Schema Slug and the Schema Group ID |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 

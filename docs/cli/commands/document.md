@@ -19,22 +19,7 @@ epilot document
 epilot document getTemplateMeta
 ```
 
-## Operations
-
-**Documents**
-- [`getTemplateMeta`](#gettemplatemeta) — Get metadata for a document template
-- [`generateDocumentV2`](#generatedocumentv2) — Generates documents from templates with variables.
-- [`convertDocument`](#convertdocument) — Converts a document to a different format.
-
-### `getTemplateMeta`
-
-Get metadata for a document template
-
-`POST /v2/documents:meta`
-
-**Request Body**
-
-**Flags**
+## Common Flags
 
 | Flag | Description |
 | ---- | ----------- |
@@ -51,6 +36,21 @@ Get metadata for a document template
 | `--definition <file>` | Override OpenAPI spec file/URL |
 | `--guided` | Prompt for all parameters interactively |
 | `--no-interactive` | Disable interactive prompts |
+
+## Operations
+
+**Documents**
+- [`getTemplateMeta`](#gettemplatemeta) — Get metadata for a document template
+- [`generateDocumentV2`](#generatedocumentv2) — Generates documents from templates with variables.
+- [`convertDocument`](#convertdocument) — Converts a document to a different format.
+
+### `getTemplateMeta`
+
+Get metadata for a document template
+
+`POST /v2/documents:meta`
+
+**Request Body**
 
 **Sample Call**
 
@@ -112,24 +112,6 @@ Generates documents from templates with variables.
  |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -282,24 +264,6 @@ Converts a document to a different format.
 `POST /v2/documents:convert`
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 

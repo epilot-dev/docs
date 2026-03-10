@@ -19,20 +19,7 @@ epilot iban
 epilot iban validateIban
 ```
 
-## Operations
-
-**Ibans**
-- [`validateIban`](#validateiban) — Validate an Iban
-
-### `validateIban`
-
-Validate an Iban
-
-`POST /v1/public/iban:validate`
-
-**Request Body** (required)
-
-**Flags**
+## Common Flags
 
 | Flag | Description |
 | ---- | ----------- |
@@ -49,6 +36,19 @@ Validate an Iban
 | `--definition <file>` | Override OpenAPI spec file/URL |
 | `--guided` | Prompt for all parameters interactively |
 | `--no-interactive` | Disable interactive prompts |
+
+## Operations
+
+**Ibans**
+- [`validateIban`](#validateiban) — Validate an Iban
+
+### `validateIban`
+
+Validate an Iban
+
+`POST /v1/public/iban:validate`
+
+**Request Body** (required)
 
 **Sample Call**
 

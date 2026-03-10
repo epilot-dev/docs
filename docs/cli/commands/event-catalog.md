@@ -19,24 +19,7 @@ epilot event-catalog
 epilot event-catalog listEvents
 ```
 
-## Operations
-
-**Event Catalog**
-- [`listEvents`](#listevents) — Retrieve list of available business events
-- [`getEvent`](#getevent) — Retrieve the configuration of a specific business event
-- [`patchEvent`](#patchevent) — Update the configuration of a specific business event for the organization
-- [`getEventJSONSchema`](#geteventjsonschema) — Retrieve the JSON Schema of a specific business event
-- [`getEventExample`](#geteventexample) — Generate a sample event payload based on the event's JSON Schema
-- [`searchEventHistory`](#searcheventhistory) — Paginated history of events
-- [`triggerEvent`](#triggerevent) — Explicitly trigger an event by providing input field values and an optional entity seed
-
-### `listEvents`
-
-Retrieve list of available business events
-
-`GET /v1/events`
-
-**Flags**
+## Common Flags
 
 | Flag | Description |
 | ---- | ----------- |
@@ -53,6 +36,23 @@ Retrieve list of available business events
 | `--definition <file>` | Override OpenAPI spec file/URL |
 | `--guided` | Prompt for all parameters interactively |
 | `--no-interactive` | Disable interactive prompts |
+
+## Operations
+
+**Event Catalog**
+- [`listEvents`](#listevents) — Retrieve list of available business events
+- [`getEvent`](#getevent) — Retrieve the configuration of a specific business event
+- [`patchEvent`](#patchevent) — Update the configuration of a specific business event for the organization
+- [`getEventJSONSchema`](#geteventjsonschema) — Retrieve the JSON Schema of a specific business event
+- [`getEventExample`](#geteventexample) — Generate a sample event payload based on the event's JSON Schema
+- [`searchEventHistory`](#searcheventhistory) — Paginated history of events
+- [`triggerEvent`](#triggerevent) — Explicitly trigger an event by providing input field values and an optional entity seed
+
+### `listEvents`
+
+Retrieve list of available business events
+
+`GET /v1/events`
 
 **Sample Call**
 
@@ -125,24 +125,6 @@ Retrieve the configuration of a specific business event
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `event_name` | path | string | Yes | Unique human readable name of the event |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -220,24 +202,6 @@ Update the configuration of a specific business event for the organization
 | `event_name` | path | string | Yes | Unique human readable name of the event |
 
 **Request Body** (required)
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -360,24 +324,6 @@ Retrieve the JSON Schema of a specific business event
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `event_name` | path | string | Yes | Unique human readable name of the event |
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -520,24 +466,6 @@ Generate a sample event payload based on the event's JSON Schema
 | ---- | -- | ---- | -------- | ----------- |
 | `event_name` | path | string | Yes | Unique human readable name of the event |
 
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
-
 **Sample Call**
 
 ```bash
@@ -581,24 +509,6 @@ Paginated history of events
 | `event_name` | path | string | Yes | Unique human readable name of the event |
 
 **Request Body**
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
@@ -698,24 +608,6 @@ Explicitly trigger an event by providing input field values and an optional enti
 | `event_name` | path | string | Yes | Unique human readable name of the event |
 
 **Request Body** (required)
-
-**Flags**
-
-| Flag | Description |
-| ---- | ----------- |
-| `-p key=value` | Set a named parameter |
-| `-d '{...}'` | Request body JSON |
-| `-H 'Key: Value'` | Custom header |
-| `-t, --token <token>` | Bearer token for authentication |
-| `--profile <name>` | Use a named profile |
-| `-s, --server <url>` | Override server base URL |
-| `-i, --include` | Include response headers in output |
-| `--json` | Output raw JSON (no formatting) |
-| `-v, --verbose` | Verbose output (show request details) |
-| `--jsonata <expr>` | JSONata expression to transform response |
-| `--definition <file>` | Override OpenAPI spec file/URL |
-| `--guided` | Prompt for all parameters interactively |
-| `--no-interactive` | Disable interactive prompts |
 
 **Sample Call**
 
