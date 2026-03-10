@@ -5,6 +5,22 @@ import styles from './ExplorePlatform.module.css';
 
 /* Inline SVG icons — Lucide-style, 24x24, currentColor */
 
+const TerminalIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="4 17 10 11 4 5" />
+    <line x1="12" y1="19" x2="20" y2="19" />
+  </svg>
+);
+
 const LayersIcon = () => (
   <svg
     width="20"
@@ -323,6 +339,12 @@ const groups: PlatformGroup[] = [
         href: '/docs/blueprints/intro',
         description: 'Reusable configuration packages',
         icon: <CopyIcon />,
+      },
+      {
+        label: 'CLI',
+        href: '/docs/cli/overview',
+        description: 'Call any API from the command line',
+        icon: <TerminalIcon />,
       },
     ],
   },
