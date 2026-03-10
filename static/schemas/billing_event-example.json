@@ -15,6 +15,7 @@
   "due_date": "2025-01-01",
   "paid_date": "2025-01-01",
   "external_id": "string",
+  "invoice_number": "string",
   "external_link": {
     "type": "link",
     "title": "Visit Website",

@@ -104,6 +104,10 @@
       "type": "string",
       "description": "External ID"
     },
+    "invoice_number": {
+      "type": "string",
+      "description": "Invoice Number"
+    },
     "external_link": {
       "$ref": "#/definitions/LinkAttribute",
       "description": "External Link"
