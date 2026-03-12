@@ -18,7 +18,7 @@
     "_event_name": {
       "type": "string",
       "description": "Event name from catalog",
-      "example": "LocationMoveRequested"
+      "example": "TariffChange"
     },
     "_event_version": {
       "type": "string",
@@ -43,6 +43,52 @@
       "type": "string",
       "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
       "example": "api_123456"
+    },
+    "operation": {
+      "type": "string",
+      "enum": [
+        "createEntity"
+      ],
+      "description": "The entity operation type that triggered this event"
+    },
+    "activity_id": {
+      "type": "string",
+      "description": "Activity ID associated with this operation (ULID)",
+      "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
+    },
+    "activity_type": {
+      "type": "string",
+      "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
+      "example": "EntityUpdated"
+    },
+    "trigger_entity": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Entity ID of the entity that triggered this event"
+    },
+    "kundentyp": {
+      "type": "string",
+      "description": "Customer type (e.g., private, commercial)"
+    },
+    "zaehlerart": {
+      "type": "string",
+      "description": "Meter type"
+    },
+    "erwarteter_jahresverbrauch_ht_in_kwh": {
+      "type": "number",
+      "description": "Expected annual consumption HT in kWh"
+    },
+    "erwarteter_jahresverbrauch_nt_in_kwh": {
+      "type": "number",
+      "description": "Expected annual consumption NT in kWh"
+    },
+    "datum_gewuenschter_liefertermin": {
+      "type": "string",
+      "description": "Requested delivery date"
+    },
+    "nur_naturstrom": {
+      "type": "boolean",
+      "description": "Only natural/green electricity"
     },
     "ticket": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -593,441 +639,6 @@
       },
       "description": "contract entity (hydrated from entity graph)"
     },
-    "meter": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "type": "object",
-      "required": [
-        "_schema"
-      ],
-      "properties": {
-        "_schema": {
-          "readOnly": true,
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9_-]+$",
-          "example": "meter",
-          "description": "URL-friendly identifier for the entity schema"
-        },
-        "_id": {
-          "readOnly": true,
-          "type": "string",
-          "format": "uuid",
-          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "description": "Unique identifier for the entity"
-        },
-        "_org": {
-          "type": "string",
-          "description": "Organization Id the entity belongs to",
-          "readOnly": true,
-          "example": "123"
-        },
-        "_title": {
-          "readOnly": true,
-          "type": "string",
-          "nullable": true,
-          "example": "John Doe",
-          "description": "Generated title for the entity based on schema title_template"
-        },
-        "_tags": {
-          "type": "array",
-          "nullable": true,
-          "items": {
-            "type": "string"
-          },
-          "example": [
-            "family:label"
-          ],
-          "description": "Entity Labels"
-        },
-        "_purpose": {
-          "$ref": "#/definitions/PurposeAttribute",
-          "description": "Purposes"
-        },
-        "ma_lo_id": {
-          "type": "string",
-          "description": "MaLo-ID"
-        },
-        "meter_type": {
-          "type": "string",
-          "enum": [
-            "three-phase-meter",
-            "bellow-gas-meter",
-            "rotary-piston-meter",
-            "smart-meter",
-            "performance-meter",
-            "maximum-meter",
-            "turbine-gas-meter",
-            "ultrasonic-gas-meter",
-            "alternating-current-meter",
-            "modern-metering-system",
-            "intelligent-measuring-system",
-            "electronic-meter"
-          ],
-          "description": "Meter Type"
-        },
-        "tariff_type": {
-          "type": "string",
-          "description": "Tariff Type"
-        },
-        "meter_number": {
-          "type": "string",
-          "description": "Meter Number"
-        },
-        "sector": {
-          "type": "string",
-          "enum": [
-            "power",
-            "gas",
-            "water",
-            "district_heating",
-            "waste_water"
-          ],
-          "description": "Sector"
-        },
-        "used_for": {
-          "type": "string",
-          "description": "Used For"
-        },
-        "manufacturer": {
-          "type": "string",
-          "description": "Manufacturer"
-        },
-        "calibration_date": {
-          "type": "string",
-          "format": "date",
-          "example": "2025-01-01",
-          "description": "Calibration Date"
-        },
-        "location": {
-          "type": "string",
-          "description": "Location"
-        },
-        "status": {
-          "type": "string",
-          "enum": [
-            "active",
-            "decommissioned"
-          ],
-          "description": "Status"
-        },
-        "address": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "description": "Address attribute",
-            "additionalProperties": true,
-            "properties": {
-              "_tags": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "example": [
-                  "billing"
-                ]
-              },
-              "street": {
-                "type": "string",
-                "description": "The first line of the address. Typically the street address or PO Box number.",
-                "nullable": true,
-                "example": "Hauptstraße"
-              },
-              "street_number": {
-                "type": "string",
-                "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
-                "nullable": true,
-                "example": "123"
-              },
-              "postal_code": {
-                "type": "string",
-                "description": "The postal code for the address.",
-                "nullable": true,
-                "example": "50668"
-              },
-              "city": {
-                "type": "string",
-                "description": "The name of the city, district, village, or town.",
-                "nullable": true,
-                "example": "Cologne"
-              },
-              "country": {
-                "type": "string",
-                "description": "The two-letter code for the country of the address.",
-                "nullable": true,
-                "example": "DE"
-              },
-              "additional_info": {
-                "type": "string",
-                "description": "An additional description for the address",
-                "nullable": true
-              },
-              "company_name": {
-                "type": "string",
-                "description": "the company name, usually used as extra delivery instructions",
-                "nullable": true
-              },
-              "first_name": {
-                "type": "string",
-                "description": "the first name of the recipient, usually used as extra delivery instructions",
-                "nullable": true
-              },
-              "last_name": {
-                "type": "string",
-                "description": "the last name of the recipient, usually used as extra delivery instructions",
-                "nullable": true
-              },
-              "salutation": {
-                "type": "string",
-                "description": "the salutation of the recipient, usually used as extra delivery instructions",
-                "nullable": true
-              },
-              "title": {
-                "type": "string",
-                "description": "the title of the recipient, usually used as extra delivery instructions",
-                "nullable": true
-              },
-              "coordinates": {
-                "type": "string",
-                "description": "Geographical coordinates (latitude, longitude)",
-                "nullable": true,
-                "example": "50.948484, 6.943147"
-              },
-              "plot_of_land": {
-                "type": "string",
-                "description": "Plot of land information",
-                "nullable": true
-              },
-              "plot_area": {
-                "type": "string",
-                "description": "Area of the plot",
-                "nullable": true
-              },
-              "start_date": {
-                "type": "string",
-                "description": "Start date for the address",
-                "format": "date",
-                "nullable": true
-              },
-              "end_date": {
-                "type": "string",
-                "description": "End date for the address",
-                "format": "date",
-                "nullable": true
-              }
-            }
-          },
-          "description": "Address"
-        },
-        "contract": {
-          "$ref": "#/definitions/BaseRelation",
-          "description": "Contract"
-        },
-        "customer": {
-          "$ref": "#/definitions/BaseRelation",
-          "description": "Customer"
-        },
-        "counters": {
-          "$ref": "#/definitions/BaseRelation",
-          "description": "Counters"
-        },
-        "external_id": {
-          "type": "string",
-          "description": "External ID"
-        },
-        "workflows": {
-          "$ref": "#/definitions/WorkflowOverview"
-        },
-        "_files": {
-          "$ref": "#/definitions/BaseRelation"
-        },
-        "_created_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity creation"
-        },
-        "_updated_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity last update"
-        }
-      },
-      "description": "meter entity (hydrated from entity graph)"
-    },
-    "submission": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "type": "object",
-      "required": [
-        "_schema"
-      ],
-      "properties": {
-        "_id": {
-          "readOnly": true,
-          "type": "string",
-          "format": "uuid",
-          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "description": "Unique identifier for the entity"
-        },
-        "_schema": {
-          "readOnly": true,
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9_-]+$",
-          "example": "submission",
-          "description": "URL-friendly identifier for the entity schema"
-        },
-        "_org": {
-          "type": "string",
-          "description": "Organization Id the entity belongs to",
-          "readOnly": true,
-          "example": "123"
-        }
-      },
-      "description": "submission entity (hydrated from entity graph)"
-    },
-    "meter_counter": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "type": "object",
-      "required": [
-        "_schema"
-      ],
-      "properties": {
-        "_schema": {
-          "readOnly": true,
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9_-]+$",
-          "example": "meter_counter",
-          "description": "URL-friendly identifier for the entity schema"
-        },
-        "_id": {
-          "readOnly": true,
-          "type": "string",
-          "format": "uuid",
-          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "description": "Unique identifier for the entity"
-        },
-        "_org": {
-          "type": "string",
-          "description": "Organization Id the entity belongs to",
-          "readOnly": true,
-          "example": "123"
-        },
-        "_title": {
-          "readOnly": true,
-          "type": "string",
-          "nullable": true,
-          "example": "John Doe",
-          "description": "Generated title for the entity based on schema title_template"
-        },
-        "_tags": {
-          "type": "array",
-          "nullable": true,
-          "items": {
-            "type": "string"
-          },
-          "example": [
-            "family:label"
-          ],
-          "description": "Entity Labels"
-        },
-        "_purpose": {
-          "$ref": "#/definitions/PurposeAttribute",
-          "description": "Purposes"
-        },
-        "obis_number": {
-          "type": "string",
-          "description": "OBIS Number"
-        },
-        "direction": {
-          "type": "string",
-          "enum": [
-            "feed-in",
-            "feed-out"
-          ],
-          "description": "Direction"
-        },
-        "tariff_type": {
-          "type": "string",
-          "enum": [
-            "ht",
-            "nt",
-            "et"
-          ],
-          "description": "Tariff type"
-        },
-        "transformer_ratio": {
-          "type": "string",
-          "description": "Transformer Ratio"
-        },
-        "unit": {
-          "type": "string",
-          "enum": [
-            "w",
-            "wh",
-            "kw",
-            "kWh",
-            "kvarh",
-            "mw",
-            "mWh",
-            "unit",
-            "cubic-meter",
-            "hour",
-            "day",
-            "month",
-            "year",
-            "percentage"
-          ],
-          "description": "Unit"
-        },
-        "conversion_factor": {
-          "type": "string",
-          "description": "Conversion Factor"
-        },
-        "meter": {
-          "$ref": "#/definitions/BaseRelation",
-          "description": "Meter"
-        },
-        "external_id": {
-          "type": "string",
-          "description": "External ID"
-        },
-        "_files": {
-          "$ref": "#/definitions/BaseRelation"
-        },
-        "_created_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity creation"
-        },
-        "_updated_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity last update"
-        }
-      },
-      "description": "meter_counter entity (hydrated from entity graph)"
-    },
-    "customer": {
-      "type": "object",
-      "description": "customer entity (hydrated from entity graph)",
-      "properties": {
-        "_id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "_schema": {
-          "type": "string",
-          "const": "customer",
-          "example": "customer"
-        }
-      },
-      "additionalProperties": true
-    },
     "billing_account": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "type": "object",
@@ -1169,6 +780,889 @@
         }
       },
       "description": "billing_account entity (hydrated from entity graph)"
+    },
+    "contact": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "_schema"
+      ],
+      "properties": {
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "contact",
+          "description": "URL-friendly identifier for the entity schema"
+        },
+        "_id": {
+          "readOnly": true,
+          "type": "string",
+          "format": "uuid",
+          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "description": "Unique identifier for the entity"
+        },
+        "_org": {
+          "type": "string",
+          "description": "Organization Id the entity belongs to",
+          "readOnly": true,
+          "example": "123"
+        },
+        "_title": {
+          "readOnly": true,
+          "type": "string",
+          "nullable": true,
+          "example": "John Doe",
+          "description": "Generated title for the entity based on schema title_template"
+        },
+        "_tags": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "family:label"
+          ],
+          "description": "Entity Labels"
+        },
+        "_purpose": {
+          "$ref": "#/definitions/PurposeAttribute",
+          "description": "Purposes"
+        },
+        "salutation": {
+          "type": "string",
+          "enum": [
+            "null",
+            "Mr.",
+            "Ms. / Mrs.",
+            "Company",
+            "Contact Person",
+            "Company/Contact Person",
+            "Spouse",
+            "Family",
+            "Ownership",
+            "Assembly",
+            "Other"
+          ],
+          "description": "Salutation"
+        },
+        "title": {
+          "type": "string",
+          "enum": [
+            "null",
+            "Dr.",
+            "Prof.",
+            "Prof. Dr."
+          ],
+          "description": "Title"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "First Name"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last Name"
+        },
+        "customer_number": {
+          "type": "string",
+          "description": "Customer Number"
+        },
+        "birthdate": {
+          "type": "string",
+          "format": "date",
+          "example": "2025-01-01",
+          "description": "Date of Birth"
+        },
+        "email": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          },
+          "description": "Email"
+        },
+        "phone": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "phone": {
+                "type": "string",
+                "example": "+491234567890"
+              }
+            },
+            "required": [
+              "phone"
+            ]
+          },
+          "description": "Phone"
+        },
+        "communication_preference": {
+          "type": "string",
+          "enum": [
+            "postal",
+            "portal"
+          ],
+          "description": "Standard communication method"
+        },
+        "address": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Address attribute",
+            "additionalProperties": true,
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "billing"
+                ]
+              },
+              "street": {
+                "type": "string",
+                "description": "The first line of the address. Typically the street address or PO Box number.",
+                "nullable": true,
+                "example": "Hauptstraße"
+              },
+              "street_number": {
+                "type": "string",
+                "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+                "nullable": true,
+                "example": "123"
+              },
+              "postal_code": {
+                "type": "string",
+                "description": "The postal code for the address.",
+                "nullable": true,
+                "example": "50668"
+              },
+              "city": {
+                "type": "string",
+                "description": "The name of the city, district, village, or town.",
+                "nullable": true,
+                "example": "Cologne"
+              },
+              "country": {
+                "type": "string",
+                "description": "The two-letter code for the country of the address.",
+                "nullable": true,
+                "example": "DE"
+              },
+              "additional_info": {
+                "type": "string",
+                "description": "An additional description for the address",
+                "nullable": true
+              },
+              "company_name": {
+                "type": "string",
+                "description": "the company name, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "first_name": {
+                "type": "string",
+                "description": "the first name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "last_name": {
+                "type": "string",
+                "description": "the last name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "salutation": {
+                "type": "string",
+                "description": "the salutation of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "title": {
+                "type": "string",
+                "description": "the title of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "coordinates": {
+                "type": "string",
+                "description": "Geographical coordinates (latitude, longitude)",
+                "nullable": true,
+                "example": "50.948484, 6.943147"
+              },
+              "plot_of_land": {
+                "type": "string",
+                "description": "Plot of land information",
+                "nullable": true
+              },
+              "plot_area": {
+                "type": "string",
+                "description": "Area of the plot",
+                "nullable": true
+              },
+              "start_date": {
+                "type": "string",
+                "description": "Start date for the address",
+                "format": "date",
+                "nullable": true
+              },
+              "end_date": {
+                "type": "string",
+                "description": "End date for the address",
+                "format": "date",
+                "nullable": true
+              }
+            }
+          },
+          "description": "Address"
+        },
+        "payment": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Payment method details",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "payment_sepa",
+                  "payment_invoice",
+                  "payment_cash"
+                ],
+                "example": "payment_sepa"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "bank_name": {
+                    "type": "string",
+                    "example": "Deutsche Bank"
+                  },
+                  "iban": {
+                    "type": "string",
+                    "example": "DE89370400440532013000"
+                  },
+                  "bic_number": {
+                    "type": "string",
+                    "example": "DEUTDEFF"
+                  },
+                  "fullname": {
+                    "type": "string",
+                    "example": "John Doe"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Payment"
+        },
+        "account": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Account"
+        },
+        "marketing_permission": {
+          "type": "boolean",
+          "description": "Marketing Permission"
+        },
+        "contact_owner": {
+          "$ref": "#/definitions/User",
+          "description": "Contact Owner"
+        },
+        "consent_email_marketing": {
+          "$ref": "#/definitions/ConsentAttribute",
+          "description": "Email Marketing"
+        },
+        "consent_sms_marketing": {
+          "$ref": "#/definitions/ConsentAttribute",
+          "description": "SMS Marketing"
+        },
+        "consent_phone_call": {
+          "$ref": "#/definitions/ConsentAttribute",
+          "description": "Direct Phone Marketing"
+        },
+        "consent_print_marketing": {
+          "$ref": "#/definitions/ConsentAttribute",
+          "description": "Print Marketing"
+        },
+        "portal_users": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Portal Users"
+        },
+        "opportunities": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Opportunities"
+        },
+        "orders": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Orders"
+        },
+        "contracts": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Contracts"
+        },
+        "external_id": {
+          "type": "string",
+          "description": "External ID"
+        },
+        "workflows": {
+          "$ref": "#/definitions/WorkflowOverview"
+        },
+        "_files": {
+          "$ref": "#/definitions/BaseRelation"
+        },
+        "_created_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity creation"
+        },
+        "_updated_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity last update"
+        }
+      },
+      "description": "contact entity (hydrated from entity graph)"
+    },
+    "order": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "_schema",
+        "status"
+      ],
+      "properties": {
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "order",
+          "description": "URL-friendly identifier for the entity schema"
+        },
+        "_id": {
+          "readOnly": true,
+          "type": "string",
+          "format": "uuid",
+          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "description": "Unique identifier for the entity"
+        },
+        "_org": {
+          "type": "string",
+          "description": "Organization Id the entity belongs to",
+          "readOnly": true,
+          "example": "123"
+        },
+        "_title": {
+          "readOnly": true,
+          "type": "string",
+          "nullable": true,
+          "example": "John Doe",
+          "description": "Generated title for the entity based on schema title_template"
+        },
+        "_tags": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "family:label"
+          ],
+          "description": "Entity Labels"
+        },
+        "_purpose": {
+          "$ref": "#/definitions/PurposeAttribute",
+          "description": "Purposes"
+        },
+        "order_number": {
+          "type": "string",
+          "description": "Order Number"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "quote",
+            "placed",
+            "complete",
+            "cancelled",
+            "open_for_acceptance"
+          ],
+          "description": "Status"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date",
+          "example": "2025-01-01",
+          "description": "Expiration Date"
+        },
+        "source": {
+          "$ref": "#/definitions/LinkAttribute",
+          "description": "Source"
+        },
+        "payment_method": {
+          "$ref": "#/definitions/PaymentDetails",
+          "description": "Payment Details"
+        },
+        "customer": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Customer"
+        },
+        "billing_contact": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Billing Contact"
+        },
+        "billing_first_name": {
+          "type": "string",
+          "description": "First Name"
+        },
+        "billing_last_name": {
+          "type": "string",
+          "description": "Last Name"
+        },
+        "billing_email": {
+          "type": "string",
+          "description": "Email"
+        },
+        "billing_phone": {
+          "type": "string",
+          "description": "Phone"
+        },
+        "billing_company_name": {
+          "type": "string",
+          "description": "Company name"
+        },
+        "billing_vat": {
+          "type": "string",
+          "description": "Tax ID"
+        },
+        "billing_address": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Address attribute",
+            "additionalProperties": true,
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "billing"
+                ]
+              },
+              "street": {
+                "type": "string",
+                "description": "The first line of the address. Typically the street address or PO Box number.",
+                "nullable": true,
+                "example": "Hauptstraße"
+              },
+              "street_number": {
+                "type": "string",
+                "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+                "nullable": true,
+                "example": "123"
+              },
+              "postal_code": {
+                "type": "string",
+                "description": "The postal code for the address.",
+                "nullable": true,
+                "example": "50668"
+              },
+              "city": {
+                "type": "string",
+                "description": "The name of the city, district, village, or town.",
+                "nullable": true,
+                "example": "Cologne"
+              },
+              "country": {
+                "type": "string",
+                "description": "The two-letter code for the country of the address.",
+                "nullable": true,
+                "example": "DE"
+              },
+              "additional_info": {
+                "type": "string",
+                "description": "An additional description for the address",
+                "nullable": true
+              },
+              "company_name": {
+                "type": "string",
+                "description": "the company name, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "first_name": {
+                "type": "string",
+                "description": "the first name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "last_name": {
+                "type": "string",
+                "description": "the last name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "salutation": {
+                "type": "string",
+                "description": "the salutation of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "title": {
+                "type": "string",
+                "description": "the title of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "coordinates": {
+                "type": "string",
+                "description": "Geographical coordinates (latitude, longitude)",
+                "nullable": true,
+                "example": "50.948484, 6.943147"
+              },
+              "plot_of_land": {
+                "type": "string",
+                "description": "Plot of land information",
+                "nullable": true
+              },
+              "plot_area": {
+                "type": "string",
+                "description": "Area of the plot",
+                "nullable": true
+              },
+              "start_date": {
+                "type": "string",
+                "description": "Start date for the address",
+                "format": "date",
+                "nullable": true
+              },
+              "end_date": {
+                "type": "string",
+                "description": "End date for the address",
+                "format": "date",
+                "nullable": true
+              }
+            }
+          },
+          "description": "Billing Address"
+        },
+        "delivery_address": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Address attribute",
+            "additionalProperties": true,
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "billing"
+                ]
+              },
+              "street": {
+                "type": "string",
+                "description": "The first line of the address. Typically the street address or PO Box number.",
+                "nullable": true,
+                "example": "Hauptstraße"
+              },
+              "street_number": {
+                "type": "string",
+                "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+                "nullable": true,
+                "example": "123"
+              },
+              "postal_code": {
+                "type": "string",
+                "description": "The postal code for the address.",
+                "nullable": true,
+                "example": "50668"
+              },
+              "city": {
+                "type": "string",
+                "description": "The name of the city, district, village, or town.",
+                "nullable": true,
+                "example": "Cologne"
+              },
+              "country": {
+                "type": "string",
+                "description": "The two-letter code for the country of the address.",
+                "nullable": true,
+                "example": "DE"
+              },
+              "additional_info": {
+                "type": "string",
+                "description": "An additional description for the address",
+                "nullable": true
+              },
+              "company_name": {
+                "type": "string",
+                "description": "the company name, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "first_name": {
+                "type": "string",
+                "description": "the first name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "last_name": {
+                "type": "string",
+                "description": "the last name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "salutation": {
+                "type": "string",
+                "description": "the salutation of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "title": {
+                "type": "string",
+                "description": "the title of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "coordinates": {
+                "type": "string",
+                "description": "Geographical coordinates (latitude, longitude)",
+                "nullable": true,
+                "example": "50.948484, 6.943147"
+              },
+              "plot_of_land": {
+                "type": "string",
+                "description": "Plot of land information",
+                "nullable": true
+              },
+              "plot_area": {
+                "type": "string",
+                "description": "Area of the plot",
+                "nullable": true
+              },
+              "start_date": {
+                "type": "string",
+                "description": "Start date for the address",
+                "format": "date",
+                "nullable": true
+              },
+              "end_date": {
+                "type": "string",
+                "description": "End date for the address",
+                "format": "date",
+                "nullable": true
+              }
+            }
+          },
+          "description": "Delivery Address"
+        },
+        "additional_addresses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Address attribute",
+            "additionalProperties": true,
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "billing"
+                ]
+              },
+              "street": {
+                "type": "string",
+                "description": "The first line of the address. Typically the street address or PO Box number.",
+                "nullable": true,
+                "example": "Hauptstraße"
+              },
+              "street_number": {
+                "type": "string",
+                "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+                "nullable": true,
+                "example": "123"
+              },
+              "postal_code": {
+                "type": "string",
+                "description": "The postal code for the address.",
+                "nullable": true,
+                "example": "50668"
+              },
+              "city": {
+                "type": "string",
+                "description": "The name of the city, district, village, or town.",
+                "nullable": true,
+                "example": "Cologne"
+              },
+              "country": {
+                "type": "string",
+                "description": "The two-letter code for the country of the address.",
+                "nullable": true,
+                "example": "DE"
+              },
+              "additional_info": {
+                "type": "string",
+                "description": "An additional description for the address",
+                "nullable": true
+              },
+              "company_name": {
+                "type": "string",
+                "description": "the company name, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "first_name": {
+                "type": "string",
+                "description": "the first name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "last_name": {
+                "type": "string",
+                "description": "the last name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "salutation": {
+                "type": "string",
+                "description": "the salutation of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "title": {
+                "type": "string",
+                "description": "the title of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "coordinates": {
+                "type": "string",
+                "description": "Geographical coordinates (latitude, longitude)",
+                "nullable": true,
+                "example": "50.948484, 6.943147"
+              },
+              "plot_of_land": {
+                "type": "string",
+                "description": "Plot of land information",
+                "nullable": true
+              },
+              "plot_area": {
+                "type": "string",
+                "description": "Area of the plot",
+                "nullable": true
+              },
+              "start_date": {
+                "type": "string",
+                "description": "Start date for the address",
+                "format": "date",
+                "nullable": true
+              },
+              "end_date": {
+                "type": "string",
+                "description": "End date for the address",
+                "format": "date",
+                "nullable": true
+              }
+            }
+          },
+          "description": "Additional Addresses"
+        },
+        "dates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "value": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "description": "Dates"
+        },
+        "memo": {
+          "type": "string",
+          "description": "Memo"
+        },
+        "footer_notes": {
+          "type": "string",
+          "description": "Footer"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "amount_total": {
+          "type": "number"
+        },
+        "amount_subtotal": {
+          "type": "number"
+        },
+        "amount_tax": {
+          "type": "number"
+        },
+        "products": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Products"
+        },
+        "prices": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Prices"
+        },
+        "workflows": {
+          "$ref": "#/definitions/WorkflowOverview"
+        },
+        "consents": {
+          "$ref": "#/definitions/LocalConsents"
+        },
+        "line_items": {
+          "$ref": "#/definitions/LineItems"
+        },
+        "total_details": {
+          "$ref": "#/definitions/TotalDetails"
+        },
+        "_files": {
+          "$ref": "#/definitions/BaseRelation"
+        },
+        "_created_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity creation"
+        },
+        "_updated_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity last update"
+        }
+      },
+      "description": "order entity (hydrated from entity graph)"
     }
   },
   "required": [
@@ -1178,7 +1672,9 @@
     "_event_name",
     "_event_version",
     "_event_source",
-    "_ack_id"
+    "_ack_id",
+    "operation",
+    "trigger_entity"
   ],
   "additionalProperties": true,
   "definitions": {
@@ -2121,6 +2617,108 @@
           "nullable": true
         }
       }
+    },
+    "ConsentAttribute": {
+      "type": "object",
+      "description": "Consent Management",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "consent"
+          ]
+        },
+        "topic": {
+          "type": "string"
+        },
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "topic"
+      ]
+    },
+    "PaymentDetails": {
+      "type": "object",
+      "description": "Payment method details",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "payment_sepa",
+            "payment_invoice",
+            "payment_cash"
+          ],
+          "example": "payment_sepa"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "bank_name": {
+              "type": "string",
+              "example": "Deutsche Bank"
+            },
+            "iban": {
+              "type": "string",
+              "example": "DE89370400440532013000"
+            },
+            "bic_number": {
+              "type": "string",
+              "example": "DEUTDEFF"
+            },
+            "fullname": {
+              "type": "string",
+              "example": "John Doe"
+            }
+          }
+        }
+      }
+    },
+    "LocalConsents": {
+      "type": "object",
+      "description": "Consent management",
+      "properties": {
+        "_isValid": {
+          "type": "boolean",
+          "example": true,
+          "description": "Whether all required consents are valid"
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "agreed": {
+            "type": "boolean",
+            "example": true
+          },
+          "topic": {
+            "type": "string",
+            "example": "privacy_policy"
+          },
+          "text": {
+            "type": "string",
+            "example": "I agree to the privacy policy"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "agreed",
+          "topic",
+          "text",
+          "time"
+        ]
+      },
+      "required": [
+        "_isValid"
+      ]
     }
   }
 }

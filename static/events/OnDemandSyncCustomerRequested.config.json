@@ -1,0 +1,40 @@
+{
+  "event_name": "OnDemandSyncCustomerRequested",
+  "event_title": "On-Demand Sync for Customer Requested",
+  "event_description": "Triggered when an on-demand synchronization for a customer is requested by the customer or service agent.",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "sync",
+    "customer",
+    "automation"
+  ],
+  "schema_fields": {
+    "external_id": {
+      "json_schema": {
+        "type": "string"
+      },
+      "required": true,
+      "graph_source": "contact.external_id"
+    },
+    "contact_id": {
+      "json_schema": {
+        "type": "string"
+      },
+      "required": true,
+      "graph_source": "contact._id"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      }
+    ],
+    "edges": []
+  },
+  "automation_trigger": true
+}

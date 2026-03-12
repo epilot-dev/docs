@@ -1,7 +1,7 @@
 {
   "event_name": "MeterReadingAdded",
   "event_title": "Meter Reading Added",
-  "event_description": "Triggered when a new meter reading is added via customer portal",
+  "event_description": "Triggered when new meter readings are added via customer portal",
   "event_version": "1.0.0",
   "event_tags": [
     "builtin",
@@ -9,13 +9,6 @@
     "metering"
   ],
   "schema_fields": {
-    "reading_value": {
-      "json_schema": {
-        "type": "number",
-        "description": "The meter reading value"
-      },
-      "required": true
-    },
     "reading_date": {
       "json_schema": {
         "type": "string",
@@ -34,16 +27,31 @@
     "reason": {
       "json_schema": {
         "type": "string",
-        "description": "Reason for the meter reading (e.g., regular, move-in, move-out, supplier-change, correction, final)"
+        "description": "Reason for the meter reading"
       },
       "required": false
     },
     "source": {
       "json_schema": {
         "type": "string",
-        "description": "Source system where reading was submitted (e.g., portal, 360, api, automation)"
+        "description": "Source system where reading was submitted"
       },
       "required": true
+    },
+    "reading_source": {
+      "json_schema": {
+        "type": "string",
+        "description": "Source of the meter reading (alias for source)"
+      },
+      "required": false
+    },
+    "meter_id": {
+      "json_schema": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Entity ID of the meter"
+      },
+      "required": false
     },
     "contract_number": {
       "json_schema": {
@@ -59,21 +67,13 @@
       },
       "required": false
     },
-    "obis_number": {
+    "obis_numbers": {
       "json_schema": {
-        "type": "string",
-        "description": "OBIS code of the counter"
-      },
-      "required": false
-    },
-    "direction": {
-      "json_schema": {
-        "type": "string",
-        "enum": [
-          "feed-in",
-          "feed-out"
-        ],
-        "description": "Direction of energy flow"
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "OBIS codes of the counters (one per reading)"
       },
       "required": false
     },
@@ -98,19 +98,97 @@
         "description": "Email of the user who submitted the reading"
       },
       "required": false
+    },
+    "meter_readings": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "counter_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Entity ID of the meter counter"
+            },
+            "value": {
+              "type": "number",
+              "description": "The meter reading value"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "feed-in",
+                "feed-out"
+              ],
+              "description": "Direction of energy flow"
+            },
+            "obis_number": {
+              "type": "string",
+              "description": "OBIS code of the counter"
+            },
+            "reading_timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO 8601 timestamp when the reading was taken"
+            },
+            "read_by": {
+              "type": "string",
+              "description": "Name of the person who submitted the reading"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Reason for the reading"
+            },
+            "remark": {
+              "type": "string",
+              "description": "Additional remarks"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "valid",
+                "implausible"
+              ],
+              "description": "Status of the meter reading"
+            },
+            "external_id": {
+              "type": "string",
+              "description": "External system reference"
+            }
+          },
+          "additionalProperties": false
+        },
+        "description": "Array of all meter readings (supports multiple counters per meter)"
+      },
+      "required": false
+    },
+    "meter_reading_status": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "valid",
+            "implausible"
+          ],
+          "description": "Status of the meter reading"
+        },
+        "description": "Aggregated status array for meter readings"
+      },
+      "required": false
     }
   },
   "entity_graph": {
     "nodes": [
       {
-        "id": "counter",
-        "schema": "meter_counter",
-        "cardinality": "one"
-      },
-      {
         "id": "meter",
         "schema": "meter",
         "cardinality": "one"
+      },
+      {
+        "id": "meter_counters",
+        "schema": "meter_counter",
+        "cardinality": "many"
       },
       {
         "id": "contract",
@@ -126,12 +204,17 @@
         "id": "portal_user",
         "schema": "portal_user",
         "cardinality": "one"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
       }
     ],
     "edges": [
       {
-        "from": "counter",
-        "to": "meter"
+        "from": "meter",
+        "to": "meter_counters"
       },
       {
         "from": "meter",
@@ -144,6 +227,10 @@
       {
         "from": "customer",
         "to": "portal_user"
+      },
+      {
+        "from": "contract",
+        "to": "billing_account"
       }
     ]
   }

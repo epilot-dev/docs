@@ -29,6 +29,11 @@
       "type": "string",
       "description": "Source that triggered the event"
     },
+    "_ack_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Acknowledgement ID for tracking event delivery (UUID)"
+    },
     "_trigger_source_type": {
       "type": "string",
       "description": "The type of system that triggered the event. Examples: api, automation, operation, portal_user",
@@ -38,10 +43,6 @@
       "type": "string",
       "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
       "example": "api_123456"
-    },
-    "reading_value": {
-      "type": "number",
-      "description": "The meter reading value"
     },
     "reading_date": {
       "type": "string",
@@ -54,11 +55,20 @@
     },
     "reason": {
       "type": "string",
-      "description": "Reason for the meter reading (e.g., regular, move-in, move-out, supplier-change, correction, final)"
+      "description": "Reason for the meter reading"
     },
     "source": {
       "type": "string",
-      "description": "Source system where reading was submitted (e.g., portal, 360, api, automation)"
+      "description": "Source system where reading was submitted"
+    },
+    "reading_source": {
+      "type": "string",
+      "description": "Source of the meter reading (alias for source)"
+    },
+    "meter_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Entity ID of the meter"
     },
     "contract_number": {
       "type": "string",
@@ -68,17 +78,12 @@
       "type": "string",
       "description": "Human-readable meter number"
     },
-    "obis_number": {
-      "type": "string",
-      "description": "OBIS code of the counter"
-    },
-    "direction": {
-      "type": "string",
-      "enum": [
-        "feed-in",
-        "feed-out"
-      ],
-      "description": "Direction of energy flow"
+    "obis_numbers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "OBIS codes of the counters (one per reading)"
     },
     "unit": {
       "type": "string",
@@ -93,131 +98,77 @@
       "format": "email",
       "description": "Email of the user who submitted the reading"
     },
-    "counter": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "type": "object",
-      "required": [
-        "_schema"
-      ],
-      "properties": {
-        "_schema": {
-          "readOnly": true,
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9_-]+$",
-          "example": "meter_counter",
-          "description": "URL-friendly identifier for the entity schema"
-        },
-        "_id": {
-          "readOnly": true,
-          "type": "string",
-          "format": "uuid",
-          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "description": "Unique identifier for the entity"
-        },
-        "_org": {
-          "type": "string",
-          "description": "Organization Id the entity belongs to",
-          "readOnly": true,
-          "example": "123"
-        },
-        "_title": {
-          "readOnly": true,
-          "type": "string",
-          "nullable": true,
-          "example": "John Doe",
-          "description": "Generated title for the entity based on schema title_template"
-        },
-        "_tags": {
-          "type": "array",
-          "nullable": true,
-          "items": {
-            "type": "string"
+    "meter_readings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "counter_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Entity ID of the meter counter"
           },
-          "example": [
-            "family:label"
-          ],
-          "description": "Entity Labels"
+          "value": {
+            "type": "number",
+            "description": "The meter reading value"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "feed-in",
+              "feed-out"
+            ],
+            "description": "Direction of energy flow"
+          },
+          "obis_number": {
+            "type": "string",
+            "description": "OBIS code of the counter"
+          },
+          "reading_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the reading was taken"
+          },
+          "read_by": {
+            "type": "string",
+            "description": "Name of the person who submitted the reading"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for the reading"
+          },
+          "remark": {
+            "type": "string",
+            "description": "Additional remarks"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "valid",
+              "implausible"
+            ],
+            "description": "Status of the meter reading"
+          },
+          "external_id": {
+            "type": "string",
+            "description": "External system reference"
+          }
         },
-        "_purpose": {
-          "$ref": "#/definitions/PurposeAttribute",
-          "description": "Purposes"
-        },
-        "obis_number": {
-          "type": "string",
-          "description": "OBIS Number"
-        },
-        "direction": {
-          "type": "string",
-          "enum": [
-            "feed-in",
-            "feed-out"
-          ],
-          "description": "Direction"
-        },
-        "tariff_type": {
-          "type": "string",
-          "enum": [
-            "ht",
-            "nt",
-            "et"
-          ],
-          "description": "Tariff type"
-        },
-        "transformer_ratio": {
-          "type": "string",
-          "description": "Transformer Ratio"
-        },
-        "unit": {
-          "type": "string",
-          "enum": [
-            "w",
-            "wh",
-            "kw",
-            "kWh",
-            "kvarh",
-            "mw",
-            "mWh",
-            "unit",
-            "cubic-meter",
-            "hour",
-            "day",
-            "month",
-            "year",
-            "percentage"
-          ],
-          "description": "Unit"
-        },
-        "conversion_factor": {
-          "type": "string",
-          "description": "Conversion Factor"
-        },
-        "meter": {
-          "$ref": "#/definitions/BaseRelation",
-          "description": "Meter"
-        },
-        "external_id": {
-          "type": "string",
-          "description": "External ID"
-        },
-        "_files": {
-          "$ref": "#/definitions/BaseRelation"
-        },
-        "_created_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity creation"
-        },
-        "_updated_at": {
-          "readOnly": true,
-          "type": "string",
-          "format": "date-time",
-          "nullable": true,
-          "description": "Timestamp of entity last update"
-        }
+        "additionalProperties": false
       },
-      "description": "meter_counter entity (hydrated from entity graph)"
+      "description": "Array of all meter readings (supports multiple counters per meter)"
+    },
+    "meter_reading_status": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "valid",
+          "implausible"
+        ],
+        "description": "Status of the meter reading"
+      },
+      "description": "Aggregated status array for meter readings"
     },
     "meter": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -481,6 +432,135 @@
         }
       },
       "description": "meter entity (hydrated from entity graph)"
+    },
+    "meter_counters": {
+      "type": "array",
+      "description": "Array of meter_counter entities (hydrated from entity graph)",
+      "items": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "_schema"
+        ],
+        "properties": {
+          "_schema": {
+            "readOnly": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "example": "meter_counter",
+            "description": "URL-friendly identifier for the entity schema"
+          },
+          "_id": {
+            "readOnly": true,
+            "type": "string",
+            "format": "uuid",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "description": "Unique identifier for the entity"
+          },
+          "_org": {
+            "type": "string",
+            "description": "Organization Id the entity belongs to",
+            "readOnly": true,
+            "example": "123"
+          },
+          "_title": {
+            "readOnly": true,
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe",
+            "description": "Generated title for the entity based on schema title_template"
+          },
+          "_tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "family:label"
+            ],
+            "description": "Entity Labels"
+          },
+          "_purpose": {
+            "$ref": "#/definitions/PurposeAttribute",
+            "description": "Purposes"
+          },
+          "obis_number": {
+            "type": "string",
+            "description": "OBIS Number"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "feed-in",
+              "feed-out"
+            ],
+            "description": "Direction"
+          },
+          "tariff_type": {
+            "type": "string",
+            "enum": [
+              "ht",
+              "nt",
+              "et"
+            ],
+            "description": "Tariff type"
+          },
+          "transformer_ratio": {
+            "type": "string",
+            "description": "Transformer Ratio"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "w",
+              "wh",
+              "kw",
+              "kWh",
+              "kvarh",
+              "mw",
+              "mWh",
+              "unit",
+              "cubic-meter",
+              "hour",
+              "day",
+              "month",
+              "year",
+              "percentage"
+            ],
+            "description": "Unit"
+          },
+          "conversion_factor": {
+            "type": "string",
+            "description": "Conversion Factor"
+          },
+          "meter": {
+            "$ref": "#/definitions/BaseRelation",
+            "description": "Meter"
+          },
+          "external_id": {
+            "type": "string",
+            "description": "External ID"
+          },
+          "_files": {
+            "$ref": "#/definitions/BaseRelation"
+          },
+          "_created_at": {
+            "readOnly": true,
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp of entity creation"
+          },
+          "_updated_at": {
+            "readOnly": true,
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp of entity last update"
+          }
+        }
+      }
     },
     "contract": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1395,6 +1475,148 @@
         }
       },
       "description": "portal_user entity (hydrated from entity graph)"
+    },
+    "billing_account": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "_schema"
+      ],
+      "properties": {
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "billing_account",
+          "description": "URL-friendly identifier for the entity schema"
+        },
+        "_id": {
+          "readOnly": true,
+          "type": "string",
+          "format": "uuid",
+          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "description": "Unique identifier for the entity"
+        },
+        "_org": {
+          "type": "string",
+          "description": "Organization Id the entity belongs to",
+          "readOnly": true,
+          "example": "123"
+        },
+        "_title": {
+          "readOnly": true,
+          "type": "string",
+          "nullable": true,
+          "example": "John Doe",
+          "description": "Generated title for the entity based on schema title_template"
+        },
+        "_tags": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "family:label"
+          ],
+          "description": "Entity Labels"
+        },
+        "billing_account_number": {
+          "type": "string",
+          "description": "Billing Account Number"
+        },
+        "balance_currency": {
+          "type": "string",
+          "description": "Three-letter ISO currency code, in lowercase. Must be a supported currency.",
+          "example": "EUR"
+        },
+        "balance_decimal": {
+          "type": "string",
+          "description": "The currency value as a decimal string",
+          "example": "123.45"
+        },
+        "balance": {
+          "type": "number",
+          "description": "Account Balance"
+        },
+        "billing_contact": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Billing Contact"
+        },
+        "billing_address": {
+          "$ref": "#/definitions/AddressAttribute",
+          "description": "Billing Address"
+        },
+        "payment_method": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Payment method details",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "payment_sepa",
+                  "payment_invoice",
+                  "payment_cash"
+                ],
+                "example": "payment_sepa"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "bank_name": {
+                    "type": "string",
+                    "example": "Deutsche Bank"
+                  },
+                  "iban": {
+                    "type": "string",
+                    "example": "DE89370400440532013000"
+                  },
+                  "bic_number": {
+                    "type": "string",
+                    "example": "DEUTDEFF"
+                  },
+                  "fullname": {
+                    "type": "string",
+                    "example": "John Doe"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Payment Method"
+        },
+        "contracts": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Contracts"
+        },
+        "external_id": {
+          "type": "string",
+          "description": "External ID"
+        },
+        "workflows": {
+          "$ref": "#/definitions/WorkflowOverview"
+        },
+        "_files": {
+          "$ref": "#/definitions/BaseRelation"
+        },
+        "_created_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity creation"
+        },
+        "_updated_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity last update"
+        }
+      },
+      "description": "billing_account entity (hydrated from entity graph)"
     }
   },
   "required": [
@@ -1404,7 +1626,7 @@
     "_event_name",
     "_event_version",
     "_event_source",
-    "reading_value",
+    "_ack_id",
     "reading_date",
     "source"
   ],
@@ -2249,6 +2471,110 @@
         "type",
         "topic"
       ]
+    },
+    "AddressAttribute": {
+      "type": "object",
+      "description": "Address attribute",
+      "additionalProperties": true,
+      "properties": {
+        "_tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "billing"
+          ]
+        },
+        "street": {
+          "type": "string",
+          "description": "The first line of the address. Typically the street address or PO Box number.",
+          "nullable": true,
+          "example": "Hauptstraße"
+        },
+        "street_number": {
+          "type": "string",
+          "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+          "nullable": true,
+          "example": "123"
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "The postal code for the address.",
+          "nullable": true,
+          "example": "50668"
+        },
+        "city": {
+          "type": "string",
+          "description": "The name of the city, district, village, or town.",
+          "nullable": true,
+          "example": "Cologne"
+        },
+        "country": {
+          "type": "string",
+          "description": "The two-letter code for the country of the address.",
+          "nullable": true,
+          "example": "DE"
+        },
+        "additional_info": {
+          "type": "string",
+          "description": "An additional description for the address",
+          "nullable": true
+        },
+        "company_name": {
+          "type": "string",
+          "description": "the company name, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "first_name": {
+          "type": "string",
+          "description": "the first name of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "last_name": {
+          "type": "string",
+          "description": "the last name of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "salutation": {
+          "type": "string",
+          "description": "the salutation of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "title": {
+          "type": "string",
+          "description": "the title of the recipient, usually used as extra delivery instructions",
+          "nullable": true
+        },
+        "coordinates": {
+          "type": "string",
+          "description": "Geographical coordinates (latitude, longitude)",
+          "nullable": true,
+          "example": "50.948484, 6.943147"
+        },
+        "plot_of_land": {
+          "type": "string",
+          "description": "Plot of land information",
+          "nullable": true
+        },
+        "plot_area": {
+          "type": "string",
+          "description": "Area of the plot",
+          "nullable": true
+        },
+        "start_date": {
+          "type": "string",
+          "description": "Start date for the address",
+          "format": "date",
+          "nullable": true
+        },
+        "end_date": {
+          "type": "string",
+          "description": "End date for the address",
+          "format": "date",
+          "nullable": true
+        }
+      }
     }
   }
 }

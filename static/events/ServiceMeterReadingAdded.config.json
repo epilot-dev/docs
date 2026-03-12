@@ -197,7 +197,7 @@
         "to": "billing_account"
       },
       {
-        "from": "billing_account",
+        "from": "contract",
         "to": "contact"
       }
     ]

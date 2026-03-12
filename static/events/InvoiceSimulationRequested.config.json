@@ -1,0 +1,65 @@
+{
+  "event_name": "InvoiceSimulationRequested",
+  "event_title": "Invoice Simulation Requested",
+  "event_description": "Customer requests a simulated invoice via self-service journey, selecting a contract and providing a meter reading",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "billing",
+    "automation",
+    "simulation"
+  ],
+  "schema_fields": {
+    "meter_reading_value": {
+      "json_schema": {
+        "type": "number",
+        "description": "Meter reading value submitted by the customer"
+      },
+      "required": true
+    },
+    "meter_reading_date": {
+      "json_schema": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Date of the meter reading (ISO 8601)"
+      },
+      "required": true
+    },
+    "customer_number": {
+      "json_schema": {
+        "type": "string",
+        "description": "Customer number, sourced from the selected contract"
+      },
+      "required": false,
+      "graph_source": "contract.customer_number"
+    },
+    "debitor_number": {
+      "json_schema": {
+        "type": "string",
+        "description": "Debitor number, sourced from the selected contract"
+      },
+      "required": false,
+      "graph_source": "contract.debitor_number"
+    },
+    "billing_group": {
+      "json_schema": {
+        "type": "string",
+        "description": "Billing group, sourced from the selected contract"
+      },
+      "required": false,
+      "graph_source": "contract.billing_group"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      }
+    ],
+    "edges": []
+  },
+  "automation_trigger": true
+}

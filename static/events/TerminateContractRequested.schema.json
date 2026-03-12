@@ -29,6 +29,11 @@
       "type": "string",
       "description": "Source that triggered the event"
     },
+    "_ack_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Acknowledgement ID for tracking event delivery (UUID)"
+    },
     "_trigger_source_type": {
       "type": "string",
       "description": "The type of system that triggered the event. Examples: api, automation, operation, portal_user",
@@ -1132,7 +1137,8 @@
     "_event_id",
     "_event_name",
     "_event_version",
-    "_event_source"
+    "_event_source",
+    "_ack_id"
   ],
   "additionalProperties": true,
   "definitions": {

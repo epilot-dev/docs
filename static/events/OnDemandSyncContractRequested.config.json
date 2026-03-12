@@ -1,0 +1,57 @@
+{
+  "event_name": "OnDemandSyncContractRequested",
+  "event_title": "On-Demand Sync for Contract Requested",
+  "event_description": "Triggered when an on-demand synchronization for a contract is requested by the customer or service agent.",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "sync",
+    "contract",
+    "automation"
+  ],
+  "schema_fields": {
+    "external_id": {
+      "json_schema": {
+        "type": "string"
+      },
+      "required": true,
+      "graph_source": "contract.external_id"
+    },
+    "contract_id": {
+      "json_schema": {
+        "type": "string"
+      },
+      "required": true,
+      "graph_source": "contract._id"
+    },
+    "contact_id": {
+      "json_schema": {
+        "type": "string"
+      },
+      "required": true,
+      "graph_source": "contact._id"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "contract",
+        "to": "contact"
+      }
+    ]
+  },
+  "automation_trigger": true
+}

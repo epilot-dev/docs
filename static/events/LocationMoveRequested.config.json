@@ -42,6 +42,11 @@
         "cardinality": "one"
       },
       {
+        "id": "customer",
+        "schema": "customer",
+        "cardinality": "one"
+      },
+      {
         "id": "billing_account",
         "schema": "billing_account",
         "cardinality": "one"
@@ -63,6 +68,10 @@
       {
         "from": "ticket",
         "to": "meter_counter"
+      },
+      {
+        "from": "ticket",
+        "to": "customer"
       },
       {
         "from": "contract",

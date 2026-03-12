@@ -2,12 +2,22 @@
   "_org_id": "123",
   "_event_time": "1970-01-01T00:00:00.000Z",
   "_event_id": "string",
-  "_event_name": "TerminateContractRequested",
+  "_event_name": "TariffChange",
   "_event_version": "1.0.0",
   "_event_source": "string",
   "_ack_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_trigger_source_type": "api",
   "_trigger_source": "api_123456",
+  "operation": "createEntity",
+  "activity_id": "01F130Q52Q6MWSNS8N2AVXV4JN",
+  "activity_type": "EntityUpdated",
+  "trigger_entity": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "kundentyp": "string",
+  "zaehlerart": "string",
+  "erwarteter_jahresverbrauch_ht_in_kwh": 0,
+  "erwarteter_jahresverbrauch_nt_in_kwh": 0,
+  "datum_gewuenschter_liefertermin": "string",
+  "nur_naturstrom": true,
   "ticket": {
     "_schema": "ticket",
     "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -116,10 +126,37 @@
     "_created_at": "1970-01-01T00:00:00.000Z",
     "_updated_at": "1970-01-01T00:00:00.000Z"
   },
-  "submission": {
+  "billing_account": {
+    "_schema": "billing_account",
     "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "_schema": "submission",
-    "_org": "123"
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "billing_account_number": "string",
+    "balance_currency": "EUR",
+    "balance_decimal": "123.45",
+    "balance": 0,
+    "billing_contact": {},
+    "billing_address": {},
+    "payment_method": [
+      {
+        "type": "payment_sepa",
+        "data": {
+          "bank_name": "Deutsche Bank",
+          "iban": "DE89370400440532013000",
+          "bic_number": "DEUTDEFF",
+          "fullname": "John Doe"
+        }
+      }
+    ],
+    "contracts": {},
+    "external_id": "string",
+    "workflows": {},
+    "_files": {},
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
   },
   "contact": {
     "_schema": "contact",
@@ -204,34 +241,117 @@
     "_created_at": "1970-01-01T00:00:00.000Z",
     "_updated_at": "1970-01-01T00:00:00.000Z"
   },
-  "billing_account": {
-    "_schema": "billing_account",
+  "order": {
+    "_schema": "order",
     "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "_org": "123",
     "_title": "John Doe",
     "_tags": [
       "family:label"
     ],
-    "billing_account_number": "string",
-    "balance_currency": "EUR",
-    "balance_decimal": "123.45",
-    "balance": 0,
+    "_purpose": {},
+    "order_number": "string",
+    "status": "draft",
+    "expires_at": "2025-01-01",
+    "source": {},
+    "payment_method": {},
+    "customer": {},
     "billing_contact": {},
-    "billing_address": {},
-    "payment_method": [
+    "billing_first_name": "string",
+    "billing_last_name": "string",
+    "billing_email": "string",
+    "billing_phone": "string",
+    "billing_company_name": "string",
+    "billing_vat": "string",
+    "billing_address": [
       {
-        "type": "payment_sepa",
-        "data": {
-          "bank_name": "Deutsche Bank",
-          "iban": "DE89370400440532013000",
-          "bic_number": "DEUTDEFF",
-          "fullname": "John Doe"
-        }
+        "_tags": [
+          "billing"
+        ],
+        "street": "Hauptstraße",
+        "street_number": "123",
+        "postal_code": "50668",
+        "city": "Cologne",
+        "country": "DE",
+        "additional_info": "string",
+        "company_name": "string",
+        "first_name": "string",
+        "last_name": "string",
+        "salutation": "string",
+        "title": "string",
+        "coordinates": "50.948484, 6.943147",
+        "plot_of_land": "string",
+        "plot_area": "string",
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01"
       }
     ],
-    "contracts": {},
-    "external_id": "string",
+    "delivery_address": [
+      {
+        "_tags": [
+          "billing"
+        ],
+        "street": "Hauptstraße",
+        "street_number": "123",
+        "postal_code": "50668",
+        "city": "Cologne",
+        "country": "DE",
+        "additional_info": "string",
+        "company_name": "string",
+        "first_name": "string",
+        "last_name": "string",
+        "salutation": "string",
+        "title": "string",
+        "coordinates": "50.948484, 6.943147",
+        "plot_of_land": "string",
+        "plot_area": "string",
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01"
+      }
+    ],
+    "additional_addresses": [
+      {
+        "_tags": [
+          "billing"
+        ],
+        "street": "Hauptstraße",
+        "street_number": "123",
+        "postal_code": "50668",
+        "city": "Cologne",
+        "country": "DE",
+        "additional_info": "string",
+        "company_name": "string",
+        "first_name": "string",
+        "last_name": "string",
+        "salutation": "string",
+        "title": "string",
+        "coordinates": "50.948484, 6.943147",
+        "plot_of_land": "string",
+        "plot_area": "string",
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01"
+      }
+    ],
+    "dates": [
+      {
+        "_tags": [
+          "string"
+        ],
+        "value": "1970-01-01T00:00:00.000Z"
+      }
+    ],
+    "memo": "string",
+    "footer_notes": "string",
+    "currency": "string",
+    "amount_total": 0,
+    "amount_subtotal": 0,
+    "amount_tax": 0,
+    "products": {},
+    "prices": {},
     "workflows": {},
+    "consents": {},
+    "line_items": {},
+    "total_details": {},
     "_files": {},
     "_created_at": "1970-01-01T00:00:00.000Z",
     "_updated_at": "1970-01-01T00:00:00.000Z"
