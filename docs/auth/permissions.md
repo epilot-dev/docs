@@ -202,6 +202,7 @@ This role allows all entity, messaging, and workflow operations, but explicitly 
 
 ## See Also
 
+- [Grant Actions Reference](/docs/auth/grant-actions) -- complete list of all supported permission actions
 - [Authorization](/docs/auth/authorization) -- how epilot authorizes API requests
 - [Token Types](/docs/auth/token-types) -- comparison of all epilot token types
 - [Security Architecture](/docs/auth/security) -- platform security overview
