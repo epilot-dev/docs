@@ -2,6 +2,68 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-03-16 Entity API
+
+- New `GET /v2/entity/schemas` endpoint added, supporting `full`, `unpublished`, `exclude`, and `include` query parameters for flexible schema retrieval
+- New `include` filter parameter added to `GET /v1/entity/schemas`
+- New `_summary` boolean field added to schema response objects, indicating whether the schema is returned as a truncated summary
+
+## 2026-03-16 ERP Integration API
+
+- New `secure_proxy` use case type introduced across all use-case endpoints
+- New `GET /v1/integrations/secure-proxies` endpoint lists all secure proxy use cases across integrations
+- New `POST /v1/secure-proxy` endpoint proxies HTTP requests through a VPC tunnel using a configured secure proxy use case
+
+## 2026-03-16 Webhooks API
+
+- New optional `secureProxy` object added to webhook configuration — routes webhook HTTP requests through the VPC secure proxy; requires `integration_id` and `use_case_slug` referencing a configured ERP integration secure proxy use case
+
+## 2026-03-12 Blueprint Manifest API
+
+- New `POST /v2/blueprint-manifest/blueprints:publish` endpoint added for publishing a blueprint to the marketplace
+- New `GET /v2/blueprint-manifest/marketplace/slugs` endpoint added for listing available marketplace slugs from the Webflow CMS
+
+## 2026-03-12 Event: InvoiceSimulationRequested
+
+- New `InvoiceSimulationRequested` event type introduced with fields: `meter_reading_value`, `meter_reading_date`, `customer_number`, `debitor_number`, `billing_group`, and an embedded `contract` entity reference
+
+## 2026-03-11 Access Token API
+
+- New `portal_preview` token type added, enabling tokens scoped for portal preview sessions
+- New `portal_user_id` field added to `AccessTokenItem` responses
+
+## 2026-03-11 Pricing API
+
+- **Breaking:** Several fields in `ExternalCatalogPortalRequest` contract context changed type: `installment_amount` changed from `{value, currency}` object to `number`; `balance` changed from `{value, currency}` object to `number`; `customer` changed from an array to a single object; `delivery_address` changed from a single object to an array
+
+## 2026-03-11 Submission API
+
+- `POST /v1/submission/submissions` now returns a response body containing a `submission_id` string (previously returned `201 Created` with no body)
+- Error responses (400, 401, 403, 500) are now documented for the submission creation endpoint
+
+## 2026-03-10 Billing Event Entity
+
+- New `invoice_number` string field added to the `billing_event` entity schema
+
+## 2026-03-09 Message API
+
+- New `POST /v1/message/threads/bulk:move` endpoint added for moving multiple threads to a different inbox in a single request
+- New `POST /v1/message/threads/bulk:assign` endpoint added for bulk-assigning multiple threads
+- New optional `assign_to` and `inbox_id` fields added to the bulk read/unread request payload
+
+## 2026-03-07 GenAI API
+
+- New `POST /v1/genai/search/query:generate` endpoint added — generates an AI-optimized Elasticsearch Lucene query from natural language input; accepts `input`, `schemas`, and `locale` in the request; returns `query`, `confidence`, and `intent` in the response
+
+## 2026-03-05 ERP Integration API
+
+- New `oauth2_password` auth type added to file proxy use case authentication configuration, with `username` and `password` credential fields
+
+## 2026-03-04 File API
+
+- New optional `version_only` query parameter added to `POST /v1/files` and `POST /v2/files` — when `true`, creates a new file version without overwriting top-level entity metadata
+- `POST /v2/files` now accepts an array of up to 20 `BatchSaveFileVersionPayload` objects when `version_only=true`, enabling batch version saves in a single request
+
 ## 2026-03-03 Customer Portal API
 
 - New `PRODUCT_RECOMMENDATIONS_WIDGET` widget type was added; the new `ProductRecommendationsWidget` schema (extending `TeaserWidget` with a `campaign_id` field) is now available across the `GET /v2/portal/widgets`, `GET /v2/portal/public-widgets`, and `POST /v2/portal/widgets` endpoints
@@ -9,6 +71,10 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-03-03 Pricing API External Catalog
 
 - **Breaking:** The `catalog_type` enum values on `POST /integration/external-service` were renamed: `products` → `product` and `products-recommendation` → `product-recommendations`; the corresponding response schema was also renamed from `ExternalCatalogProductsRecommendationResponse` to `ExternalCatalogProductRecommendationsResponse`
+- **Breaking:** The `POST /v1/public/integration/{integrationId}/products-recommendation` and `POST /v1/public/external-catalog/products-recommendation` endpoints were renamed to `product-recommendations`; new endpoints at the updated paths are now available
+- **Breaking:** The `coupons` field in external catalog responses changed from an array to a single object
+- New optional `before_discount_amount_subtotal` fields added to pricing line item responses
+- `postal_code` is no longer a required field in availability filter requests
 
 ## 2026-03-03 Message API
 
