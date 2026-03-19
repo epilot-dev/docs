@@ -90,5 +90,56 @@
     "_files": {},
     "_created_at": "1970-01-01T00:00:00.000Z",
     "_updated_at": "1970-01-01T00:00:00.000Z"
+  },
+  "meter": {
+    "_schema": "meter",
+    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "_purpose": {},
+    "ma_lo_id": "string",
+    "meter_type": "three-phase-meter",
+    "tariff_type": "string",
+    "meter_number": "string",
+    "sector": "power",
+    "used_for": "string",
+    "manufacturer": "string",
+    "calibration_date": "2025-01-01",
+    "location": "string",
+    "status": "active",
+    "address": [
+      {
+        "_tags": [
+          "billing"
+        ],
+        "street": "Hauptstraße",
+        "street_number": "123",
+        "postal_code": "50668",
+        "city": "Cologne",
+        "country": "DE",
+        "additional_info": "string",
+        "company_name": "string",
+        "first_name": "string",
+        "last_name": "string",
+        "salutation": "string",
+        "title": "string",
+        "coordinates": "50.948484, 6.943147",
+        "plot_of_land": "string",
+        "plot_area": "string",
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01"
+      }
+    ],
+    "contract": {},
+    "customer": {},
+    "counters": {},
+    "external_id": "string",
+    "workflows": {},
+    "_files": {},
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
   }
 }

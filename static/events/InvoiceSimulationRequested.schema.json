@@ -474,6 +474,269 @@
         }
       },
       "description": "contract entity (hydrated from entity graph)"
+    },
+    "meter": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": [
+        "_schema"
+      ],
+      "properties": {
+        "_schema": {
+          "readOnly": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "example": "meter",
+          "description": "URL-friendly identifier for the entity schema"
+        },
+        "_id": {
+          "readOnly": true,
+          "type": "string",
+          "format": "uuid",
+          "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "description": "Unique identifier for the entity"
+        },
+        "_org": {
+          "type": "string",
+          "description": "Organization Id the entity belongs to",
+          "readOnly": true,
+          "example": "123"
+        },
+        "_title": {
+          "readOnly": true,
+          "type": "string",
+          "nullable": true,
+          "example": "John Doe",
+          "description": "Generated title for the entity based on schema title_template"
+        },
+        "_tags": {
+          "type": "array",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "family:label"
+          ],
+          "description": "Entity Labels"
+        },
+        "_purpose": {
+          "$ref": "#/definitions/PurposeAttribute",
+          "description": "Purposes"
+        },
+        "ma_lo_id": {
+          "type": "string",
+          "description": "MaLo-ID"
+        },
+        "meter_type": {
+          "type": "string",
+          "enum": [
+            "three-phase-meter",
+            "bellow-gas-meter",
+            "rotary-piston-meter",
+            "smart-meter",
+            "performance-meter",
+            "maximum-meter",
+            "turbine-gas-meter",
+            "ultrasonic-gas-meter",
+            "alternating-current-meter",
+            "modern-metering-system",
+            "intelligent-measuring-system",
+            "electronic-meter"
+          ],
+          "description": "Meter Type"
+        },
+        "tariff_type": {
+          "type": "string",
+          "description": "Tariff Type"
+        },
+        "meter_number": {
+          "type": "string",
+          "description": "Meter Number"
+        },
+        "sector": {
+          "type": "string",
+          "enum": [
+            "power",
+            "gas",
+            "water",
+            "district_heating",
+            "waste_water"
+          ],
+          "description": "Sector"
+        },
+        "used_for": {
+          "type": "string",
+          "description": "Used For"
+        },
+        "manufacturer": {
+          "type": "string",
+          "description": "Manufacturer"
+        },
+        "calibration_date": {
+          "type": "string",
+          "format": "date",
+          "example": "2025-01-01",
+          "description": "Calibration Date"
+        },
+        "location": {
+          "type": "string",
+          "description": "Location"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "decommissioned"
+          ],
+          "description": "Status"
+        },
+        "address": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "Address attribute",
+            "additionalProperties": true,
+            "properties": {
+              "_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "billing"
+                ]
+              },
+              "street": {
+                "type": "string",
+                "description": "The first line of the address. Typically the street address or PO Box number.",
+                "nullable": true,
+                "example": "Hauptstraße"
+              },
+              "street_number": {
+                "type": "string",
+                "description": "The second line of the address. Typically the number of the apartment, suite, or unit.",
+                "nullable": true,
+                "example": "123"
+              },
+              "postal_code": {
+                "type": "string",
+                "description": "The postal code for the address.",
+                "nullable": true,
+                "example": "50668"
+              },
+              "city": {
+                "type": "string",
+                "description": "The name of the city, district, village, or town.",
+                "nullable": true,
+                "example": "Cologne"
+              },
+              "country": {
+                "type": "string",
+                "description": "The two-letter code for the country of the address.",
+                "nullable": true,
+                "example": "DE"
+              },
+              "additional_info": {
+                "type": "string",
+                "description": "An additional description for the address",
+                "nullable": true
+              },
+              "company_name": {
+                "type": "string",
+                "description": "the company name, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "first_name": {
+                "type": "string",
+                "description": "the first name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "last_name": {
+                "type": "string",
+                "description": "the last name of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "salutation": {
+                "type": "string",
+                "description": "the salutation of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "title": {
+                "type": "string",
+                "description": "the title of the recipient, usually used as extra delivery instructions",
+                "nullable": true
+              },
+              "coordinates": {
+                "type": "string",
+                "description": "Geographical coordinates (latitude, longitude)",
+                "nullable": true,
+                "example": "50.948484, 6.943147"
+              },
+              "plot_of_land": {
+                "type": "string",
+                "description": "Plot of land information",
+                "nullable": true
+              },
+              "plot_area": {
+                "type": "string",
+                "description": "Area of the plot",
+                "nullable": true
+              },
+              "start_date": {
+                "type": "string",
+                "description": "Start date for the address",
+                "format": "date",
+                "nullable": true
+              },
+              "end_date": {
+                "type": "string",
+                "description": "End date for the address",
+                "format": "date",
+                "nullable": true
+              }
+            }
+          },
+          "description": "Address"
+        },
+        "contract": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Contract"
+        },
+        "customer": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Customer"
+        },
+        "counters": {
+          "$ref": "#/definitions/BaseRelation",
+          "description": "Counters"
+        },
+        "external_id": {
+          "type": "string",
+          "description": "External ID"
+        },
+        "workflows": {
+          "$ref": "#/definitions/WorkflowOverview"
+        },
+        "_files": {
+          "$ref": "#/definitions/BaseRelation"
+        },
+        "_created_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity creation"
+        },
+        "_updated_at": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "nullable": true,
+          "description": "Timestamp of entity last update"
+        }
+      },
+      "description": "meter entity (hydrated from entity graph)"
     }
   },
   "required": [
@@ -483,9 +746,7 @@
     "_event_name",
     "_event_version",
     "_event_source",
-    "_ack_id",
-    "meter_reading_value",
-    "meter_reading_date"
+    "_ack_id"
   ],
   "additionalProperties": true,
   "definitions": {

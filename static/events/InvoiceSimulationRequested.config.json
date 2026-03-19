@@ -16,7 +16,8 @@
         "type": "number",
         "description": "Meter reading value submitted by the customer"
       },
-      "required": true
+      "required": false,
+      "graph_source": "meter.meter_reading_value"
     },
     "meter_reading_date": {
       "json_schema": {
@@ -24,7 +25,8 @@
         "format": "date-time",
         "description": "Date of the meter reading (ISO 8601)"
       },
-      "required": true
+      "required": false,
+      "graph_source": "meter.meter_reading_date"
     },
     "customer_number": {
       "json_schema": {
@@ -57,9 +59,19 @@
         "id": "contract",
         "schema": "contract",
         "cardinality": "one"
+      },
+      {
+        "id": "meter",
+        "schema": "meter",
+        "cardinality": "one"
       }
     ],
-    "edges": []
+    "edges": [
+      {
+        "from": "contract",
+        "to": "meter"
+      }
+    ]
   },
   "automation_trigger": true
 }
