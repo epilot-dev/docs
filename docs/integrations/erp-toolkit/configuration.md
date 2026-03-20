@@ -10,6 +10,15 @@ This guide covers how to configure integrations, use cases, and manage your ERP 
 
 ## Integration Management
 
+### Integration Types
+
+Integrations support two types:
+
+| Type | Description |
+|------|-------------|
+| `erp` (default) | Standard ERP integration with inbound/outbound use cases |
+| `connector` | Complex proxy integration with external APIs using managed calls |
+
 ### Creating an Integration
 
 ```bash
@@ -21,6 +30,39 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
     "description": "Main ERP integration for customer and contract data"
   }'
 ```
+
+**Creating a Connector Integration:**
+
+```bash
+curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Partner API Connector",
+    "description": "Connector for partner API calls",
+    "integration_type": "connector",
+    "connector_config": {
+      "base_url": "https://api.partner.com",
+      "auth": {
+        "type": "oauth2_client_credentials",
+        "token_url": "{{env.PARTNER_TOKEN_URL}}",
+        "client_id": "{{env.PARTNER_CLIENT_ID}}",
+        "client_secret": "{{env.PARTNER_CLIENT_SECRET}}",
+        "scope": "api:read api:write"
+      }
+    }
+  }'
+```
+
+### Integration Properties
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | string | Yes | Display name |
+| `description` | string | No | Human-readable description |
+| `integration_type` | string | No | `erp` (default) or `connector` |
+| `connector_config` | object | No | Shared config for connector-type integrations (base URL, auth) |
+| `protected` | boolean | No | When `true`, prevents deletion and restricts modifications to admin users |
 
 ### Listing Integrations
 
@@ -75,12 +117,14 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
 | `name` | string | Yes | Display name for the use case |
-| `type` | string | Yes | `inbound`, `outbound`, or `file_proxy` |
+| `type` | string | Yes | `inbound`, `outbound`, `file_proxy`, `managed_call`, or `secure_proxy` |
 | `enabled` | boolean | Yes | Whether the use case is active |
-| `configuration` | object | Yes | Mapping configuration (for inbound/outbound) or [File Proxy configuration](./file-proxy) (for `file_proxy`) |
+| `configuration` | object | Yes | Type-specific configuration (see sections below) |
 
 :::info
-The `file_proxy` type is used for on-demand file serving from external document systems. See the [File Proxy guide](./file-proxy) for configuration details.
+- `file_proxy` — On-demand file serving from external document systems. See the [File Proxy guide](./file-proxy).
+- `managed_call` — Synchronous external API calls with JSONata mapping. See [Managed Call Use Cases](#managed-call-use-cases).
+- `secure_proxy` — Route requests through VPC Lambdas for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).
 :::
 
 ### Enabling/Disabling a Use Case
@@ -148,6 +192,151 @@ curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationI
   ]
 }
 ```
+
+## Managed Call Use Cases
+
+Managed call use cases define synchronous API operations against external partner systems. They are typically used with `connector`-type integrations.
+
+### Creating a Managed Call Use Case
+
+```bash
+curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Get Customer",
+    "slug": "get-customer",
+    "type": "managed_call",
+    "enabled": true,
+    "configuration": {
+      "operation": {
+        "method": "GET",
+        "path": "/v1/customers/{{customer_id}}",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response_mapping": "{ \"name\": data.full_name, \"email\": data.contact.email }",
+      "inbound_use_case_slug": "sync-customer"
+    }
+  }'
+```
+
+### Executing a Managed Call
+
+Managed calls are executed via the `/v1/managed-call/{slug}/execute` endpoint, where the slug acts as the RPC method name:
+
+```bash
+curl -X POST 'https://erp-integration.sls.epilot.io/v1/managed-call/get-customer/execute' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "integration_id": "<integration-id>",
+    "payload": {
+      "customer_id": "C001"
+    }
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  "inbound_queued": true,
+  "inbound_event_id": "evt-abc-123"
+}
+```
+
+### Managed Call Configuration Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `operation.method` | Yes | HTTP method: `GET`, `POST`, `PUT`, `PATCH`, or `DELETE` |
+| `operation.path` | Yes | URL path template with `{{variable}}` interpolation, appended to the connector's `base_url` |
+| `operation.headers` | No | Additional request headers |
+| `operation.query_params` | No | Query parameters |
+| `request_mapping` | No | JSONata expression to transform the request body before sending |
+| `response_mapping` | No | JSONata expression to transform the response before returning |
+| `inbound_use_case_slug` | No | Slug of an inbound use case to route the response to for async entity processing |
+
+### Connector Authentication
+
+Authentication is configured at the integration level via `connector_config.auth` and applied automatically to all managed call requests:
+
+| Auth Type | Fields |
+|-----------|--------|
+| `oauth2_client_credentials` | `token_url`, `client_id`, `client_secret`, `scope`, `audience`, `resource`, `body_params`, `headers`, `query_params` |
+| `api_key` | `api_key_header` (default: `X-API-Key`), `api_key` |
+| `bearer` | `token` |
+
+Secrets must use `{{env.KEY}}` references to resolve values from the [Environments API](/docs/integrations/webhooks/environments-secrets).
+
+## Secure Proxy Use Cases
+
+Secure proxy use cases route HTTP requests through VPC-deployed Lambda functions for static IP egress or VPN access to customer private networks.
+
+### Creating a Secure Proxy Use Case
+
+```bash
+curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Partner API Proxy",
+    "slug": "partner-api",
+    "type": "secure_proxy",
+    "enabled": true,
+    "configuration": {
+      "vpc_mode": "secure_link"
+    }
+  }'
+```
+
+### Secure Proxy Configuration Fields
+
+| Field | Required | Mutable | Description |
+|-------|----------|---------|-------------|
+| `vpc_mode` | Yes | No (immutable) | `"static_ip"` (NAT Gateway for fixed outbound IP) or `"secure_link"` (VPN for private networks) |
+| `allowed_domains` | No | Admin only | Array of allowed domain patterns. Supports exact match and wildcard prefix (e.g., `*.example.com`). Managed via admin script only. |
+| `allowed_ips` | No | Admin only | Array of allowed IP ranges in CIDR notation (e.g., `10.0.1.0/24`). Required for `secure_link` mode. Managed via admin script only. |
+
+### Sending a Proxy Request
+
+```bash
+curl -X POST 'https://erp-integration.sls.epilot.io/v1/secure-proxy' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "integration_id": "<integration-id>",
+    "use_case_slug": "partner-api",
+    "url": "https://api.partner.com/v1/data",
+    "method": "GET",
+    "headers": {
+      "Authorization": "Bearer external-token"
+    }
+  }'
+```
+
+### Domain Whitelist and IP Allowlist
+
+- **Domain whitelist**: Controls which hostnames the proxy can reach. Wildcard patterns must have at least 2 suffix labels (e.g., `*.example.com` is valid, `*.com` is rejected).
+- **IP allowlist**: Controls which IP addresses are permitted in `secure_link` mode using CIDR notation. Validation is applied both at the URL level (direct IP targets) and DNS level (resolved IPs must match).
+- Both fields are read-only in the API and can only be managed via the admin script (`scripts/manage-secure-proxy-whitelist.ts`).
+
+### Security
+
+| Concern | Static IP mode | Secure Link mode |
+|---------|---------------|-----------------|
+| SSRF protection | Full (private IPs blocked) | Protocol + localhost only (private IPs allowed for VPN) |
+| Domain whitelist | Optional | Required |
+| IP allowlist | N/A | Required |
+| Request size limit | 4 MB | 4 MB |
+| Timeout | 25s (VPC Lambda) / 30s (API Gateway) | 25s (VPC Lambda) / 30s (API Gateway) |
 
 ## Event Configuration
 
