@@ -54,6 +54,8 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
     ],
   ],
 
+  clientModules: [require.resolve('./src/clientModules/playgroundNewTab.js')],
+
   plugins: [
     function mermaidAliasPlugin() {
       return {
