@@ -17,10 +17,17 @@ if [ ! -d "$PRICING_DEMO" ]; then
 fi
 
 echo "→ Installing pricing demo dependencies..."
-(cd "$PRICING_DEMO" && npm install --no-audit --no-fund)
+(cd "$PRICING_DEMO" && pnpm install --frozen-lockfile 2>/dev/null || npm install --no-audit --no-fund)
 
 echo "→ Building pricing demo..."
 (cd "$PRICING_DEMO" && npx tsc -b && npx vite build)
+
+# Verify the build has the correct base path
+if ! grep -q '/pricing-playground/assets/' "$PRICING_DEMO/dist/index.html"; then
+  echo "ERROR: Built index.html is missing /pricing-playground/ base path."
+  echo "       Ensure vite.config.ts has: base: '/pricing-playground/'"
+  exit 1
+fi
 
 echo "→ Copying build output to $TARGET..."
 rm -rf "$TARGET"
