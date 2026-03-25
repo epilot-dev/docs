@@ -77,33 +77,32 @@ The `meter` object defines how to find the associated meter entity:
 ```json
 {
   "meter": {
-    "unique_ids": ["meter_number"]
+    "unique_ids": [
+      { "attribute": "meter_number", "field": "meterId" }
+    ]
   }
 }
 ```
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `unique_ids` | string[] | Fields to identify the meter entity |
+| `unique_ids` | object[] | Fields to identify the meter entity. See [Unique ID Options](./relations#relation-unique-id-options) |
 
 ### Meter Identifier Source
 
-The meter identifier value comes from the reading data:
+The meter identifier value comes from the reading data via the `unique_ids` configuration:
 
 ```json
-// Input payload
 {
-  "readings": [
-    {
-      "meter_number": "M001",
-      "readingDate": "2024-01-15",
-      "readingValue": 12500
-    }
-  ]
+  "meter": {
+    "unique_ids": [
+      { "attribute": "external_id", "field": "meter_id" }
+    ]
+  }
 }
 ```
 
-The `meter_number` field within each reading is used to find the meter.
+Each `unique_ids` entry supports the same value sources as [relation unique IDs](./relations#relation-unique-id-options): `field`, `jsonataExpression`, and `constant`.
 
 ### Meter Counter (Multi-Tariff)
 
@@ -146,10 +145,11 @@ Map the reading type or category:
 ```json
 {
   "fields": [
-    { "attribute": "reading_date", "field": "date" },
+    { "attribute": "external_id", "field": "readingId" },
+    { "attribute": "timestamp", "field": "date" },
     { "attribute": "value", "field": "reading" },
-    { "attribute": "reading_type", "field": "type" },
-    { "attribute": "source", "constant": "ERP_IMPORT" }
+    { "attribute": "reason", "field": "type" },
+    { "attribute": "source", "constant": "ERP" }
   ]
 }
 ```
@@ -163,7 +163,11 @@ Some meters have multiple reading values (e.g., HT/NT for electricity):
   "meter_readings": [
     {
       "jsonataExpression": "$.readings.{'meter_number': meterId, 'reading_date': date, 'value': htValue, 'tariff': 'HT'}",
-      "meter": { "unique_ids": ["meter_number"] },
+      "meter": {
+        "unique_ids": [
+          { "attribute": "meter_number", "field": "meter_number" }
+        ]
+      },
       "fields": [
         { "attribute": "reading_date", "field": "reading_date" },
         { "attribute": "value", "field": "value" },
@@ -172,7 +176,11 @@ Some meters have multiple reading values (e.g., HT/NT for electricity):
     },
     {
       "jsonataExpression": "$.readings.{'meter_number': meterId, 'reading_date': date, 'value': ntValue, 'tariff': 'NT'}",
-      "meter": { "unique_ids": ["meter_number"] },
+      "meter": {
+        "unique_ids": [
+          { "attribute": "meter_number", "field": "meter_number" }
+        ]
+      },
       "fields": [
         { "attribute": "reading_date", "field": "reading_date" },
         { "attribute": "value", "field": "value" },
@@ -269,20 +277,20 @@ From payload:
     {
       "jsonataExpression": "readings",
       "meter": {
-        "unique_ids": ["meter_number"]
+        "unique_ids": [
+          { "attribute": "meter_number", "field": "meterId" }
+        ]
       },
       "fields": [
-        { "attribute": "meter_number", "field": "meterId" },
-        { "attribute": "reading_date", "field": "$$.readingDate" },
+        { "attribute": "external_id", "jsonataExpression": "meterId & '-' & $$.readingDate" },
+        { "attribute": "timestamp", "field": "$$.readingDate" },
         { "attribute": "value", "field": "currentReading" },
-        { "attribute": "previous_value", "field": "previousReading" },
+        { "attribute": "source", "constant": "ERP" },
         { "attribute": "unit", "field": "unit" },
         {
           "attribute": "consumption",
           "jsonataExpression": "currentReading - previousReading"
-        },
-        { "attribute": "source", "constant": "ERP_BATCH_IMPORT" },
-        { "attribute": "batch_id", "field": "$$.batchId" }
+        }
       ]
     }
   ]
@@ -293,13 +301,12 @@ Note: `$$` references the root payload, allowing access to batch-level fields fr
 
 ## Deduplication
 
-Meter readings are deduplicated based on:
+Meter readings are deduplicated based on the `reading_matching` strategy:
 
-- Meter identifier
-- Reading date
-- Reading type (if specified)
+- **`external_id`** (default): Readings are matched by their `external_id` attribute
+- **`strict-date`**: Readings are matched by meter_id + counter_id + direction + date (German timezone)
 
-Duplicate readings within a 24-hour window are skipped.
+See [Reading Matching Strategies](#reading-matching-strategies) for details.
 
 ## Processing Flow
 
@@ -315,55 +322,20 @@ Extract Readings Array (JSONata)
             │         │
             │         ├─ Found ──▶ Continue
             │         │
-            │         └─ Not Found ──▶ Skip/Error
+            │         └─ Not Found ──▶ Error
             │
             ├──▶ Apply Field Mappings
             │
-            ├──▶ Check Deduplication
-            │         │
-            │         ├─ Unique ──▶ Create Reading
-            │         │
-            │         └─ Duplicate ──▶ Skip
-            │
-            └──▶ Create meter_reading Entity
+            └──▶ Upsert Reading (matched by reading_matching strategy)
 ```
 
 ## Error Handling
 
-### Meter Not Found
+Common error scenarios:
 
-```json
-{
-  "status": "error",
-  "message": "Meter not found",
-  "error": {
-    "code": "METER_NOT_FOUND",
-    "details": {
-      "meter_number": "M999"
-    }
-  }
-}
-```
-
-**Resolution:** Ensure meters exist before importing readings, or process meters first.
-
-### Invalid Reading Value
-
-```json
-{
-  "status": "error",
-  "message": "Invalid reading value",
-  "error": {
-    "code": "INVALID_READING_VALUE",
-    "details": {
-      "field": "value",
-      "received": "not-a-number"
-    }
-  }
-}
-```
-
-**Resolution:** Validate and transform values using JSONata before mapping.
+- **Meter not found**: The meter entity referenced by `unique_ids` cannot be found. Ensure meters exist before importing readings, or process meters in a separate entity mapping first.
+- **Missing required fields**: The configuration is missing required field mappings (`external_id`, `timestamp`, `source`, `value`). The error message includes the item index and missing fields.
+- **Invalid reason value**: The `reason` field must be one of: `regular`, `irregular`, `last`, `first`, `meter_change`, `contract_change`, `meter_adjustment`, or empty/null.
 
 ## Reading Matching Strategies
 

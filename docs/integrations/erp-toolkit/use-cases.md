@@ -186,7 +186,7 @@ flowchart LR
 **What happens in epilot:**
 - ERP Toolkit looks up the meter entity by meter number
 - Meter readings are created on the matched meter counter
-- Deduplication prevents duplicate readings within a 24-hour window
+- Deduplication prevents duplicate readings based on the configured matching strategy (`external_id` or `strict-date`)
 
 **Core Entities:** [`meter`](/docs/entities/core-entities#meter), [`meter_counter`](/docs/entities/core-entities#meter_counter) (meter readings are stored on meter counters)
 

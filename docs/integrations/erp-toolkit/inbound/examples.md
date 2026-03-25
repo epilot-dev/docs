@@ -68,11 +68,20 @@ Synchronize customer data from an ERP system into epilot contacts.
         { "attribute": "source", "constant": "SAP" },
         {
           "attribute": "account",
-          "relation": {
-            "entity_schema": "account",
-            "unique_ids": ["account_number"],
-            "source_field": "accountId",
-            "enabled": "$exists(accountId)"
+          "enabled": "$exists(accountId)",
+          "relations": {
+            "operation": "_set",
+            "items": [
+              {
+                "entity_schema": "account",
+                "unique_ids": [
+                  {
+                    "attribute": "account_number",
+                    "field": "accountId"
+                  }
+                ]
+              }
+            ]
           }
         }
       ]
@@ -175,19 +184,26 @@ Synchronize contracts that link to customers and include nested meter data.
         { "attribute": "source", "constant": "ERP" },
         {
           "attribute": "customer",
-          "relation": {
-            "entity_schema": "contact",
-            "unique_ids": ["customer_number"],
-            "source_field": "customerId"
+          "relations": {
+            "operation": "_set",
+            "items": [
+              {
+                "entity_schema": "contact",
+                "unique_ids": [
+                  {
+                    "attribute": "customer_number",
+                    "field": "customerId"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
           "attribute": "meters",
-          "relation": {
-            "entity_schema": "meter",
-            "unique_ids": ["meter_number"],
-            "source_field": "meters.meterId",
-            "operation": "_set"
+          "relations": {
+            "operation": "_set",
+            "jsonataExpression": "meters.{ \"entity_schema\": \"meter\", \"unique_ids\": [{ \"attribute\": \"meter_number\", \"constant\": meterId }] }"
           }
         }
       ]
@@ -372,11 +388,9 @@ Handle business partners with multiple address types.
         },
         {
           "attribute": "contacts",
-          "relation": {
-            "entity_schema": "contact",
-            "unique_ids": ["contact_number"],
-            "source_field": "contacts.contactId",
-            "operation": "_set"
+          "relations": {
+            "operation": "_set",
+            "jsonataExpression": "contacts.{ \"entity_schema\": \"contact\", \"unique_ids\": [{ \"attribute\": \"contact_number\", \"constant\": contactId }] }"
           }
         }
       ]

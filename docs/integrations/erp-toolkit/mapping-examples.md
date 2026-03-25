@@ -158,7 +158,7 @@ Transforms a customer event into **3 entities**: [`contact`](/docs/entities/core
     {
       "entity_schema": "account",
       "unique_ids": ["customer_number"],
-      "condition": "customerType = 'business'",
+      "enabled": "customerType = 'business'",
       "fields": [
         { "attribute": "customer_number", "field": "customerId" },
         { "attribute": "name", "field": "companyName" }
@@ -235,7 +235,9 @@ Meter readings use a separate top-level `meter_readings` section:
     {
       "jsonataExpression": "meter.readings",
       "meter": {
-        "unique_ids": ["external_id"]
+        "unique_ids": [
+          { "attribute": "external_id", "field": "$$.meter.meterId" }
+        ]
       },
       "fields": [
         { "attribute": "external_id", "field": "$$.meter.meterId" },
@@ -295,7 +297,7 @@ The repo includes a GitHub Actions workflow (`.github/workflows/test.yml`) that 
 | **Field mapping** | Map a source field to an entity attribute | `{ "attribute": "first_name", "field": "firstName" }` |
 | **JSONata expression** | Compute a value using JSONata | `{ "attribute": "full_name", "jsonataExpression": "firstName & ' ' & lastName" }` |
 | **Unique identifiers** | Match existing entities for upsert | `"unique_ids": ["customer_number"]` |
-| **Conditional creation** | Only create entity when condition is met | `"condition": "customerType = 'business'"` |
+| **Conditional creation** | Only create entity when condition is met | `"enabled": "customerType = 'business'"` |
 | **Multi-value attributes** | Arrays with tags for email, phone, address | `"_type": "email", "_tags": ["Primary"]` |
 | **Array iteration** | Create multiple entities from an array | `"jsonataExpression": "meter.counters"` on entity level |
 | **Enum mapping** | Translate ERP codes to epilot values | `$lookup({...}, sourceField)` in JSONata |

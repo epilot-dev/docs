@@ -158,6 +158,8 @@ curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationI
       "entity_schema": "string",
       "unique_ids": ["string"],
       "enabled": "boolean | string",
+      "mode": "upsert | delete | purge | upsert-prune-scope-purge | upsert-prune-scope-delete",
+      "scope": {},
       "jsonataExpression": "string",
       "fields": [
         {
@@ -166,28 +168,74 @@ curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationI
           "jsonataExpression": "string",
           "constant": "any",
           "_type": "email | phone",
-          "enabled": "string",
-          "relation": {
-            "entity_schema": "string",
-            "unique_ids": ["string"],
-            "source_field": "string",
-            "operation": "_set | _append",
-            "enabled": "string"
+          "enabled": "boolean | string",
+          "relations": {
+            "operation": "_set | _append | _append_all",
+            "items": [
+              {
+                "entity_schema": "string",
+                "_tags": ["string"],
+                "unique_ids": [
+                  {
+                    "attribute": "string",
+                    "field": "string"
+                  }
+                ]
+              }
+            ],
+            "jsonataExpression": "string"
+          },
+          "relation_refs": {
+            "operation": "_set | _append | _append_all",
+            "items": [
+              {
+                "entity_schema": "string",
+                "unique_ids": [{ "attribute": "string", "field": "string" }],
+                "path": "string",
+                "value": {
+                  "attribute": "string",
+                  "operation": "_set | _append",
+                  "field": "string",
+                  "jsonataExpression": "string",
+                  "constant": "any"
+                }
+              }
+            ]
           }
         }
       ],
-      "post_actions": {
-        "create_missing_relations": "boolean"
+      "pricing": {
+        "jsonataExpression": "string",
+        "items": [],
+        "items_jsonata": "string",
+        "result_mapping": {},
+        "on_error": "fail | skip | warn"
       }
     }
   ],
   "meter_readings": [
     {
       "jsonataExpression": "string",
+      "mode": "upsert | delete | upsert-prune-scope",
+      "reading_matching": "external_id | strict-date",
+      "scope": { "source": "string" },
       "meter": {
-        "unique_ids": ["string"]
+        "unique_ids": [
+          {
+            "attribute": "string",
+            "field": "string"
+          }
+        ]
       },
-      "fields": [...]
+      "meter_counter": {
+        "unique_ids": [
+          {
+            "attribute": "string",
+            "field": "string"
+          }
+        ]
+      },
+      "fields": []
     }
   ]
 }
