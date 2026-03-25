@@ -10,7 +10,7 @@ Relations connect entities in epilot. The ERP Toolkit creates and updates relati
 
 ## Relation Basics
 
-A relation links one entity to another. For example, linking a contract to its customer:
+A relation links one entity to another. For example, linking a contract to its billing account:
 
 ```json
 {
@@ -19,14 +19,48 @@ A relation links one entity to another. For example, linking a contract to its c
   "fields": [
     { "attribute": "contract_number", "field": "contractId" },
     {
-      "attribute": "customer",
-      "relation": {
-        "entity_schema": "contact",
-        "unique_ids": ["customer_number"],
-        "source_field": "customerId"
+      "attribute": "billing_account",
+      "relations": {
+        "operation": "_set",
+        "items": [
+          {
+            "entity_schema": "billing_account",
+            "_tags": ["PRIMARY"],
+            "unique_ids": [
+              {
+                "attribute": "external_id",
+                "field": "accountId"
+              }
+            ]
+          }
+        ]
       }
     }
   ]
+}
+```
+
+**Input:**
+```json
+{
+  "contractId": "CTR-001",
+  "accountId": "ACC-999"
+}
+```
+
+**Final Entity State:**
+```json
+{
+  "entity_slug": "contract",
+  "attributes": {
+    "billing_account": {
+      "$relation": [{
+        "entity_id": "019a0c06-7190-7509-91c4-ff5bbe3680d8",
+        "_schema": "billing_account",
+        "_tags": ["PRIMARY"]
+      }]
+    }
+  }
 }
 ```
 
@@ -37,171 +71,20 @@ A relation links one entity to another. For example, linking a contract to its c
 | Property | Type | Description |
 |----------|------|-------------|
 | `entity_schema` | string | The schema of the related entity |
-| `unique_ids` | string[] | Fields to identify the related entity |
-| `source_field` | string | Field in the payload containing the identifier value |
+| `unique_ids` | object[] | Fields to identify the related entity (see [Unique ID Options](#relation-unique-id-options)) |
 
 ### Optional Properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `operation` | string | `_set` | How to handle existing relations |
-| `enabled` | string | - | Condition to process this relation |
+| `operation` | string | `_set` | How to handle existing relations (`_set`, `_append`, `_append_all`) |
+| `_tags` | string[] | - | Labels for the relation (e.g. `["PRIMARY"]`, `["BILLING"]`) |
 
 ## Relation Operations
 
 ### Set (`_set`)
 
-Replaces all existing relations with the new one:
-
-```json
-{
-  "attribute": "customer",
-  "relation": {
-    "entity_schema": "contact",
-    "unique_ids": ["customer_number"],
-    "source_field": "customerId",
-    "operation": "_set"
-  }
-}
-```
-
-### Append (`_append`)
-
-Adds new unique relations to existing ones with automatic deduplication:
-
-```json
-{
-  "attribute": "related_contracts",
-  "relation": {
-    "entity_schema": "contract",
-    "unique_ids": ["contract_number"],
-    "source_field": "relatedContractId",
-    "operation": "_append"
-  }
-}
-```
-
-If a relation with the same `entity_id` already exists, it will not be added again.
-
-### Append All (`_append_all`)
-
-Adds all relations without deduplication (allows duplicates):
-
-```json
-{
-  "attribute": "audit_contacts",
-  "relation": {
-    "entity_schema": "contact",
-    "unique_ids": ["customer_number"],
-    "source_field": "auditContactId",
-    "operation": "_append_all"
-  }
-}
-```
-
-Use `_append_all` when you explicitly need to allow duplicate relations.
-
-## Nested Identifier Access
-
-Access nested data for the relation identifier:
-
-```json
-{
-  "attribute": "billing_account",
-  "relation": {
-    "entity_schema": "account",
-    "unique_ids": ["account_number"],
-    "source_field": "$.billing.accountId"
-  }
-}
-```
-
-## Multiple Relations
-
-### Array of Relations
-
-Link to multiple entities from an array in the payload:
-
-```json
-{
-  "attribute": "meters",
-  "relation": {
-    "entity_schema": "meter",
-    "unique_ids": ["meter_number"],
-    "source_field": "meterIds"
-  }
-}
-```
-
-Given this input:
-
-```json
-{
-  "meterIds": ["M001", "M002", "M003"]
-}
-```
-
-Creates relations to all three meters.
-
-### Multiple Relation Types
-
-Link to different entity types:
-
-```json
-{
-  "entity_schema": "contract",
-  "unique_ids": ["contract_number"],
-  "fields": [
-    { "attribute": "contract_number", "field": "contractId" },
-    {
-      "attribute": "customer",
-      "relation": {
-        "entity_schema": "contact",
-        "unique_ids": ["customer_number"],
-        "source_field": "customerId"
-      }
-    },
-    {
-      "attribute": "billing_account",
-      "relation": {
-        "entity_schema": "account",
-        "unique_ids": ["account_number"],
-        "source_field": "billingAccountId"
-      }
-    },
-    {
-      "attribute": "meters",
-      "relation": {
-        "entity_schema": "meter",
-        "unique_ids": ["meter_number"],
-        "source_field": "meterIds"
-      }
-    }
-  ]
-}
-```
-
-## Conditional Relations
-
-Process relations only when conditions are met:
-
-```json
-{
-  "attribute": "partner",
-  "relation": {
-    "entity_schema": "contact",
-    "unique_ids": ["partner_number"],
-    "source_field": "partnerId",
-    "enabled": "$exists(partnerId) and partnerId != ''"
-  }
-}
-```
-
-## Advanced Relations Configuration
-
-### Relations with Items
-
-For more control, use the `relations` property with `items` array:
+Replaces all existing relations with the new ones. This is the default operation.
 
 ```json
 {
@@ -211,7 +94,6 @@ For more control, use the `relations` property with `items` array:
     "items": [
       {
         "entity_schema": "billing_account",
-        "_tags": ["PRIMARY"],
         "unique_ids": [
           {
             "attribute": "external_id",
@@ -224,6 +106,116 @@ For more control, use the `relations` property with `items` array:
 }
 ```
 
+**Use cases:**
+- Setting the initial relation when creating an entity
+- Completely replacing a relation (e.g., changing primary contact)
+- When the ERP system provides the complete, authoritative list of relations
+
+### Append (`_append`)
+
+Adds new unique relations to existing ones with automatic deduplication by `entity_id`:
+
+```json
+{
+  "attribute": "contacts",
+  "relations": {
+    "operation": "_append",
+    "items": [
+      {
+        "entity_schema": "contact",
+        "_tags": ["NEW_CONTACT"],
+        "unique_ids": [
+          {
+            "attribute": "email",
+            "field": "contactEmail"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Example scenario:**
+```
+Initial entity state:
+{
+  "contacts": {
+    "$relation": [
+      { "entity_id": "existing-1", "_schema": "contact", "_tags": ["EXISTING"] }
+    ]
+  }
+}
+
+After applying _append with entity_id "existing-1" and "new-1":
+{
+  "contacts": {
+    "$relation": [
+      { "entity_id": "existing-1", "_schema": "contact", "_tags": ["EXISTING"] },
+      { "entity_id": "new-1", "_schema": "contact", "_tags": ["NEW_CONTACT"] }
+    ]
+  }
+}
+```
+
+If a relation with the same `entity_id` already exists, it will not be added again.
+
+**Important notes:**
+- `_append` requires an additional database lookup to fetch the existing entity
+- Preserves the order of existing items
+
+### Append All (`_append_all`)
+
+Adds all relations without deduplication (allows duplicates):
+
+```json
+{
+  "attribute": "contacts",
+  "relations": {
+    "operation": "_append_all",
+    "items": [
+      {
+        "entity_schema": "contact",
+        "_tags": ["NEW_CONTACT"],
+        "unique_ids": [
+          {
+            "attribute": "customer_number",
+            "field": "auditContactId"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Example scenario:**
+```
+Initial entity state:
+{
+  "contacts": {
+    "$relation": [
+      { "entity_id": "existing-1", "_schema": "contact", "_tags": ["EXISTING"] }
+    ]
+  }
+}
+
+After applying _append_all with entity_id "existing-1" and "new-1":
+{
+  "contacts": {
+    "$relation": [
+      { "entity_id": "existing-1", "_schema": "contact", "_tags": ["EXISTING"] },
+      { "entity_id": "existing-1", "_schema": "contact", "_tags": ["DUPLICATE"] },
+      { "entity_id": "new-1", "_schema": "contact", "_tags": ["NEW_CONTACT"] }
+    ]
+  }
+}
+```
+
+Use `_append_all` when you explicitly need to allow duplicate relations. Use `_append` instead if you want to prevent duplicates.
+
+## Relation Unique ID Options
+
 Each item in `unique_ids` supports three value sources:
 
 | Source | Example |
@@ -232,13 +224,130 @@ Each item in `unique_ids` supports three value sources:
 | `jsonataExpression` | `{ "attribute": "full_name", "jsonataExpression": "firstName & ' ' & lastName" }` |
 | `constant` | `{ "attribute": "source", "constant": "ERP" }` |
 
-### Dynamic Relations with JSONata
+### JSONata for Nested Identifier Access
+
+Use a JSONata expression to access nested data for the relation identifier:
+
+```json
+{
+  "attribute": "billing_account",
+  "relations": {
+    "operation": "_set",
+    "items": [
+      {
+        "entity_schema": "account",
+        "unique_ids": [
+          {
+            "attribute": "account_number",
+            "jsonataExpression": "billing.accountId"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Multiple Relations
+
+Link multiple entities in a single relation attribute using multiple `items`:
+
+**Configuration:**
+```json
+{
+  "attribute": "contacts",
+  "relations": {
+    "operation": "_set",
+    "items": [
+      {
+        "entity_schema": "contact",
+        "_tags": ["BILLING"],
+        "unique_ids": [
+          {
+            "attribute": "email",
+            "field": "billingEmail"
+          }
+        ]
+      },
+      {
+        "entity_schema": "contact",
+        "_tags": ["TECHNICAL"],
+        "unique_ids": [
+          {
+            "attribute": "email",
+            "field": "technicalEmail"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Input:**
+```json
+{
+  "billingEmail": "billing@example.com",
+  "technicalEmail": "tech@example.com"
+}
+```
+
+**Final Entity State:**
+```json
+{
+  "contacts": {
+    "$relation": [
+      {
+        "entity_id": "019a0c06-1111-1111-1111-aaaaaaaaaaaa",
+        "_schema": "contact",
+        "_tags": ["BILLING"]
+      },
+      {
+        "entity_id": "019a0c06-2222-2222-2222-bbbbbbbbbbbb",
+        "_schema": "contact",
+        "_tags": ["TECHNICAL"]
+      }
+    ]
+  }
+}
+```
+
+## Conditional Relations
+
+Process relations only when conditions are met using the field-level `enabled` property:
+
+```json
+{
+  "attribute": "billing_account",
+  "enabled": "$exists(billingAccountId) and billingAccountId != ''",
+  "relations": {
+    "operation": "_set",
+    "items": [
+      {
+        "entity_schema": "billing_account",
+        "unique_ids": [
+          {
+            "attribute": "external_id",
+            "field": "billingAccountId"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The `enabled` property is set on the field mapping, not inside the relation configuration. It supports:
+- **Boolean** (`true`/`false`): Directly control whether the relation is processed
+- **String (JSONata expression)**: Dynamic evaluation based on the input data
+
+## Dynamic Relations with JSONata
 
 Generate relation items dynamically from array data:
 
 ```json
 {
-  "attribute": "contacts",
+  "attribute": "related_persons",
   "relations": {
     "operation": "_set",
     "jsonataExpression": "persons.{ \"entity_schema\": \"contact\", \"unique_ids\": [{ \"attribute\": \"email\", \"constant\": email }], \"_tags\": [role] }"
@@ -256,11 +365,36 @@ Generate relation items dynamically from array data:
 }
 ```
 
-This creates relations to both contacts with their respective role tags.
+**Final Entity State:**
+```json
+{
+  "related_persons": {
+    "$relation": [
+      {
+        "entity_id": "019a0c06-3333-3333-3333-cccccccccccc",
+        "_schema": "contact",
+        "_tags": ["OWNER"]
+      },
+      {
+        "entity_id": "019a0c06-4444-4444-4444-dddddddddddd",
+        "_schema": "contact",
+        "_tags": ["USER"]
+      }
+    ]
+  }
+}
+```
 
-### Relation References
+## Relation References
 
-Relation references (`$relation_ref`) link to a specific item within a repeatable attribute on a related entity, such as a specific address:
+Relation references (`$relation_ref`) link to a specific item within a repeatable attribute on a related entity, such as a specific address.
+
+While `$relation` links to an entity, `$relation_ref` links to:
+1. A related entity (by its `entity_id`)
+2. A specific attribute path on that entity (e.g., `"address"`)
+3. Optionally, a specific item within a repeatable attribute (by its `_id`)
+
+### Configuration
 
 ```json
 {
@@ -280,7 +414,7 @@ Relation references (`$relation_ref`) link to a specific item within a repeatabl
         "value": {
           "attribute": "address",
           "operation": "_append",
-          "jsonataExpression": "{ \"street\": BillingStreet, \"city\": BillingCity, \"country\": 'DE', \"postal_code\": BillingPostalCode }"
+          "jsonataExpression": "{ \"street\": BillingStreet, \"city\": BillingCity, \"country\": 'DE', \"postal_code\": BillingPostalCode, \"street_number\": $string(BillingStreetNumber) }"
         }
       }
     ]
@@ -288,20 +422,95 @@ Relation references (`$relation_ref`) link to a specific item within a repeatabl
 }
 ```
 
-**Processing flow:**
-1. Find or create the contact by `customer_number`
-2. Append the address to the contact's address attribute
-3. Create a `$relation_ref` linking to that specific address item
+### Processing Flow
 
-The system automatically preserves `_id` values when updating repeatable attributes to maintain stable references.
+1. **Find or create the related entity**: Uses `unique_ids` to find/create the contact
+2. **Set the attribute value**: Upserts the `address` attribute on the contact with the provided value
+3. **Preserve `_id` values**: Automatically matches existing address items by their content and preserves their `_id` to avoid regeneration
+4. **Create the reference**: Links the main entity to the specific address item using `$relation_ref`
+
+### Example: Billing Address Reference
+
+**Input:**
+```json
+{
+  "InvoiceNumber": "INV-001",
+  "CustomerNumber": "CUST-123",
+  "BillingStreet": "Main Street",
+  "BillingStreetNumber": 42,
+  "BillingCity": "Berlin",
+  "BillingPostalCode": "10115"
+}
+```
+
+**Result on the contact:**
+```json
+{
+  "customer_number": "CUST-123",
+  "address": [
+    {
+      "_id": "abc123",
+      "street": "Main Street",
+      "street_number": "42",
+      "city": "Berlin",
+      "postal_code": "10115",
+      "country": "DE"
+    }
+  ]
+}
+```
+
+**Result on the opportunity:**
+```json
+{
+  "invoice_number": "INV-001",
+  "billing_address": {
+    "$relation_ref": [
+      {
+        "entity_id": "019a0c06-1234-5678-9abc-def012345678",
+        "path": "address",
+        "_id": "abc123"
+      }
+    ]
+  }
+}
+```
+
+### `_id` Preservation
+
+The system automatically preserves `_id` values when updating repeatable attributes:
+
+- When setting or appending values, the system fetches the existing entity
+- It matches new items with existing items using deep equality (excluding `_id`)
+- If a match is found, the existing `_id` is preserved
+- This ensures stable references even when data is updated
+
+### Relation Reference Operations
+
+Relation references support the same three operations as relations:
+
+- **`_set`**: Replaces all existing relation_refs with new ones
+- **`_append`**: Adds new unique relation_refs (deduplicates by `entity_id` + `_id`)
+- **`_append_all`**: Adds all relation_refs without deduplication
+
+### Value Configuration
+
+The `value` field in a relation_ref item supports the same value sources as regular field mappings:
+
+| Source | Example |
+|--------|---------|
+| `field` | `{ "attribute": "address", "field": "AddressData" }` |
+| `jsonataExpression` | `{ "attribute": "address", "jsonataExpression": "{ \"street\": street, \"city\": city }" }` |
+| `constant` | `{ "attribute": "type", "constant": "BILLING" }` |
 
 ## Relation Resolution Strategy
 
 The ERP Toolkit uses an **all-or-nothing** strategy:
 
-1. All relations in a mapping resolve before any entity updates
-2. If any relation cannot be found, the entire update fails
-3. This ensures data consistency
+1. If ANY related entity in a relation attribute cannot be found, the ENTIRE attribute is deferred to post_actions
+2. Post_actions will create the missing entities first
+3. Then the system retries the update with all entities available
+4. This ensures data integrity and proper ordering of entity creation
 
 ### Resolution Flow
 
@@ -316,90 +525,8 @@ Search for Related Entity
         │
         ├─── Found ──────▶ Store Entity ID
         │
-        └─── Not Found ──▶ Fail Entire Update
+        └─── Not Found ──▶ Defer to Post Actions
 ```
-
-## Creating Missing Related Entities
-
-Use `post_actions` to create related entities if they don't exist:
-
-```json
-{
-  "entity_schema": "contract",
-  "unique_ids": ["contract_number"],
-  "fields": [
-    { "attribute": "contract_number", "field": "contractId" },
-    {
-      "attribute": "customer",
-      "relation": {
-        "entity_schema": "contact",
-        "unique_ids": ["customer_number"],
-        "source_field": "customerId"
-      }
-    }
-  ],
-  "post_actions": {
-    "create_missing_relations": true
-  }
-}
-```
-
-With this configuration, if the related contact doesn't exist, it will be created with the identifier value.
-
-## Relation Attribute Types
-
-Relations in epilot are stored with metadata. You can specify the relation type:
-
-```json
-{
-  "attribute": "customer",
-  "relation": {
-    "entity_schema": "contact",
-    "unique_ids": ["customer_number"],
-    "source_field": "customerId",
-    "relation_type": "primary_contact"
-  }
-}
-```
-
-## Error Handling
-
-### Related Entity Not Found
-
-```json
-{
-  "status": "error",
-  "message": "Related entity not found",
-  "error": {
-    "code": "RELATION_NOT_FOUND",
-    "details": {
-      "entity_schema": "contact",
-      "unique_ids": ["customer_number"],
-      "identifier_value": "C001"
-    }
-  }
-}
-```
-
-**Resolution Options:**
-
-1. Ensure the related entity exists before processing
-2. Enable `create_missing_relations` in post_actions
-3. Make the relation conditional with `enabled`
-
-### Multiple Matches for Relation
-
-```json
-{
-  "status": "error",
-  "message": "Multiple entities found for relation",
-  "error": {
-    "code": "AMBIGUOUS_RELATION"
-  }
-}
-```
-
-**Resolution:** Use more specific unique identifiers or clean up duplicate data.
 
 ## Best Practices
 
@@ -411,20 +538,33 @@ Process parent entities before children:
 {
   "entities": [
     {
-      "entity_schema": "contact",  // Process first
+      "entity_schema": "contact",
       "unique_ids": ["customer_number"],
-      "fields": [...]
+      "fields": [
+        { "attribute": "customer_number", "field": "customerId" },
+        { "attribute": "first_name", "field": "firstName" }
+      ]
     },
     {
-      "entity_schema": "contract",  // Process second, can now reference contact
+      "entity_schema": "contract",
       "unique_ids": ["contract_number"],
       "fields": [
+        { "attribute": "contract_number", "field": "contractId" },
         {
           "attribute": "customer",
-          "relation": {
-            "entity_schema": "contact",
-            "unique_ids": ["customer_number"],
-            "source_field": "customerId"
+          "relations": {
+            "operation": "_set",
+            "items": [
+              {
+                "entity_schema": "contact",
+                "unique_ids": [
+                  {
+                    "attribute": "customer_number",
+                    "field": "customerId"
+                  }
+                ]
+              }
+            ]
           }
         }
       ]
@@ -440,27 +580,20 @@ Avoid failures from missing optional relations:
 ```json
 {
   "attribute": "secondary_contact",
-  "relation": {
-    "entity_schema": "contact",
-    "unique_ids": ["customer_number"],
-    "source_field": "secondaryCustomerId",
-    "enabled": "$exists(secondaryCustomerId)"
-  }
-}
-```
-
-### Validate Data Before Processing
-
-Pre-validate relation data with JSONata:
-
-```json
-{
-  "attribute": "customer",
-  "relation": {
-    "entity_schema": "contact",
-    "unique_ids": ["customer_number"],
-    "source_field": "customerId",
-    "enabled": "$type(customerId) = 'string' and $length(customerId) > 0"
+  "enabled": "$exists(secondaryCustomerId) and secondaryCustomerId != ''",
+  "relations": {
+    "operation": "_set",
+    "items": [
+      {
+        "entity_schema": "contact",
+        "unique_ids": [
+          {
+            "attribute": "customer_number",
+            "field": "secondaryCustomerId"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
