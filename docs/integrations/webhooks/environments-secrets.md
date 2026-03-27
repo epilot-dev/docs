@@ -1,131 +1,33 @@
 ---
 sidebar_position: 6
-title: "Environments & Secrets"
+title: "Environments & Secrets in Webhooks"
 ---
 
-# Environments & Secrets
+# Environments & Secrets in Webhooks
 
-Org-level configuration for storing environment variables and secrets, usable across webhooks, templates, and integrations. Environment variables let you define shared configuration once and reference it everywhere, avoiding duplication and enabling safe Blueprint syncs between sandbox and production.
+:::tip
+For the full guide on environment variables -- including setup, API reference, and all supported contexts -- see [Environments & Secrets](/docs/environments/environments-secrets).
+:::
 
-## Variable Types
+Webhooks support `{{ env.* }}` references in URLs, headers, and authentication fields. This lets you keep credentials out of your webhook configuration and share the same setup across sandbox and production via Blueprints.
 
-| Type | Behavior |
-|------|----------|
-| `String` | Readable key/value pair. Value returned by API. |
-| `SecretString` | Write-only. Value is never returned by the API or interpolated into user-facing outputs. Consumed only by backend services. |
+## Supported fields
 
-## Hierarchical Namespacing
+You can use environment variable references in:
 
-Keys use dot-separated namespacing to group related variables:
+- **Webhook URL** -- `{{ env.erp_api.base_url }}/webhooks/orders`
+- **HTTP headers** -- `Authorization: Bearer {{ env.erp_api.api_key }}`
+- **Basic Auth** -- username and password fields
+- **API Key Auth** -- key value
+- **OAuth 2.0** -- token URL, client ID, and client secret
 
-```
-erp_api.oauth_token_url
-erp_api.oauth_app_id
-erp_api.oauth_secret
-my_webhook.base_url
-my_webhook.api_key
-```
+## Example
 
-Key format: lowercase alphanumeric with dots, underscores, and hyphens. Max 128 characters. Pattern: `^[a-z0-9][a-z0-9_.-]{0,127}$`
-
-## Variable Resolution
-
-Reference environment variables in webhooks and templates using the `env` namespace:
-
-```
-{{ env.erp_api.base_url }}
-{{ env.erp_api.oauth_token_url }}
-{{ env.erp_api.oauth_secret }}
-{{ env.n8n.metering_webhook_url }}
-```
-
-Resolution rules:
-
-- Variables are resolved **server-side at runtime**
-- `SecretString` values are only available in trusted backend contexts (webhooks, integrations)
-- The Template Variables API excludes secrets from its response
-
-## API Operations
-
-Base path: `/v2/organization/environments`
-
-| Operation | Method | Path | Description |
-|-----------|--------|------|-------------|
-| `listEnvironmentVariables` | `GET` | `/v2/organization/environments` | List all variables (metadata only, secret values omitted) |
-| `createEnvironmentVariable` | `POST` | `/v2/organization/environments` | Create a new variable. Returns `409` if key already exists |
-| `getEnvironmentVariable` | `GET` | `/v2/organization/environments/{key}` | Get a variable. Value included only for `String` type |
-| `updateEnvironmentVariable` | `PUT` | `/v2/organization/environments/{key}` | Update a variable. Changes take effect immediately for all consumers |
-| `deleteEnvironmentVariable` | `DELETE` | `/v2/organization/environments/{key}` | Delete a variable |
-
-## Blueprint Interaction
-
-Environment variables are **excluded from Blueprints**:
-
-- Export does not include environment variables
-- Import never overwrites environment values
-- This prevents sandbox credentials from leaking to production
-
-This is the key difference from Custom Variables, which transfer with Blueprints and can cause sandbox values to appear in production after a sync.
-
-## Use Cases
-
-### Sandbox/Production Parity
-
-Deploy the same webhook configuration via Blueprints to both environments. URLs and credentials resolve to environment-specific values automatically, with no manual reconfiguration needed after import.
-
-### ERP Integration Credentials
-
-Define OAuth endpoints, API keys, and base URLs once as environment variables. All webhooks reference the same variables, so credential rotation requires updating a single value rather than editing every webhook individually.
-
-### Reusable Global Variables
-
-Store shared URLs, portal domains, and configuration flags as `String` variables. Reference them across templates and integrations without duplicating values or embedding them in complex handlebars logic.
-
-## Security Considerations
-
-- **KMS encryption** -- All values are encrypted at rest using per-org AWS KMS keys (envelope encryption)
-- **Write-only secrets** -- `SecretString` values cannot be read back through the API
-- **No frontend access** -- Secrets are resolved only in trusted backend contexts
-- **No template interpolation** -- Secrets are never interpolated into user-facing template outputs
-- **Log redaction** -- Secret values are redacted from all logs
-
-## Examples
-
-### Creating a Variable
-
-```bash title="Create a String variable"
-curl -X POST https://api.epilot.io/v2/organization/environments \
-  -H "Authorization: Bearer $EPILOT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "key": "erp_api.base_url",
-    "type": "String",
-    "value": "https://erp.example.com/api/v1",
-    "description": "ERP API base URL"
-  }'
-```
-
-```bash title="Create a SecretString variable"
-curl -X POST https://api.epilot.io/v2/organization/environments \
-  -H "Authorization: Bearer $EPILOT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "key": "erp_api.oauth_secret",
-    "type": "SecretString",
-    "value": "sk_live_abc123...",
-    "description": "ERP OAuth client secret"
-  }'
-```
-
-### Using in Webhook Configuration
-
-Reference environment variables in your webhook URL and authentication fields:
-
-```json title="Webhook config using environment variables"
+```json title="Webhook using environment variables"
 {
   "url": "{{ env.erp_api.base_url }}/webhooks/orders",
-  "auth": {
-    "type": "oauth",
+  "authentication": {
+    "type": "oauth2",
     "token_url": "{{ env.erp_api.oauth_token_url }}",
     "client_id": "{{ env.erp_api.oauth_app_id }}",
     "client_secret": "{{ env.erp_api.oauth_secret }}"
@@ -133,4 +35,12 @@ Reference environment variables in your webhook URL and authentication fields:
 }
 ```
 
-When this webhook fires, all `{{ env.* }}` references are resolved server-side to their org-specific values before the request is sent.
+When the webhook fires, all `{{ env.* }}` references are resolved server-side to the organization's actual values before the HTTP request is sent. SecretString values are decrypted only at this point and never logged.
+
+## Autocomplete
+
+The webhook configuration UI provides autocomplete when you type `{{ env.`. It suggests matching variable keys from your organization and auto-completes the closing braces.
+
+## Error handling
+
+If a referenced variable does not exist in your organization, the webhook call fails with an error indicating which variable could not be resolved. Check your [Environments settings](https://portal.epilot.cloud/app/settings/environments) to verify the variable exists.
