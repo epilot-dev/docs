@@ -21,7 +21,8 @@
     "update-events": "cp ../event-catalog-api/packages/core/src/builtin-events/__snapshots__/* static/events",
     "update-sdk": "./scripts/update-sdk-docs.sh",
     "update-cli": "./scripts/update-cli-docs.sh",
-    "update-playground": "./scripts/update-pricing-playground.sh"
+    "update-pricing-playground": "./scripts/update-pricing-playground.sh",
+    "update-journey-sdk-playground": "./scripts/update-journey-sdk-playground.sh"
   },
   "dependencies": {
     "@cmfcmf/docusaurus-search-local": "^0.10.0",
