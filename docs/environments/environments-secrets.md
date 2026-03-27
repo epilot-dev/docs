@@ -6,7 +6,7 @@ sidebar_position: 1
 # Environments & Secrets
 
 [[API Docs](/api/environments)]
-[[SDK](https://www.npmjs.com/package/@epilot/environments-client)]
+[[SDK](https://www.npmjs.com/package/@epilot/sdk)]
 
 Environments & Secrets is an organization-level key-value store for configuration and credentials. Define a variable once, then reference it anywhere using `{{ env.variable_key }}` syntax. Values are resolved at runtime, so the same configuration works across sandbox and production without changes.
 
@@ -247,23 +247,31 @@ curl -X PUT https://environments.sls.epilot.io/v1/environments/erp_api.oauth_sec
 ### Use the SDK
 
 ```typescript
-import { getClient } from '@epilot/environments-client';
+import { epilot } from '@epilot/sdk';
 
-const client = getClient();
-client.defaults.baseURL = 'https://environments.sls.epilot.io';
-client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+epilot.authorize(accessToken);
 
 // List all variables
-const { data } = await client.listEnvironmentVariables();
+const { data } = await epilot.environments.listEnvironmentVariables();
 console.log(data.items);
 
 // Create a variable
-await client.createEnvironmentVariable(null, {
+await epilot.environments.createEnvironmentVariable(null, {
   key: 'my_app.api_url',
   type: 'String',
   value: 'https://api.example.com',
   description: 'My application API URL',
 });
+```
+
+You can also use the tree-shakeable import:
+
+```typescript
+import { environments, authorize } from '@epilot/sdk/environments';
+
+authorize(accessToken);
+
+const { data } = await environments.listEnvironmentVariables();
 ```
 
 ## Security
