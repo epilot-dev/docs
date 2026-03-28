@@ -12,14 +12,14 @@ JOURNEY_SDK_DEMO="$DOCS_ROOT/../epilot-journey-sdk/demo"
 TARGET="$DOCS_ROOT/static/journey-sdk-playground"
 
 if [ ! -d "$JOURNEY_SDK_DEMO" ]; then
-  echo "ERROR: pricing demo not found at $JOURNEY_SDK_DEMO"
+  echo "ERROR: journey-sdk-playground not found at $JOURNEY_SDK_DEMO"
   exit 1
 fi
 
-echo "→ Installing pricing demo dependencies..."
+echo "→ Installing journey-sdk-playground dependencies..."
 (cd "$JOURNEY_SDK_DEMO" && pnpm install --frozen-lockfile 2>/dev/null || npm install --no-audit --no-fund)
 
-echo "→ Building pricing demo..."
+echo "→ Building journey-sdk-playground..."
 (cd "$JOURNEY_SDK_DEMO" && npx tsc -b && npx vite build)
 
 # Verify the build has the correct base path
