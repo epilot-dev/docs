@@ -126,11 +126,14 @@ document
   .setAttribute('is-full-screen-entered', 'false')
 ```
 
-:::info Live Examples
+## Live Examples
 
-Interactive examples are available at [Storybook Examples](https://embed.journey.epilot.io/stories/?path=/docs/next-web-component--docs) for only **Public Journeys**, where you can browse different embedding scenarios and configurations. Remember to update the controls section with your own parameters (journey-id, top-bar etc.) to see it in action.
+Browse interactive, runnable examples for every embedding scenario:
 
-:::
+- **[Web Component Storybook](https://embed.journey.epilot.io/stories/?path=/docs/next-web-component--docs)** — inline, full-screen, inline-to-fullscreen, launcher, data injection, and more.
+- **[SDK Storybook](https://embed.journey.epilot.io/stories/?path=/docs/next-sdk--docs)** — the same scenarios using the JavaScript SDK with both iframe and web component backends.
+
+Use the **Controls** panel in Storybook to change attributes in real time. These examples work with **public Journeys** only — enter your own `journey-id` in the controls to see it in action.
 
 ## Context Data
 
