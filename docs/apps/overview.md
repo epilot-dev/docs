@@ -34,7 +34,9 @@ See the [App Components](/docs/apps/components/overview) section for detailed in
 
 **External Product Catalog**: Components that integrate third-party product catalogs into epilot.
 
-**Custom Workflow Task**: Either call an external endpoint or run your own code in a sandboxed workflow task
+**Custom Workflow Task**: Either call an external endpoint or run your own TypeScript code in a sandboxed workflow task.
+
+**API Proxy**: Call external APIs server-side without exposing credentials to the browser. Supports custom headers, bearer tokens, and OAuth 2.0.
 
 ### Coming Soon
 

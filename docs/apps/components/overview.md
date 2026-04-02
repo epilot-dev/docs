@@ -51,13 +51,25 @@ External Product Catalog components integrate third-party product catalogs into 
 Use cases: Custom product catalogs, journey products, journey product recommendations
 ```
 
+### [Custom Workflow Task](/docs/apps/components/custom-action)
+
+Custom Workflow Tasks extend epilot's automation engine with your own logic. You can either call an external endpoint (webhook-style) or run TypeScript code in a sandboxed environment directly within a workflow task.
+
+```
+Use cases: Third-party integrations, data syncing, custom processing steps in workflows
+```
+
+### [API Proxy](/docs/apps/components/api-proxy)
+
+API Proxy components let your app call external APIs without exposing credentials to the browser. The proxy runs server-side, injecting authentication and signing requests so secrets never reach the client.
+
+```
+Use cases: Secure external API calls, OAuth integrations, credential-protected endpoints
+```
+
 ## On the Horizon
 
 The epilot platform continues to evolve, with new component types planned for future releases:
-
-### Custom Automation Tasks
-
-These will allow you to define specialized tasks that can be triggered within epilot's automation workflows, enabling custom processing or integration steps in automated sequences.
 
 ### Custom Journey Design Elements
 
@@ -71,7 +83,7 @@ Have an idea for a new component type? We welcome feedback from the developer co
 1. **Evaluate Your Need**: Consider if existing component types could address your use case
 2. **Define the Integration Point**: Identify where in epilot your component would integrate
 3. **Describe the Value**: Outline the problems it would solve for epilot users
-4. **Submit a Request**: [Contact us](https://developers.epilot.cloud/contact) with your proposal
+4. **Submit a Request**: [Contact us](mailto:support@epilot.cloud) with your proposal
 
 Our product team regularly reviews component requests and prioritizes them based on community interest and platform direction.
 
@@ -83,7 +95,28 @@ Learn more about [App Surfaces](/docs/apps/app-surfaces) to understand how your 
 
 ## Building Your First Component
 
-Ready to create your own component? Each component type has specific requirements and capabilities, but they all follow similar development patterns.
+Ready to create your own component? The fastest way to get started is with the **epilot CLI**:
+
+```bash
+npx epilot app init my-app
+npx epilot app add-component my-block --type CUSTOM_JOURNEY_BLOCK
+```
+
+The CLI manages the full app lifecycle — from scaffolding and validation to deployment and version management. Key commands:
+
+| Command | Description |
+| --- | --- |
+| `epilot app init` | Scaffold a new app project with `manifest.json` |
+| `epilot app add-component` | Add a component from a starter template |
+| `epilot app validate` | Validate your manifest before deploying |
+| `epilot app deploy` | Deploy your app to epilot |
+| `epilot app versions` | List all versions of your app |
+| `epilot app review` | Submit a version for public review |
+| `epilot app export` | Export an existing app as `manifest.json` |
+
+See the [CLI documentation](/docs/cli/commands/app) for the full command reference.
+
+Each component type also has a ready-to-use starter template available in the [app-templates](https://github.com/epilot-dev/app-templates) repository.
 
 <div className="container">
   <div className="row">
@@ -113,6 +146,26 @@ Ready to create your own component? Each component type has specific requirement
           <h3>External Product Catalog</h3>
           <p>Integrate third-party product catalogs into epilot</p>
           <a href="/docs/apps/components/external-product-catalog" className="button button--secondary button--block">Start Building</a>
+        </div>
+      </div>
+    </div>
+    <div className="col col--6">
+      <div className="card" style={{height: '100%'}}>
+        <div className="card__body">
+          <h3>Custom Workflow Task</h3>
+          <p>Run custom logic in epilot's automation workflows</p>
+          <a href="/docs/apps/components/custom-action" className="button button--secondary button--block">Start Building</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div className="row" style={{marginTop: '1.5rem'}}>
+    <div className="col col--6">
+      <div className="card" style={{height: '100%'}}>
+        <div className="card__body">
+          <h3>API Proxy</h3>
+          <p>Call external APIs securely without exposing credentials</p>
+          <a href="/docs/apps/components/api-proxy" className="button button--secondary button--block">Start Building</a>
         </div>
       </div>
     </div>
