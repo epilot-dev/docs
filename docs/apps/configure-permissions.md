@@ -44,4 +44,5 @@ Check the specific component documentation for details on how to access permissi
 |---------------------------|-----------------------|
 | Custom Journey Block      | No                   |
 | Portal Extension          | No                   |
-| Custom Action  | Yes                   |
+| Custom Action             | Yes                  |
+| API Proxy                 | No                   |

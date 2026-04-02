@@ -1,12 +1,12 @@
 ---
-title: API Proxies
+title: API Proxy
 hide_title: true
-sidebar_position: 7
+sidebar_position: 6
 ---
 
-# API Proxies
+# API Proxy
 
-API Proxies let your app call external APIs without exposing credentials to the browser. The proxy runs server-side — API keys, OAuth tokens, and secrets never reach the client.
+API Proxy components let your app call external APIs without exposing credentials to the browser. The proxy runs server-side — API keys, OAuth tokens, and secrets never reach the client.
 
 This is especially useful for **client-facing components** like journey blocks, portal blocks, and capabilities that need to call external APIs.
 
@@ -29,9 +29,9 @@ External API (https://api.example.com/products)
 
 ## Quick start
 
-### 1. Configure a proxy in the App Builder
+### 1. Add an API Proxy component to your app
 
-Go to your app's **Proxies** section and add a target:
+In the App Builder, add a new **API Proxy** component and configure:
 
 - **Name** — a unique identifier (e.g. `products-api`)
 - **Target URL** — the base URL of the external API (must be HTTPS)
