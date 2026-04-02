@@ -28,14 +28,47 @@ Your first step is to obtain a dedicated developer sandbox account:
 
 ## 2. Build Your First Private App
 
-With your developer account activated, you can begin building:
+Getting started is as simple as:
 
-- Navigate to the app creation page at [https://portal.epilot.cloud/app/apps/configuration/new](https://portal.epilot.cloud/app/apps/configuration/new)
-- Configure your app's metadata (name, description, category)
-- Add components based on your integration needs
-- Develop and upload your component code
-- Test your app thoroughly within your sandbox environment
-- Make iterative improvements based on your testing
+```bash
+npx epilot app init my-app
+```
+
+This creates a local monorepo with an empty `manifest.json` — the declarative source of truth for your entire app. The manifest describes your app's metadata, components, permissions, and assets.
+
+From there, use the CLI to add and remove components:
+
+```bash
+cd my-app
+
+# Add a component (interactive type selector, or pass --type)
+epilot app add-component my-block --type CUSTOM_JOURNEY_BLOCK
+
+# Remove a component
+epilot app remove-component my-block
+```
+
+Each CLI command updates the `manifest.json` automatically. You develop your components locally, and when you're ready:
+
+```bash
+# Build all components
+npm run build
+
+# Deploy — creates or updates the app on the epilot platform
+epilot app deploy
+```
+
+`epilot app deploy` reads your manifest and syncs everything to the platform: it creates the app on first deploy, uploads component bundles, and keeps the remote state in sync with your local manifest.
+
+See the [CLI documentation](/docs/cli/commands/app) for the full command reference, and the [app-templates](https://github.com/epilot-dev/app-templates) repository for starter templates for each component type.
+
+:::tip Building with AI coding agents
+
+Every scaffolded app includes a `SKILL.md` file — a structured guide that teaches AI coding agents (like Claude Code, Cursor, or GitHub Copilot) how to work with the epilot app manifest, component types, and CLI commands. This makes it significantly faster to build, configure, and iterate on your app with AI assistance.
+
+:::
+
+You can also build your app through the UI at [https://portal.epilot.cloud/app/apps/configuration/new](https://portal.epilot.cloud/app/apps/configuration/new).
 
 :::info
 
