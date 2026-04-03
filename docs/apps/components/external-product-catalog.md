@@ -49,7 +49,7 @@ You can use template variables throughout your configuration to dynamically inje
 
 ### Example
 
-Below is an example of a configuration for the `products` hook, assuming a typical OAuth2 authentication flow, where the client credentials are stored in the app options.
+Below is an example of a configuration for the `products` and `product-recommendations` hooks, assuming a typical OAuth2 authentication flow, where the client credentials are stored in the app options.
 
 ```json title="Products hook with OAuth2 authentication"
 {
@@ -75,6 +75,33 @@ Below is an example of a configuration for the `products` hook, assuming a typic
       },
       "call": {
         "url": "{{Options.base_api_url}}/products",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{AuthResponse.access_token}}"
+        }
+      }
+    },
+    {
+      "id": "prod-recommendations-catalog",
+      "type": "product-recommendations",
+      "name": {
+        "en": "Prod Product Recommendations",
+        "de": "Prod Produktempfehlungen"
+      },
+      "auth": {
+        "url": "{{Options.oauth_api_url}}/auth/token",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Basic {{Options.oauth_client_id | append: \":\" | append: Options.oauth_client_secret | base64_encode}}",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": {
+          "grant_type": "client_credentials",
+          "scope": "{{Options.oauth_scope}}"
+        }
+      },
+      "call": {
+        "url": "{{Options.base_api_url}}/product-recommendations",
         "method": "POST",
         "headers": {
           "Authorization": "Bearer {{AuthResponse.access_token}}"
@@ -134,3 +161,6 @@ The integration works as a request to your service endpoint with the following r
 For detailed information on the request and response schemas, please refer to the [External Catalog Integration Interface documentation](https://docs.api.epilot.io/pricing-api-external-catalog).
 
 
+### Examples
+
+### Prod
