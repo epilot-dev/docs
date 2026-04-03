@@ -428,6 +428,9 @@ Below is an example of a response for the `product-recommendations` hook.
 }
 ```
 
-This allows the portal to display dynamic product recommendations based on your external catalog, as shown below:
+This allows portals and journeys to display dynamic product recommendations based on your external catalog, as shown below:
 
-<img src="/img/apps/external-product-catalog/portal-product-recommendations.gif" width="500" />
+<div style={{display: 'flex', gap: '1rem'}}>
+  <img src="/img/apps/external-product-catalog/portal-product-recommendations.gif" width="500" />
+  <img src="/img/apps/external-product-catalog/journey-product-recommendations.png" width="500" />
+</div>
