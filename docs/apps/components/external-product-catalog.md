@@ -161,6 +161,273 @@ The integration works as a request to your service endpoint with the following r
 For detailed information on the request and response schemas, please refer to the [External Catalog Integration Interface documentation](https://docs.api.epilot.io/pricing-api-external-catalog).
 
 
-### Examples
+### Response Examples
 
-### Prod
+Below is an example of a response for the `product-recommendations` hook.
+
+```json title="Product Recommendations Response Example"
+{
+  "source": {
+    "id": "product-1",
+    "name": "Power Tariff",
+    "description": "Flexible electricity tariff with competitive prices for residential customers.",
+    "features": [
+      "Flexible",
+      "No hidden fees",
+      "Free customer support"
+    ],
+    "product_image_urls": [
+      "https://epilot-dev-user-content.s3.eu-central-1.amazonaws.com/739224/13e79129-6087-4e6a-b801-3752e8e9490c/solar_panel_ph.jpeg"
+    ],
+    "product_downloads_urls": [
+      {
+        "url": "https://epilot-dev-user-content.s3.eu-central-1.amazonaws.com/739224/b1289717-9266-4940-8f02-b665b98c34fd/september-order.pdf",
+        "filename": "Example product details file"
+      }
+    ],
+    "legal_footnotes": "Price valid for new customers. Prices may vary depending on consumption and region.",
+    "price": {
+      "is_composite_price": true,
+      "id": "composite-price-1",
+      "name": "Standard tariff",
+      "metadata": {},
+      "price_components": [
+        {
+          "metadata": {},
+          "name": "Working price",
+          "id": "price-component-1",
+          "is_composite_price": false,
+          "type": "recurring",
+          "billing_period": "monthly",
+          "tax": {
+            "type": "VAT",
+            "rate": 19
+          },
+          "unit_amount_net_decimal": "0.35",
+          "unit_amount_gross_decimal": "0.4165",
+          "amount_subtotal_decimal": "35",
+          "amount_total_decimal": "41.65",
+          "currency": "EUR"
+        },
+        {
+          "name": "Base price",
+          "id": "price-component-2",
+          "is_composite_price": false,
+          "type": "recurring",
+          "billing_period": "monthly",
+          "tax": {
+            "type": "VAT",
+            "rate": 19
+          },
+          "unit_amount_net_decimal": "10",
+          "unit_amount_gross_decimal": "11.90",
+          "amount_subtotal_decimal": "10",
+          "amount_total_decimal": "11.90",
+          "currency": "EUR"
+        }
+      ],
+      "total_details": {
+        "breakdown": {
+          "recurrences": [
+            {
+              "type": "recurring",
+              "billing_period": "monthly",
+              "amount_subtotal_decimal": "45",
+              "amount_total_decimal": "53.55"
+            }
+          ]
+        }
+      },
+      "billing_duration_amount": 24,
+      "billing_duration_unit": "months",
+      "notice_time_amount": 6,
+      "notice_time_unit": "weeks",
+      "termination_time_amount": 6,
+      "termination_time_unit": "weeks",
+      "renewal_duration_amount": 12,
+      "renewal_duration_unit": "months"
+    },
+    "metadata": {}
+  },
+  "offers": [
+    {
+      "id": "product-2",
+      "name": "Power Tariff - Special",
+      "description": "Special flexible electricity tariff with competitive prices for residential customers.",
+      "features": [
+        "Flexible",
+        "No hidden fees",
+        "Free customer support"
+      ],
+      "product_image_urls": [
+        "https://epilot-dev-user-content.s3.eu-central-1.amazonaws.com/739224/13e79129-6087-4e6a-b801-3752e8e9490c/solar_panel_ph.jpeg"
+      ],
+      "product_downloads_urls": [
+        {
+          "url": "https://epilot-dev-user-content.s3.eu-central-1.amazonaws.com/739224/b1289717-9266-4940-8f02-b665b98c34fd/september-order.pdf",
+          "filename": "Example product details file"
+        }
+      ],
+      "legal_footnotes": "Price valid for new customers. Prices may vary depending on consumption and region.",
+      "price": {
+        "is_composite_price": true,
+        "id": "composite-price-2",
+        "name": "Standard tariff",
+        "metadata": {},
+        "price_components": [
+          {
+            "metadata": {},
+            "name": "Working price",
+            "id": "price-component-3",
+            "is_composite_price": false,
+            "type": "recurring",
+            "billing_period": "monthly",
+            "tax": {
+              "type": "VAT",
+              "rate": 19
+            },
+            "unit_amount_net_decimal": "0.3697",
+            "unit_amount_gross_decimal": "0.44",
+            "amount_subtotal_decimal": "36.97",
+            "amount_total_decimal": "44.00",
+            "currency": "EUR"
+          },
+          {
+            "name": "Base price",
+            "id": "price-component-2",
+            "is_composite_price": false,
+            "type": "recurring",
+            "billing_period": "monthly",
+            "tax": {
+              "type": "VAT",
+              "rate": 19
+            },
+            "unit_amount_net_decimal": "10",
+            "unit_amount_gross_decimal": "11.90",
+            "amount_subtotal_decimal": "10",
+            "amount_total_decimal": "11.90",
+            "currency": "EUR"
+          }
+        ],
+        "total_details": {
+          "breakdown": {
+            "recurrences": [
+              {
+                "type": "recurring",
+                "billing_period": "monthly",
+                "amount_subtotal_decimal": "45",
+                "amount_total_decimal": "53.55"
+              }
+            ]
+          }
+        },
+        "billing_duration_amount": 12,
+        "billing_duration_unit": "months",
+        "coupons": [
+          {
+            "name": "Special Bonus",
+            "type": "fixed",
+            "description": "Flat €10 cashback for loyal customers.",
+            "category": "cashback",
+            "cashback_period": "12",
+            "cashback_amount_decimal": "10",
+            "fixed_value_decimal": "10",
+            "fixed_value_currency": "EUR"
+          }
+        ]
+      }
+    },
+    {
+      "id": "product-3",
+      "name": "Power Tariff - Special",
+      "description": "Special flexible electricity tariff with competitive prices for residential customers.",
+      "features": [
+        "Flexible",
+        "No hidden fees",
+        "Free customer support"
+      ],
+      "product_image_urls": [
+        "https://epilot-dev-user-content.s3.eu-central-1.amazonaws.com/739224/13e79129-6087-4e6a-b801-3752e8e9490c/solar_panel_ph.jpeg"
+      ],
+      "product_downloads_urls": [
+        {
+          "url": "https://epilot-dev-user-content.s3.eu-central-1.amazonaws.com/739224/b1289717-9266-4940-8f02-b665b98c34fd/september-order.pdf",
+          "filename": "Example product details file"
+        }
+      ],
+      "legal_footnotes": "Price valid for new customers. Prices may vary depending on consumption and region.",
+      "price": {
+        "is_composite_price": true,
+        "id": "composite-price-3",
+        "name": "Standard tariff",
+        "metadata": {},
+        "price_components": [
+          {
+            "metadata": {},
+            "name": "Working price",
+            "id": "price-component-1",
+            "is_composite_price": false,
+            "type": "recurring",
+            "billing_period": "monthly",
+            "tax": {
+              "type": "VAT",
+              "rate": 19
+            },
+            "unit_amount_net_decimal": "0.35",
+            "unit_amount_gross_decimal": "0.4165",
+            "amount_subtotal_decimal": "35",
+            "amount_total_decimal": "41.65",
+            "currency": "EUR"
+          },
+          {
+            "name": "Base price",
+            "id": "price-component-2",
+            "is_composite_price": false,
+            "type": "recurring",
+            "billing_period": "monthly",
+            "tax": {
+              "type": "VAT",
+              "rate": 19
+            },
+            "unit_amount_net_decimal": "10",
+            "unit_amount_gross_decimal": "11.90",
+            "amount_subtotal_decimal": "10",
+            "amount_total_decimal": "11.90",
+            "currency": "EUR"
+          }
+        ],
+        "total_details": {
+          "breakdown": {
+            "recurrences": [
+              {
+                "type": "recurring",
+                "billing_period": "monthly",
+                "amount_subtotal_decimal": "45",
+                "amount_total_decimal": "53.55"
+              }
+            ]
+          }
+        },
+        "billing_duration_amount": 24,
+        "billing_duration_unit": "months",
+        "coupons": [
+          {
+            "name": "Special Bonus",
+            "type": "fixed",
+            "description": "Flat €10 cashback for loyal customers.",
+            "category": "cashback",
+            "cashback_period": "12",
+            "cashback_amount_decimal": "10",
+            "fixed_value_decimal": "10",
+            "fixed_value_currency": "EUR"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+This allows the portal to display dynamic product recommendations based on your external catalog, as shown below:
+
+<img src="/img/apps/external-product-catalog/portal-product-recommendations.gif" width="500" />
