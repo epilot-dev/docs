@@ -122,7 +122,7 @@ This allows the portal to dynamically fetch products and pricing from your exter
 
 ## Integration Interface
 
-To ensure seamless communication between epilot and your external catalog, your integration must respect the **External Catalog Integration Interface**.
+To ensure seamless communication between epilot and your external catalog, your integration must respect the [External Catalog Integration Interface documentation](https://docs.api.epilot.io/pricing-api-external-catalog).
 
 ### Specification
 
