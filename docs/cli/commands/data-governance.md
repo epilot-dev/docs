@@ -1,20 +1,20 @@
 ---
-title: "Data Management API"
+title: "Data Governance API"
 ---
 
-# Data Management API
+# Data Governance API
 
-- **Base URL:** `https://data-management.sls.epilot.io`
-- **API Docs:** [https://docs.epilot.io/api/data-management](https://docs.epilot.io/api/data-management)
+- **Base URL:** `https://data-governance.sls.epilot.io`
+- **API Docs:** [https://docs.epilot.io/api/data-governance](https://docs.epilot.io/api/data-governance)
 
 ## Quick Start
 
 ```bash
 # List available operations
-epilot data-management
+epilot data-governance
 
 # Call an operation
-epilot data-management queryEntities -p entity_schema=example
+epilot data-governance queryEntities -p entity_schema=example
 ```
 
 ## Common Flags
@@ -39,8 +39,8 @@ epilot data-management queryEntities -p entity_schema=example
 
 **Data Management**
 - [`queryEntities`](#queryentities) — Executes a query against the specified entity schema using the saved view definition, optionally combined with additiona
-- [`createJob`](#createjob) — POST /data-management/v1/{entity_schema}/jobs
-- [`updateJob`](#updatejob) — PATCH /data-management/v1/{entity_schema}/jobs/{job_id}
+- [`createJob`](#createjob) — POST /data-governance/v1/{entity_schema}/jobs
+- [`updateJob`](#updatejob) — PATCH /data-governance/v1/{entity_schema}/jobs/{job_id}
 - [`getJob`](#getjob) — Returns details of a single job run.
 - [`getJobReportUrl`](#getjobreporturl) — Returns a short-lived, pre-signed URL to download the report file for the given job.
 - [`getConfig`](#getconfig) — Returns a data management config by its id.
@@ -53,7 +53,7 @@ epilot data-management queryEntities -p entity_schema=example
 
 Executes a query against the specified entity schema using the saved view definition, optionally combined with additiona
 
-`POST /data-management/v1/{entity_schema}/query`
+`POST /data-governance/v1/{entity_schema}/query`
 
 **Parameters**
 
@@ -67,14 +67,14 @@ Executes a query against the specified entity schema using the saved view defini
 **Sample Call**
 
 ```bash
-epilot data-management queryEntities \
+epilot data-governance queryEntities \
   -p entity_schema=example
 ```
 
 With request body:
 
 ```bash
-epilot data-management queryEntities \
+epilot data-governance queryEntities \
   -p entity_schema=example \
   -d '{
   "saved_view_id": "string",
@@ -96,19 +96,19 @@ epilot data-management queryEntities \
 Using positional args for path parameters:
 
 ```bash
-epilot data-management queryEntities example
+epilot data-governance queryEntities example
 ```
 
 Using stdin pipe:
 
 ```bash
-cat body.json | epilot data-management queryEntities -p entity_schema=example
+cat body.json | epilot data-governance queryEntities -p entity_schema=example
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management queryEntities -p entity_schema=example --jsonata 'results[0]'
+epilot data-governance queryEntities -p entity_schema=example --jsonata 'results[0]'
 ```
 
 <details>
@@ -129,7 +129,7 @@ epilot data-management queryEntities -p entity_schema=example --jsonata 'results
 
 ### `createJob`
 
-`POST /data-management/v1/{entity_schema}/jobs`
+`POST /data-governance/v1/{entity_schema}/jobs`
 
 **Parameters**
 
@@ -142,14 +142,14 @@ epilot data-management queryEntities -p entity_schema=example --jsonata 'results
 **Sample Call**
 
 ```bash
-epilot data-management createJob \
+epilot data-governance createJob \
   -p entity_schema=example
 ```
 
 With request body:
 
 ```bash
-epilot data-management createJob \
+epilot data-governance createJob \
   -p entity_schema=example \
   -d '{
   "type": "deletion",
@@ -163,19 +163,19 @@ epilot data-management createJob \
 Using positional args for path parameters:
 
 ```bash
-epilot data-management createJob example
+epilot data-governance createJob example
 ```
 
 Using stdin pipe:
 
 ```bash
-cat body.json | epilot data-management createJob -p entity_schema=example
+cat body.json | epilot data-governance createJob -p entity_schema=example
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management createJob -p entity_schema=example --jsonata 'id'
+epilot data-governance createJob -p entity_schema=example --jsonata 'id'
 ```
 
 <details>
@@ -211,7 +211,7 @@ epilot data-management createJob -p entity_schema=example --jsonata 'id'
 
 ### `updateJob`
 
-`PATCH /data-management/v1/{entity_schema}/jobs/{job_id}`
+`PATCH /data-governance/v1/{entity_schema}/jobs/{job_id}`
 
 **Parameters**
 
@@ -225,7 +225,7 @@ epilot data-management createJob -p entity_schema=example --jsonata 'id'
 **Sample Call**
 
 ```bash
-epilot data-management updateJob \
+epilot data-governance updateJob \
   -p entity_schema=example \
   -p job_id=123e4567-e89b-12d3-a456-426614174000
 ```
@@ -233,7 +233,7 @@ epilot data-management updateJob \
 With request body:
 
 ```bash
-epilot data-management updateJob \
+epilot data-governance updateJob \
   -p entity_schema=example \
   -p job_id=123e4567-e89b-12d3-a456-426614174000 \
   -d '{
@@ -252,19 +252,19 @@ epilot data-management updateJob \
 Using positional args for path parameters:
 
 ```bash
-epilot data-management updateJob example 123e4567-e89b-12d3-a456-426614174000
+epilot data-governance updateJob example 123e4567-e89b-12d3-a456-426614174000
 ```
 
 Using stdin pipe:
 
 ```bash
-cat body.json | epilot data-management updateJob -p entity_schema=example -p job_id=123e4567-e89b-12d3-a456-426614174000
+cat body.json | epilot data-governance updateJob -p entity_schema=example -p job_id=123e4567-e89b-12d3-a456-426614174000
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management updateJob -p entity_schema=example -p job_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'id'
+epilot data-governance updateJob -p entity_schema=example -p job_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'id'
 ```
 
 <details>
@@ -302,7 +302,7 @@ epilot data-management updateJob -p entity_schema=example -p job_id=123e4567-e89
 
 Returns details of a single job run.
 
-`GET /data-management/v1/jobs/{job_id}`
+`GET /data-governance/v1/jobs/{job_id}`
 
 **Parameters**
 
@@ -313,20 +313,20 @@ Returns details of a single job run.
 **Sample Call**
 
 ```bash
-epilot data-management getJob \
+epilot data-governance getJob \
   -p job_id=123e4567-e89b-12d3-a456-426614174000
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot data-management getJob 123e4567-e89b-12d3-a456-426614174000
+epilot data-governance getJob 123e4567-e89b-12d3-a456-426614174000
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management getJob -p job_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'id'
+epilot data-governance getJob -p job_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'id'
 ```
 
 <details>
@@ -364,7 +364,7 @@ epilot data-management getJob -p job_id=123e4567-e89b-12d3-a456-426614174000 --j
 
 Returns a short-lived, pre-signed URL to download the report file for the given job.
 
-`GET /data-management/v1/jobs/{job_id}/report-url`
+`GET /data-governance/v1/jobs/{job_id}/report-url`
 
 **Parameters**
 
@@ -375,20 +375,20 @@ Returns a short-lived, pre-signed URL to download the report file for the given 
 **Sample Call**
 
 ```bash
-epilot data-management getJobReportUrl \
+epilot data-governance getJobReportUrl \
   -p job_id=123e4567-e89b-12d3-a456-426614174000
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot data-management getJobReportUrl 123e4567-e89b-12d3-a456-426614174000
+epilot data-governance getJobReportUrl 123e4567-e89b-12d3-a456-426614174000
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management getJobReportUrl -p job_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'url'
+epilot data-governance getJobReportUrl -p job_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'url'
 ```
 
 <details>
@@ -409,7 +409,7 @@ epilot data-management getJobReportUrl -p job_id=123e4567-e89b-12d3-a456-4266141
 
 Returns a data management config by its id.
 
-`GET /data-management/v1/configs/{config_id}`
+`GET /data-governance/v1/configs/{config_id}`
 
 **Parameters**
 
@@ -420,20 +420,20 @@ Returns a data management config by its id.
 **Sample Call**
 
 ```bash
-epilot data-management getConfig \
+epilot data-governance getConfig \
   -p config_id=123e4567-e89b-12d3-a456-426614174000
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot data-management getConfig 123e4567-e89b-12d3-a456-426614174000
+epilot data-governance getConfig 123e4567-e89b-12d3-a456-426614174000
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management getConfig -p config_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'id'
+epilot data-governance getConfig -p config_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'id'
 ```
 
 <details>
@@ -478,7 +478,7 @@ epilot data-management getConfig -p config_id=123e4567-e89b-12d3-a456-4266141740
 
 Creates a job run for the given config and triggers asynchronous execution. Returns a job id which can be used to poll j
 
-`POST /data-management/v1/configs/{config_id}/jobs`
+`POST /data-governance/v1/configs/{config_id}/jobs`
 
 **Parameters**
 
@@ -489,20 +489,20 @@ Creates a job run for the given config and triggers asynchronous execution. Retu
 **Sample Call**
 
 ```bash
-epilot data-management createJobForConfig \
+epilot data-governance createJobForConfig \
   -p config_id=123e4567-e89b-12d3-a456-426614174000
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot data-management createJobForConfig 123e4567-e89b-12d3-a456-426614174000
+epilot data-governance createJobForConfig 123e4567-e89b-12d3-a456-426614174000
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management createJobForConfig -p config_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'id'
+epilot data-governance createJobForConfig -p config_id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'id'
 ```
 
 <details>
@@ -540,7 +540,7 @@ epilot data-management createJobForConfig -p config_id=123e4567-e89b-12d3-a456-4
 
 Creates or updates a config for the given entity schema. The config is later used by a scheduled background process to p
 
-`POST /data-management/v1/{entity_schema}/configs`
+`POST /data-governance/v1/{entity_schema}/configs`
 
 **Parameters**
 
@@ -554,14 +554,14 @@ Creates or updates a config for the given entity schema. The config is later use
 **Sample Call**
 
 ```bash
-epilot data-management upsertConfig \
+epilot data-governance upsertConfig \
   -p entity_schema=example
 ```
 
 With request body:
 
 ```bash
-epilot data-management upsertConfig \
+epilot data-governance upsertConfig \
   -p entity_schema=example \
   -d '{
   "type": "deletion",
@@ -590,19 +590,19 @@ epilot data-management upsertConfig \
 Using positional args for path parameters:
 
 ```bash
-epilot data-management upsertConfig example
+epilot data-governance upsertConfig example
 ```
 
 Using stdin pipe:
 
 ```bash
-cat body.json | epilot data-management upsertConfig -p entity_schema=example
+cat body.json | epilot data-governance upsertConfig -p entity_schema=example
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management upsertConfig -p entity_schema=example --jsonata 'id'
+epilot data-governance upsertConfig -p entity_schema=example --jsonata 'id'
 ```
 
 <details>
@@ -647,7 +647,7 @@ epilot data-management upsertConfig -p entity_schema=example --jsonata 'id'
 
 Returns a paginated list of configs
 
-`GET /data-management/v1/configs`
+`GET /data-governance/v1/configs`
 
 **Parameters**
 
@@ -663,13 +663,13 @@ Returns a paginated list of configs
 **Sample Call**
 
 ```bash
-epilot data-management listConfigs
+epilot data-governance listConfigs
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management listConfigs --jsonata 'configs'
+epilot data-governance listConfigs --jsonata 'configs'
 ```
 
 <details>
@@ -719,7 +719,7 @@ epilot data-management listConfigs --jsonata 'configs'
 
 Returns a paginated list of jobs
 
-`GET /data-management/v1/jobs`
+`GET /data-governance/v1/jobs`
 
 **Parameters**
 
@@ -735,13 +735,13 @@ Returns a paginated list of jobs
 **Sample Call**
 
 ```bash
-epilot data-management listJobs
+epilot data-governance listJobs
 ```
 
 With JSONata filter:
 
 ```bash
-epilot data-management listJobs --jsonata 'jobs'
+epilot data-governance listJobs --jsonata 'jobs'
 ```
 
 <details>

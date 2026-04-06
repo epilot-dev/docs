@@ -276,7 +276,7 @@ Per-API command reference with all operations, parameters, and sample calls. See
 | Consent API | `epilot consent` | [reference](commands/consent) |
 | Portal API | `epilot customer-portal` | [reference](commands/customer-portal) |
 | Dashboard API | `epilot dashboard` | [reference](commands/dashboard) |
-| Data Management API | `epilot data-management` | [reference](commands/data-management) |
+| Data Governance API | `epilot data-governance` | [reference](commands/data-governance) |
 | Deduplication API | `epilot deduplication` | [reference](commands/deduplication) |
 | Design Builder API v2 | `epilot design` | [reference](commands/design) |
 | Document API | `epilot document` | [reference](commands/document) |

@@ -30,6 +30,12 @@ TypeScript SDK with full type support for all epilot APIs.
 
 <a className="button button--secondary" href="/docs/sdk/overview">Get Started with SDK</a>
 
+## Data Governance
+
+Automated contact deletion based on saved views, advanced filters, and scheduled jobs.
+
+<a className="button button--secondary" href="/docs/data-governance/overview">Data Governance Docs</a>
+
 ## CLI
 
 Call any epilot API from the command line. Built for quick lookups, automation scripts, and AI agents.

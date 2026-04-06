@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Journey Builder
 
-[[API Docs](/api/journey)] | <a href="/journey-sdk-playground/index.html" target="_blank" rel="noopener noreferrer">Journey SDK Playground</a>
+[[API Docs](/api/journey)] | <a href="/journey-sdk-playground/index.html" target="_blank" rel="noopener noreferrer">SDK Playground</a>
 
 The Journey Builder is a WYSIWYG editor for creating end-customer and partner journeys. Build and edit journeys using _Steps_ and _Blocks_.
 

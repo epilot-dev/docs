@@ -1,11 +1,11 @@
 ---
-title: "Data Management API"
+title: "Data Governance API"
 ---
 
-# Data Management API
+# Data Governance API
 
-- **Base URL:** `https://data-management.sls.epilot.io`
-- **Full API Docs:** [https://docs.epilot.io/api/data-management](https://docs.epilot.io/api/data-management)
+- **Base URL:** `https://data-governance.sls.epilot.io`
+- **Full API Docs:** [https://docs.epilot.io/api/data-governance](https://docs.epilot.io/api/data-governance)
 
 ## Usage
 
@@ -13,22 +13,22 @@ title: "Data Management API"
 import { epilot } from '@epilot/sdk'
 
 epilot.authorize(() => '<token>')
-const { data } = await epilot.dataManagement.queryEntities(...)
+const { data } = await epilot.dataGovernance.queryEntities(...)
 ```
 
 ### Tree-shakeable import
 
 ```ts
-import { getClient, authorize } from '@epilot/sdk/data-management'
+import { getClient, authorize } from '@epilot/sdk/data-governance'
 
-const dataManagementClient = getClient()
-authorize(dataManagementClient, () => '<token>')
-const { data } = await dataManagementClient.queryEntities(...)
+const dataGovernanceClient = getClient()
+authorize(dataGovernanceClient, () => '<token>')
+const { data } = await dataGovernanceClient.queryEntities(...)
 ```
 
 ## Operations
 
-**Data Management**
+**Data Governance**
 - [`queryEntities`](#queryentities)
 - [`createJob`](#createjob)
 - [`updateJob`](#updatejob)
@@ -68,7 +68,7 @@ const { data } = await dataManagementClient.queryEntities(...)
 
 Query entities using a saved view with additional data filters
 
-`POST /data-management/v1/{entity_schema}/query`
+`POST /data-governance/v1/{entity_schema}/query`
 
 ```ts
 const { data } = await client.queryEntities(
@@ -113,7 +113,7 @@ const { data } = await client.queryEntities(
 
 Create a new job run
 
-`POST /data-management/v1/{entity_schema}/jobs`
+`POST /data-governance/v1/{entity_schema}/jobs`
 
 ```ts
 const { data } = await client.createJob(
@@ -165,7 +165,7 @@ const { data } = await client.createJob(
 
 Update an existing job run
 
-`PATCH /data-management/v1/{entity_schema}/jobs/{job_id}`
+`PATCH /data-governance/v1/{entity_schema}/jobs/{job_id}`
 
 ```ts
 const { data } = await client.updateJob(
@@ -222,7 +222,7 @@ const { data } = await client.updateJob(
 
 Get a job by id
 
-`GET /data-management/v1/jobs/{job_id}`
+`GET /data-governance/v1/jobs/{job_id}`
 
 ```ts
 const { data } = await client.getJob({
@@ -265,7 +265,7 @@ const { data } = await client.getJob({
 
 Get report download URL for a job
 
-`GET /data-management/v1/jobs/{job_id}/report-url`
+`GET /data-governance/v1/jobs/{job_id}/report-url`
 
 ```ts
 const { data } = await client.getJobReportUrl({
@@ -291,7 +291,7 @@ const { data } = await client.getJobReportUrl({
 
 Get a config by id
 
-`GET /data-management/v1/configs/{config_id}`
+`GET /data-governance/v1/configs/{config_id}`
 
 ```ts
 const { data } = await client.getConfig({
@@ -341,7 +341,7 @@ const { data } = await client.getConfig({
 
 Trigger a manual job run for a config
 
-`POST /data-management/v1/configs/{config_id}/jobs`
+`POST /data-governance/v1/configs/{config_id}/jobs`
 
 ```ts
 const { data } = await client.createJobForConfig({
@@ -384,7 +384,7 @@ const { data } = await client.createJobForConfig({
 
 Upsert config
 
-`POST /data-management/v1/{entity_schema}/configs`
+`POST /data-governance/v1/{entity_schema}/configs`
 
 ```ts
 const { data } = await client.upsertConfig(
@@ -458,7 +458,7 @@ const { data } = await client.upsertConfig(
 
 List configs
 
-`GET /data-management/v1/configs`
+`GET /data-governance/v1/configs`
 
 ```ts
 const { data } = await client.listConfigs({
@@ -518,7 +518,7 @@ const { data } = await client.listConfigs({
 
 List jobs
 
-`GET /data-management/v1/jobs`
+`GET /data-governance/v1/jobs`
 
 ```ts
 const { data } = await client.listJobs({
