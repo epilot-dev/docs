@@ -32,7 +32,7 @@ TypeScript SDK with full type support for all epilot APIs.
 
 ## Data Governance
 
-Automated contact deletion based on saved views, advanced filters, and scheduled jobs.
+Automated data lifecycle policies and auditable deletions.
 
 <a className="button button--secondary" href="/docs/data-governance/overview">Data Governance Docs</a>
 
