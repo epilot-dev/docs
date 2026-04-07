@@ -2,6 +2,113 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-04-06 Event: FileCreated
+
+- New `FileCreated` event type added with required fields: `entity_id`, `filename`, `mime_type`, `size_bytes`, `s3ref`, `version_index`; includes an embedded `file` entity object with file metadata and a `category` field
+
+## 2026-04-03 Email Settings API
+
+- New `GET /v1/email-settings/domain` endpoint added for retrieving all custom email domains configured for the organization
+
+## 2026-04-02 Scheduler API
+
+- New `scheduled_at_from` and `scheduled_at_to` date-time filter fields added to `POST /v1/schedules:search` for filtering schedules by time window
+- New `sort` direction field added to schedule search requests (values: `asc`, `desc`; default: `asc`)
+
+## 2026-04-01 Automation API
+
+- New optional `target_workflow` query parameter added to `GET /v1/automation/flows` — filters automations to those targeting a specific workflow by ID
+
+## 2026-04-01 Customer Portal API
+
+- Deprecated `POST /v2/portal/public/user` (portal user creation endpoint)
+- New `GET /v3/portal/public/schemas` endpoint added for retrieving entity schemas in the portal context
+- New `GET /v3/portal/public/widgets` endpoint added as the v3 replacement for `GET /v2/portal/public-widgets`
+
+## 2026-04-01 Kanban API
+
+- New `task` enum value added to `group_by.field` on Kanban boards (alongside existing `context_entity` and `phase`)
+
+## 2026-04-01 Organization API
+
+- New `GET /v2/organization/feature-settings` endpoint added for retrieving feature flag metadata for the organization UI
+
+## 2026-03-31 Customer Portal API
+
+- New `search_snippets` and `templates_output_highlighted` optional fields added to entity search responses, providing highlighted text snippets for matched fields
+- New `highlight` boolean option added to entity search requests to enable search result highlighting
+
+## 2026-03-31 Integration Toolkit API
+
+- New monitoring v2 endpoints: `POST /v2/integrations/{integrationId}/monitoring/events`, `POST /v2/integrations/{integrationId}/monitoring/stats`, `POST /v2/integrations/{integrationId}/monitoring/time-series`, `GET /v2/integrations/{integrationId}/monitoring/events/{eventId}/associated`
+- New type generation endpoints: `POST /v1/integrations/{integrationId}/generate-types-preview`, `POST /v1/integrations/{integrationId}/generate-types`, `POST /v1/integrations/{integrationId}/commit-types` — for generating and committing TypeScript type definitions from managed call use cases
+- New `type_annotations` and `types_locked` fields added to managed call use cases
+
+## 2026-03-31 Message API
+
+- New spam management endpoints added: `POST /v1/message/messages/{id}/spam`, `POST /v1/message/messages/{id}/unspam`, `POST /v1/message/threads/{id}/spam`, `POST /v1/message/threads/{id}/unspam`
+- New `spam` count field added to the `GET /v1/message/messages/unread/{actor}` response
+
+## 2026-03-30 Entity API
+
+- New `exclude_types` query parameter added to the taxonomy classification search endpoint, allowing specific entity types to be excluded from results
+
+## 2026-03-30 Workflows Definition API
+
+- New `partner` optional field added to workflow steps (v1 definitions) and tasks (v2 flow templates), providing partner-specific task display details (`enabled`, `label`, `description`) for partner org users
+
+## 2026-03-27 App API
+
+- New `GET /v1/public/app/{appId}/proxy/{proxyName}/{path}` and `POST /v1/public/app/{appId}/proxy/{proxyName}/{path}` endpoints added for routing requests through a named API proxy configured on the app
+
+## 2026-03-25 Entity API
+
+- New `POST /v1/entity/schemas/{slug}/freeze` and `POST /v1/entity/schemas/{slug}/unfreeze` endpoints added for managing schema version lifecycle
+- New `frozen` and `latest` boolean fields added to schema responses; `draft` field is now deprecated
+- New `frozen_version` field added to schema versions response; `unpublished` query parameter deprecated in favour of the new `latest` parameter
+
+## 2026-03-25 Workflows Execution API
+
+- New `POST /v2/flows/executions/{execution_id}/tasks/{task_id}/schedule/run-now` endpoint added — cancels the pending schedule for a task and immediately triggers its automation execution
+
+## 2026-03-24 Customer Portal API
+
+- New `GET /v3/portal/widgets` and `POST /v3/portal/widgets` endpoints added for managing portal widgets (v3)
+- New `POST /v3/portal/portal/files` endpoint added for uploading files in the portal context
+
+## 2026-03-24 Email Settings API
+
+- New MS Teams channel endpoints added: `POST /v2/channels/msteams/connect`, `POST /v2/channels/msteams/disconnect`, `GET /v2/channels/msteams/status`
+- New `teams_enabled` boolean field added to the Outlook connection status response
+
+## 2026-03-24 Kanban API
+
+- New `group_by` field added to Kanban board configuration, enabling tasks to be grouped within each swimlane; supports `context_entity`, `phase`, and `task` grouping options
+- New `group_by` field added to `POST /v1/kanban/query/flows:execute` request for grouping task query results
+
+## 2026-03-23 Customer Portal API
+
+- New `domain` parameter accepted as an alternative to `portal_id` across most public portal endpoints, allowing portal identification by domain name
+- New `portal_id` field added to portal page objects in responses
+
+## 2026-03-19 Event: InvoiceSimulationRequested
+
+- New `meter` entity object added to the event payload, containing meter details associated with the simulation request
+
+## 2026-03-18 App API
+
+- New optional `secure_proxy` field added to all portal extension hook types (via `PortalExtensionSecureProxy` schema), routing hook HTTP requests through a VPC secure proxy
+
+## 2026-03-18 Customer Portal API
+
+- New `portal_id` parameter added to the admin login-as-user endpoint
+- New `evaluate_targeting` boolean field added to the page interpolation request
+- Deprecated endpoints: `GET /v2/portal/contract`, `POST /v2/portal/opportunities/search`, `GET /v2/portal/opportunities/searchable-attributes`, `GET /v2/portal/opportunity`, `GET /v2/portal/order`, `GET /v2/portal/request`
+
+## 2026-03-18 Workflows Definition API
+
+- `max_iterations` maximum for decision task loop configuration increased from 10 to 100
+
 ## 2026-03-16 Entity API
 
 - New `GET /v2/entity/schemas` endpoint added, supporting `full`, `unpublished`, `exclude`, and `include` query parameters for flexible schema retrieval
