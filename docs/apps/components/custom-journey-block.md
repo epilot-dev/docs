@@ -34,16 +34,17 @@ Custom Journey Blocks are web components that follow standard web technologies, 
 - Familiarity with Web Components standards
 - A development environment with Node.js
 
-### Starter Template
+### Getting Started
 
-We recommend starting with our React starter template to quickly set up your development environment:
+The fastest way to scaffold a journey block is with the **epilot CLI**:
 
-```bash title="Clone and run the React starter template"
-# Clone the starter template
-git clone https://github.com/epilot-dev/custom-journey-block-react.git my-custom-block
+```bash title="Scaffold a journey block with the CLI"
+# Initialize a new app (if you don't have one yet)
+npx epilot app init my-app
+cd my-app
 
-# Navigate to the project directory
-cd my-custom-block
+# Add a custom journey block component
+npx epilot app add-component my-block --type CUSTOM_JOURNEY_BLOCK
 
 # Install dependencies
 npm install
@@ -52,7 +53,9 @@ npm install
 npm run dev
 ```
 
-You can also use our template for [Lit](https://github.com/epilot-dev/custom-journey-block-lit) to create a new project.
+This creates a ready-to-use component with all the boilerplate wired up, including the web component wrapper and manifest configuration.
+
+You can also find starter templates for each framework in the [app-templates](https://github.com/epilot-dev/app-templates) repository.
 
 ### Technology Recommendations
 
