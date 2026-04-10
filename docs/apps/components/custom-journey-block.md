@@ -151,6 +151,70 @@ Once your App with a custom Journey Block is installed, you can use it in the Jo
 
 
 
+## Calling External APIs via Proxy
+
+Custom journey blocks run in the browser. If your block needs to call a third-party API that requires credentials (API keys, OAuth tokens, etc.), **never embed those secrets in your client-side code**. Instead, use the [API Proxy](./api-proxy.md) — it runs server-side and injects credentials on your behalf so they never reach the browser.
+
+### Setup
+
+1. **Add an API Proxy component** to your app in the App Builder (see [API Proxy docs](./api-proxy.md) for full setup).
+2. **Install the App SDK** in your journey block project:
+
+```bash
+npm install @epilot/app-sdk
+```
+
+### Using the proxy in a journey block
+
+Journey blocks receive a `publicToken` via the container props. Pass this token to the `proxy` function to authenticate the request:
+
+```typescript
+import { proxy } from '@epilot/app-sdk';
+
+function App(props: AppProps<unknown>) {
+  useEffect(() => {
+    if (!props.container.publicToken) return;
+
+    proxy('my-api', '/endpoint', {
+      appId: 'your-app-id',
+      token: props.container.publicToken,
+      method: 'POST',
+      body: { hello: 'world' },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log('Proxy response:', data))
+      .catch((error) => console.error('Proxy error:', error));
+  }, [props.container.publicToken]);
+
+  return <div>...</div>;
+}
+```
+
+| Parameter | Description |
+| --- | --- |
+| `'my-api'` | The proxy name you configured in the App Builder |
+| `'/endpoint'` | The path appended to the proxy's target URL |
+| `appId` | Your app's ID |
+| `token` | The `publicToken` from the journey block container props |
+| `method` | HTTP method (`GET`, `POST`, `PUT`, `DELETE`, etc.) |
+| `body` | Optional request body (automatically serialized to JSON) |
+
+:::tip
+The `publicToken` is only available at runtime when the journey is rendered for an end user. During development, you can test with a hardcoded token — just make sure to remove it before publishing.
+:::
+
+### How it works
+
+1. Your journey block calls `proxy()` with the `publicToken`
+2. The request is sent to the epilot proxy server (not directly to the third-party API)
+3. The proxy resolves the credentials configured in the App Builder (API key, Bearer token, or OAuth 2.0)
+4. The proxy forwards the request to the target API with credentials injected server-side
+5. The response is returned to your journey block
+
+This means your API keys and secrets are **never exposed** in the journey's client-side bundle or network requests visible to end users.
+
+For full details on authentication types, request signing, and security, see the [API Proxy documentation](./api-proxy.md).
+
 ## Useful Resources
 
 ### Journey UI Library Concorde (React)
