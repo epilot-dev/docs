@@ -2,6 +2,68 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-04-14 Customer Portal API
+
+- New `aggregation_method` field added to consumption items in `GET /v2/portal/consumption` responses, indicating the aggregation method used (values: `sum`, `average`, `max`, `min`)
+- New `POST /v3/portal/config/clone` endpoint added for cloning a portal configuration (including pages, settings, email templates, and authentication) from an existing portal
+
+## 2026-04-14 Environments API
+
+- New endpoints added for managing environment variable groups: `GET /v1/environments/groups` (list groups), `PUT /v1/environments/groups/{name}` (create or update a group), `DELETE /v1/environments/groups/{name}` (delete a group)
+- New optional `group` and `protected` fields added to environment variables across all endpoints; `group` assigns a variable to a named group, `protected` marks a variable as read-only
+
+## 2026-04-13 Blueprint Manifest API
+
+- New `GET /v1/marketplace-listings` endpoint added for listing all marketplace listings for the authenticated organization
+- `documentation_link` field removed from marketplace listing responses and request bodies
+
+## 2026-04-13 Email Settings API
+
+- New `POST /v1/email-settings/domain/dns-records:verify` endpoint added for verifying that all DNS records (MX, TXT, CNAME) are correctly configured for a domain
+- `POST /v1/email-settings/domain/ns-records:verify` is now deprecated — use the new endpoint for new integrations
+
+## 2026-04-13 User API
+
+- New `image_uri` field added to user groups, supporting profile image URLs and gradient avatar color configuration
+
+## 2026-04-10 Deduplication API
+
+- New asynchronous deduplication endpoints: `POST /v1/deduplicate/job` submits a background job and returns a `jobId`; `GET /v1/deduplicate/jobs/{jobId}` returns the current job status and result
+
+## 2026-04-10 Journey Config API
+
+- New optional `protectedEditable` array field added to journey configurations, listing path patterns (with wildcard support) that remain editable when the journey is in protected (read-only) mode
+
+## 2026-04-09 Automation API
+
+- New `ForwardEmailAction` and `ReplyEmailAction` action types added to automation flows and executions, enabling automated email forwarding and reply workflows
+- New `reply_to_sender`, `reply_mode` (`reply_in_thread` or `new_email`), and `mark_as_done` fields added to `SendEmailAction` configuration
+
+## 2026-04-09 Integration Toolkit API
+
+- New `group_by` request field added to `POST /v2/integrations/{integrationId}/monitoring/time-series`, enabling breakdown of time-series buckets by `use_case_type` or `use_case`
+- New `breakdown` array returned in each time-series bucket when `group_by` is specified
+
+## 2026-04-09 Workflows Definition API
+
+- New `input_entity` field added to `AutomationTrigger` for email thread triggers, specifying which entity (`thread`, `first_email`, or `last_email`) is used as input for automation and decision tasks
+
+## 2026-04-08 Blueprint Manifest API
+
+- New `POST /v3/blueprint-manifest/blueprint:install` endpoint added for installing blueprints using the V3 engine (direct API calls with checkpoint-based resume on failure)
+- New `GET /v3/blueprint-manifest/blueprints/{blueprint_id}/lineage` endpoint added for retrieving lineage registry entries mapping source IDs to destination resource IDs
+- New `PARTIAL_SUCCESS` status value added to blueprint installation job responses
+
+## 2026-04-08 Webhooks API
+
+- New `POST /v1/webhooks/configs/{configId}/test-oauth` endpoint added for testing the OAuth client credentials configuration of a webhook
+- New `deliveryMode` field added to webhook configurations (`json_base64` or `binary_multipart`) to control how file data is delivered for file-triggered webhooks
+- New `multipartConfig` field added for specifying form field names when using `binary_multipart` delivery mode
+
+## 2026-04-07 File API
+
+- `GET /v1/files/{id}/public-links` and `DELETE /v1/files/{id}/public-links/{linkId}` endpoints are now implemented — listing and revoking public file links is now available
+
 ## 2026-04-06 Event: FileCreated
 
 - New `FileCreated` event type added with required fields: `entity_id`, `filename`, `mime_type`, `size_bytes`, `s3ref`, `version_index`; includes an embedded `file` entity object with file metadata and a `category` field
