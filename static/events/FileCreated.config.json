@@ -1,0 +1,130 @@
+{
+  "event_name": "FileCreated",
+  "event_title": "File Created",
+  "event_description": "Triggered when a new file entity is created in epilot",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "file",
+    "attachment"
+  ],
+  "schema_fields": {
+    "operation": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "createEntity"
+        ],
+        "description": "The entity operation type that triggered this event"
+      },
+      "required": true
+    },
+    "activity_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Activity ID associated with this operation (ULID)",
+        "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
+      },
+      "required": false
+    },
+    "activity_type": {
+      "json_schema": {
+        "type": "string",
+        "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
+        "example": "EntityUpdated"
+      },
+      "required": false
+    },
+    "trigger_entity": {
+      "json_schema": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Entity ID of the entity that triggered this event"
+      },
+      "required": true
+    },
+    "event_attachments": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "entity_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Entity ID of the file"
+            },
+            "filename": {
+              "type": "string",
+              "description": "Name of the file"
+            },
+            "mime_type": {
+              "type": "string",
+              "description": "MIME type of the file (e.g., application/pdf)"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "File size in bytes"
+            },
+            "s3ref": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "S3 bucket name"
+                },
+                "key": {
+                  "type": "string",
+                  "description": "S3 object key"
+                }
+              },
+              "required": [
+                "bucket",
+                "key"
+              ],
+              "additionalProperties": false,
+              "description": "S3 reference for the file content"
+            },
+            "version_index": {
+              "type": "number",
+              "const": 0,
+              "description": "File version index (always 0 for newly created files)"
+            },
+            "readable_size": {
+              "type": "string",
+              "description": "Human-readable file size (e.g., \"200 KB\")"
+            }
+          },
+          "required": [
+            "entity_id",
+            "version_index"
+          ],
+          "additionalProperties": false
+        },
+        "description": "Array of file attachments associated with this event"
+      },
+      "required": true,
+      "graph_source": "[{\"entity_id\": file._id, \"filename\": file.filename, \"mime_type\": file.mime_type, \"size_bytes\": file.size_bytes, \"s3ref\": file.s3ref, \"version_index\": 0, \"readable_size\": file.readable_size}]"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "file",
+        "schema": "file",
+        "cardinality": "one"
+      }
+    ],
+    "edges": []
+  },
+  "entity_operation": {
+    "operation": [
+      "createEntity"
+    ],
+    "schema": [
+      "file"
+    ]
+  }
+}

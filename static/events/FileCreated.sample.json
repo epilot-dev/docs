@@ -1,0 +1,53 @@
+{
+  "_org_id": "123",
+  "_event_time": "1970-01-01T00:00:00.000Z",
+  "_event_id": "string",
+  "_event_name": "FileCreated",
+  "_event_version": "1.0.0",
+  "_event_source": "string",
+  "_ack_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_trigger_source_type": "api",
+  "_trigger_source": "api_123456",
+  "operation": "createEntity",
+  "activity_id": "01F130Q52Q6MWSNS8N2AVXV4JN",
+  "activity_type": "EntityUpdated",
+  "trigger_entity": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "event_attachments": [
+    {
+      "entity_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "filename": "string",
+      "mime_type": "string",
+      "size_bytes": 0,
+      "s3ref": {
+        "bucket": "string",
+        "key": "string"
+      },
+      "version_index": 0,
+      "readable_size": "string"
+    }
+  ],
+  "file": {
+    "_schema": "file",
+    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "_purpose": {},
+    "_thumbnail": {},
+    "filename": "string",
+    "mime_type": "string",
+    "type": "document",
+    "readable_size": "string",
+    "language": "de",
+    "alt_text": "string",
+    "access_control": "private",
+    "public_url": "string",
+    "shared_with_end_customer": true,
+    "category": "address-suggestions",
+    "_files": {},
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
+  }
+}

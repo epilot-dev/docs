@@ -196,6 +196,11 @@
         "cardinality": "one"
       },
       {
+        "id": "contracts",
+        "schema": "contract",
+        "cardinality": "many"
+      },
+      {
         "id": "customer",
         "schema": "contact",
         "cardinality": "one"
@@ -219,6 +224,10 @@
       {
         "from": "meter",
         "to": "contract"
+      },
+      {
+        "from": "meter",
+        "to": "contracts"
       },
       {
         "from": "contract",
