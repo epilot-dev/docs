@@ -79,6 +79,12 @@ All attributes are set as standard HTML attributes on the `<epilot-journey>` ele
 | `is-embedded`            | `"true"` \| `"false"`         | `"false"`       | Indicates the Journey is embedded on a host app.                                                                                                                        |
 | `debug`                  | `"true"` \| `"false"`         | `"false"`       | Enables debug mode for development and troubleshooting.                                                                                                                 |
 
+:::tip Accessible name
+
+The standard HTML `title` attribute works on `<epilot-journey>` and is exposed to screen readers. If you embed via the [Journey Embed SDK](./sdk), use `.name(value)` — it sets `title` on the element for you.
+
+:::
+
 ## Examples
 
 ### Inline Mode
@@ -255,16 +261,16 @@ The `<epilot-journey>` Web Component dispatches custom events on the `window` ob
 
 ### Event Reference
 
-| Event                          | Description                                          |
-| ------------------------------ | ---------------------------------------------------- |
-| `EPILOT/JOURNEY_LOADED`        | The Journey has finished loading.                    |
-| `EPILOT/EXIT_FULLSCREEN`       | The Journey exited full-screen mode.                 |
-| `EPILOT/ENTER_FULLSCREEN`      | The Journey entered full-screen mode.                |
-| `EPILOT/CLOSE_JOURNEY`         | The user closed the Journey.                         |
-| `EPILOT/FORM_EVENT`            | A form-level event occurred (e.g. submission).       |
-| `EPILOT/USER_EVENT/PAGE_VIEW`  | The user navigated to a new step.                    |
-| `EPILOT/USER_EVENT/PROGRESS`   | The user made progress in the Journey.               |
-| `ExitFullScreen`               | Legacy event for exiting full-screen mode.           |
+| Event                         | Description                                    |
+| ----------------------------- | ---------------------------------------------- |
+| `EPILOT/JOURNEY_LOADED`       | The Journey has finished loading.              |
+| `EPILOT/EXIT_FULLSCREEN`      | The Journey exited full-screen mode.           |
+| `EPILOT/ENTER_FULLSCREEN`     | The Journey entered full-screen mode.          |
+| `EPILOT/CLOSE_JOURNEY`        | The user closed the Journey.                   |
+| `EPILOT/FORM_EVENT`           | A form-level event occurred (e.g. submission). |
+| `EPILOT/USER_EVENT/PAGE_VIEW` | The user navigated to a new step.              |
+| `EPILOT/USER_EVENT/PROGRESS`  | The user made progress in the Journey.         |
+| `ExitFullScreen`              | Legacy event for exiting full-screen mode.     |
 
 ### Listening for Events
 
@@ -287,10 +293,18 @@ A common use case is to display a loading skeleton while the Journey loads, then
 ```html title="Skeleton loader with web component"
 <!-- Skeleton placeholder -->
 <div id="journey-skeleton" style="padding: 20px; max-width: 800px;">
-  <div style="height: 24px; width: 60%; background: #e0e0e0; border-radius: 4px; margin-bottom: 16px;"></div>
-  <div style="height: 16px; width: 80%; background: #e0e0e0; border-radius: 4px; margin-bottom: 12px;"></div>
-  <div style="height: 16px; width: 70%; background: #e0e0e0; border-radius: 4px; margin-bottom: 12px;"></div>
-  <div style="height: 40px; width: 100%; background: #e0e0e0; border-radius: 4px;"></div>
+  <div
+    style="height: 24px; width: 60%; background: #e0e0e0; border-radius: 4px; margin-bottom: 16px;"
+  ></div>
+  <div
+    style="height: 16px; width: 80%; background: #e0e0e0; border-radius: 4px; margin-bottom: 12px;"
+  ></div>
+  <div
+    style="height: 16px; width: 70%; background: #e0e0e0; border-radius: 4px; margin-bottom: 12px;"
+  ></div>
+  <div
+    style="height: 40px; width: 100%; background: #e0e0e0; border-radius: 4px;"
+  ></div>
 </div>
 
 <!-- Journey (hidden initially) -->

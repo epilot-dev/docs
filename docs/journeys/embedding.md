@@ -8,6 +8,14 @@ Embed any epilot journey on your website using a script tag. The embed script lo
 
 This guide covers all available embedding options and the `__epilot` JavaScript API for advanced customization.
 
+:::info Legacy embed flow
+
+This page documents the original `__epilot` iframe script. All new integrations should use the [Journey Embed SDK (Beta)](./sdk), which rewrites the iframe engine and adds support for the [`<epilot-journey>`](./web-components) Web Component behind a single API.
+
+Existing embeds continue to work. For new projects, start with the SDK.
+
+:::
+
 ## Embed Configurator
 
 Configure and copy the embed script via the Journey Builder's Embed Configurator after saving your journey. Options include:
@@ -38,8 +46,8 @@ The `DataInjectionOptions` type below defines all available options. See the [Em
 export type DataInjectionOptions = {
   /** the initial step index of the journey. aka, where to start the journey from */
   initialStepIndex?: number
-  /** 
-   * the initial state of the journey. aka, what data to prefill the journey with 
+  /**
+   * the initial state of the journey. aka, what data to prefill the journey with
    * Read section below to understand how to populate this
    * */
   initialState?: Record<string, unknown>[]
@@ -151,8 +159,6 @@ type OptionsUpdate = Omit<OptionsInit, 'journeyId'>
 
 The update method updates a journey's embed configuration.  
 Note: This does not update the initial state set by `dataInjectionOptions`.
-
-
 
 ```typescript
 __epilot.update('123', { journeyId: '123', mode: 'full-screen', topBar: false })
@@ -334,11 +340,13 @@ The best way to embed multiple journeys is to use the `__epilot` interface descr
 In this example, no `data-ep-` attributes are needed because the `__epilot.init()` API handles configuration directly.
 
 **Outcome**
-
 ![Embedding Multiple Outcome](../../static/img/journey-embed-outcome-multiple.gif)
 
-## Web Components Alternative
+## Recommended: Journey Embed SDK (Beta)
 
-If you're starting a new integration, consider using the [Web Component embed](./web-components) instead of iframes. Web Components render the Journey directly in your page using the Shadow DOM, offering better performance, accessibility, and tighter integration with your host application — no cross-frame messaging required.
+For new integrations, use the [Journey Embed SDK (Beta)](./sdk). It replaces the legacy `__epilot` script documented on this page with a unified JavaScript API that covers both:
 
-See the [Web Components documentation](./web-components) for the full setup guide, attribute reference, and event handling.
+- A **rewritten iframe engine** — same embedding model, faster and cleaner than the legacy bundle.
+- The [`<epilot-journey>` Web Component](./web-components) — renders directly in your page using Shadow DOM for better performance, accessibility, and tighter host integration.
+
+See the [SDK documentation](./sdk) for setup, the full API reference, and a migration guide from `__epilot.init()`.

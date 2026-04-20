@@ -2,15 +2,24 @@
 sidebar_position: 5
 ---
 
-# Journey Embed SDK
+# Journey Embed SDK (Beta)
 
-The Journey Embed SDK provides a fluent builder API for embedding epilot Journeys into any website. It unifies both embedding backends — [Web Components](./web-components) and [iframes](./embedding) — behind a single, chainable interface.
+The Journey Embed SDK is the new embedding architecture for epilot Journeys. It unifies two backends behind a single, chainable JavaScript API:
 
-Use the SDK when you need **programmatic control** over how Journeys are embedded: building SPAs, reacting to user interactions, toggling full-screen on demand, or injecting pre-filled data at runtime.
+- A **rewritten iframe engine** that replaces the legacy embedding [`__epilot` script](./embedding) with a faster, cleaner host integration.
+- The [`<epilot-journey>` Web Component](./web-components) — a drop-in custom HTML element that renders in Shadow DOM.
 
-:::tip When to use the SDK vs. raw Web Components
+:::info Beta
 
-If you only need a static embed that never changes, the [`<epilot-journey>` Web Component](./web-components) is simpler — just drop an element in your HTML. The SDK is the better choice when your integration is driven by JavaScript: SPAs, dynamic data injection, or triggering full-screen from a button click.
+The SDK is in beta. Test it before rolling out to production. Existing embeds using the [legacy `__epilot` script](./embedding) continue to work.
+
+:::
+
+:::tip When to use the SDK
+
+For iframe embedding, the SDK is the new default — it replaces the legacy `__epilot` script.
+
+For web components, use the SDK or drop the [`<epilot-journey>`](./web-components) element directly into your HTML — whichever fits your integration.
 
 :::
 
@@ -50,8 +59,6 @@ Call `$epilot.embed()` after the DOM is ready and chain your configuration optio
 
 The Journey is injected into `#embed-target`. Read on for the full API reference and advanced scenarios.
 
----
-
 ## Live Examples
 
 Browse interactive, runnable examples for every SDK scenario:
@@ -61,8 +68,6 @@ Browse interactive, runnable examples for every SDK scenario:
 
 Use the **Controls** panel in Storybook to switch between backends and change options in real time. These examples work with **public Journeys** only — enter your own `journey-id` in the controls to see it in action.
 
----
-
 ## Embed Targets
 
 The SDK supports two rendering backends. Choose one by calling the corresponding method in your chain:
@@ -70,13 +75,11 @@ The SDK supports two rendering backends. Choose one by calling the corresponding
 | Method              | Backend                           | Notes                                                                                                         |
 | ------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `.asWebComponent()` | `<epilot-journey>` custom element | Recommended. Uses Shadow DOM — better performance and accessibility. The web component script is auto-loaded. |
-| `.asIframe()`       | `<iframe>`                        | Useful when you need to support legacy environments or host multiple Journeys simultaneously.                 |
+| `.asIframe()`       | `<iframe>`                        | Uses the rewritten iframe engine. Choose this for stronger style isolation or multiple Journeys on one page.  |
 
 Both backends accept the same configuration methods. When using `.asIframe()`, some options (like `scrollToTop`, `closeButton`, and `contextData`) are delivered to the Journey via `postMessage` after it signals readiness, while `dataInjectionOptions` is encoded in the iframe URL.
 
 The main behavioural difference between backends appears in the [Inline to Full-Screen](#inline-to-full-screen-transition) pattern: web components require an explicit `.mode()` call alongside `isFullScreenEntered()`, while iframes do not.
-
----
 
 ## API Reference
 
@@ -90,10 +93,11 @@ All configuration methods are chainable and return the `Embedding` instance. Cal
 | `.topBar(value)`               | `boolean`                     | `true`     | Whether to show the top navigation bar.                                                                                                                                                |
 | `.scrollToTop(value)`          | `boolean`                     | `true`     | Whether to scroll to the top of the Journey on step navigation.                                                                                                                        |
 | `.closeButton(value)`          | `boolean`                     | `true`     | Whether to show the close button in the top bar.                                                                                                                                       |
-| `.lang(value)`                 | `"de"` \| `"en"` \| `"fr"`    | —          | Overrides the Journey UI language. Affects labels and copy, not static Journey content.                                                                                                |
+| `.lang(value)`                 | `"de"` \| `"en"` \| `"fr"`    | —          | **Deprecated — will be removed in a future version.** Overrides the Journey UI language. Set the language in the Journey Builder instead.                                              |
 | `.canary()`                    | —                             | —          | Uses the canary release channel for the web component script instead of stable. See [Release Channels](#release-channels).                                                             |
 | `.contextData(value)`          | `Record<string, unknown>`     | —          | Additional key-value data passed to the Journey and included with the submission. See [Context Data](#context-data).                                                                   |
 | `.dataInjectionOptions(value)` | `DataInjectionOptions`        | —          | Pre-fills Journey fields and controls the starting step. See [Data Injection](#data-injection).                                                                                        |
+| `.name(value)`                 | `string`                      | —          | Accessible name for the embedded Journey. Sets the iframe's `name` and `title` attributes; sets `title` on the `<epilot-journey>` host element.                                        |
 | `.isFullScreenEntered(value)`  | `boolean`                     | —          | Controls whether the Journey is visible in full-screen. Can be called before embedding (sets initial state) or after (updates the live element). See [Full-Screen](#full-screen-mode). |
 
 ### Injection methods
@@ -118,8 +122,6 @@ These are called on the `Embedding` instance returned by an injection method, fo
 | `.remove()`                   | Removes the Journey element from the DOM and cleans up all event listeners.                                                                                                      |
 | `.el()`                       | Returns the raw `HTMLElement` (or `null` if not yet injected).                                                                                                                   |
 
----
-
 ## Release Channels
 
 The SDK auto-loads the web component script from the **stable** channel by default. To use the **canary** channel (latest unreleased changes), call `.canary()` before `.asWebComponent()`:
@@ -142,8 +144,6 @@ The browser only allows a custom element to be registered once. This means:
 - Mixing `.canary()` and non-canary embeddings on the same page is not supported.
 
 :::
-
----
 
 ## Scenarios
 
@@ -196,6 +196,33 @@ To close it programmatically (e.g. in response to an event):
 
 ```javascript
 embedding.isFullScreenEntered(false)
+```
+
+### Multiple Journeys
+
+Each `$epilot.embed()` call returns its own `Embedding` instance, so you can render several Journeys on one page — each with independent configuration and lifecycle.
+
+Use `.asIframe()` for this. Web components register a single custom element per page, so only one `<epilot-journey>` is supported at a time.
+
+```html title="Two Journeys on one page"
+<div id="embed-a"></div>
+<div id="embed-b"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    $epilot
+      .embed('<your-journey-id-1>')
+      .asIframe()
+      .mode('inline')
+      .append('#embed-a')
+
+    $epilot
+      .embed('<your-journey-id-2>')
+      .asIframe()
+      .mode('inline')
+      .append('#embed-b')
+  })
+</script>
 ```
 
 ### Inline to Full-Screen Transition
@@ -335,8 +362,6 @@ Pre-fill Journey fields and start from a specific step using `.dataInjectionOpti
 </script>
 ```
 
----
-
 ## Context Data
 
 `.contextData()` accepts a plain object of key-value pairs. The data is passed to the Journey and included with every submission. Only string and numeric values are supported — other types are ignored.
@@ -351,8 +376,6 @@ $epilot
 ```
 
 The Journey also automatically picks up URL search parameters from the host page. Values passed via `.contextData()` take precedence when keys overlap.
-
----
 
 ## Data Injection
 
@@ -379,8 +402,6 @@ type BlockDisplaySetting = {
 `initialState` is an array where each element corresponds to a Journey step (by index). Steps that should not be pre-filled must be empty objects `{}`. The array must be ordered sequentially to match step order.
 
 To discover the correct block names and field structure, open your Journey in **debug mode** from the Journey Builder and inspect the state per step.
-
----
 
 ## Events
 
@@ -432,8 +453,6 @@ window.addEventListener('message', function (event) {
 
 :::
 
----
-
 ## Migrating from the Legacy `__epilot` API
 
 If you previously used the `__epilot.init()` / `__epilot.enterFullScreen()` API with the `bundle.js` script, the SDK replaces all of that with a single, consistent interface.
@@ -471,7 +490,27 @@ If you previously used the `__epilot.init()` / `__epilot.enterFullScreen()` API 
 
 The SDK no longer uses `__epilot.on()`. Listen for events directly on `window` using the same `EPILOT/*` event type strings. See [Events](#events) above.
 
----
+**Replace `__epilot.update()`:**
+
+Full `update()` support is not yet available in the SDK — coming soon. Today, only `.mode()` and `.isFullScreenEntered()` propagate to the rendered Journey. To change any other option, call `.remove()` and embed again with the new configuration.
+
+**Replace `__epilot.isInitialized()`:**
+
+Check the instance's element instead of a global registry:
+
+```diff
+- if (__epilot.isInitialized('<id>')) {
++ if (embedding.el()) {
+    // journey is rendered
+  }
+```
+
+**Dropped options:**
+
+Some `OptionsInit` fields from the legacy script have no SDK equivalent:
+
+- `minHeight` — iframes now auto-size to their content. Remove it from your config.
+- `journeyUrl`, `name` — not supported in the SDK.
 
 ## Content-Security-Policy (CSP)
 
