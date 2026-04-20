@@ -12,18 +12,20 @@ Concorde is epilot's open-source component library for Journeys. [[GitHub](https
 
 ### Main Colors
 
-| CSS Variable                     | Default        | Description                                                                                                                                                                          |
-| -------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--concorde-primary-color`       | `#005eb4`      | The main primary color. If modified, update `--concorde-primary-color-rgb` also.                                                                                                     |
-| `--concorde-accent-color`        | `#005eb4`      | This color is used to highlight headings.                                                                                                                                            |
-| `--concorde-secondary-color`     | `#913997`      | The main secondary color. If modified, update `--concorde-secondary-color-rgb` also.                                                                                                 |
-| `--concorde-disabled-color`      | `#e0e2ec`      | The main disabled color.                                                                                                                                                             |
-| `--concorde-error-color`         | `#cc0005`      | The main error color. If modified, update `--concorde-error-color-rgb` also.                                                                                                         |
-| `--concorde-outline`             | `#74777f`      | The main color used for borders. Used directly in some Concorde components (Switch’s, Rating, Radio, Checkbox default color, Swipeable Drawer’s handle, Input default border color). |
-| `--concorde-divider-color`       | `#deeaf7`      | The main color used for dividers. Used directly in some Concorde components (Shopping cart).                                                                                         |
-| `--concorde-primary-color-rgb`   | `0, 94, 180`   | The rgb tuple version of `--concorde-primary-color`. Used to create transparent variations of the main primary color.                                                                |
-| `--concorde-secondary-color-rgb` | `145, 57, 151` | The rgb tuple version of `--concorde-secondary-color`. Used to create transparent variations of the main secondary color.                                                            |
-| `--concorde-error-color-rgb`     | `255, 58, 63`  | The rgb tuple version of `--concorde-error-color`. Used to create transparent variations of the main error color.                                                                    |
+| CSS Variable                     | Default        | Description                                                                                                                                                                                     |
+| -------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--concorde-primary-color`       | `#005eb4`      | The main primary color. If modified, update `--concorde-primary-color-rgb` also.                                                                                                                |
+| `--concorde-accent-color`        | `#005eb4`      | The accent/heading color. Used in BlockHeading, StepHeader, and other heading elements. Falls back to `--concorde-primary-color`. Configurable via Design Builder → Typography → Heading Color. |
+| `--concorde-secondary-color`     | `#913997`      | The main secondary color. If modified, update `--concorde-secondary-color-rgb` also.                                                                                                            |
+| `--concorde-disabled-color`      | `#e0e2ec`      | The main disabled color.                                                                                                                                                                        |
+| `--concorde-error-color`         | `#cc0005`      | The main error color. If modified, update `--concorde-error-color-rgb` also.                                                                                                                    |
+| `--concorde-outline`             | `#74777f`      | The main color used for borders. Used directly in some Concorde components (Switch’s, Rating, Radio, Checkbox default color, Swipeable Drawer’s handle, Input default border color).            |
+| `--concorde-divider-color`       | `#deeaf7`      | The main color used for dividers. Used directly in some Concorde components (Shopping cart).                                                                                                    |
+| `--concorde-primary-color-rgb`   | `0, 94, 180`   | The rgb tuple version of `--concorde-primary-color`. Used to create transparent variations of the main primary color.                                                                           |
+| `--concorde-secondary-color-rgb` | `145, 57, 151` | The rgb tuple version of `--concorde-secondary-color`. Used to create transparent variations of the main secondary color.                                                                       |
+| `--concorde-error-color-rgb`     | `255, 58, 63`  | The rgb tuple version of `--concorde-error-color`. Used to create transparent variations of the main error color.                                                                               |
+| `--concorde-link-color`          |                | Link text color. Configurable via Design Builder Typography section.                                                                                                                            |
+| `--concorde-link-hover-color`    |                | Link hover text color. Falls back to `--concorde-link-color`.                                                                                                                                   |
 
 ### Text Colors
 
@@ -81,65 +83,105 @@ Concorde is epilot's open-source component library for Journeys. [[GitHub](https
 
 ### Dark Mode
 
-The following tokens become active when dark mode is enabled. Each token has a dark mode variant with the suffix `-dark`.
+The following tokens become active when dark mode is enabled. Each token has a dark mode variant with the suffix `-dark`. Dark variants are auto-generated via OKLCH lightness inversion — text colors become light, backgrounds become dark, and brand/border colors are adjusted for contrast.
 
-#### Main Colors (Dark Mode)
+#### Brand & Semantic Colors (Dark Mode)
 
-| CSS Variable                      | Description                                                          |
-| --------------------------------- | -------------------------------------------------------------------- |
-| `--concorde-primary-color-dark`   | Dark mode variant of `--concorde-primary-color`                      |
-| `--concorde-accent-color-dark`    | Dark mode variant of `--concorde-accent-color`                       |
-| `--concorde-secondary-color-dark` | Dark mode variant of `--concorde-secondary-color`                    |
-| `--concorde-disabled-color-dark`  | Dark mode variant of `--concorde-disabled-color`                     |
-| `--concorde-error-color-dark`     | Dark mode variant of `--concorde-error-color`                        |
-| `--concorde-outline-dark`         | Dark mode variant of `--concorde-outline`                            |
-| `--concorde-divider-color-dark`   | Dark mode variant of `--concorde-divider-color`                      |
+| CSS Variable                            | Description                                             |
+| --------------------------------------- | ------------------------------------------------------- |
+| `--concorde-primary-color-dark`         | Dark mode variant of `--concorde-primary-color`         |
+| `--concorde-accent-color-dark`          | Dark mode variant of `--concorde-accent-color`          |
+| `--concorde-secondary-color-dark`       | Dark mode variant of `--concorde-secondary-color`       |
+| `--concorde-disabled-color-dark`        | Dark mode variant of `--concorde-disabled-color`        |
+| `--concorde-error-color-dark`           | Dark mode variant of `--concorde-error-color`           |
+| `--concorde-outline-dark`               | Dark mode variant of `--concorde-outline`               |
+| `--concorde-divider-color-dark`         | Dark mode variant of `--concorde-divider-color`         |
+| `--concorde-coupon-discount-color-dark` | Dark mode variant of `--concorde-coupon-discount-color` |
+| `--concorde-coupon-cashback-color-dark` | Dark mode variant of `--concorde-coupon-cashback-color` |
 
 #### Text Colors (Dark Mode)
 
-| CSS Variable                          | Description                                                 |
-| ------------------------------------- | ----------------------------------------------------------- |
-| `--concorde-primary-text-dark`        | Dark mode variant of `--concorde-primary-text`              |
-| `--concorde-secondary-text-dark`      | Dark mode variant of `--concorde-secondary-text`            |
-| `--concorde-disabled-text-dark`       | Dark mode variant of `--concorde-disabled-text`             |
-| `--concorde-disabled-label-text-dark` | Dark mode variant of `--concorde-disabled-label-text`       |
-| `--concorde-button-default-text-dark` | Dark mode variant of `--concorde-button-default-text`       |
+| CSS Variable                                        | Description                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------- |
+| `--concorde-primary-text-dark`                      | Dark mode variant of `--concorde-primary-text`                      |
+| `--concorde-secondary-text-dark`                    | Dark mode variant of `--concorde-secondary-text`                    |
+| `--concorde-disabled-text-dark`                     | Dark mode variant of `--concorde-disabled-text`                     |
+| `--concorde-disabled-label-text-dark`               | Dark mode variant of `--concorde-disabled-label-text`               |
+| `--concorde-button-default-text-dark`               | Dark mode variant of `--concorde-button-default-text`               |
+| `--concorde-link-color-dark`                        | Dark mode variant of `--concorde-link-color`                        |
+| `--concorde-link-hover-color-dark`                  | Dark mode variant of `--concorde-link-hover-color`                  |
+| `--concorde-input-color-dark`                       | Dark mode variant of `--concorde-input-color`                       |
+| `--concorde-input-label-color-dark`                 | Dark mode variant of `--concorde-input-label-color`                 |
+| `--concorde-primary-button-text-color-dark`         | Dark mode variant of `--concorde-primary-button-text-color`         |
+| `--concorde-primary-button-hover-text-color-dark`   | Dark mode variant of `--concorde-primary-button-hover-text-color`   |
+| `--concorde-outlined-button-text-color-dark`        | Dark mode variant of `--concorde-outlined-button-text-color`        |
+| `--concorde-outlined-button-hover-text-color-dark`  | Dark mode variant of `--concorde-outlined-button-hover-text-color`  |
+| `--concorde-ghost-button-text-color-dark`           | Dark mode variant of `--concorde-ghost-button-text-color`           |
+| `--concorde-ghost-button-hover-text-color-dark`     | Dark mode variant of `--concorde-ghost-button-hover-text-color`     |
+| `--concorde-toggle-button-selected-text-color-dark` | Dark mode variant of `--concorde-toggle-button-selected-text-color` |
+| `--concorde-toggle-button-hover-text-color-dark`    | Dark mode variant of `--concorde-toggle-button-hover-text-color`    |
+| `--concorde-menu-item-hover-color-dark`             | Dark mode variant of `--concorde-menu-item-hover-color`             |
+| `--concorde-menu-item-selected-color-dark`          | Dark mode variant of `--concorde-menu-item-selected-color`          |
+| `--concorde-checkbox-label-color-dark`              | Dark mode variant of `--concorde-checkbox-label-color`              |
+| `--concorde-radio-label-color-dark`                 | Dark mode variant of `--concorde-radio-label-color`                 |
+| `--concorde-datepicker-selected-color-dark`         | Dark mode variant of `--concorde-datepicker-selected-color`         |
+| `--concorde-chip-text-color-dark`                   | Dark mode variant of `--concorde-chip-text-color`                   |
+| `--concorde-chip-hover-text-color-dark`             | Dark mode variant of `--concorde-chip-hover-text-color`             |
+
+#### Border & Control Colors (Dark Mode)
+
+| CSS Variable                                   | Description                                                    |
+| ---------------------------------------------- | -------------------------------------------------------------- |
+| `--concorde-input-border-color-dark`           | Dark mode variant of `--concorde-input-border-color`           |
+| `--concorde-toggle-button-border-color-dark`   | Dark mode variant of `--concorde-toggle-button-border-color`   |
+| `--concorde-outlined-button-border-color-dark` | Dark mode variant of `--concorde-outlined-button-border-color` |
+| `--concorde-card-border-color-dark`            | Dark mode variant of `--concorde-card-border-color`            |
+| `--concorde-switch-unchecked-color-dark`       | Dark mode variant of `--concorde-switch-unchecked-color`       |
+| `--concorde-checkbox-unchecked-color-dark`     | Dark mode variant of `--concorde-checkbox-unchecked-color`     |
+| `--concorde-radio-unchecked-color-dark`        | Dark mode variant of `--concorde-radio-unchecked-color`        |
 
 #### Background Colors (Dark Mode)
 
-| CSS Variable                                    | Description                                                       |
-| ----------------------------------------------- | ----------------------------------------------------------------- |
-| `--concorde-default-background-dark`            | Dark mode variant of `--concorde-default-background`              |
-| `--concorde-surface-background-dark`            | Dark mode variant of `--concorde-surface-background`              |
-| `--concorde-neutral-surface-dark`               | Dark mode variant of `--concorde-neutral-surface`                 |
-| `--concorde-loading-background-dark`            | Dark mode variant of `--concorde-loading-background`              |
-| `--concorde-disabled-background-dark`           | Dark mode variant of `--concorde-disabled-background`             |
-| `--concorde-topbar-background-dark`             | Dark mode variant of `--concorde-topbar-background`               |
-| `--concorde-product-tile-background-color-dark` | Dark mode variant of `--concorde-product-tile-background-color`   |
-| `--concorde-card-default-background-dark`       | Dark mode variant of `--concorde-card-default-background`         |
-| `--concorde-skeleton-bg-from-dark`              | Dark mode variant of `--concorde-skeleton-bg-from`                |
-| `--concorde-skeleton-bg-to-dark`                | Dark mode variant of `--concorde-skeleton-bg-to`                  |
-
-#### Component Colors (Dark Mode)
-
-| CSS Variable                                      | Description                                                         |
-| ------------------------------------------------- | ------------------------------------------------------------------- |
-| `--concorde-coupon-discount-color-dark`           | Dark mode variant of `--concorde-coupon-discount-color`             |
-| `--concorde-coupon-cashback-color-dark`           | Dark mode variant of `--concorde-coupon-cashback-color`             |
-| `--concorde-primary-button-background-color-dark` | Dark mode variant of `--concorde-primary-button-background-color`   |
-| `--concorde-primary-button-hover-bg-color-dark`   | Dark mode variant of `--concorde-primary-button-hover-bg-color`     |
-| `--concorde-toggle-button-border-color-dark`      | Dark mode variant of `--concorde-toggle-button-border-color`        |
+| CSS Variable                                        | Description                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------- |
+| `--concorde-default-background-dark`                | Dark mode variant of `--concorde-default-background`                |
+| `--concorde-topbar-background-dark`                 | Dark mode variant of `--concorde-topbar-background`                 |
+| `--concorde-surface-background-dark`                | Dark mode variant of `--concorde-surface-background`                |
+| `--concorde-neutral-surface-dark`                   | Dark mode variant of `--concorde-neutral-surface`                   |
+| `--concorde-loading-background-dark`                | Dark mode variant of `--concorde-loading-background`                |
+| `--concorde-disabled-background-dark`               | Dark mode variant of `--concorde-disabled-background`               |
+| `--concorde-product-tile-background-color-dark`     | Dark mode variant of `--concorde-product-tile-background-color`     |
+| `--concorde-skeleton-bg-from-dark`                  | Dark mode variant of `--concorde-skeleton-bg-from`                  |
+| `--concorde-skeleton-bg-to-dark`                    | Dark mode variant of `--concorde-skeleton-bg-to`                    |
+| `--concorde-card-default-background-dark`           | Dark mode variant of `--concorde-card-default-background`           |
+| `--concorde-input-background-color-dark`            | Dark mode variant of `--concorde-input-background-color`            |
+| `--concorde-primary-button-background-color-dark`   | Dark mode variant of `--concorde-primary-button-background-color`   |
+| `--concorde-primary-button-hover-bg-color-dark`     | Dark mode variant of `--concorde-primary-button-hover-bg-color`     |
+| `--concorde-outlined-button-hover-bg-color-dark`    | Dark mode variant of `--concorde-outlined-button-hover-bg-color`    |
+| `--concorde-ghost-button-background-color-dark`     | Dark mode variant of `--concorde-ghost-button-background-color`     |
+| `--concorde-ghost-button-hover-bg-color-dark`       | Dark mode variant of `--concorde-ghost-button-hover-bg-color`       |
+| `--concorde-card-background-color-dark`             | Dark mode variant of `--concorde-card-background-color`             |
+| `--concorde-card-hover-background-color-dark`       | Dark mode variant of `--concorde-card-hover-background-color`       |
+| `--concorde-summary-block-bg-color-dark`            | Dark mode variant of `--concorde-summary-block-bg-color`            |
+| `--concorde-toggle-button-selected-bg-color-dark`   | Dark mode variant of `--concorde-toggle-button-selected-bg-color`   |
+| `--concorde-toggle-button-hover-bg-color-dark`      | Dark mode variant of `--concorde-toggle-button-hover-bg-color`      |
+| `--concorde-menu-item-hover-bg-color-dark`          | Dark mode variant of `--concorde-menu-item-hover-bg-color`          |
+| `--concorde-menu-item-selected-bg-color-dark`       | Dark mode variant of `--concorde-menu-item-selected-bg-color`       |
+| `--concorde-switch-unchecked-background-color-dark` | Dark mode variant of `--concorde-switch-unchecked-background-color` |
+| `--concorde-datepicker-selected-bg-color-dark`      | Dark mode variant of `--concorde-datepicker-selected-bg-color`      |
+| `--concorde-chip-background-color-dark`             | Dark mode variant of `--concorde-chip-background-color`             |
+| `--concorde-chip-hover-background-color-dark`       | Dark mode variant of `--concorde-chip-hover-background-color`       |
 
 #### RGB Colors (Dark Mode)
 
-| CSS Variable                             | Description                                                     |
-| ---------------------------------------- | --------------------------------------------------------------- |
-| `--concorde-primary-color-rgb-dark`      | Dark mode variant of `--concorde-primary-color-rgb`             |
-| `--concorde-secondary-color-rgb-dark`    | Dark mode variant of `--concorde-secondary-color-rgb`           |
-| `--concorde-error-color-rgb-dark`        | Dark mode variant of `--concorde-error-color-rgb`               |
-| `--concorde-default-background-rgb-dark` | Dark mode variant of `--concorde-default-background-rgb`        |
-| `--concorde-primary-text-rgb-dark`       | Dark mode variant of `--concorde-primary-text-rgb`              |
-| `--concorde-secondary-text-rgb-dark`     | Dark mode variant of `--concorde-secondary-text-rgb`            |
+| CSS Variable                             | Description                                              |
+| ---------------------------------------- | -------------------------------------------------------- |
+| `--concorde-primary-color-rgb-dark`      | Dark mode variant of `--concorde-primary-color-rgb`      |
+| `--concorde-secondary-color-rgb-dark`    | Dark mode variant of `--concorde-secondary-color-rgb`    |
+| `--concorde-error-color-rgb-dark`        | Dark mode variant of `--concorde-error-color-rgb`        |
+| `--concorde-default-background-rgb-dark` | Dark mode variant of `--concorde-default-background-rgb` |
+| `--concorde-primary-text-rgb-dark`       | Dark mode variant of `--concorde-primary-text-rgb`       |
+| `--concorde-secondary-text-rgb-dark`     | Dark mode variant of `--concorde-secondary-text-rgb`     |
 
 ---
 
@@ -153,7 +195,9 @@ The following tokens become active when dark mode is enabled. Each token has a d
 | `--concorde-two-columns-content-width` | `calc(7 / 12 * 100%)`           | For Two column layouts, the percentage of the width assigned to the Content section. Ensure that together with the `--concorde-two-columns-sidebar-width` variable, the total width of the Two Column Layout is 100%. |
 | `--concorde-two-columns-sidebar-width` | `calc(5 / 12 * 100%)`           | For Two column layouts, the percentage of the width assigned to the Sidebar section. Ensure that together with the `--concorde-two-columns-content-width` variable, the total width of the Two Column Layout is 100%. |
 | `--concorde-topbar-background`         | `var(--concorde-primary-color)` | The background color of the navigation bar.                                                                                                                                                                           |
-| `--concorde-topbar-logo-alignment`     | `center`                        | Changes the alignment of the header logo. Can be `flex-start` and `flex-end`.                                                                                                                                         |
+| `--concorde-topbar-height`             | `48px`                          | The minimum height of the navigation bar.                                                                                                                                                                             |
+| `--concorde-topbar-logo-alignment`     | `center`                        | Controls the logo/content alignment in the top bar. Values: `flex-start`, `center`, `flex-end`.                                                                                                                       |
+| `--concorde-logo-size`                 | `24px`                          | The maximum height of the logo in the navigation bar (16–100px).                                                                                                                                                      |
 
 ---
 
@@ -191,26 +235,39 @@ None
 
 ### Button
 
-| CSS Variable                                 | Expected Type | Description                                                                                      | Default                               |
-| -------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------- |
-| `--concorde-button-label-color`              | `string`      | The label color of the button                                                                    | Depends on Button variant             |
-| `--concorde-button-background-color`         | `string`      | The background color of the button                                                               | Depends on Button variant             |
-| `--concorde-button-hover-bg-color`           | `string`      | The background color of the hover state of the button                                            |                                       |
-| `--concorde-button-active-bg-color`          | `string`      | The background color of the active state of the button                                           |                                       |
-| `--concorde-button-gap`                      | `string`      | The gap between the button elements                                                              | Defaults to `var(--concorde-spacing)` |
-| `--concorde-primary-button-background-color` | `string`      | The custom background color of the Primary Button (e.g., Next/Submit buttons)                    |                                       |
-| `--concorde-primary-button-hover-bg-color`   | `string`      | The custom background color of the hover state of the Primary Button (e.g., Next/Submit buttons) |                                       |
-| `--concorde-outlined-button-border-color`    | `string`      | The border color of the outlined button variant                                                  | Used in Toggle Group                  |
+| CSS Variable                                  | Expected Type | Description                                                                   | Default                               |
+| --------------------------------------------- | ------------- | ----------------------------------------------------------------------------- | ------------------------------------- |
+| `--concorde-button-label-color`               | `string`      | The label color of the button                                                 | Depends on Button variant             |
+| `--concorde-button-default-text`              | `string`      | The default text color for primary buttons                                    | `#ffffff`                             |
+| `--concorde-button-background-color`          | `string`      | The background color of the button                                            | Depends on Button variant             |
+| `--concorde-button-hover-bg-color`            | `string`      | The background color of the hover state of the button                         |                                       |
+| `--concorde-button-active-bg-color`           | `string`      | The background color of the active state of the button                        |                                       |
+| `--concorde-button-gap`                       | `string`      | The gap between the button elements                                           | Defaults to `var(--concorde-spacing)` |
+| `--concorde-button-border-radius`             | `string`      | The border radius of all buttons                                              | `var(--concorde-border-radius)`       |
+| `--concorde-button-height`                    | `string`      | The height of buttons                                                         |                                       |
+| `--concorde-primary-button-background-color`  | `string`      | The custom background color of the Primary Button (e.g., Next/Submit buttons) |                                       |
+| `--concorde-primary-button-text-color`        | `string`      | The text color of the Primary Button                                          | `var(--concorde-button-default-text)` |
+| `--concorde-primary-button-hover-bg-color`    | `string`      | The custom background color of the hover state of the Primary Button          |                                       |
+| `--concorde-primary-button-hover-text-color`  | `string`      | The text color of the Primary Button hover state                              | Same as primary text color            |
+| `--concorde-outlined-button-border-color`     | `string`      | The border color of the outlined button variant                               | `var(--concorde-primary-color)`       |
+| `--concorde-outlined-button-text-color`       | `string`      | The text color of the outlined button variant                                 | `var(--concorde-primary-color)`       |
+| `--concorde-outlined-button-hover-bg-color`   | `string`      | The background color of the outlined button hover state                       |                                       |
+| `--concorde-outlined-button-hover-text-color` | `string`      | The text color of the outlined button hover state                             | Same as outlined text color           |
+| `--concorde-ghost-button-background-color`    | `string`      | The background color of the ghost button                                      | `transparent`                         |
+| `--concorde-ghost-button-text-color`          | `string`      | The text color of the ghost button                                            | `var(--concorde-primary-color)`       |
+| `--concorde-ghost-button-hover-bg-color`      | `string`      | The background color of the ghost button hover state                          |                                       |
+| `--concorde-ghost-button-hover-text-color`    | `string`      | The text color of the ghost button hover state                                | Same as ghost text color              |
 
 ### Card
 
-| CSS Variable                             | Expected Type | Description                                                 | Default                                 |
-| ---------------------------------------- | ------------- | ----------------------------------------------------------- | --------------------------------------- |
-| `--concorde-card-background-color`       | `string`      | The background color of the card                            | `var(--concorde-surface-background)`    |
-| `--concorde-card-hover-background-color` | `string`      | The background color of the card in hover state             | `var(--concorde-card-background-color)` |
-| `--concorde-card-featured-text`          | `string`      | The label text of a card in its featured state              |                                         |
-| `--concorde-card-featured-color`         | `string`      | The border color of a card in its featured state            | `#efbf02`                               |
-| `--concorde-card-featured-label-color`   | `string`      | The color of the label text of a card in its featured state | `#ffffff`                               |
+The Card component supports three variants — `shadow` (elevated, default), `outlined` (1px border, no shadow), and `bare` (internal: no shadow, border, or background; used by `BlockContent` for non-card blocks). The active variant is set via `theme.variants.card` (Design Builder → Components → Card → Variant) or per-instance via the `variant` prop. Only `shadow` and `outlined` are exposed in the Design Builder UI and the API.
+
+| CSS Variable                             | Expected Type | Description                                                                                                            | Default                                 |
+| ---------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `--concorde-card-background-color`       | `string`      | The background color of the card                                                                                       | `var(--concorde-surface-background)`    |
+| `--concorde-card-hover-background-color` | `string`      | The background color of the card in hover state                                                                        | `var(--concorde-card-background-color)` |
+| `--concorde-card-custom-shadow`          | `string`      | Override for the card's box-shadow. Set programmatically via `card_shadow` design token; not exposed in Design Builder | `var(--concorde-card-shadow)`           |
+| `--concorde-card-border-color`           | `string`      | The border color of the outlined card variant. Configurable via Design Builder → Components → Card → Border Color      | `var(--concorde-outline)`               |
 
 ### Checkbox
 
@@ -222,7 +279,13 @@ None
 
 ### Chip
 
-None
+| CSS Variable                             | Expected Type | Description                            | Default                          |
+| ---------------------------------------- | ------------- | -------------------------------------- | -------------------------------- |
+| `--concorde-chip-background-color`       | `string`      | The background color of the chip       | `#f7f7f7`                        |
+| `--concorde-chip-hover-background-color` | `string`      | The hover background color of the chip | Same as chip background          |
+| `--concorde-chip-text-color`             | `string`      | The text color of the chip             | `var(--concorde-secondary-text)` |
+| `--concorde-chip-hover-text-color`       | `string`      | The hover text color of the chip       | Same as chip text color          |
+| `--concorde-chip-shadow`                 | `string`      | The box shadow of the chip             |                                  |
 
 ### Circular Progress
 
@@ -435,15 +498,22 @@ Refer to Input tokens.
 
 ### Toggle Button
 
-Refer to Button tokens.
+Refer also to Button tokens. Toggle buttons are used in Single Choice, Multiple Choice, and formal Toggle Group components.
+
+| CSS Variable                                   | Expected Type | Description                                        | Default                           |
+| ---------------------------------------------- | ------------- | -------------------------------------------------- | --------------------------------- |
+| `--concorde-toggle-button-selected-bg-color`   | `string`      | The background color of the selected toggle button | Inherits from primary button bg   |
+| `--concorde-toggle-button-selected-text-color` | `string`      | The text color of the selected toggle button       | Inherits from primary button text |
+| `--concorde-toggle-button-hover-bg-color`      | `string`      | The hover background color of toggle buttons       | Inherits from button hover bg     |
+| `--concorde-toggle-button-hover-text-color`    | `string`      | The hover text color of toggle buttons             | Same as selected text color       |
 
 ### Toggle Group
 
 Refer also to Spacing, Typography & Toggle Button tokens.
 
-| CSS Variable                            | Expected Type | Description                                         | Default |
-| --------------------------------------- | ------------- | --------------------------------------------------- | ------- |
-| `--concorde-toggle-button-border-color` | `string`      | The custom border color of the toggle group buttons |         |
+| CSS Variable                            | Expected Type | Description                                                                                  | Default |
+| --------------------------------------- | ------------- | -------------------------------------------------------------------------------------------- | ------- |
+| `--concorde-toggle-button-border-color` | `string`      | The custom border color of the toggle group wrapper (not used for standalone toggle buttons) |         |
 
 ### Tooltip
 
