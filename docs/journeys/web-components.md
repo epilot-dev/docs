@@ -163,6 +163,10 @@ The Journey also automatically picks up **URL search query parameters** from the
 
 Data injection allows you to pre-fill Journey fields with data and optionally start from a specific step. This is useful when your website has already collected some information (e.g. a product selection or address) and you want to carry it into the Journey.
 
+1. **Prefill data** — set initial values for journey blocks.
+2. **Start from a specific step** — skip earlier steps (e.g., when product selection happens on an external website).
+3. **Control field display** — disable specific fields.
+
 The `data-injection-options` attribute accepts a **JSON string** with the following structure:
 
 ```typescript title="DataInjectionOptions"
@@ -233,7 +237,9 @@ el.setAttribute(
 - Steps that should not be pre-filled must be empty objects `{}`.
 - The array must be ordered sequentially to match step order.
 
-To discover the correct block names and field structure, open your Journey in **debug mode** from the Journey Builder and inspect the state for each step.
+To discover the correct block names and field structure, open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
+
+![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
 
 ## Dynamic Attribute Updates
 
