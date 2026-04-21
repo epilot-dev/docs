@@ -11,6 +11,9 @@
   "reading_date": "1970-01-01T00:00:00.000Z",
   "read_by": "string",
   "reason": "string",
+  "remarks": [
+    "string"
+  ],
   "source": "string",
   "reading_source": "string",
   "meter_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",

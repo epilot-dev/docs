@@ -79,6 +79,17 @@
       "required": false,
       "graph_source": "ticket.reading_source"
     },
+    "remarks": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Free-text remarks left by the submitter, in reading order (one per counter when multi-counter). Empty / whitespace-only remarks are omitted. Undefined when no reading carried a remark."
+      },
+      "required": false,
+      "graph_source": "($r := [ticket.meter_readings[remark and $trim(remark) != ''].remark]; $count($r) > 0 ? $r : undefined)"
+    },
     "meter_readings": {
       "json_schema": {
         "type": "array",
@@ -119,6 +130,10 @@
                 "pending"
               ],
               "description": "Status of the meter reading"
+            },
+            "remark": {
+              "type": "string",
+              "description": "Free-text remark left by the submitter for this counter"
             }
           },
           "additionalProperties": false

@@ -15,6 +15,9 @@
   "read_by": "string",
   "status": "valid",
   "reading_source": "string",
+  "remarks": [
+    "string"
+  ],
   "meter_readings": [
     {
       "counter_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -22,7 +25,8 @@
       "direction": "feed-in",
       "reading_timestamp": "1970-01-01T00:00:00.000Z",
       "read_by": "string",
-      "status": "valid"
+      "status": "valid",
+      "remark": "string"
     }
   ],
   "meter_reading_status": [

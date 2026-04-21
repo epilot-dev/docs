@@ -57,6 +57,13 @@
       "type": "string",
       "description": "Reason for the meter reading"
     },
+    "remarks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Free-text remarks left by the submitter, in reading order (one per counter when multi-counter). Empty / whitespace-only remarks are omitted. Undefined when no reading carried a remark."
+    },
     "source": {
       "type": "string",
       "description": "Source system where reading was submitted"

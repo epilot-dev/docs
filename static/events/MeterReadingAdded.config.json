@@ -31,6 +31,16 @@
       },
       "required": false
     },
+    "remarks": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Free-text remarks left by the submitter, in reading order (one per counter when multi-counter). Empty / whitespace-only remarks are omitted. Undefined when no reading carried a remark."
+      },
+      "required": false
+    },
     "source": {
       "json_schema": {
         "type": "string",

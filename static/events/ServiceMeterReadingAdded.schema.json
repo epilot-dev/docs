@@ -83,6 +83,13 @@
       "type": "string",
       "description": "Source of the meter reading (e.g., ECP, portal)"
     },
+    "remarks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Free-text remarks left by the submitter, in reading order (one per counter when multi-counter). Empty / whitespace-only remarks are omitted. Undefined when no reading carried a remark."
+    },
     "meter_readings": {
       "type": "array",
       "items": {
@@ -122,6 +129,10 @@
               "pending"
             ],
             "description": "Status of the meter reading"
+          },
+          "remark": {
+            "type": "string",
+            "description": "Free-text remark left by the submitter for this counter"
           }
         },
         "additionalProperties": false
