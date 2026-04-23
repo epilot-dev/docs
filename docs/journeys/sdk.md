@@ -140,10 +140,10 @@ The Journey is injected into `#embed-target`. Read on for the full API reference
 
 The SDK supports two rendering backends. Choose one by calling the corresponding method in your chain:
 
-| Method              | Backend                           | Notes                                                                                                         |
-| ------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Method              | Backend                           | Notes                                                                                                           |
+| ------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `.asWebComponent()` | `<epilot-journey>` custom element | Recommended. Uses Shadow DOM for better performance and accessibility. The web component script is auto-loaded. |
-| `.asIframe()`       | `<iframe>`                        | Uses the rewritten iframe engine. Choose this for stronger style isolation or multiple Journeys on one page.  |
+| `.asIframe()`       | `<iframe>`                        | Uses the rewritten iframe engine. Choose this for stronger style isolation or multiple Journeys on one page.    |
 
 Both backends accept the same configuration methods. For `.asIframe()`, the SDK delivers most options (`scrollToTop`, `closeButton`, `contextData`) via `postMessage` after the iframe signals readiness. `dataInjectionOptions` goes in the iframe URL.
 
@@ -161,11 +161,13 @@ All configuration methods are chainable and return the `Embedding` instance. Cal
 | `.topBar(value)`               | `boolean`                     | `true`     | Whether to show the top navigation bar.                                                                                                                                                |
 | `.scrollToTop(value)`          | `boolean`                     | `true`     | Whether to scroll to the top of the Journey on step navigation.                                                                                                                        |
 | `.closeButton(value)`          | `boolean`                     | `true`     | Whether to show the close button in the top bar.                                                                                                                                       |
-| `.lang(value)`                 | `"de"` \| `"en"` \| `"fr"`    | -          | **Deprecated. Will be removed in a future version.** Overrides the Journey UI language. Set the language in the Journey Builder instead.                                              |
+| `.lang(value)`                 | `"de"` \| `"en"` \| `"fr"`    | -          | **Deprecated. Will be removed in a future version.** Overrides the Journey UI language. Set the language in the Journey Builder instead.                                               |
 | `.canary()`                    | -                             | -          | Uses the canary release channel for the web component script instead of stable. See [Release Channels](#release-channels).                                                             |
 | `.contextData(value)`          | `Record<string, unknown>`     | -          | Additional key-value data passed to the Journey and included with the submission. See [Context Data](#context-data).                                                                   |
 | `.dataInjectionOptions(value)` | `DataInjectionOptions`        | -          | Pre-fills Journey fields and controls the starting step. See [Data Injection](#data-injection).                                                                                        |
 | `.name(value)`                 | `string`                      | -          | Accessible name for the embedded Journey. Sets the iframe's `name` and `title` attributes; sets `title` on the `<epilot-journey>` host element.                                        |
+| `.id(value)`                   | `string`                      | -          | Sets the `id` attribute on the embedded element. Call before the placement method for iframe embeds. See [Setting a stable id](#setting-a-stable-id).                                  |
+| `.testId(value)`               | `string`                      | -          | Sets `data-testid` on the embedded element for test tooling (RTL, Playwright, etc.). Off by default.                                                                                   |
 | `.isFullScreenEntered(value)`  | `boolean`                     | -          | Controls whether the Journey is visible in full-screen. Can be called before embedding (sets initial state) or after (updates the live element). See [Full-Screen](#full-screen-mode). |
 
 ### Injection methods
@@ -194,9 +196,9 @@ These are called on the `Embedding` instance returned by an injection method, fo
 
 Called on `$epilot` itself (or on a `new Epilot(options)` instance when using the npm package).
 
-| Method         | Description                                                                                                                                                                                                                        |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.embed(id)`   | Returns a new `Embedding` builder for the given Journey id.                                                                                                                                                                        |
+| Method         | Description                                                                                                                                                                                                                       |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.embed(id)`   | Returns a new `Embedding` builder for the given Journey id.                                                                                                                                                                       |
 | `.init()`      | Returns a fresh `Epilot` instance. Optional. `new Epilot(options)` does the same thing.                                                                                                                                           |
 | `.onReady(cb)` | Invokes `cb` with the SDK instance as soon as the SDK is ready. Safe to call before the bundle has loaded when using the [async CDN install](#option-2--asynchronous-cdn-with-onready); callbacks are queued and drained on load. |
 
@@ -371,6 +373,94 @@ Launcher Journeys are a special type of inline Journey where the first step acts
 ```
 
 No event listeners required. The SDK and web component handle the transition lifecycle.
+
+### Inside a React component (using refs)
+
+Every placement method (`append`, `prepend`, `before`, `after`) accepts either a CSS selector **or** a direct `HTMLElement`. That means React consumers can pass `ref.current` — no need to give the target a unique id or class that could collide across components.
+
+```tsx title="React embed with useRef + cleanup"
+import { useEffect, useRef } from 'react'
+import { Epilot, type Embedding } from '@epilot/journey-embed-sdk'
+
+const $epilot = new Epilot()
+
+export function JourneyEmbed({ journeyId }: { journeyId: string }) {
+  const targetRef = useRef<HTMLDivElement | null>(null)
+  const embeddingRef = useRef<Embedding | null>(null)
+
+  useEffect(() => {
+    if (!targetRef.current) return
+
+    embeddingRef.current = $epilot
+      .embed(journeyId)
+      .asWebComponent()
+      .mode('inline')
+      .append(targetRef.current)
+
+    return () => {
+      embeddingRef.current?.remove()
+      embeddingRef.current = null
+    }
+  }, [journeyId])
+
+  return <div ref={targetRef} />
+}
+```
+
+The `.remove()` call in the effect cleanup detaches the element and tears down all SDK listeners, so the component is safe to mount, unmount, and remount without leaks. If you re-embed with a different `journeyId`, the effect re-runs — removing the previous instance and creating a fresh one.
+
+:::tip Why this works
+
+The SDK's placement methods are typed as `(selector: string | HTMLElement)`. When you pass a string, the SDK runs `document.querySelector` to find the target. When you pass an element directly (which is what `ref.current` gives you after mount), it skips the query and uses the node you handed it. Refs are the recommended pattern for React because they're stable and avoid id-collision bugs across re-renders or nested components.
+
+:::
+
+### Setting a stable id
+
+Use `.id(value)` when you need a predictable `id` attribute on the embedded element. Typical reasons:
+
+- **Anchor links.** Support `#journey-preview` URLs that scroll to the embed.
+- **CSS selectors.** Style the embed via `#journey-preview { ... }` without relying on structural selectors that break under refactors.
+- **Accessibility.** Reference the embed from another element via `aria-labelledby="journey-preview"` or `<label for="journey-preview">`.
+
+```javascript title="Stable id across placement"
+$epilot
+  .embed('<your-journey-id>')
+  .asIframe()
+  .id('hero-journey')
+  .mode('inline')
+  .append('#embed-target')
+```
+
+Without `.id()`, iframe embeds pick up an auto-generated `id="iFrameResizer0"` (or `iFrameResizer1`, `iFrameResizer2`, …) from the `iframe-resizer` library we use for auto-sizing. That id is stable within a single page load but is an implementation detail — don't write code against it.
+
+:::warning Call `.id()` before the placement method
+
+For **iframe** embeds, `iframe-resizer` reads the iframe's `id` at initialisation and uses it as the routing key for resize messages. Changing the id afterwards breaks auto-sizing. Always chain `.id(value)` before `.append()` / `.prepend()` / `.before()` / `.after()`.
+
+**Web component** embeds are unaffected — `.id(value)` can be called any time.
+
+:::
+
+### `.id()` versus `.testId()`
+
+These set different attributes with different contracts. Don't confuse them.
+
+| Method           | Attribute     | Purpose                                                                | Uniqueness                                               |
+| ---------------- | ------------- | ---------------------------------------------------------------------- | -------------------------------------------------------- |
+| `.id(value)`     | `id`          | CSS selectors, anchor links, `aria-labelledby`, iframe-resizer routing | Must be unique in the document                           |
+| `.testId(value)` | `data-testid` | Test tools — React Testing Library, Playwright, Cypress                | No hard uniqueness rule; tests usually enforce their own |
+
+They can be set independently, together, or not at all. Most production pages only need `.id()`; test suites use `.testId()`. Use both when a test needs to assert on an element that also has a production-relevant id:
+
+```javascript
+$epilot
+  .embed('<id>')
+  .asIframe()
+  .id('hero-journey') // for anchor link / CSS / a11y
+  .testId('hero-journey') // for the test tooling
+  .append('#embed-target')
+```
 
 ## Context Data
 
