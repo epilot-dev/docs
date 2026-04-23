@@ -29,6 +29,7 @@ The ERP Toolkit is composed of the following components. Each plays a specific r
 | **[ERP Inbound API](#inbound-api)** | Dedicated API to receive and simulate inbound ERP events | Stable |
 | **[Use Cases](./use-cases)** | Documented integration flows with testing support | Stable |
 | **[Core Entities](/docs/entities/core-entities)** | Standardized entity schemas for mapping targets | Stable |
+| **[Changesets](/docs/entities/changesets)** | Pending attribute updates that wait for ERP confirmation or human approval | Stable |
 | **[Core Events](/docs/integrations/core-events)** | Standardized event payloads for outbound notifications | Stable |
 | **[Webhooks](/docs/integrations/webhooks)** | Push events from epilot to ERPs via core events | Stable |
 | **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
@@ -151,6 +152,8 @@ Push epilot events to your ERP via webhooks. Typical flows:
 - Meter reading submissions
 
 Outbound events use [Core Events](/docs/integrations/core-events) and are delivered through [Webhooks](/docs/integrations/webhooks). JSONata transforms simplify payloads before delivery.
+
+For self-service flows that need ERP confirmation before the local value is changed (IBAN updates, address changes, payment method changes, etc.), use [Changesets](/docs/entities/changesets). Set `edit_mode: external` on the attribute, configure a matcher, and enable `apply_changesets: true` on the outbound webhook — the ERP receives the proposed new value directly on the entity fields, and the changeset auto-clears when the ERP confirms via `?direct=true` inbound sync.
 
 ## Operational Model
 
