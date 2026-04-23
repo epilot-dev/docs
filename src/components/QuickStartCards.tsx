@@ -73,6 +73,12 @@ const GridIcon = () => (
 
 const items = [
   {
+    title: 'SDK',
+    description: 'Typed TypeScript clients for every API. One npm install away.',
+    href: '/docs/sdk/overview',
+    icon: <PackageIcon />,
+  },
+  {
     title: 'Documentation',
     description: 'Guides, concepts, and references for the epilot platform.',
     href: '/docs/intro',
@@ -83,12 +89,6 @@ const items = [
     description: 'OpenAPI specs for every service. Authentication, entities, webhooks.',
     href: '/api',
     icon: <TerminalIcon />,
-  },
-  {
-    title: 'SDK',
-    description: 'Typed TypeScript clients for every API. One npm install away.',
-    href: '/docs/sdk/overview',
-    icon: <PackageIcon />,
   },
   {
     title: 'Apps',
