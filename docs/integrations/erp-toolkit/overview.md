@@ -34,7 +34,7 @@ The ERP Toolkit is composed of the following components. Each plays a specific r
 | **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
 | **[File Proxy](./file-proxy)** | Serve files from external archives on demand without migrating them into epilot | Stable |
 | **[Managed Calls](#managed-calls)** | Synchronous external API calls with JSONata mapping via connector integrations | Stable |
-| **[Secure Proxy](#secure-proxy)** | Route HTTP requests through VPC Lambdas for static IP egress or VPN access | Stable |
+| **[Secure Proxy](#secure-proxy)** | Route HTTP requests through epilot's secure proxy for static IP egress or VPN access | Stable |
 | **[Monitoring and ACKs](#monitoring-and-acks)** | Central logging, error tracking, and event replay | In progress |
 | **[Blueprints](https://marketplace.epilot.cloud/en/blueprints)** | Packaged, installable integration setups | Stable |
 | **[Apps](https://marketplace.epilot.cloud/en/apps)** | Custom automation actions and portal extensions for ERP logic | In progress |
@@ -52,7 +52,7 @@ The `/v2/integrations` CRUD API centralizes all integration configuration in one
 - **Inbound use cases** with entity mappings
 - **Outbound use cases** with event mappings
 - **Managed call use cases** for synchronous external API calls (connector integrations)
-- **Secure proxy use cases** for VPC-routed HTTP requests
+- **Secure proxy use cases** for HTTP requests routed through a static IP or VPN
 - **Associated Apps and portal extensions**
 
 Integrations support two types: `erp` (default, for standard ERP flows) and `connector` (for complex proxy integrations with external APIs).
@@ -93,16 +93,16 @@ Key capabilities:
 - **Authentication** — OAuth2 client credentials, API key, or bearer token with automatic token management
 - **JSONata mapping** — Transform request and response payloads using JSONata expressions
 - **Inbound routing** — Optionally queue the response to the inbound pipeline for async entity processing
-- **Secure proxy support** — Route calls through static IP or VPN VPCs when needed
+- **Secure proxy support** — Route calls through a static IP or VPN connection when needed
 
 See the [Configuration Guide](./configuration#managed-call-use-cases) for setup details.
 
 ### Secure Proxy
 
-The Secure Proxy routes HTTP requests through VPC-deployed Lambda functions, providing either **static IP egress** (for IP-allowlisted external APIs) or **VPN access** (for customer private networks). It acts as the single authenticated gateway between epilot and customer networks.
+The Secure Proxy routes HTTP requests through epilot's dedicated proxy infrastructure, providing either **static IP egress** (for IP-allowlisted external APIs) or **VPN access** (for customer private networks). It acts as the single authenticated gateway between epilot and customer networks.
 
-- **Static IP mode** — Routes through a NAT Gateway for a fixed outbound IP address
-- **Secure Link mode** — Routes through a VPN-connected VPC for access to private networks
+- **Static IP mode** — Routes outbound requests from a fixed, allowlistable IP address
+- **Secure Link mode** — Routes through a VPN connection for access to private networks
 - Domain whitelisting and CIDR-based IP allowlisting enforce strict access control
 
 See the [Configuration Guide](./configuration#secure-proxy-use-cases) for setup details.

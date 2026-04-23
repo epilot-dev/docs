@@ -283,7 +283,7 @@ If a JSONata expression produces a string result (e.g., for `filename` or `conte
 
 ## VPC Routing
 
-Some external systems require requests to come from known static IPs (IP allowlisting). Set `requires_vpc: true` to route all HTTP requests through a VPC-deployed proxy Lambda with static outbound IPs via NAT gateway.
+Some external systems require requests to come from known static IPs (IP allowlisting). Set `requires_vpc: true` to route all HTTP requests through epilot's secure proxy with a fixed, allowlistable outbound IP.
 
 ```json
 {
@@ -299,9 +299,9 @@ Some external systems require requests to come from known static IPs (IP allowli
 ```
 
 When VPC routing is enabled:
-- All step HTTP requests are forwarded to the VPC proxy Lambda
-- The VPC proxy makes the actual outbound call from a static IP
-- Large responses (>4.5 MB) are automatically transferred via S3
+- All step HTTP requests are forwarded through the secure proxy
+- The secure proxy makes the actual outbound call from a static IP
+- Large responses (>4.5 MB) are automatically transferred via a short-lived, presigned download URL
 
 ## Credentials and Secrets
 
@@ -390,11 +390,11 @@ See the [Inbound Mapping Specification](./inbound/mapping#file-proxy-url-mapping
 
 ## Large File Handling
 
-Files larger than 5 MB exceed the Lambda response payload limit. In these cases, the proxy automatically:
+Files larger than 5 MB exceed the inline response payload limit. In these cases, the proxy automatically:
 
-1. Uploads the file to a temporary S3 bucket
-2. Returns a `302 Redirect` to a presigned S3 download URL (valid for 5 minutes)
-3. The browser follows the redirect and downloads the file directly from S3
+1. Uploads the file to temporary storage
+2. Returns a `302 Redirect` to a short-lived, presigned download URL (valid for 5 minutes)
+3. The browser follows the redirect and downloads the file directly from the storage location
 
 This is transparent to the user and requires no configuration. Temporary files are automatically cleaned up after 24 hours.
 

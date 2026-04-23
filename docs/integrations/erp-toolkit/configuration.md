@@ -124,7 +124,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 :::info
 - `file_proxy` — On-demand file serving from external document systems. See the [File Proxy guide](./file-proxy).
 - `managed_call` — Synchronous external API calls with JSONata mapping. See [Managed Call Use Cases](#managed-call-use-cases).
-- `secure_proxy` — Route requests through VPC Lambdas for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).
+- `secure_proxy` — Route requests through epilot's secure proxy for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).
 :::
 
 ### Enabling/Disabling a Use Case
@@ -326,7 +326,7 @@ Secrets must use `{{env.KEY}}` references to resolve values from the [Environmen
 
 ## Secure Proxy Use Cases
 
-Secure proxy use cases route HTTP requests through VPC-deployed Lambda functions for static IP egress or VPN access to customer private networks.
+Secure proxy use cases route HTTP requests through epilot's dedicated proxy infrastructure, providing either a static IP for egress or VPN access to customer private networks.
 
 ### Creating a Secure Proxy Use Case
 
@@ -349,9 +349,9 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 
 | Field | Required | Mutable | Description |
 |-------|----------|---------|-------------|
-| `vpc_mode` | Yes | No (immutable) | `"static_ip"` (NAT Gateway for fixed outbound IP) or `"secure_link"` (VPN for private networks) |
-| `allowed_domains` | No | Admin only | Array of allowed domain patterns. Supports exact match and wildcard prefix (e.g., `*.example.com`). Managed via admin script only. |
-| `allowed_ips` | No | Admin only | Array of allowed IP ranges in CIDR notation (e.g., `10.0.1.0/24`). Required for `secure_link` mode. Managed via admin script only. |
+| `vpc_mode` | Yes | No (immutable) | `"static_ip"` (fixed outbound IP) or `"secure_link"` (VPN for private networks) |
+| `allowed_domains` | No | Read-only | Array of allowed domain patterns. Supports exact match and wildcard prefix (e.g., `*.example.com`). Managed by epilot support. |
+| `allowed_ips` | No | Read-only | Array of allowed IP ranges in CIDR notation (e.g., `10.0.1.0/24`). Required for `secure_link` mode. Managed by epilot support. |
 
 ### Sending a Proxy Request
 
@@ -374,7 +374,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/secure-proxy' \
 
 - **Domain whitelist**: Controls which hostnames the proxy can reach. Wildcard patterns must have at least 2 suffix labels (e.g., `*.example.com` is valid, `*.com` is rejected).
 - **IP allowlist**: Controls which IP addresses are permitted in `secure_link` mode using CIDR notation. Validation is applied both at the URL level (direct IP targets) and DNS level (resolved IPs must match).
-- Both fields are read-only in the API and can only be managed via the admin script (`scripts/manage-secure-proxy-whitelist.ts`).
+- Both fields are read-only in the API. To add, remove, or change allowed domains or IP ranges, contact epilot support.
 
 ### Security
 
@@ -384,7 +384,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/secure-proxy' \
 | Domain whitelist | Optional | Required |
 | IP allowlist | N/A | Required |
 | Request size limit | 4 MB | 4 MB |
-| Timeout | 25s (VPC Lambda) / 30s (API Gateway) | 25s (VPC Lambda) / 30s (API Gateway) |
+| Timeout | 30s | 30s |
 
 ## Event Configuration
 
