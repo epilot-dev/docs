@@ -241,8 +241,9 @@ Meter readings use a separate top-level `meter_readings` section:
       },
       "fields": [
         { "attribute": "external_id", "field": "$$.meter.meterId" },
-        { "attribute": "reading_date", "field": "readingDate" },
+        { "attribute": "timestamp", "field": "readingDate" },
         { "attribute": "value", "field": "value" },
+        { "attribute": "source", "constant": "ERP" },
         { "attribute": "reason", "field": "reason" }
       ]
     }

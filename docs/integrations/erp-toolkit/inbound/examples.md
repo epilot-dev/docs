@@ -263,6 +263,10 @@ Import a batch of meter readings from a scheduled ERP export.
 
 ### Mapping Configuration
 
+:::note
+Only `external_id`, `timestamp`, `source`, and `value` are required fields on a meter reading. Fields such as `reading_date`, `previous_value`, `reading_type`, `batch_id`, `import_timestamp`, and `consumption` shown below are **custom attributes** — arbitrary datapoints stored on the reading for this specific integration. Configure them on the reading entity schema as needed.
+:::
+
 ```json
 {
   "meter_readings": [
@@ -273,6 +277,7 @@ Import a batch of meter readings from a scheduled ERP export.
       },
       "fields": [
         { "attribute": "meter_number", "field": "meterId" },
+        { "attribute": "timestamp", "field": "readingDate" },
         { "attribute": "reading_date", "field": "readingDate" },
         { "attribute": "value", "field": "currentValue" },
         { "attribute": "previous_value", "field": "previousValue" },

@@ -141,12 +141,12 @@ By default, requests within a batch execute **in parallel** (up to 10 concurrent
     {
       "group_id": "meter-001",
       "url": "https://entity.sls.epilot.io/v1/entity/meter_reading",
-      "body": { "entity": { "reading_date": "2025-01-01", "value": 1000 } }
+      "body": { "entity": { "timestamp": "2025-01-01T00:00:00Z", "value": 1000 } }
     },
     {
       "group_id": "meter-001",
       "url": "https://entity.sls.epilot.io/v1/entity/meter_reading",
-      "body": { "entity": { "reading_date": "2025-02-01", "value": 1250 } }
+      "body": { "entity": { "timestamp": "2025-02-01T00:00:00Z", "value": 1250 } }
     }
   ]
 }

@@ -131,7 +131,7 @@ For meters with multiple counters (e.g., day/night tariffs), specify the counter
 ```json
 {
   "fields": [
-    { "attribute": "reading_date", "field": "date" },
+    { "attribute": "timestamp", "field": "date" },
     { "attribute": "value", "field": "reading" },
     { "attribute": "unit", "constant": "kWh" }
   ]
@@ -162,27 +162,27 @@ Some meters have multiple reading values (e.g., HT/NT for electricity):
 {
   "meter_readings": [
     {
-      "jsonataExpression": "$.readings.{'meter_number': meterId, 'reading_date': date, 'value': htValue, 'tariff': 'HT'}",
+      "jsonataExpression": "$.readings.{'meter_number': meterId, 'timestamp': date, 'value': htValue, 'tariff': 'HT'}",
       "meter": {
         "unique_ids": [
           { "attribute": "meter_number", "field": "meter_number" }
         ]
       },
       "fields": [
-        { "attribute": "reading_date", "field": "reading_date" },
+        { "attribute": "timestamp", "field": "timestamp" },
         { "attribute": "value", "field": "value" },
         { "attribute": "tariff", "field": "tariff" }
       ]
     },
     {
-      "jsonataExpression": "$.readings.{'meter_number': meterId, 'reading_date': date, 'value': ntValue, 'tariff': 'NT'}",
+      "jsonataExpression": "$.readings.{'meter_number': meterId, 'timestamp': date, 'value': ntValue, 'tariff': 'NT'}",
       "meter": {
         "unique_ids": [
           { "attribute": "meter_number", "field": "meter_number" }
         ]
       },
       "fields": [
-        { "attribute": "reading_date", "field": "reading_date" },
+        { "attribute": "timestamp", "field": "timestamp" },
         { "attribute": "value", "field": "value" },
         { "attribute": "tariff", "field": "tariff" }
       ]
@@ -238,7 +238,7 @@ From payload:
 
 ```json
 {
-  "jsonataExpression": "$.readings.{'meter_number': meterId, 'reading_date': $fromMillis(timestamp), 'value': $number(readingValue)}"
+  "jsonataExpression": "$.readings.{'meter_number': meterId, 'timestamp': $fromMillis(timestamp), 'value': $number(readingValue)}"
 }
 ```
 
