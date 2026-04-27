@@ -49,10 +49,28 @@ Every meter reading configuration must include mappings for these fields:
 | Field | Description |
 |-------|-------------|
 | `external_id` | Unique identifier for this reading |
-| `timestamp` | When the reading was taken (ISO 8601 format) |
+| `timestamp` | When the reading was taken. Accepts ISO 8601 date-only (`YYYY-MM-DD`) or date-time (`YYYY-MM-DDTHH:mm:ss` with optional fractional seconds and timezone offset). See [Timestamp Processing](#timestamp-processing) for details on validation and normalization. |
 | `source` | Origin of the reading. Must be one of: `ERP`, `ECP`, `360`, `journey-submission` |
 | `value` | The actual meter reading value |
 | `reason` *(optional)* | Reason for the reading. Must be one of: `regular`, `irregular`, `last`, `first`, `meter_change`, `contract_change`, `meter_adjustment`, or empty/null. Invalid values will be rejected with a validation error. |
+
+#### Timestamp Processing
+
+The `timestamp` field is validated and normalized before the reading is handed off to the metering system:
+
+**Validation** — the resolved value must:
+
+- Be a non-empty string.
+- Match an ISO 8601 shape — either `YYYY-MM-DD` or `YYYY-MM-DDTHH:mm:ss` (optional fractional seconds and optional `Z` / `±HH:mm` timezone offset). Other formats (e.g. `DD.MM.YYYY` or epoch numbers) are rejected. To accept a non-ISO source format, convert it inside a `jsonataExpression` (for example `$fromMillis(...)` for epoch milliseconds).
+- Represent a real calendar date. Values that look right but resolve to an invalid date (e.g. `2025-02-30`) are rejected.
+
+**Normalization (date-only values)** — if the value is a bare `YYYY-MM-DD`, it is expanded to a midnight UTC instant so it stays on the same German calendar day (Europe/Berlin). Values that already include a time component are forwarded unchanged.
+
+| Input | Stored as |
+|-------|-----------|
+| `2025-12-15` | `2025-12-15T00:00:00.000Z` |
+| `2025-12-15T14:30:00Z` | `2025-12-15T14:30:00Z` (unchanged) |
+| `2025-12-15T00:00:00+01:00` | `2025-12-15T00:00:00+01:00` (unchanged) |
 
 ### Optional Properties
 
