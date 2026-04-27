@@ -265,14 +265,93 @@ End customer data shall be retained for a period of 90 days following terminatio
 
 Recovery objectives represent targets and depend on the failure scenario, data volume, and required reprocessing steps. Objectives do not apply in cases of force majeure or external dependencies outside epilot's control.
 
+## Data Protection & International Transfers
+
+epilot processes customer data exclusively within the European Union and maintains comprehensive safeguards for any sub-processors with non-EU parent companies.
+
+### Data Processing Location
+
+All primary data processing occurs in the **AWS EU (Frankfurt, `eu-central-1`) region**. Customer data — including entities, files, communications, and workflow state — is stored and processed within the EU.
+
+### Sub-Processors
+
+epilot engages the following sub-processors for platform operations. Each sub-processor has a **Data Processing Agreement (DPA)** in accordance with Article 28 GDPR.
+
+| Sub-Processor | Purpose | Data Location | Parent Company |
+|---|---|---|---|
+| **Amazon Web Services (AWS)** | Infrastructure, compute, storage, databases | EU (Frankfurt) | USA |
+| **Elastic Cloud** | Entity search and indexing | EU (Netherlands) | USA |
+| **Datadog** | Infrastructure monitoring, logging, APM | EU (Netherlands) | USA |
+| **FullStory** | Session analytics for product improvement | EU (Germany) | USA |
+| **ConvertAPI** | Document format conversion | EU (Lithuania) | Lithuania |
+
+### International Data Transfer Safeguards
+
+For sub-processors with parent companies outside the EU, epilot implements the following safeguards in accordance with GDPR Chapter V:
+
+**Standard Contractual Clauses (SCCs)**
+
+All sub-processors with US parent companies have executed **EU Standard Contractual Clauses** pursuant to Article 46(2)(c) GDPR. SCCs provide contractual guarantees that personal data transferred outside the EU receives equivalent protection to EU data protection standards.
+
+**EU-US Data Privacy Framework**
+
+Where applicable, sub-processors participate in the **EU-US Data Privacy Framework** (DPF), providing an additional adequacy mechanism recognized by the European Commission. FullStory is an active participant in the EU-US DPF.
+
+**Technical and Organizational Measures**
+
+Beyond contractual safeguards, epilot implements technical measures to minimize data exposure:
+
+- **Data residency enforcement** — All sub-processors are contractually required to process data within their EU data centers
+- **Access restrictions** — Sub-processor support access from non-EU locations is either disabled or restricted to anonymized/aggregated data
+- **Data minimization** — Only necessary data is shared with each sub-processor
+
+### Monitoring & Analytics Data Handling
+
+For monitoring and analytics services specifically:
+
+**Datadog**
+- Processes infrastructure metrics, logs, and application performance data
+- Configured to use EU (Netherlands) data center exclusively
+- Sensitive fields (PII) are redacted at the application level before transmission
+- No end-customer personal data is included in monitoring payloads
+
+**FullStory**
+- Session replay captures user interactions for UX improvement
+- **Privacy-first configuration**: PII fields are masked/excluded from recordings using CSS selectors and attribute blocklists
+- Data is processed in the EU (Germany) data center
+- Recordings exclude sensitive form fields (passwords, payment details, personal identifiers)
+
+### Transfer Impact Assessment
+
+epilot maintains a **Transfer Impact Assessment (TIA)** evaluating the legal framework in third countries where sub-processor parent companies are headquartered. The assessment considers:
+
+- Whether the sub-processor can access EU-stored data from non-EU locations
+- Applicable foreign government access laws
+- Technical measures preventing unauthorized access
+- Contractual commitments from sub-processors
+
+The current assessment concludes that the combination of EU data residency, SCCs, DPF certification (where applicable), and technical access controls provides adequate protection equivalent to GDPR standards.
+
+### Documentation Requests
+
+For compliance purposes, epilot can provide:
+
+- **Sub-processor list** — Current list of all sub-processors with DPA status
+- **DPA copies** — Data Processing Agreements with specific sub-processors
+- **Transfer Impact Assessment** — Detailed TIA documentation
+- **Technical measures documentation** — Configuration details for data minimization and access controls
+
+Contact your epilot account manager or [support@epilot.cloud](mailto:support@epilot.cloud) to request compliance documentation.
+
 ## Compliance
 
 epilot maintains the following certifications and compliance measures:
 
 - **ISO 27001:2022** — Certified information security management system
-- **GDPR compliance** — Data processing agreements, data minimization, and right-to-deletion mechanisms
+- **GDPR compliance** — Data processing agreements with all sub-processors, data minimization practices, lawful transfer mechanisms (SCCs, DPF), and right-to-deletion mechanisms via [Data Governance](/docs/data-governance/overview)
 - **Regular security audits** — Ongoing internal and external assessments informed by OWASP ASVS standards
 - **Security taskforce** — A dedicated cross-functional team that triages and resolves security findings
+- **Penetration testing** — Annual third-party penetration tests with remediation tracking
 
 ## Further Reading
 
@@ -285,3 +364,4 @@ epilot maintains the following certifications and compliance measures:
 - [Access Tokens](/docs/auth/access-tokens) — Creating and managing long-lived API tokens
 - [Token Types](/docs/auth/token-types) — Comparison of access tokens vs. publishable tokens
 - [Permissions](/docs/auth/permissions) — RBAC model, grant evaluation, role management
+- [Data Governance](/docs/data-governance/overview) — Automated contact deletion and data lifecycle management
