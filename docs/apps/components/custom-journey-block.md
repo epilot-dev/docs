@@ -104,12 +104,49 @@ Journey Blocks can be made configurable through component arguments, which allow
 
 Arguments are defined in your app configuration and appear in the block settings panel when a user adds your block to a journey. They can include:
 
-- Text inputs for customizable labels and messages
-- Boolean toggles for feature enabling/disabling
-- Dropdown selectors for pre-defined options
-- And more
+- Text inputs for customizable labels and messages (`text`)
+- Boolean toggles for feature enabling/disabling (`boolean`)
+- Dropdown selectors for pre-defined options (`enum`)
+- References to other blocks in the same journey (`block_reference`)
 
 This configurability makes your custom blocks more versatile and valuable across different use cases.
+
+#### Block reference arguments
+
+Use `block_reference` when your block needs to read or subscribe to the value of **another block in the same journey** (e.g. a Subsidy Finder that needs the zip code from an Availability Check block). Instead of asking the configuring user to copy and paste a block ID, the journey builder shows them a dropdown of compatible blocks; the chosen block's ID is stored as the arg value.
+
+```json title="Manifest: declare a block_reference arg"
+{
+  "key": "zip_source",
+  "type": "block_reference",
+  "label": { "en": "Zip code source", "de": "Quelle der Postleitzahl" },
+  "required": true,
+  "allowed_types": ["availability-check"]
+}
+```
+
+`allowed_types` is optional. When provided, the picker is filtered to those journey block types (e.g. `availability-check`, `address`, `text-input`); omit it to allow any block.
+
+At runtime your bundle receives the chosen block's ID through `container.args` exactly like any other arg, then uses the existing `subscribe` / `getValue` API to read its value:
+
+```typescript title="Consume the block_reference at runtime"
+const args = JSON.parse(props.container.args || "{}");
+const zipBlockId = args.zip_source;
+
+useEffect(() => {
+  if (!zipBlockId) return;
+
+  const unsubscribe = props.container.subscribe(zipBlockId, (value) => {
+    // react to the source block's value
+  });
+
+  return () => unsubscribe();
+}, [zipBlockId, props.container.subscribe]);
+```
+
+:::tip
+Prefer `block_reference` over a plain `text` arg whenever your block needs another block's ID — it removes the manual copy/paste step for the configuring user and prevents typos.
+:::
 
 ## Best Practices
 

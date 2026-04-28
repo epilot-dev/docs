@@ -184,6 +184,10 @@ The updates from this subscription are reactive, i.e. whenever the address block
 
 ![Subscribe example](/img/apps/guide/jb/subscribe.gif)
 
+:::tip Don't hard-code the block ID
+Block IDs are generated per journey, so a hard-coded `BLOCK_ID` only works for one specific journey. For reusable blocks, declare a [`block_reference` component argument](../components/custom-journey-block.md#block-reference-arguments) instead — the configuring user picks the source block from a dropdown and your bundle receives its ID via `container.args`. You can then pass that ID to `subscribe` exactly like the example above.
+:::
+
 :::info
 By subscribing to changes in other blocks, you can build very powerful custom blocks that are not limited to the data that is available in the block configuration.
 :::
