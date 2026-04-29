@@ -2,6 +2,61 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-04-28 App API
+
+- New `block_reference` component arg type added for Journey Block Components, allowing a block's arg to reference another block in the journey by ID; a new `BlockReferenceArg` schema supports an optional `allowed_types` filter
+
+## 2026-04-28 Entity API
+
+- New optional `edit_mode` and `edit_mode_config` fields added to all entity schema attribute types in schema responses
+- `_changesets` field now included on entity objects returned from activity log responses
+
+## 2026-04-28 Notes API
+
+- `created_by` field type changed from a single object to an array of objects across all note endpoints — consumers reading `created_by` fields must handle arrays (breaking)
+- New optional `edited_at` timestamp field added to notes and comments
+- `POST /v1/notes:search` now requires at least one entry in the `contexts` array; previously empty arrays were silently accepted (breaking)
+- New optional `include_related_schemas` array field added to note search requests for including notes on related entity schemas
+
+## 2026-04-28 Entity Mapping API
+
+- New iteration operations added to entity mapping rules: `_foreach` (path to the source array to iterate), `_as` (variable name for each item, accessed as `$<name>` in `_copy` paths within `_map`), and `_map` (operation applied per iteration item), enabling array-to-array entity transformation
+
+## 2026-04-28 Webhooks API
+
+- Webhook auth credential fields (`password`, `clientSecret`, `keyValue`) are now nullable; passing `null` explicitly clears the stored value, omitting the field preserves the existing value
+- New optional `apply_changesets` boolean field added to webhook `payloadConfiguration`; when `true`, entity fields in the webhook payload reflect proposed changeset values instead of current persisted values
+
+## 2026-04-21 Core Events
+
+- New `remarks` array field added to `MeterReadingAdded` and `ServiceMeterReadingAdded` events, containing free-text remarks from the submitter in reading order (one per counter for multi-counter meters; empty or whitespace-only remarks are omitted)
+- New `remark` field added to individual counter reading items within `ServiceMeterReadingAdded`
+
+## 2026-04-17 Permissions API
+
+- New `equals_current_user` grant condition (`EqualsCurrentUserCondition`) added, checking whether any `relation_user` attribute on the entity contains the currently authenticated user; an optional `attribute` path restricts the check to a specific field
+- New optional `vendor_created` boolean field added to user, partner, and sharing role responses, indicating the role was created by a vendor organization on behalf of a partner organization
+
+## 2026-04-16 Design Builder API
+
+- Many new design token fields added to Journey design objects for fine-grained styling: button variants (primary, ghost, outlined), input fields, cards, chips, dropdowns, datepicker, toggles, topbar, font size scale, and more; `IMAGE` added as a new `file_type` option for design logos
+
+## 2026-04-16 Integration Toolkit API
+
+- New optional `group_id` field on `POST /v3/erp/updates/events` for controlling processing parallelism: events sharing the same `group_id` are processed in order; events with different `group_id` values are processed concurrently (up to 20 concurrent groups per integration)
+
+## 2026-04-16 Message API
+
+- New optional `unlink_mapped_entities` query parameter on `POST /v1/message/threads/{id}/unassign`; when `true`, also removes the unassigned entities from `mapped_entities` on related source entities
+
+## 2026-04-16 Event: Meter Reading Added
+
+- New `contracts` array field added to the `MeterReadingAdded` event payload, providing the full list of hydrated contract entities linked to the meter (supports meters associated with multiple contracts)
+
+## 2026-04-15 Customer Portal API
+
+- New `POST /v2/portal/metering/readings` endpoint added for retrieving paginated meter readings for a specific counter, with optional Handlebars template resolution per reading and per counter entity
+
 ## 2026-04-14 Customer Portal API
 
 - New `aggregation_method` field added to consumption items in `GET /v2/portal/consumption` responses, indicating the aggregation method used (values: `sum`, `average`, `max`, `min`)
