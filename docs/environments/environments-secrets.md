@@ -101,6 +101,8 @@ This is the key difference from Custom Variables, which transfer with Blueprints
 
 Navigate to [Configuration > Environments](https://portal.epilot.cloud/app/settings/environments) to manage your variables.
 
+![Environments & Secrets UI](../../static/img/environments/environments-secrets-list-view.png)
+
 From this page you can:
 
 - **Create** new variables with a key, type, value, and optional description
