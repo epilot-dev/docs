@@ -195,7 +195,7 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/validation-rules.yaml',
   },
   {
-    layout: { title: 'ERP Integration API' },
+    layout: { title: 'Integration Toolkit API' },
     routePath: '/api/erp-integration',
     specUrl: 'https://docs.api.epilot.io/erp-integration.yaml',
   },
