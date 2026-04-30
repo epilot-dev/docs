@@ -19,6 +19,7 @@ const toc = [
   { value: 'SDK', id: 'sdk', children: [], level: 2 },
   { value: 'Entities', id: 'entities', children: [], level: 2 },
   { value: 'Webhooks', id: 'webhooks', children: [], level: 2 },
+  { value: 'Versioning', id: 'versioning', children: [], level: 2 },
   { value: 'Changelog', id: 'changelog', children: [], level: 2 },
   { value: 'API Reference', id: 'api-reference', children: [], level: 2 },
 ];
@@ -112,6 +113,54 @@ yarn add @epilot/entity-client`}</code>
                     See the <Link to="/docs/integrations/webhooks">Webhooks guide</Link> for setup, payload structure,
                     and signature verification.
                   </p>
+
+                  <h2 id="versioning">Versioning</h2>
+                  <p>
+                    epilot maintains strong backwards compatibility commitments for all public APIs.
+                  </p>
+                  <h3>Compatibility Guarantees</h3>
+                  <ul>
+                    <li>
+                      <strong>No breaking changes</strong> — existing API endpoints, request/response schemas, and
+                      webhook payloads remain backwards compatible
+                    </li>
+                    <li>
+                      <strong>Additive changes only</strong> — new fields, parameters, and endpoints may be added;
+                      consumers should ignore unknown fields
+                    </li>
+                    <li>
+                      <strong>Minimum two years support</strong> — any published API route is supported for at least two
+                      years
+                    </li>
+                  </ul>
+                  <h3>Deprecation Policy</h3>
+                  <ul>
+                    <li>
+                      <strong>12-month notice</strong> — breaking changes are announced at least 12 months in advance
+                    </li>
+                    <li>
+                      <strong>OpenAPI marking</strong> — deprecated operations are marked in API definitions
+                    </li>
+                    <li>
+                      <strong>Changelog</strong> — all deprecations are published in the{' '}
+                      <Link to="/api/changelog">API Changelog</Link>
+                    </li>
+                  </ul>
+                  <p>
+                    <em>
+                      Exceptions: Security vulnerabilities or regulatory requirements may necessitate changes on shorter
+                      notice.
+                    </em>
+                  </p>
+                  <h3>Breaking Changes</h3>
+                  <p>The following are considered breaking changes:</p>
+                  <ul>
+                    <li>Removing an API endpoint (sunsetting)</li>
+                    <li>Removing or renaming request parameters or response fields</li>
+                    <li>Changing field types or formats</li>
+                    <li>Changing error codes for existing scenarios</li>
+                    <li>Tightening validation on existing parameters</li>
+                  </ul>
 
                   <h2 id="changelog">Changelog</h2>
                   <p>

@@ -31,42 +31,7 @@ Webhooks are the primary mechanism for outbound integrations — ERPs, middlewar
 
 ## API Versioning & Compatibility
 
-epilot maintains strong backwards compatibility commitments for all public APIs. This ensures integrations remain stable and predictable over time.
-
-### Compatibility Guarantees
-
-- **No breaking changes to existing operations** — existing API endpoints, request/response schemas, and webhook/event payloads remain backwards compatible
-- **Additive changes only** — new fields, parameters, and endpoints may be added at any time; consumers should ignore unknown fields
-- **Minimum two years support** — any published API route is supported for at least two years from its release
-
-### Deprecation Policy
-
-When an API operation needs to be retired:
-
-1. **12-month notice period** — breaking changes are announced at least 12 months in advance
-2. **Deprecation in OpenAPI spec** — deprecated operations are marked in the [OpenAPI definitions](/api), which propagates to generated SDKs and documentation
-3. **Changelog announcement** — all deprecations are published in the [API Changelog](/api/changelog), available via RSS feed or email notifications
-
-:::note Exceptions
-Security vulnerabilities or regulatory/legal requirements may necessitate changes on shorter notice. In such cases, as much advance notice as feasible will be communicated.
-:::
-
-### What Constitutes a Breaking Change
-
-- Removing an API endpoint (sunsetting)
-- Removing or renaming a required request parameter
-- Removing or renaming a response field
-- Changing the type or format of an existing field
-- Changing error codes or response status codes for existing scenarios
-- Tightening validation on existing parameters
-
-### Staying Informed
-
-Subscribe to API changes through:
-
-- **[API Changelog](/api/changelog)** — detailed changelog with RSS feed support
-- **OpenAPI specs** — deprecation notices embedded in API definitions
-- **Release notes** — major platform updates announced via email to registered developers
+epilot maintains strong backwards compatibility commitments for all public APIs. See the [API Versioning](/api#versioning) section for details on compatibility guarantees, deprecation policies, and what constitutes a breaking change.
 
 ## Accessing APIs with MCP
 
