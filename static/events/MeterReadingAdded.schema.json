@@ -44,6 +44,38 @@
       "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
       "example": "api_123456"
     },
+    "_has_pending_changesets": {
+      "type": "boolean",
+      "description": "True when the triggering entity (or meter counter) has at least one pending changeset"
+    },
+    "_changeset_edit_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Distinct edit modes present across pending changesets. Typical values: \"direct\", \"external\", \"approval\""
+    },
+    "_changeset_attributes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Attribute names (or reading_{id} keys for metering) that currently have a pending changeset"
+    },
+    "_changeset_edit_modes_by_attribute": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "not": {}
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "description": "Per-attribute edit mode map; same keys as _changeset_attributes. Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
+    },
     "reading_date": {
       "type": "string",
       "format": "date-time",
@@ -159,11 +191,15 @@
           "external_id": {
             "type": "string",
             "description": "External system reference"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement (e.g., kWh, m3) entered with the reading"
           }
         },
         "additionalProperties": false
       },
-      "description": "Array of all meter readings (supports multiple counters per meter)"
+      "description": "Array of committed meter readings (supports multiple counters per meter). Populated only when this event represents a committed reading."
     },
     "meter_reading_status": {
       "type": "array",
@@ -175,7 +211,110 @@
         ],
         "description": "Status of the meter reading"
       },
-      "description": "Aggregated status array for meter readings"
+      "description": "Aggregated status array for committed meter readings"
+    },
+    "proposed_meter_readings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "counter_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Entity ID of the meter counter"
+          },
+          "value": {
+            "type": "number",
+            "description": "Proposed meter reading value"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "feed-in",
+              "feed-out"
+            ],
+            "description": "Proposed direction of energy flow"
+          },
+          "obis_number": {
+            "type": "string",
+            "description": "OBIS code of the counter (hydrated from meter_counter)"
+          },
+          "reading_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Proposed ISO 8601 timestamp when the reading was taken"
+          },
+          "read_by": {
+            "type": "string",
+            "description": "Name of the person who submitted the proposed reading"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for the proposed reading (e.g., \"regular\", \"move-in\")"
+          },
+          "remark": {
+            "type": "string",
+            "description": "Free-text remark entered by the submitter on the proposed reading"
+          },
+          "external_id": {
+            "type": "string",
+            "description": "External system reference carried with the proposed reading"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement (e.g., kWh, m3) entered with the proposed reading"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "valid",
+              "implausible"
+            ],
+            "description": "Validation outcome of the proposed reading, if metering-api ran validation"
+          },
+          "changeset_id": {
+            "type": "string",
+            "description": "Unique identifier of the changeset"
+          },
+          "edit_mode": {
+            "type": "string",
+            "enum": [
+              "external",
+              "approval"
+            ],
+            "description": "Edit mode: external system validation or human approval workflow"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the proposed reading was submitted (changeset created)"
+          },
+          "previous_value": {
+            "type": "number",
+            "description": "Reading value being overwritten, if any"
+          },
+          "previous_direction": {
+            "type": "string",
+            "enum": [
+              "feed-in",
+              "feed-out"
+            ],
+            "description": "Direction of the reading being overwritten"
+          },
+          "previous_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of the reading being overwritten"
+          }
+        },
+        "required": [
+          "changeset_id",
+          "edit_mode",
+          "created_at"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Array of proposed (pending) meter readings carrying changeset context. Populated only when this event represents a pending reading-changeset creation."
     },
     "meter": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",

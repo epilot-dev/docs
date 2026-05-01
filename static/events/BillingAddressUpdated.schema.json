@@ -44,6 +44,38 @@
       "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
       "example": "api_123456"
     },
+    "_has_pending_changesets": {
+      "type": "boolean",
+      "description": "True when the triggering entity (or meter counter) has at least one pending changeset"
+    },
+    "_changeset_edit_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Distinct edit modes present across pending changesets. Typical values: \"direct\", \"external\", \"approval\""
+    },
+    "_changeset_attributes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Attribute names (or reading_{id} keys for metering) that currently have a pending changeset"
+    },
+    "_changeset_edit_modes_by_attribute": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "not": {}
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "description": "Per-attribute edit mode map; same keys as _changeset_attributes. Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
+    },
     "operation": {
       "type": "string",
       "enum": [

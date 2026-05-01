@@ -1,7 +1,7 @@
 {
   "event_name": "MeterReadingAdded",
   "event_title": "Meter Reading Added",
-  "event_description": "Triggered when new meter readings are added via customer portal",
+  "event_description": "Triggered when a meter reading is committed or a reading-changeset is created (pending).",
   "event_version": "1.0.0",
   "event_tags": [
     "builtin",
@@ -164,11 +164,15 @@
             "external_id": {
               "type": "string",
               "description": "External system reference"
+            },
+            "unit": {
+              "type": "string",
+              "description": "Unit of measurement (e.g., kWh, m3) entered with the reading"
             }
           },
           "additionalProperties": false
         },
-        "description": "Array of all meter readings (supports multiple counters per meter)"
+        "description": "Array of committed meter readings (supports multiple counters per meter). Populated only when this event represents a committed reading."
       },
       "required": false
     },
@@ -183,7 +187,113 @@
           ],
           "description": "Status of the meter reading"
         },
-        "description": "Aggregated status array for meter readings"
+        "description": "Aggregated status array for committed meter readings"
+      },
+      "required": false
+    },
+    "proposed_meter_readings": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "counter_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Entity ID of the meter counter"
+            },
+            "value": {
+              "type": "number",
+              "description": "Proposed meter reading value"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "feed-in",
+                "feed-out"
+              ],
+              "description": "Proposed direction of energy flow"
+            },
+            "obis_number": {
+              "type": "string",
+              "description": "OBIS code of the counter (hydrated from meter_counter)"
+            },
+            "reading_timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Proposed ISO 8601 timestamp when the reading was taken"
+            },
+            "read_by": {
+              "type": "string",
+              "description": "Name of the person who submitted the proposed reading"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Reason for the proposed reading (e.g., \"regular\", \"move-in\")"
+            },
+            "remark": {
+              "type": "string",
+              "description": "Free-text remark entered by the submitter on the proposed reading"
+            },
+            "external_id": {
+              "type": "string",
+              "description": "External system reference carried with the proposed reading"
+            },
+            "unit": {
+              "type": "string",
+              "description": "Unit of measurement (e.g., kWh, m3) entered with the proposed reading"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "valid",
+                "implausible"
+              ],
+              "description": "Validation outcome of the proposed reading, if metering-api ran validation"
+            },
+            "changeset_id": {
+              "type": "string",
+              "description": "Unique identifier of the changeset"
+            },
+            "edit_mode": {
+              "type": "string",
+              "enum": [
+                "external",
+                "approval"
+              ],
+              "description": "Edit mode: external system validation or human approval workflow"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the proposed reading was submitted (changeset created)"
+            },
+            "previous_value": {
+              "type": "number",
+              "description": "Reading value being overwritten, if any"
+            },
+            "previous_direction": {
+              "type": "string",
+              "enum": [
+                "feed-in",
+                "feed-out"
+              ],
+              "description": "Direction of the reading being overwritten"
+            },
+            "previous_timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Timestamp of the reading being overwritten"
+            }
+          },
+          "required": [
+            "changeset_id",
+            "edit_mode",
+            "created_at"
+          ],
+          "additionalProperties": false
+        },
+        "description": "Array of proposed (pending) meter readings carrying changeset context. Populated only when this event represents a pending reading-changeset creation."
       },
       "required": false
     }
