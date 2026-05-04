@@ -69,7 +69,7 @@ All attributes are set as standard HTML attributes on the `<epilot-journey>` ele
 | `journey-id`             | `string`                      | —               | **Required.** The ID of the Journey to render.                                                                                                                          |
 | `mode`                   | `"inline"` \| `"full-screen"` | `"full-screen"` | The display mode. `inline` renders the Journey within the page flow. `full-screen` renders it as an overlay.                                                            |
 | `lang`                   | `"de"` \| `"en"` \| `"fr"`    | `"de"`          | Overrides the UI language. This affects UI labels and copy, but does not automatically translate static content configured in the Journey Builder.                      |
-| `top-bar`                | `"true"` \| `"false"`         | `"true"`        | Whether to show the top navigation bar.                                                                                                                                 |
+| `top-bar`                | `"true"` \| `"false"`         | `"true"`        | Whether to show the top navigation bar. Only applies in `inline` mode — in `full-screen` mode the top bar is always visible and cannot be hidden.                       |
 | `scroll-to-top`          | `"true"` \| `"false"`         | `"true"`        | Whether to scroll the page to the top of the Journey when the user navigates to a new step.                                                                             |
 | `close-button`           | `"true"` \| `"false"`         | `"true"`        | Whether to show the close button in the top bar.                                                                                                                        |
 | `context-data`           | JSON string                   | —               | Additional contextual data passed to the Journey and included with the submission. Must be a JSON-encoded string of key-value pairs. See [Context Data](#context-data). |
@@ -104,6 +104,12 @@ Render the Journey directly within the page flow:
 ### Full-Screen Mode
 
 In full-screen mode, the Journey is hidden by default. Use the `is-full-screen-entered` attribute to control its visibility:
+
+:::note Top bar in full-screen
+
+The top bar is always visible in full-screen mode and cannot be hidden. The `top-bar` attribute is ignored when `mode` is `"full-screen"`. The close button inside the top bar can still be toggled with the `close-button` attribute.
+
+:::
 
 ```html title="Full-screen mode"
 <epilot-journey
