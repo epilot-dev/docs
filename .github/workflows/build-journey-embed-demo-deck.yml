@@ -1,0 +1,34 @@
+name: Build Journey Embed SDK demo deck
+
+on:
+  push:
+    branches:
+      - 'claude/journey-embed-demo-ppt-**'
+    paths:
+      - 'decks/journey-embed-sdk-demo/**'
+      - '.github/workflows/build-journey-embed-demo-deck.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install python-pptx
+        run: pip install python-pptx
+
+      - name: Build deck
+        working-directory: decks/journey-embed-sdk-demo
+        run: python build_deck.py
+
+      - name: Upload deck artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: journey-embed-sdk-demo-pptx
+          path: decks/journey-embed-sdk-demo/journey-embed-sdk-demo.pptx
+          if-no-files-found: error
