@@ -158,7 +158,7 @@ All configuration methods are chainable and return the `Embedding` instance. Cal
 | Method                         | Type                          | Default    | Description                                                                                                                                                                            |
 | ------------------------------ | ----------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.mode(value)`                 | `"inline"` \| `"full-screen"` | `"inline"` | The display mode. `"inline"` renders within the page flow. `"full-screen"` renders as an overlay.                                                                                      |
-| `.topBar(value)`               | `boolean`                     | `true`     | Whether to show the top navigation bar.                                                                                                                                                |
+| `.topBar(value)`               | `boolean`                     | `true`     | Whether to show the top navigation bar. Only applies to `inline` mode — in `full-screen` mode the top bar is always visible and cannot be hidden.                                      |
 | `.scrollToTop(value)`          | `boolean`                     | `true`     | Whether to scroll to the top of the Journey on step navigation.                                                                                                                        |
 | `.closeButton(value)`          | `boolean`                     | `true`     | Whether to show the close button in the top bar.                                                                                                                                       |
 | `.lang(value)`                 | `"de"` \| `"en"` \| `"fr"`    | -          | **Deprecated. Will be removed in a future version.** Overrides the Journey UI language. Set the language in the Journey Builder instead.                                               |
@@ -227,6 +227,12 @@ Renders the Journey directly within the page at the position of `#embed-target`:
 ### Full-Screen Mode
 
 In full-screen mode the Journey is hidden by default. Call `.isFullScreenEntered(true)` on the `Embedding` instance to open it, typically from a button click:
+
+:::note Top bar in full-screen
+
+The top bar is always visible in full-screen mode and cannot be hidden. `.topBar(false)` is ignored when `mode` is `"full-screen"`. The close button inside the top bar can still be toggled with `.closeButton(value)`.
+
+:::
 
 ```html title="Full-screen with a button"
 <button id="open-btn">Open Journey</button>
