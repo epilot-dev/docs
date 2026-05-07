@@ -2,9 +2,37 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
-## 2026-04-28 App API
+## 2026-05-05 Automation API
 
-- New `block_reference` component arg type added for Journey Block Components, allowing a block's arg to reference another block in the journey by ID; a new `BlockReferenceArg` schema supports an optional `allowed_types` filter
+- New optional `mark_as_read` field added to `ForwardEmailAction`, `ReplyEmailAction`, and `SendEmailAction` configurations, controlling whether the email thread is automatically marked as read after the action completes
+
+## 2026-05-02 Message API
+
+- New optional `mark_thread_as_read` field added to `POST /v1/message/messages` and `POST /v1/message/drafts`, controlling whether sending a reply marks the thread as read for the sender's org/user (defaults to `true`)
+
+## 2026-05-04 Pricing API
+
+- New optional `availability_address` and `variable_inputs` fields added to the external catalog request `context` on `POST /v1/public/external-catalog/products`, `POST /v1/public/external-catalog/product-recommendations`, and `POST /integration/external-service`, enabling availability filtering by address and variable-amount price computation
+- New optional `cashback_name` field added to `CashbackAmount` items across order, pricing, cart, and external-catalog responses
+
+## 2026-05-01 Core Events
+
+- Four new pending-changeset metadata fields added across all built-in events: `_has_pending_changesets`, `_changeset_edit_modes`, `_changeset_attributes`, and `_changeset_edit_modes_by_attribute` — enabling fine-grained webhook conditions based on whether the triggering entity has pending changesets and which attributes/edit modes are involved
+
+## 2026-05-01 Event: Meter Reading Added
+
+- New `proposed_meter_readings` array added carrying pending reading-changeset context (counter ID, value, direction, status, edit_mode, changeset_id, and previous values being overwritten); populated only when the event represents a pending reading-changeset creation
+- New `unit` field added to individual items in the existing `meter_readings` array
+
+## 2026-04-30 Integration Toolkit API
+
+- `slug` request property is now required on all use-case create variants (`POST /v1/integrations/{integrationId}/use-cases`) — file proxy, inbound, managed call, outbound, and secure proxy (breaking)
+- New optional `allowed_origins` array field added to FileProxy use case configuration, listing additional origins permitted to call `/download` (CORS); portal origins remain always allowed
+
+## 2026-04-30 Journey Config API
+
+- New optional `version` query parameter added to `GET /v1/journey/configuration/{id}` and `GET /v2/journey/configuration/{id}` for fetching historical snapshots; `0` (default) returns the live row, positive integers return earlier saved versions
+- New optional `settings.isActive` boolean field added to journey configurations
 
 ## 2026-04-28 Entity API
 
@@ -31,6 +59,12 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - New `remarks` array field added to `MeterReadingAdded` and `ServiceMeterReadingAdded` events, containing free-text remarks from the submitter in reading order (one per counter for multi-counter meters; empty or whitespace-only remarks are omitted)
 - New `remark` field added to individual counter reading items within `ServiceMeterReadingAdded`
+
+
+## 2026-04-17 Pricing API
+
+- `context.contract.billing_account` and `context.contract.payment` request fields on `POST /v1/public/external-catalog/products` and `POST /v1/public/external-catalog/product-recommendations` changed from string relation IDs to objects (breaking)
+- `context.contract.branch` enum constraint removed on the same endpoints; the field now accepts any string instead of only the previous fixed values (`power`, `gas`, `water`, `waste_water`, `district_heating`)
 
 ## 2026-04-17 Permissions API
 
