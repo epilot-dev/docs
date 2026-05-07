@@ -9,7 +9,7 @@ import EventSchemaViewer from '@site/src/components/EventSchemaViewer';
 
 epilot's core event catalog with built-in event schemas, examples, and schema definitions.
 
-See the [API Changelog](/api/changelog) for recent changes to events and APIs.
+See the [API Changelog](/api/changelog) for the full history of additions and changes to core events and APIs.
 
 ## Event Architecture
 
@@ -32,6 +32,8 @@ All events include these fields:
 
 <EventSchemaViewer event="MeterReadingAdded" />
 
+<EventSchemaViewer event="ServiceMeterReadingAdded" />
+
 ### Customer
 
 <EventSchemaViewer event="CustomerDetailsUpdated" />
@@ -44,6 +46,24 @@ All events include these fields:
 
 <EventSchemaViewer event="BillingAddressUpdated" />
 
+<EventSchemaViewer event="BillingAccountConnectionRemoved" />
+
+### Files
+
+<EventSchemaViewer event="FileCreated" />
+
+### Orders & Tariffs
+
+<EventSchemaViewer event="OrderSubmission" />
+
+<EventSchemaViewer event="TariffChange" />
+
+### ERP Sync
+
+<EventSchemaViewer event="OnDemandSyncContractRequested" />
+
+<EventSchemaViewer event="OnDemandSyncCustomerRequested" />
+
 ### Automation
 
 These events are triggered manually via automation.
@@ -54,6 +74,4 @@ These events are triggered manually via automation.
 
 <EventSchemaViewer event="TerminateContractRequested" />
 
-<EventSchemaViewer event="BillingAccountConnectionRemoved" />
-
-<EventSchemaViewer event="ServiceMeterReadingAdded" />
+<EventSchemaViewer event="InvoiceSimulationRequested" />
