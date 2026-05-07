@@ -23,7 +23,7 @@
     "_event_version": {
       "type": "string",
       "description": "Schema version number",
-      "example": "1.1.0"
+      "example": "1.2.0"
     },
     "_event_source": {
       "type": "string",
@@ -183,6 +183,87 @@
         "description": "Status of the meter reading"
       },
       "description": "Status array for meter readings"
+    },
+    "event_attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entity_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Entity ID of the file"
+          },
+          "filename": {
+            "type": "string",
+            "description": "Name of the file"
+          },
+          "mime_type": {
+            "type": "string",
+            "description": "MIME type of the file (e.g., image/png)"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "File size in bytes"
+          },
+          "s3ref": {
+            "type": "object",
+            "properties": {
+              "bucket": {
+                "type": "string",
+                "description": "S3 bucket name"
+              },
+              "key": {
+                "type": "string",
+                "description": "S3 object key"
+              }
+            },
+            "required": [
+              "bucket",
+              "key"
+            ],
+            "additionalProperties": false,
+            "description": "S3 reference for the file content"
+          },
+          "readable_size": {
+            "type": "string",
+            "description": "Human-readable file size (e.g., \"200 KB\")"
+          },
+          "_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags on the file entity (semantic labels set by uploader/automation)"
+          },
+          "relation_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags on the ticket→file relation (e.g. journey step label like \"_hidden_ Neuer Schritt - Bild Zählerstand\")"
+          },
+          "category": {
+            "type": "string",
+            "description": "File category select value (e.g., \"address-suggestions\", \"unknown\")"
+          },
+          "file_date": {
+            "type": "string",
+            "description": "User-provided file date"
+          },
+          "_created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the file entity was created — useful for time-window filtering"
+          }
+        },
+        "required": [
+          "entity_id"
+        ],
+        "additionalProperties": false
+      },
+      "description": "All files related to the ticket. The ticket schema is org-specific, so we cannot reliably identify \"the meter photo\" — consumers should filter on `relation_tags`, `_tags`, `mime_type`, or `_created_at` proximity to `reading_timestamp`."
     },
     "ticket": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1631,6 +1712,150 @@
         }
       },
       "description": "contact entity (hydrated from entity graph)"
+    },
+    "ticket_files": {
+      "type": "array",
+      "description": "Array of file entities (hydrated from entity graph)",
+      "items": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "_schema",
+          "filename",
+          "language"
+        ],
+        "properties": {
+          "_schema": {
+            "readOnly": true,
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "example": "file",
+            "description": "URL-friendly identifier for the entity schema"
+          },
+          "_id": {
+            "readOnly": true,
+            "type": "string",
+            "format": "uuid",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "description": "Unique identifier for the entity"
+          },
+          "_org": {
+            "type": "string",
+            "description": "Organization Id the entity belongs to",
+            "readOnly": true,
+            "example": "123"
+          },
+          "_title": {
+            "readOnly": true,
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe",
+            "description": "Generated title for the entity based on schema title_template"
+          },
+          "_tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "family:label"
+            ],
+            "description": "Entity Labels"
+          },
+          "_purpose": {
+            "$ref": "#/definitions/PurposeAttribute",
+            "description": "Purposes"
+          },
+          "_thumbnail": {
+            "$ref": "#/definitions/BaseRelation",
+            "description": "Thumbnail"
+          },
+          "filename": {
+            "type": "string",
+            "description": "File Name"
+          },
+          "mime_type": {
+            "type": "string",
+            "description": "MIME Type"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "document",
+              "document_template",
+              "text",
+              "image",
+              "video",
+              "audio",
+              "spreadsheet",
+              "presentation",
+              "font",
+              "archive",
+              "application",
+              "unknown"
+            ],
+            "description": "File Type"
+          },
+          "readable_size": {
+            "type": "string",
+            "description": "Size"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "de",
+              "en"
+            ],
+            "description": "Language"
+          },
+          "alt_text": {
+            "type": "string",
+            "description": "Alt text"
+          },
+          "access_control": {
+            "type": "string",
+            "enum": [
+              "private",
+              "public-read"
+            ],
+            "description": "Access Control"
+          },
+          "public_url": {
+            "type": "string",
+            "description": "Public URL"
+          },
+          "shared_with_end_customer": {
+            "type": "boolean",
+            "description": "Shared with End Customer"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "address-suggestions",
+              "unknown"
+            ],
+            "description": "Category"
+          },
+          "_files": {
+            "$ref": "#/definitions/BaseRelation"
+          },
+          "_created_at": {
+            "readOnly": true,
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp of entity creation"
+          },
+          "_updated_at": {
+            "readOnly": true,
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp of entity last update"
+          }
+        }
+      }
     }
   },
   "required": [

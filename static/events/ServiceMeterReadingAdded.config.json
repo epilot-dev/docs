@@ -2,14 +2,15 @@
   "event_name": "ServiceMeterReadingAdded",
   "event_title": "Service: Meter Reading Added",
   "event_description": "Service request to add a new meter reading via ticket",
-  "event_version": "1.1.0",
+  "event_version": "1.2.0",
   "event_tags": [
     "builtin",
     "erp",
     "automation",
     "service",
     "ticket",
-    "meter"
+    "meter",
+    "attachment"
   ],
   "schema_fields": {
     "value": {
@@ -159,6 +160,91 @@
       },
       "required": false,
       "graph_source": "ticket.meter_reading_status"
+    },
+    "event_attachments": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "entity_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Entity ID of the file"
+            },
+            "filename": {
+              "type": "string",
+              "description": "Name of the file"
+            },
+            "mime_type": {
+              "type": "string",
+              "description": "MIME type of the file (e.g., image/png)"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "File size in bytes"
+            },
+            "s3ref": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "S3 bucket name"
+                },
+                "key": {
+                  "type": "string",
+                  "description": "S3 object key"
+                }
+              },
+              "required": [
+                "bucket",
+                "key"
+              ],
+              "additionalProperties": false,
+              "description": "S3 reference for the file content"
+            },
+            "readable_size": {
+              "type": "string",
+              "description": "Human-readable file size (e.g., \"200 KB\")"
+            },
+            "_tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Tags on the file entity (semantic labels set by uploader/automation)"
+            },
+            "relation_tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Tags on the ticket→file relation (e.g. journey step label like \"_hidden_ Neuer Schritt - Bild Zählerstand\")"
+            },
+            "category": {
+              "type": "string",
+              "description": "File category select value (e.g., \"address-suggestions\", \"unknown\")"
+            },
+            "file_date": {
+              "type": "string",
+              "description": "User-provided file date"
+            },
+            "_created_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the file entity was created — useful for time-window filtering"
+            }
+          },
+          "required": [
+            "entity_id"
+          ],
+          "additionalProperties": false
+        },
+        "description": "All files related to the ticket. The ticket schema is org-specific, so we cannot reliably identify \"the meter photo\" — consumers should filter on `relation_tags`, `_tags`, `mime_type`, or `_created_at` proximity to `reading_timestamp`."
+      },
+      "required": false,
+      "graph_source": "[ticket_files.{\"entity_id\": _id, \"filename\": filename, \"mime_type\": mime_type, \"size_bytes\": size_bytes, \"s3ref\": s3ref, \"readable_size\": readable_size, \"_tags\": _tags, \"relation_tags\": relation_tags, \"category\": category, \"file_date\": file_date, \"_created_at\": _created_at}]"
     }
   },
   "entity_graph": {
@@ -192,6 +278,11 @@
         "id": "contact",
         "schema": "contact",
         "cardinality": "one"
+      },
+      {
+        "id": "ticket_files",
+        "schema": "file",
+        "cardinality": "many"
       }
     ],
     "edges": [
@@ -206,6 +297,10 @@
       {
         "from": "ticket",
         "to": "meter_counters"
+      },
+      {
+        "from": "ticket",
+        "to": "ticket_files"
       },
       {
         "from": "contract",
