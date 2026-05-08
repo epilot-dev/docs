@@ -198,6 +198,56 @@ Use this to concatenate fields, apply mathematical expressions, or merge multipl
 }
 ```
 
+### `_each` / `_map`
+
+The `_each` operation iterates over a source array and produces a mapped output for each item. Use it when you need to map a dynamic number of items from the source entity — for example, mapping all meter readings or line items from a submission.
+
+| Key | Description |
+|-----|-------------|
+| `_each` | Path to the source array to iterate over |
+| `_as` | Names the current item — accessed as `$<name>` in `_copy` paths |
+| `_map` | The operation to evaluate for each item |
+
+```json
+// map all readings from a submission into a flat array
+{
+  "_each": "submission.meterReadings",
+  "_as": "meter",
+  "_map": {
+    "_each": "$meter.readings",
+    "_as": "reading",
+    "_map": {
+      "value": { "_copy": "$reading.value" },
+      "unit": { "_copy": "$reading.unit" },
+      "direction": { "_copy": "$reading.direction" },
+      "reading_timestamp": { "_copy": "$meter.readingDate" },
+      "read_by": { "_copy": "$meter.readBy" }
+    }
+  }
+}
+```
+
+`_each` can be nested — inner results are automatically flattened into a single array. You can access both the inner alias (`$reading`), the outer alias (`$meter`), and the original source context (e.g., `meter._id`) at the same time.
+
+You can combine `_each` with `_uniq` to deduplicate results:
+
+```json
+{
+  "_each": "submission.items",
+  "_as": "item",
+  "_map": {
+    "category": { "_copy": "$item.category" }
+  },
+  "_uniq": ["category"]
+}
+```
+
+All other operations (`_copy`, `_template`, `_set`, `_random`, etc.) work inside `_map`.
+
+:::tip
+Always include `_as` when using `_each` — without it, you can't reference the current item.
+:::
+
 ### Nesting
 
 Operations can be nested to create complex mapping behaviour:
