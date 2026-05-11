@@ -50,6 +50,7 @@
         "bucket": "string",
         "key": "string"
       },
+      "version_index": 0,
       "readable_size": "string",
       "_tags": [
         "string"

@@ -204,6 +204,11 @@
               "additionalProperties": false,
               "description": "S3 reference for the file content"
             },
+            "version_index": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Latest version index of the file (versions[].length - 1, or 0 if no versions array)"
+            },
             "readable_size": {
               "type": "string",
               "description": "Human-readable file size (e.g., \"200 KB\")"
@@ -237,14 +242,15 @@
             }
           },
           "required": [
-            "entity_id"
+            "entity_id",
+            "version_index"
           ],
           "additionalProperties": false
         },
         "description": "All files related to the ticket. The ticket schema is org-specific, so we cannot reliably identify \"the meter photo\" — consumers should filter on `relation_tags`, `_tags`, `mime_type`, or `_created_at` proximity to `reading_timestamp`."
       },
       "required": false,
-      "graph_source": "[ticket_files.{\"entity_id\": _id, \"filename\": filename, \"mime_type\": mime_type, \"size_bytes\": size_bytes, \"s3ref\": s3ref, \"readable_size\": readable_size, \"_tags\": _tags, \"relation_tags\": relation_tags, \"category\": category, \"file_date\": file_date, \"_created_at\": _created_at}]"
+      "graph_source": "[ticket_files.{\"entity_id\": _id, \"filename\": filename, \"mime_type\": mime_type, \"size_bytes\": size_bytes, \"s3ref\": s3ref, \"version_index\": ($count(versions) > 0 ? $count(versions) - 1 : 0), \"readable_size\": readable_size, \"_tags\": _tags, \"relation_tags\": relation_tags, \"category\": category, \"file_date\": file_date, \"_created_at\": _created_at}]"
     }
   },
   "entity_graph": {

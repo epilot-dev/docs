@@ -226,6 +226,11 @@
             "additionalProperties": false,
             "description": "S3 reference for the file content"
           },
+          "version_index": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Latest version index of the file (versions[].length - 1, or 0 if no versions array)"
+          },
           "readable_size": {
             "type": "string",
             "description": "Human-readable file size (e.g., \"200 KB\")"
@@ -259,7 +264,8 @@
           }
         },
         "required": [
-          "entity_id"
+          "entity_id",
+          "version_index"
         ],
         "additionalProperties": false
       },
