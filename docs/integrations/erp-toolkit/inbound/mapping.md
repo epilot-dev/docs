@@ -177,6 +177,78 @@ The `params` object maps URL parameter names to values resolved from the payload
 
 See also: [File Proxy Configuration](../file-proxy#proxy-url-generation) for details on the proxy URL format and parameter requirements.
 
+### Portal Reference Mapping {#portal-ref-mapping}
+
+When mapping inbound data to entities that reference an epilot portal (e.g. `portal_user`, `file`), use the `portal_ref` field type to resolve a real portal of the calling organization at runtime — no need to hard-code environment-specific portal UUIDs in your mapping.
+
+**Configuration:**
+```json
+{
+  "attribute": "portal_id",
+  "portal_ref": {
+    "filter": {
+      "origin": "END_CUSTOMER_PORTAL",
+      "enabled": true,
+      "is_dummy": false
+    },
+    "select": "single",
+    "return": "portal_id"
+  }
+}
+```
+
+**Field reference:**
+
+| Field | Type | Default | Notes |
+|---|---|---|---|
+| `filter.origin` | `PORTAL_ORIGIN \| PORTAL_ORIGIN[]` | _any_ | Restricts by portal origin. One of `END_CUSTOMER_PORTAL`, `INSTALLER_PORTAL`, `B2B_PORTAL`, `ADDITIONAL_PORTAL`. Filter only — does not influence ordering. |
+| `filter.enabled` | `boolean \| null` | `true` | Set `null` to ignore. |
+| `filter.is_dummy` | `boolean \| null` | `false` | Set `null` to ignore. |
+| `filter.is_epilot_domain` | `boolean` | _unset_ | Optional restriction. |
+| `filter.name` | `string` | _unset_ | Exact match. |
+| `filter.domain` | `string` | _unset_ | Exact match. |
+| `select` | `"single" \| "all"` | `"single"` | `single` returns the oldest match; `all` returns the filtered+sorted array (0, 1, or many). |
+| `return` | `"portal_id" \| "origin" \| "domain" \| "name" \| "jsonata"` | `"portal_id"` | Determines which value(s) to emit. When `"jsonata"`, the sibling `jsonataExpression` is required. |
+| `jsonataExpression` | `string` | — | Required when `return: "jsonata"`. With `select: "single"`, evaluated against the matched portal object. With `select: "all"`, evaluated against the full array. |
+
+**Ordering:** When `select: "single"`, the resolver sorts matched portals ascending by `(_created_at, portal_id)` and returns the first. Portals missing `_created_at` (legacy data predating timestamp tracking) sort first — they are treated as oldest. Ordering is deterministic; no warning is emitted when multiple portals match.
+
+**Example: return all enabled end-customer-portal domains as an array**
+```json
+{
+  "attribute": "ecp_domains",
+  "portal_ref": {
+    "filter": { "origin": "END_CUSTOMER_PORTAL", "enabled": true },
+    "select": "all",
+    "return": "domain"
+  }
+}
+```
+
+**Example: derive a portal_id from a name pattern using JSONata**
+```json
+{
+  "attribute": "portal_id",
+  "portal_ref": {
+    "filter": { "origin": "INSTALLER_PORTAL" },
+    "select": "single",
+    "return": "jsonata",
+    "jsonataExpression": "$.portal_id"
+  }
+}
+```
+
+**Monitoring codes:** Three codes are emitted when `portal_ref` resolution does not produce a value:
+
+- `PORTAL_REF_NO_MATCH` (warning) — `select: "single"` found zero portals matching the filter. The attribute is omitted from the resulting entity.
+- `PORTAL_REF_AMBIGUOUS` (warning) — `select: "single"` matched more than one portal. The resolver still returns the oldest match (by `_created_at`, then `portal_id`); the warning is informational so authors can tighten their filter.
+- `PORTAL_REF_LOOKUP_FAILED` (error) — the portal API call failed (network error, auth failure, downstream outage).
+- `PORTAL_REF_JSONATA_FAILED` (error) — `return: "jsonata"` evaluation threw (timeout, runtime error, compile failure).
+
+All three are visible via the standard ERP monitoring stream alongside extraction errors.
+
+**Caching:** Portal configurations are cached for 5 minutes per organization within each Lambda warm pool — config changes propagate within that window.
+
 ## Repeatable Fields
 
 Email and phone fields in epilot are stored as arrays. Use `_type` to specify the field type:
