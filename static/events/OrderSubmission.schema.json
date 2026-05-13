@@ -60,7 +60,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Attribute names (or reading_{id} keys for metering) that currently have a pending changeset"
+      "description": "Keys identifying pending changesets. For attribute changesets these are attribute names (e.g. `billing_cycle`); for meter-reading changesets these are the changeset IDs from `meter._meter_readings_changeset`"
     },
     "_changeset_edit_modes_by_attribute": {
       "type": "object",
@@ -74,7 +74,7 @@
           }
         ]
       },
-      "description": "Per-attribute edit mode map; same keys as _changeset_attributes. Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
+      "description": "Per-key edit mode map; same keys as _changeset_attributes (attribute names for entity changesets, changeset IDs for meter-reading changesets). Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
     },
     "operation": {
       "type": "string",

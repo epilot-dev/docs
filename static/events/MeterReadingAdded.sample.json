@@ -16,6 +16,7 @@
     "string"
   ],
   "_changeset_edit_modes_by_attribute": {},
+  "activity_type": "MeterReadingsAdded",
   "reading_date": "1970-01-01T00:00:00.000Z",
   "read_by": "string",
   "reason": "string",
@@ -33,6 +34,8 @@
   "unit": "string",
   "user_id": "string",
   "user_email": "user@example.com",
+  "changeset_id": "string",
+  "changeset_edit_mode": "direct",
   "meter_readings": [
     {
       "counter_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -72,6 +75,8 @@
       "previous_timestamp": "1970-01-01T00:00:00.000Z"
     }
   ],
+  "dismissed_reason": "string",
+  "dismissed_at": "1970-01-01T00:00:00.000Z",
   "meter": {
     "_schema": "meter",
     "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",

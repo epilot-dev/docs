@@ -60,7 +60,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Attribute names (or reading_{id} keys for metering) that currently have a pending changeset"
+      "description": "Keys identifying pending changesets. For attribute changesets these are attribute names (e.g. `billing_cycle`); for meter-reading changesets these are the changeset IDs from `meter._meter_readings_changeset`"
     },
     "_changeset_edit_modes_by_attribute": {
       "type": "object",
@@ -74,7 +74,17 @@
           }
         ]
       },
-      "description": "Per-attribute edit mode map; same keys as _changeset_attributes. Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
+      "description": "Per-key edit mode map; same keys as _changeset_attributes (attribute names for entity changesets, changeset IDs for meter-reading changesets). Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
+    },
+    "activity_type": {
+      "type": "string",
+      "enum": [
+        "MeterReadingsAdded",
+        "ChangesetCreated",
+        "ChangesetApplied",
+        "ChangesetDismissed"
+      ],
+      "description": "Originating lifecycle action: `MeterReadingsAdded` (direct commit), `ChangesetCreated` (pending), `ChangesetApplied` (pending → committed), or `ChangesetDismissed` (pending rejected)."
     },
     "reading_date": {
       "type": "string",
@@ -136,6 +146,19 @@
       "type": "string",
       "format": "email",
       "description": "Email of the user who submitted the reading"
+    },
+    "changeset_id": {
+      "type": "string",
+      "description": "Identifier of the originating changeset, if any"
+    },
+    "changeset_edit_mode": {
+      "type": "string",
+      "enum": [
+        "direct",
+        "external",
+        "approval"
+      ],
+      "description": "Mode under which this reading reached the catalog. `direct` = no changeset (committed straight to ClickHouse). `external` / `approval` = the originating changeset's edit_mode. Always populated, so webhook conditions like `changeset_edit_mode != approval` work deterministically across every activity_type."
     },
     "meter_readings": {
       "type": "array",
@@ -199,7 +222,7 @@
         },
         "additionalProperties": false
       },
-      "description": "Array of committed meter readings (supports multiple counters per meter). Populated only when this event represents a committed reading."
+      "description": "Committed meter readings (one entry per counter). Populated only for committed-reading events: `MeterReadingsAdded` and `ChangesetApplied`. Empty / absent on pending and dismissed lifecycle events — see `proposed_meter_readings` for those."
     },
     "meter_reading_status": {
       "type": "array",
@@ -314,7 +337,16 @@
         ],
         "additionalProperties": false
       },
-      "description": "Array of proposed (pending) meter readings carrying changeset context. Populated only when this event represents a pending reading-changeset creation."
+      "description": "Proposed (pending) meter readings carried by `ChangesetCreated` and `ChangesetDismissed` events. Empty / absent on committed-reading events — see `meter_readings` for those."
+    },
+    "dismissed_reason": {
+      "type": "string",
+      "description": "Optional human-supplied reason a pending changeset was dismissed."
+    },
+    "dismissed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when a pending changeset was dismissed."
     },
     "meter": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",

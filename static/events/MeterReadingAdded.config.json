@@ -1,7 +1,7 @@
 {
   "event_name": "MeterReadingAdded",
   "event_title": "Meter Reading Added",
-  "event_description": "Triggered when a meter reading is committed or a reading-changeset is created (pending).",
+  "event_description": "Triggered for every meter reading added event",
   "event_version": "1.0.0",
   "event_tags": [
     "builtin",
@@ -9,6 +9,19 @@
     "metering"
   ],
   "schema_fields": {
+    "activity_type": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "MeterReadingsAdded",
+          "ChangesetCreated",
+          "ChangesetApplied",
+          "ChangesetDismissed"
+        ],
+        "description": "Originating lifecycle action: `MeterReadingsAdded` (direct commit), `ChangesetCreated` (pending), `ChangesetApplied` (pending → committed), or `ChangesetDismissed` (pending rejected)."
+      },
+      "required": false
+    },
     "reading_date": {
       "json_schema": {
         "type": "string",
@@ -109,6 +122,25 @@
       },
       "required": false
     },
+    "changeset_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Identifier of the originating changeset, if any"
+      },
+      "required": false
+    },
+    "changeset_edit_mode": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "external",
+          "approval"
+        ],
+        "description": "Mode under which this reading reached the catalog. `direct` = no changeset (committed straight to ClickHouse). `external` / `approval` = the originating changeset's edit_mode. Always populated, so webhook conditions like `changeset_edit_mode != approval` work deterministically across every activity_type."
+      },
+      "required": false
+    },
     "meter_readings": {
       "json_schema": {
         "type": "array",
@@ -172,7 +204,7 @@
           },
           "additionalProperties": false
         },
-        "description": "Array of committed meter readings (supports multiple counters per meter). Populated only when this event represents a committed reading."
+        "description": "Committed meter readings (one entry per counter). Populated only for committed-reading events: `MeterReadingsAdded` and `ChangesetApplied`. Empty / absent on pending and dismissed lifecycle events — see `proposed_meter_readings` for those."
       },
       "required": false
     },
@@ -293,7 +325,22 @@
           ],
           "additionalProperties": false
         },
-        "description": "Array of proposed (pending) meter readings carrying changeset context. Populated only when this event represents a pending reading-changeset creation."
+        "description": "Proposed (pending) meter readings carried by `ChangesetCreated` and `ChangesetDismissed` events. Empty / absent on committed-reading events — see `meter_readings` for those."
+      },
+      "required": false
+    },
+    "dismissed_reason": {
+      "json_schema": {
+        "type": "string",
+        "description": "Optional human-supplied reason a pending changeset was dismissed."
+      },
+      "required": false
+    },
+    "dismissed_at": {
+      "json_schema": {
+        "type": "string",
+        "format": "date-time",
+        "description": "ISO 8601 timestamp when a pending changeset was dismissed."
       },
       "required": false
     }
