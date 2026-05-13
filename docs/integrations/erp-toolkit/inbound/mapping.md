@@ -249,6 +249,71 @@ All three are visible via the standard ERP monitoring stream alongside extractio
 
 **Caching:** Portal configurations are cached for 5 minutes per organization within each Lambda warm pool — config changes propagate within that window.
 
+### Environment Variable Reference Mapping {#env-var-ref-mapping}
+
+When mapping inbound data to entities and you need an org-scoped environment-specific value (e.g. an external ID prefix, a base URL, a domain identifier), use the `env_var_ref` field type to resolve it from the org's epilot environment configuration at runtime. The resolved value is the current configured value for the calling organization — no need to hard-code environment-specific constants in your mapping.
+
+**Configuration:**
+```json
+{
+  "attribute": "external_id_prefix",
+  "env_var_ref": {
+    "key": "erp_api.external_id_prefix"
+  }
+}
+```
+
+**Example: with a default fallback**
+```json
+{
+  "attribute": "external_id_prefix",
+  "env_var_ref": {
+    "key": "erp_api.external_id_prefix",
+    "default": "EPL"
+  }
+}
+```
+
+When `default` is supplied, the resolver returns the literal default value when the key is missing AND suppresses the `ENV_VAR_REF_NOT_FOUND` warning (the author signalled that the absence is expected).
+
+**Example: with a JSONata transform**
+```json
+{
+  "attribute": "normalized_url",
+  "env_var_ref": {
+    "key": "erp_api.base_url",
+    "return": "jsonata",
+    "jsonataExpression": "$lowercase($)"
+  }
+}
+```
+
+**Field reference:**
+
+| Field | Type | Default | Notes |
+|---|---|---|---|
+| `key` | `string` | _required_ | Must match the regex `^[a-z0-9][a-z0-9_.-]{0,127}$` (mirrors the environments-api key validation). Validated at plan-load time so a typo fails fast. |
+| `default` | `string` | _unset_ | String literal returned when the key is missing OR resolves to a secret. When supplied, `ENV_VAR_REF_NOT_FOUND` is NOT emitted. |
+| `return` | `"value" \| "jsonata"` | `"value"` | Controls the output shape. With `"value"`, the resolved string is returned as-is. With `"jsonata"`, the sibling `jsonataExpression` is required. |
+| `jsonataExpression` | `string` | — | Required when `return: "jsonata"`. Evaluated against the resolved string; `$` in the expression IS the value. |
+
+**JSONata input shape:** When `return: "jsonata"`, the resolved string value is the JSONata input — `$` in your expression refers to the string. Use string functions (`$lowercase($)`, `$uppercase($)`, `$split($, ',')`, etc.) to transform it. The evaluation has a 100ms timeout.
+
+**Secrets handling:** Secrets are never exposed via `env_var_ref`. The runtime filters secret keys out via the environments-api metadata endpoint, treating both 'missing' and 'secret' as identical undefined outcomes (no info disclosure via error code). For secret-resolving contexts (e.g. authorization headers in managed-call or file-proxy), use the templated `{{ env.<key> }}` syntax instead — that mechanism DOES decrypt secrets at runtime. The two systems share `@epilot/environments` under the hood but are semantically distinct: `env_var_ref` is a typed field variant for non-secret config; `{{ env.<key> }}` is template interpolation that resolves secrets.
+
+**Monitoring codes:** Three codes are emitted when `env_var_ref` resolution does not produce a value:
+
+- `ENV_VAR_REF_NOT_FOUND` (warning) — Key was missing OR resolves to a secret, and no `default` was supplied. The attribute is omitted from the resulting entity.
+- `ENV_VAR_REF_LOOKUP_FAILED` (error) — The environments-api call failed (Lambda invoke error, network failure), OR the IntegrationContext is missing env-var lookup capability.
+- `ENV_VAR_REF_JSONATA_FAILED` (error) — `return: "jsonata"` expression threw at evaluation time (timeout, runtime error, compile failure).
+
+All three are visible via the standard ERP monitoring stream alongside extraction errors.
+
+**Caching:**
+- The non-secret key set used for secret filtering is cached in-memory per Lambda warm pool for **5 minutes per organization**, with in-flight request coalescing so concurrent `env_var_ref` resolutions share one metadata fetch.
+- Resolved values are cached for **60 seconds per `(org, key)`** by the `@epilot/environments` package.
+- Adding or removing an env var becomes visible to `env_var_ref` within 5 minutes; changing the value of an existing non-secret var becomes visible within 60 seconds.
+
 ## Repeatable Fields
 
 Email and phone fields in epilot are stored as arrays. Use `_type` to specify the field type:
