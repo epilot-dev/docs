@@ -2,6 +2,43 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-05-13 Entity API
+
+- New optional `org_id` field added to `created_by` user objects on saved views (`POST /v1/entity/view`, `GET/PUT/PATCH /v1/entity/view/{id}`, `GET /v1/entity/views`, `GET /v1/entity/views/favorites`) for partner access control across organizations
+
+## 2026-05-13 Integration Toolkit API
+
+- New `portal_ref` and `env_var_ref` config options added to inbound use case field mappings — `portal_ref` resolves to a property (`portal_id`, `origin`, `domain`, `name`) of one of the calling organization's portal configurations at runtime by filter, and `env_var_ref` resolves to an org-scoped non-secret environment variable from the environments-api service, replacing hardcoded environment-specific portal UUIDs and config values in inbound mappings
+
+## 2026-05-13 Metering API
+
+- New endpoints added for managing pending reading changesets: `GET /v1/metering/reading/{meter_id}/{counter_id}/changesets` (list pending), `PATCH /v1/metering/reading/{meter_id}/{counter_id}/changesets/{changeset_id}` (edit the proposed value), `POST .../changesets/{changeset_id}:apply` (approve and commit to ClickHouse), and `POST .../changesets/{changeset_id}:dismiss` (reject)
+- New optional `direct` query parameter added to all reading-write endpoints (`POST /v1/metering/reading`, `POST /v1/metering/readings`, `POST /v1/metering/readings/{meter_id}`, `POST /v2/metering/readings`) — when `true`, bypasses changeset interception and writes directly to ClickHouse, auto-clearing matching pending changesets; the same effect is triggered automatically when `source: 'ERP'` is set in the request body
+- New optional `include_pending_changesets` query parameter added to `GET /v1/metering/meter` and `GET /v1/metering/reading/{meter_id}/{counter_id}`, including pending reading changesets in the response alongside confirmed readings
+
+## 2026-05-13 Event: Meter Reading Added
+
+- New `activity_type` field added identifying the lifecycle action that triggered the event: `MeterReadingsAdded` (direct commit), `ChangesetCreated` (pending), `ChangesetApplied` (pending → committed), or `ChangesetDismissed` (pending rejected)
+- New `changeset_id` and `changeset_edit_mode` (`direct` / `external` / `approval`) fields added, carrying the originating changeset's identifier and mode
+- New `dismissed_reason` and `dismissed_at` fields populated on `ChangesetDismissed` events
+
+## 2026-05-07 Event: Service Meter Reading Added
+
+- New `event_attachments` array added carrying file metadata (`entity_id`, `filename`, `mime_type`, `size_bytes`, `s3ref`, `version_index`, `readable_size`, `_tags`, `relation_tags`, `category`, `file_date`, `_created_at`) for every file related to the ticket — consumers should filter by `relation_tags`, `_tags`, `mime_type`, or `_created_at` proximity to `reading_timestamp` to identify the meter reading photo
+- New `ticket_files` array added on the hydrated entity graph carrying the full file entity objects
+
+## 2026-05-06 App API
+
+- New `PortalExtensionHookDataExport` portal extension hook type added — when configured on export-capable portal blocks, the portal delegates the export action (CSV/Excel/PDF download) to the external source instead of generating the file itself
+- New `PortalExtensionHookVisualizationMetadata` portal extension hook type added — invoked before fetching data with the same portal context as the data hook, returns per-meter/contract visualization metadata (`type_options`, `intervals`, `data_range`)
+- `intervals` field on `PortalExtensionHookConsumptionDataRetrieval`, `PortalExtensionHookCostDataRetrieval`, and `PortalExtensionHookPriceDataRetrieval` deprecated — prefer declaring a sibling `visualizationMetadata` hook so supported intervals can vary per meter/contract
+- `use_static_ips` field deprecated on all portal extension hook types — prefer `secure_proxy`
+- New `object` enum value added to portal extension component option `type`, plus new `fields` (primitive sub-field declarations) and `repeatable` (array-of-entries flag) properties — enables structured object-typed and list-typed component options
+
+## 2026-05-06 User API
+
+- New optional `abbreviation` field (up to 2 characters, nullable) added to user groups across `GET /v1/groups`, `POST /v1/groups`, `GET/PATCH /v1/groups/{id}`, `POST /v1/groups/{id}/user:next`, and `GET /v2/users/{id}/groups`
+
 ## 2026-05-05 Automation API
 
 - New optional `mark_as_read` field added to `ForwardEmailAction`, `ReplyEmailAction`, and `SendEmailAction` configurations, controlling whether the email thread is automatically marked as read after the action completes
@@ -48,7 +85,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-04-28 Entity Mapping API
 
-- New iteration operations added to entity mapping rules: `_foreach` (path to the source array to iterate), `_as` (variable name for each item, accessed as `$<name>` in `_copy` paths within `_map`), and `_map` (operation applied per iteration item), enabling array-to-array entity transformation
+- New iteration operations added to entity mapping rules: `_each` (path to the source array to iterate), `_as` (variable name for each item, accessed as `$<name>` in `_copy` paths within `_map`), and `_map` (operation applied per iteration item), enabling array-to-array entity transformation
 
 ## 2026-04-28 Webhooks API
 
