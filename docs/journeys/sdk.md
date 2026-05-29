@@ -2,16 +2,16 @@
 sidebar_position: 5
 ---
 
-# Journey Embed SDK (Beta)
+# Journey Embed SDK
 
 The Journey Embed SDK is a chainable JavaScript API for rendering epilot Journeys. One SDK, two backends:
 
-- A **rewritten iframe engine** that replaces the legacy [`__epilot` script](./embedding) with a faster, cleaner host integration.
-- The [`<epilot-journey>` Web Component](./web-components), a custom HTML element that renders in Shadow DOM.
+- A **rewritten iframe engine** that replaces the legacy [`__epilot` script](/docs/journeys/embedding) with a faster, cleaner host integration.
+- The [`<epilot-journey>` Web Component](/docs/journeys/web-components), a custom HTML element that renders in Shadow DOM.
 
 :::info Beta
 
-The SDK is in beta. Test it before rolling out to production. Existing embeds using the [legacy `__epilot` script](./embedding) continue to work.
+The SDK is in beta. Test it before rolling out to production. Existing embeds using the [legacy `__epilot` script](/docs/journeys/embedding) continue to work.
 
 :::
 
@@ -19,7 +19,7 @@ The SDK is in beta. Test it before rolling out to production. Existing embeds us
 
 For iframe embedding, the SDK is the new default. It replaces the legacy `__epilot` script.
 
-For web components, use the SDK or drop the [`<epilot-journey>`](./web-components) element directly into your HTML, whichever fits your integration.
+For web components, use the SDK or drop the [`<epilot-journey>`](/docs/journeys/web-components) element directly into your HTML, whichever fits your integration.
 
 :::
 
@@ -698,7 +698,7 @@ When you embed with `.asIframe()`, `.contextData()` values are forwarded to the 
 
 ## Content-Security-Policy (CSP)
 
-The SDK uses the same script origin as the Web Component embed. See the [Web Components CSP guide](./web-components#content-security-policy-csp) for the required policy directives.
+The SDK uses the same script origin as the Web Component embed. See the [Web Components CSP guide](/docs/journeys/web-components#content-security-policy-csp) for the required policy directives.
 
 ## Migrating from the Legacy `__epilot` API
 
