@@ -2,6 +2,47 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-05-27 File API
+
+- New `POST /v1/files/{id}/summary:generate` endpoint added for generating an AI summary of a file, alongside new `preview_summary`, `short_summary`, and `summary_status` response fields
+
+## 2026-05-25 Pricing API
+
+- Provider search responses (`POST /v1/public/integration/{integrationId}/providers:search`) now include the required `type` and `additionalData` fields, the latter carrying grid operators, default suppliers, and market-area details
+- New optional `external_location_metadata` field added to line items on `POST /v1/order`, `PUT /v1/order/{id}`, `POST /v1/pricing:compute`, and `POST /v1/public/cart:checkout`
+
+## 2026-05-25 Webhooks API
+
+- Multipart webhook delivery configuration was restructured: the `metadataFieldName` field was removed and replaced by `fileSource` (a JSONata expression selecting which attachments to send), `fileFieldStrategy` (`single` or `multi`), and `extraFields` (additional form fields populated from JSONata expressions) (breaking)
+
+## 2026-05-25 Event Catalog API
+
+- New endpoints added for accessing event history: `POST /v2/events/{event_name}:history` to search past events and `GET /v2/events/{event_name}/history/{event_id}` to fetch a single event
+
+## 2026-05-22 Email Settings API
+
+- New `GET /v2/outlook/calendar/me` and `DELETE /v2/outlook/calendar/me` endpoints added for inspecting and removing the current user's Outlook calendar connection
+
+## 2026-05-22 User API
+
+- New endpoints added for managing per-user settings: `GET /v2/users/me/settings` (list available scopes and keys), `GET /v2/users/me/settings/{scope}`, and `GET`/`PUT`/`DELETE /v2/users/me/settings/{scope}/{key}` — scopes include `calendar`, `navigation`, and `search`
+
+## 2026-05-21 Notes API
+
+- New `POST /v1/note/{id}/archive` and `POST /v1/note/{id}/unarchive` endpoints added, along with an `_archived_at` field and a `filter` query parameter for filtering notes by archive state
+
+## 2026-05-20 Automation API
+
+- New `loops` field added to automation flows (`POST /v1/automation/flows`) defining loop scopes that resolve an array from the trigger entity; actions opt into a loop via a new `loop_id` property and then run once per resolved item
+
+## 2026-05-19 Query API
+
+- New `nextCursor` and `total` response fields added, enabling keyset pagination for chart-config row queries and total-count reporting for paginated raw-SQL queries
+
+## 2026-05-15 File API
+
+- New asynchronous file zip export endpoints added: `POST /v1/files:zipJob` bundles multiple files into a downloadable archive and `GET /v1/files:zipJob/{job_id}` polls the job status; the optional `notify_email` field accepts an email address to notify on completion
+
 ## 2026-05-13 Entity API
 
 - New optional `org_id` field added to `created_by` user objects on saved views (`POST /v1/entity/view`, `GET/PUT/PATCH /v1/entity/view/{id}`, `GET /v1/entity/views`, `GET /v1/entity/views/favorites`) for partner access control across organizations
