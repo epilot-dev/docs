@@ -342,9 +342,9 @@ In this example, no `data-ep-` attributes are needed because the `__epilot.init(
 **Outcome**
 ![Embedding Multiple Outcome](../../static/img/journey-embed-outcome-multiple.gif)
 
-## Recommended: Journey Embed SDK (Beta)
+## Recommended: Journey Embed SDK
 
-For new integrations, use the [Journey Embed SDK (Beta)](/docs/journeys/sdk). It replaces the legacy `__epilot` script documented on this page with a unified JavaScript API that covers both:
+For new integrations, use the [Journey Embed SDK](/docs/journeys/sdk). It replaces the legacy `__epilot` script documented on this page with a unified JavaScript API that covers both:
 
 - A **rewritten iframe engine** — same embedding model, faster and cleaner than the legacy bundle.
 - The [`<epilot-journey>` Web Component](/docs/journeys/web-components) — renders directly in your page using Shadow DOM for better performance, accessibility, and tighter host integration.
