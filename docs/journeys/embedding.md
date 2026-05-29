@@ -10,7 +10,7 @@ This guide covers all available embedding options and the `__epilot` JavaScript 
 
 :::info Legacy embed flow
 
-This page documents the original `__epilot` iframe script. All new integrations should use the [Journey Embed SDK (Beta)](./sdk), which rewrites the iframe engine and adds support for the [`<epilot-journey>`](./web-components) Web Component behind a single API.
+This page documents the original `__epilot` iframe script. All new integrations should use the [Journey Embed SDK](/docs/journeys/sdk), which rewrites the iframe engine and adds support for the [`<epilot-journey>`](/docs/journeys/web-components) Web Component behind a single API.
 
 Existing embeds continue to work. For new projects, start with the SDK.
 
@@ -342,11 +342,11 @@ In this example, no `data-ep-` attributes are needed because the `__epilot.init(
 **Outcome**
 ![Embedding Multiple Outcome](../../static/img/journey-embed-outcome-multiple.gif)
 
-## Recommended: Journey Embed SDK (Beta)
+## Recommended: Journey Embed SDK
 
-For new integrations, use the [Journey Embed SDK (Beta)](./sdk). It replaces the legacy `__epilot` script documented on this page with a unified JavaScript API that covers both:
+For new integrations, use the [Journey Embed SDK](/docs/journeys/sdk). It replaces the legacy `__epilot` script documented on this page with a unified JavaScript API that covers both:
 
 - A **rewritten iframe engine** — same embedding model, faster and cleaner than the legacy bundle.
-- The [`<epilot-journey>` Web Component](./web-components) — renders directly in your page using Shadow DOM for better performance, accessibility, and tighter host integration.
+- The [`<epilot-journey>` Web Component](/docs/journeys/web-components) — renders directly in your page using Shadow DOM for better performance, accessibility, and tighter host integration.
 
-See the [SDK documentation](./sdk) for setup, the full API reference, and a migration guide from `__epilot.init()`.
+See the [SDK documentation](/docs/journeys/sdk) for setup, the full API reference, and a migration guide from `__epilot.init()`.

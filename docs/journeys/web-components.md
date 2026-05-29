@@ -82,7 +82,7 @@ All attributes are set as standard HTML attributes on the `<epilot-journey>` ele
 
 :::tip Accessible name
 
-The standard HTML `title` attribute works on `<epilot-journey>` and is exposed to screen readers. If you embed via the [Journey Embed SDK](./sdk), use `.name(value)` — it sets `title` on the element for you.
+The standard HTML `title` attribute works on `<epilot-journey>` and is exposed to screen readers. If you embed via the [Journey Embed SDK](/docs/journeys/sdk), use `.name(value)` — it sets `title` on the element for you.
 
 :::
 
@@ -270,7 +270,7 @@ document.querySelector('epilot-journey').refresh()
 
 ## Events
 
-The `<epilot-journey>` Web Component dispatches custom events on the `window` object that you can listen for. The event names are the same as the iframe `postMessage` events used by the [iframe embed script](./embedding), so you can use the same event names regardless of the embedding method.
+The `<epilot-journey>` Web Component dispatches custom events on the `window` object that you can listen for. The event names are the same as the iframe `postMessage` events used by the [iframe embed script](/docs/journeys/embedding), so you can use the same event names regardless of the embedding method.
 
 ### Event Reference
 
@@ -371,7 +371,7 @@ To load a different Journey, update the attributes on the existing element rathe
 </script>
 ```
 
-If you need multiple Journeys visible simultaneously, use the [iframe embedding](./embedding) approach instead.
+If you need multiple Journeys visible simultaneously, use the [iframe embedding](/docs/journeys/embedding) approach instead.
 
 ## Content-Security-Policy (CSP)
 
