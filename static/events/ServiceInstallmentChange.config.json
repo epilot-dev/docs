@@ -1,0 +1,177 @@
+{
+  "event_name": "ServiceInstallmentChange",
+  "event_title": "Service: Installment Change",
+  "event_description": "Customer request to change the installment amount (Abschlag) via portal self-service. Triggered when a ticket with purpose \"Änderung Abschlag\" is created.",
+  "event_version": "1.0.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "service",
+    "automation",
+    "ticket",
+    "billing",
+    "contract"
+  ],
+  "schema_fields": {
+    "operation": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "createEntity"
+        ],
+        "description": "The entity operation type that triggered this event"
+      },
+      "required": true
+    },
+    "activity_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Activity ID associated with this operation (ULID)",
+        "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
+      },
+      "required": false
+    },
+    "activity_type": {
+      "json_schema": {
+        "type": "string",
+        "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
+        "example": "EntityUpdated"
+      },
+      "required": false
+    },
+    "trigger_entity": {
+      "json_schema": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Entity ID of the entity that triggered this event"
+      },
+      "required": true
+    },
+    "installment_amount": {
+      "json_schema": {
+        "type": "number",
+        "description": "New installment (Abschlag) amount requested by the customer, in minor units (cents)"
+      },
+      "required": false,
+      "graph_source": "$round(ticket.neuer_abschlagsbetrag_in_eur * 100)"
+    },
+    "installment_amount_decimal": {
+      "json_schema": {
+        "type": "string",
+        "description": "New installment amount as a decimal string (e.g. \"120.50\")"
+      },
+      "required": false,
+      "graph_source": "$string(ticket.neuer_abschlagsbetrag_in_eur)"
+    },
+    "installment_amount_currency": {
+      "json_schema": {
+        "type": "string",
+        "description": "ISO 4217 currency code of the installment amount (e.g. \"EUR\")"
+      },
+      "required": false,
+      "graph_source": "'EUR'"
+    },
+    "change_reason": {
+      "json_schema": {
+        "type": "string",
+        "description": "Reason the customer gave for changing the installment. The free-text \"Sonstiger Änderungsgrund\" takes precedence over the selected reason when provided."
+      },
+      "required": false,
+      "graph_source": "(ticket.sonstiger_aenderungsgrund and $trim(ticket.sonstiger_aenderungsgrund) != '') ? ticket.sonstiger_aenderungsgrund : ticket.aenderungsgrund"
+    },
+    "meter_readings": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "counter_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Entity ID of the meter counter"
+            },
+            "value": {
+              "type": "number",
+              "description": "The submitted meter reading value"
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "feed-in",
+                "feed-out"
+              ],
+              "description": "Direction of energy flow"
+            },
+            "reading_timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO 8601 timestamp when the reading was taken"
+            },
+            "read_by": {
+              "type": "string",
+              "description": "Name or identifier of who submitted the reading"
+            },
+            "unit": {
+              "type": "string",
+              "description": "Unit of measurement (e.g., kWh, m3)"
+            }
+          },
+          "additionalProperties": false
+        },
+        "description": "Meter readings the customer submitted together with the installment change request (one entry per counter, e.g. HT / NT). Consumers map registers via `counter_id` / `direction` rather than positional index."
+      },
+      "required": false,
+      "graph_source": "ticket.meter_readings"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "ticket",
+        "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ticket",
+        "to": "contract"
+      },
+      {
+        "from": "ticket",
+        "to": "billing_account"
+      },
+      {
+        "from": "ticket",
+        "to": "contact"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": [
+      "createEntity"
+    ],
+    "schema": [
+      "ticket"
+    ],
+    "purpose": [
+      "Änderung Abschlag"
+    ]
+  },
+  "automation_trigger": true
+}

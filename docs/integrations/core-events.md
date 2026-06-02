@@ -42,6 +42,8 @@ All events include these fields:
 
 <EventSchemaViewer event="InstallmentUpdated" />
 
+<EventSchemaViewer event="ServiceInstallmentChange" />
+
 <EventSchemaViewer event="PaymentMethodUpdated" />
 
 <EventSchemaViewer event="BillingAddressUpdated" />
