@@ -998,3 +998,15 @@ type BatchReplayRequest = {
   eventIds: string[]
 }
 ```
+
+### `Using Webhooks in Blueprints`
+If webhooks are always reset to their default settings after a blueprint sync, this is because the blueprint overwrites the webhook data. To prevent this, we have introduced environment variables, which remain unchanged during a blueprint sync.
+
+Here is how to set them up:
+1. Click the gear icon in the top bar to open the environment variables and secrets.
+2. Add a variable for your webhook password by entering the key (variable name), the type (String or Secret), and the value.
+3. Navigate to "Integrations" and select "Webhooks".
+4. Change the authentication setting from "Default" to e.g. "Basic Auth".
+5. Enter your username.
+6. Click the brackets in the password field — the input will change accordingly. You can now select the relevant environment variable you defined for the password.
+7. Save your settings.
