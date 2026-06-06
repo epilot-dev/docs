@@ -2,7 +2,7 @@
   "event_name": "PaymentMethodUpdated",
   "event_title": "Payment Method Updated",
   "event_description": "Triggered when the payment method on a billing account is updated",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

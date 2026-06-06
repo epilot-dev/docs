@@ -23,7 +23,7 @@
     "_event_version": {
       "type": "string",
       "description": "Schema version number",
-      "example": "1.2.0"
+      "example": "1.0"
     },
     "_event_source": {
       "type": "string",
@@ -53,7 +53,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Distinct edit modes present across pending changesets. Typical values: \"direct\", \"external\", \"approval\""
+      "description": "Distinct edit modes across the PENDING changesets — only \"external\" (synced from an external system) or \"approval\" (awaiting approval). A \"direct\" write is applied immediately, is not a pending changeset, and so never appears here."
     },
     "_changeset_attributes": {
       "type": "array",
@@ -74,7 +74,7 @@
           }
         ]
       },
-      "description": "Per-key edit mode map; same keys as _changeset_attributes (attribute names for entity changesets, changeset IDs for meter-reading changesets). Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
+      "description": "Per-key edit mode map; keys are a subset of _changeset_attributes (attribute names for entity changesets, changeset IDs for meter-reading changesets) — only those whose pending changeset has an \"external\" or \"approval\" mode. A \"direct\"/unrecognised mode is omitted here, though the key still appears in _changeset_attributes. Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
     },
     "value": {
       "type": "number",

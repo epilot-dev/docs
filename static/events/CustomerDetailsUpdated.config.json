@@ -2,7 +2,7 @@
   "event_name": "CustomerDetailsUpdated",
   "event_title": "Customer Details Updated",
   "event_description": "Triggered when key customer details are changed on a Contact entity",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

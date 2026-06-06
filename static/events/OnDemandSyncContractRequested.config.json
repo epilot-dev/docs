@@ -2,7 +2,7 @@
   "event_name": "OnDemandSyncContractRequested",
   "event_title": "On-Demand Sync for Contract Requested",
   "event_description": "Triggered when an on-demand synchronization for a contract is requested by the customer or service agent.",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

@@ -2,7 +2,7 @@
   "event_name": "FileCreated",
   "event_title": "File Created",
   "event_description": "Triggered when a new file entity is created in epilot",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

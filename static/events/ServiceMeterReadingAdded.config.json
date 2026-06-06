@@ -2,7 +2,7 @@
   "event_name": "ServiceMeterReadingAdded",
   "event_title": "Service: Meter Reading Added",
   "event_description": "Service request to add a new meter reading via ticket",
-  "event_version": "1.2.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

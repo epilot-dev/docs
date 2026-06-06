@@ -2,7 +2,7 @@
   "event_name": "OrderSubmission",
   "event_title": "Order Submission",
   "event_description": "Triggered when an order is submitted",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

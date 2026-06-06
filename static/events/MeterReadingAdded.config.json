@@ -2,7 +2,7 @@
   "event_name": "MeterReadingAdded",
   "event_title": "Meter Reading Added",
   "event_description": "Triggered for every meter reading added event",
-  "event_version": "1.0.0",
+  "event_version": "2.0",
   "event_tags": [
     "builtin",
     "erp",

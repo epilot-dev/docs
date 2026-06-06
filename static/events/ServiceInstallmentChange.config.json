@@ -2,7 +2,7 @@
   "event_name": "ServiceInstallmentChange",
   "event_title": "Service: Installment Change",
   "event_description": "Customer request to change the installment amount (Abschlag) via portal self-service. Triggered when a ticket with purpose \"Änderung Abschlag\" is created.",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

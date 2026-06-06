@@ -2,7 +2,7 @@
   "event_name": "InstallmentUpdated",
   "event_title": "Installment Updated",
   "event_description": "Triggered when the installment amount on a contract is updated",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

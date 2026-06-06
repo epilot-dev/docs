@@ -3,7 +3,7 @@
   "_event_time": "1970-01-01T00:00:00.000Z",
   "_event_id": "string",
   "_event_name": "TerminateContractRequested",
-  "_event_version": "1.0.0",
+  "_event_version": "1.0",
   "_event_source": "string",
   "_ack_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_trigger_source_type": "api",

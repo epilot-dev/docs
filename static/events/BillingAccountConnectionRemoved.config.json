@@ -2,7 +2,7 @@
   "event_name": "BillingAccountConnectionRemoved",
   "event_title": "Disassociate Billing Account",
   "event_description": "Customer request to disassociate a billing account from a contact",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",

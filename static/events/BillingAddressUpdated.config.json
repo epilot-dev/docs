@@ -2,7 +2,7 @@
   "event_name": "BillingAddressUpdated",
   "event_title": "Billing Address Updated",
   "event_description": "Triggered when the billing address on a billing account is updated",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_tags": [
     "builtin",
     "erp",
