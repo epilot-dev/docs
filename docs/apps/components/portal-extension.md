@@ -466,7 +466,7 @@ The matching consumption response (hourly) returns a `feed-in` and a `feed-out` 
 }
 ```
 
-The cost hook (`/example/cost`, `setup=prosumer`) reuses the same setup so the returned costs stay consistent with the consumption above. For a line-chart variant of the same data, the example integration also ships a `prosumer-line` setup (feed-in/feed-out advertised with `statistical_method: average`).
+For a line-chart variant of the same data, the example integration also ships a `prosumer-line` setup (feed-in/feed-out advertised with `statistical_method: average`).
 
 #### Load Cycle (min / average / max)
 
