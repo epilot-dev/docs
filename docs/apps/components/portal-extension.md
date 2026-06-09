@@ -134,11 +134,12 @@ For certain functionalities, users can choose which hook is used in the portal s
 
 ![Enable hooks in portal settings](/img/apps/portal-extensions/enabling-hooks-in-portal-settings.png)
 
-There are currently three groups of hooks supported based on their use:
+There are currently four groups of hooks supported based on their use:
 
 - Time Series Data Retrieval
 - Data Existence Check/Retrieval
 - Data Validation
+- Account Self-Management
 
 ### Time Series Data Retrieval Hooks
 
@@ -432,5 +433,121 @@ Meter reading plausibility hooks support the standard template variables plus me
 - **`MeterCounter.*`**: Access properties of the meter register
 - **`Reading.*`**: Access properties of the submitted reading
 - **`CallResponse.*`**: Access data from the call response
+
+### Account Self-Management
+
+These hooks replace the portal's built-in account self-management flows. When configured, the portal does not perform the operation itself. Instead, it hands the request over to your third-party system, which is expected to take care of the rest (most likely by sending the user instructions to complete the process).
+
+Each of these hooks is exclusive: at most one installed extension can provide a given hook, selectable in the portal settings drawer under Extensions.
+
+All three hooks support an optional localized `explanation` that is shown to the user in the confirmation dialog, and the standard `auth`, `call`, `resolved.error_message_path`, and `secure_proxy` properties. The third-party call is expected to respond with a `2xx` status when the request was accepted and a non-2xx status when it failed (the message at `resolved.error_message_path` is forwarded to the user if configured).
+
+#### Change Email Hook
+
+Use the change email hook to hand over email changes to your system. The portal collects the requested new email address and, depending on `require_password_confirmation`, the user's current password, then calls your endpoint instead of changing the login email itself.
+
+- **`require_password_confirmation`** (boolean, default `true`): When `true`, the portal collects and verifies the user's current password before calling the hook. When `false`, the user only confirms the change.
+
+```json title="Change email hook"
+{
+  "id": "CHANGE_EMAIL",
+  "type": "changeEmail",
+  "require_password_confirmation": false,
+  "call": {
+    "url": "https://webhook.site/5e6eae4f-a0ea-4858-ab1a-3f7cb96f5abd",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "portal_user_id": "{{PortalUser._id}}",
+      "old_email": "{{OldEmail}}",
+      "new_email": "{{NewEmail}}"
+    }
+  },
+  "explanation": {
+    "en": "You will receive an email with instructions to confirm your new email address.",
+    "de": "Sie erhalten eine E-Mail mit Anweisungen zur Bestätigung Ihrer neuen E-Mail-Adresse."
+  }
+}
+```
+
+##### Template Variables
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+- **`PortalUser.*`**: Access properties from the current portal user
+- **`OldEmail`**: The user's current email address
+- **`NewEmail`**: The new email address requested by the user
+
+#### Change Password Hook
+
+Use the change password hook to hand over password changes to your system. The portal does not change the password itself.
+
+- **`require_new_password`** (boolean, default `false`): When `false`, the portal only asks the user to confirm (showing the `explanation`) and does not collect a new password. When `true`, the portal collects a new password and passes it to your endpoint as `{{NewPassword}}`.
+
+```json title="Change password hook"
+{
+  "id": "CHANGE_PASSWORD",
+  "type": "changePassword",
+  "require_new_password": false,
+  "call": {
+    "url": "https://webhook.site/5e6eae4f-a0ea-4858-ab1a-3f7cb96f5abd",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "portal_user_id": "{{PortalUser._id}}",
+      "email": "{{Contact.email}}"
+    }
+  },
+  "explanation": {
+    "en": "You will receive an email with instructions to reset your password.",
+    "de": "Sie erhalten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts."
+  }
+}
+```
+
+##### Template Variables
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+- **`PortalUser.*`**: Access properties from the current portal user
+- **`NewPassword`**: The new password entered by the user (only available when `require_new_password` is `true`)
+
+#### Delete Account Hook
+
+Use the delete account hook to hand over account deletion to your system. The `deletion_mode` controls what the portal does after the call:
+
+- **`deletion_mode`** (`synchronous` | `asynchronous`, default `synchronous`):
+  - `synchronous`: Your system deletes the user immediately. The portal waits for a successful (2xx) response and then also deletes the corresponding epilot Cognito user.
+  - `asynchronous`: Your system handles deletion out-of-band. The portal does not delete anything immediately; cleanup is expected to happen later (for example via the user deletion API or webhooks).
+
+```json title="Delete account hook"
+{
+  "id": "DELETE_ACCOUNT",
+  "type": "deleteAccount",
+  "deletion_mode": "asynchronous",
+  "call": {
+    "url": "https://webhook.site/5e6eae4f-a0ea-4858-ab1a-3f7cb96f5abd",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "portal_user_id": "{{PortalUser._id}}",
+      "email": "{{Contact.email}}"
+    }
+  },
+  "explanation": {
+    "en": "Your account deletion will be processed by our system. This may take a few days.",
+    "de": "Die Löschung Ihres Kontos wird von unserem System bearbeitet. Dies kann einige Tage dauern."
+  }
+}
+```
+
+##### Template Variables
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+- **`PortalUser.*`**: Access properties from the current portal user
 
 For questions about portal extensions, [contact our developer support team](https://developers.epilot.cloud/contact).
