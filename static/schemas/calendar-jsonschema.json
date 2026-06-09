@@ -3,15 +3,15 @@
   "type": "object",
   "required": [
     "_schema",
-    "filename",
-    "language"
+    "name",
+    "source_type"
   ],
   "properties": {
     "_schema": {
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "file",
+      "example": "calendar",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -45,107 +45,59 @@
       ],
       "description": "Entity Labels"
     },
-    "_purpose": {
-      "$ref": "#/definitions/PurposeAttribute",
-      "description": "Purposes"
-    },
-    "_thumbnail": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Thumbnail"
-    },
-    "filename": {
+    "name": {
       "type": "string",
-      "description": "File Name"
+      "description": "Name"
     },
-    "mime_type": {
+    "description": {
       "type": "string",
-      "description": "MIME Type"
+      "description": "Description"
     },
-    "type": {
+    "color": {
       "type": "string",
-      "enum": [
-        "document",
-        "document_template",
-        "text",
-        "image",
-        "video",
-        "audio",
-        "spreadsheet",
-        "presentation",
-        "font",
-        "archive",
-        "application",
-        "unknown"
-      ],
-      "description": "File Type"
+      "description": "Color"
     },
-    "readable_size": {
-      "type": "string",
-      "description": "Size"
-    },
-    "language": {
-      "type": "string",
-      "enum": [
-        "de",
-        "en"
-      ],
-      "description": "Language"
-    },
-    "alt_text": {
-      "type": "string",
-      "description": "Alt text"
-    },
-    "access_control": {
-      "type": "string",
-      "enum": [
-        "private",
-        "public-read"
-      ],
-      "description": "Access Control"
-    },
-    "public_url": {
-      "type": "string",
-      "description": "Public URL"
-    },
-    "shared_with_end_customer": {
+    "is_default": {
       "type": "boolean",
-      "description": "Shared with End Customer"
+      "description": "Default Calendar"
     },
-    "category": {
+    "read_only": {
+      "type": "boolean",
+      "description": "Read Only"
+    },
+    "owner_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Owner Email"
+    },
+    "owner": {
+      "$ref": "#/definitions/User",
+      "description": "Owner"
+    },
+    "source_type": {
       "type": "string",
       "enum": [
-        "address-suggestions",
-        "unknown"
+        "native",
+        "synced"
       ],
-      "description": "Category"
+      "description": "Source Type"
     },
-    "file_date": {
-      "type": "string",
-      "format": "date",
-      "example": "2025-01-01",
-      "description": "File Date"
-    },
-    "external_id": {
-      "type": "string",
-      "description": "External ID"
-    },
-    "preview_summary": {
-      "type": "string",
-      "description": "Preview Summary"
-    },
-    "short_summary": {
-      "type": "string",
-      "description": "Short Summary"
-    },
-    "summary_status": {
+    "source_provider": {
       "type": "string",
       "enum": [
-        "processing",
-        "completed",
-        "failed",
-        "unsupported"
+        "outlook",
+        "google"
       ],
-      "description": "Summary Status"
+      "description": "Source Provider"
+    },
+    "provider_calendar_id": {
+      "type": "string",
+      "description": "Provider Calendar ID"
+    },
+    "last_synced_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last Synced At"
     },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
@@ -228,16 +180,6 @@
     }
   },
   "definitions": {
-    "PurposeAttribute": {
-      "type": "array",
-      "description": "List of purpose ids",
-      "items": {
-        "type": "string"
-      },
-      "example": [
-        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
-      ]
-    },
     "BaseUUID": {
       "type": "string",
       "format": "uuid",
@@ -273,6 +215,109 @@
           }
         }
       }
+    },
+    "UserId": {
+      "description": "User's unique identifier",
+      "type": "string",
+      "readOnly": true
+    },
+    "OrganizationId": {
+      "description": "Organization unique identifier",
+      "type": "string",
+      "readOnly": true,
+      "example": "123"
+    },
+    "User": {
+      "type": "object",
+      "description": "User information",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/UserId"
+        },
+        "organization_id": {
+          "$ref": "#/definitions/OrganizationId"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "user@example.com"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
+        },
+        "preferred_language": {
+          "type": "string",
+          "example": "de",
+          "description": "ISO 639-1 language code"
+        },
+        "signature": {
+          "type": "string",
+          "example": "<p>Best regards,<br/>John Doe</p>",
+          "description": "HTML email signature"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "Owner"
+          },
+          "deprecated": true,
+          "description": "Deprecated! Please use Permissions API instead"
+        },
+        "image_uri": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "original": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
+            },
+            "thumbnail_32": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
+            }
+          },
+          "nullable": true
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "profileImageName"
+              },
+              "value": {
+                "type": "string",
+                "example": "avatar.png"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          }
+        }
+      },
+      "required": [
+        "id",
+        "organization_id",
+        "email",
+        "name",
+        "preferred_language",
+        "roles",
+        "properties"
+      ]
     }
   }
 }

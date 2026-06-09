@@ -3,15 +3,18 @@
   "type": "object",
   "required": [
     "_schema",
-    "filename",
-    "language"
+    "calendar",
+    "event_type",
+    "start_time",
+    "end_time",
+    "source_type"
   ],
   "properties": {
     "_schema": {
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "file",
+      "example": "calendar_event",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -45,107 +48,158 @@
       ],
       "description": "Entity Labels"
     },
-    "_purpose": {
-      "$ref": "#/definitions/PurposeAttribute",
-      "description": "Purposes"
-    },
-    "_thumbnail": {
+    "calendar": {
       "$ref": "#/definitions/BaseRelation",
-      "description": "Thumbnail"
+      "description": "Calendar"
     },
-    "filename": {
+    "subject": {
       "type": "string",
-      "description": "File Name"
+      "description": "Subject"
     },
-    "mime_type": {
+    "description": {
       "type": "string",
-      "description": "MIME Type"
+      "description": "Description"
     },
-    "type": {
+    "event_type": {
       "type": "string",
       "enum": [
-        "document",
-        "document_template",
-        "text",
-        "image",
-        "video",
-        "audio",
-        "spreadsheet",
-        "presentation",
-        "font",
-        "archive",
-        "application",
+        "singleInstance",
+        "occurrence",
+        "exception",
+        "seriesMaster"
+      ],
+      "description": "Event Type"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "free",
+        "tentative",
+        "busy",
+        "oof",
+        "workingElsewhere",
         "unknown"
       ],
-      "description": "File Type"
+      "description": "Status"
     },
-    "readable_size": {
+    "start_time": {
       "type": "string",
-      "description": "Size"
+      "format": "date-time",
+      "description": "Start Time"
     },
-    "language": {
+    "end_time": {
       "type": "string",
-      "enum": [
-        "de",
-        "en"
-      ],
-      "description": "Language"
+      "format": "date-time",
+      "description": "End Time"
     },
-    "alt_text": {
+    "timezone": {
       "type": "string",
-      "description": "Alt text"
+      "description": "Timezone"
     },
-    "access_control": {
-      "type": "string",
-      "enum": [
-        "private",
-        "public-read"
-      ],
-      "description": "Access Control"
-    },
-    "public_url": {
-      "type": "string",
-      "description": "Public URL"
-    },
-    "shared_with_end_customer": {
+    "is_all_day": {
       "type": "boolean",
-      "description": "Shared with End Customer"
+      "description": "All Day"
     },
-    "category": {
+    "location": {
+      "type": "string",
+      "description": "Location"
+    },
+    "is_cancelled": {
+      "type": "boolean",
+      "description": "Cancelled"
+    },
+    "sensitivity": {
       "type": "string",
       "enum": [
-        "address-suggestions",
-        "unknown"
+        "normal",
+        "personal",
+        "private",
+        "confidential"
       ],
-      "description": "Category"
+      "description": "Sensitivity"
     },
-    "file_date": {
-      "type": "string",
-      "format": "date",
-      "example": "2025-01-01",
-      "description": "File Date"
-    },
-    "external_id": {
-      "type": "string",
-      "description": "External ID"
-    },
-    "preview_summary": {
-      "type": "string",
-      "description": "Preview Summary"
-    },
-    "short_summary": {
-      "type": "string",
-      "description": "Short Summary"
-    },
-    "summary_status": {
+    "importance": {
       "type": "string",
       "enum": [
-        "processing",
-        "completed",
-        "failed",
-        "unsupported"
+        "low",
+        "normal",
+        "high"
       ],
-      "description": "Summary Status"
+      "description": "Importance"
+    },
+    "is_online_meeting": {
+      "type": "boolean",
+      "description": "Online Meeting"
+    },
+    "online_meeting_url": {
+      "type": "string",
+      "description": "Online Meeting URL"
+    },
+    "web_link": {
+      "type": "string",
+      "description": "Web Link"
+    },
+    "response_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "organizer",
+        "tentativelyAccepted",
+        "accepted",
+        "declined",
+        "notResponded"
+      ],
+      "description": "Response Status"
+    },
+    "organizer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Organizer Email"
+    },
+    "attendees": {
+      "type": "string",
+      "description": "Attendees"
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "description": "Recurring"
+    },
+    "series_master_id": {
+      "type": "string",
+      "description": "Series Master ID"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "native",
+        "synced"
+      ],
+      "description": "Source Type"
+    },
+    "source_provider": {
+      "type": "string",
+      "enum": [
+        "outlook",
+        "google"
+      ],
+      "description": "Source Provider"
+    },
+    "provider_event_id": {
+      "type": "string",
+      "description": "Provider Event ID"
+    },
+    "provider_event_url": {
+      "type": "string",
+      "description": "Provider Event URL"
+    },
+    "etag": {
+      "type": "string",
+      "description": "ETag"
+    },
+    "last_synced_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last Synced At"
     },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
@@ -228,16 +282,6 @@
     }
   },
   "definitions": {
-    "PurposeAttribute": {
-      "type": "array",
-      "description": "List of purpose ids",
-      "items": {
-        "type": "string"
-      },
-      "example": [
-        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
-      ]
-    },
     "BaseUUID": {
       "type": "string",
       "format": "uuid",
