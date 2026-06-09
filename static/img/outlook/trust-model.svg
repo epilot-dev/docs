@@ -1,0 +1,47 @@
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 390" role="img" aria-labelledby="title desc">
+    <title id="title">Trust model</title>
+    <desc id="desc">Microsoft Entra decides what mail data flows into epilot. epilot's permissions decide who inside epilot sees that data. epilot cannot reach any mailbox the service account does not
+  already have access to in Exchange.</desc>
+    <defs>
+      <style>
+        .bg{fill:#fff}
+        .panelMs{fill:#F3F4F6;stroke:#6B7280;stroke-width:2}
+        .panelEp{fill:#EFF6FF;stroke:#0064FF;stroke-width:2}
+        .boundary{stroke:#38BDF8;stroke-width:4;stroke-linecap:round}
+        .boundaryFill{fill:#F0F9FF;stroke:#38BDF8;stroke-width:1.5}
+        .h{font:600 16px system-ui,-apple-system,Segoe UI,sans-serif;fill:#111827}
+        .t{font:14px system-ui,-apple-system,Segoe UI,sans-serif;fill:#374151}
+        .label{font:600 14px system-ui,-apple-system,Segoe UI,sans-serif;fill:#111827}
+      </style>
+    </defs>
+
+    <rect class="bg" width="720" height="390"/>
+
+    <rect class="panelMs" x="42" y="56" width="296" height="278" rx="8"/>
+    <text class="h" x="70" y="96">Microsoft side</text>
+
+    <text class="t" x="70" y="136">
+      <tspan x="70" dy="0">Entra controls which mailboxes</tspan>
+      <tspan x="70" dy="20">the connecting account can reach</tspan>
+      <tspan x="70" dy="20">in Exchange.</tspan>
+    </text>
+    <text class="t" x="70" y="226">
+      <tspan x="70" dy="0">epilot cannot exceed that.</tspan>
+    </text>
+    <text class="t" x="70" y="276">
+      <tspan x="70" dy="0">The tenant admin can revoke</tspan>
+      <tspan x="70" dy="20">at any time.</tspan>
+    </text>
+
+    <rect class="panelEp" x="382" y="56" width="296" height="278" rx="8"/>
+    <text class="h" x="410" y="96">epilot side</text>
+    <text class="t" x="410" y="136">
+      <tspan x="410" dy="0">epilot&apos;s permission model</tspan>
+      <tspan x="410" dy="20">controls which epilot users see</tspan>
+      <tspan x="410" dy="20">the data once it is in epilot.</tspan>
+    </text>
+
+    <line class="boundary" x1="360" y1="42" x2="360" y2="348"/>
+    <rect class="boundaryFill" x="282" y="350" width="156" height="30" rx="8"/>
+    <text class="label" x="304" y="370">the trust boundary</text>
+  </svg>
