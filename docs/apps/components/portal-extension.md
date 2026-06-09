@@ -460,8 +460,8 @@ Use the change email hook to hand over email changes to your system. The portal 
     },
     "body": {
       "portal_user_id": "{{PortalUser._id}}",
-      "old_email": "{{OldEmail}}",
-      "new_email": "{{NewEmail}}"
+      "old_email": "{{Scope.old_email}}",
+      "new_email": "{{Scope.new_email}}"
     }
   },
   "explanation": {
@@ -476,14 +476,14 @@ Use the change email hook to hand over email changes to your system. The portal 
 - **`Options.*`**: Access values from the app options configured during installation
 - **`Contact.*`**: Access properties from the current portal user's contact entity
 - **`PortalUser.*`**: Access properties from the current portal user
-- **`OldEmail`**: The user's current email address
-- **`NewEmail`**: The new email address requested by the user
+- **`Scope.old_email`**: The user's current account email address
+- **`Scope.new_email`**: The new email address requested by the user
 
 #### Change Password Hook
 
 Use the change password hook to hand over password changes to your system. The portal does not change the password itself.
 
-- **`require_new_password`** (boolean, default `false`): When `false`, the portal only asks the user to confirm (showing the `explanation`) and does not collect a new password. When `true`, the portal collects a new password and passes it to your endpoint as `{{NewPassword}}`.
+- **`require_new_password`** (boolean, default `false`): When `false`, the portal only asks the user to confirm (showing the `explanation`) and does not collect a new password. When `true`, the portal collects a new password and passes it to your endpoint as `{{Scope.new_password}}`.
 
 ```json title="Change password hook"
 {
@@ -512,7 +512,7 @@ Use the change password hook to hand over password changes to your system. The p
 - **`Options.*`**: Access values from the app options configured during installation
 - **`Contact.*`**: Access properties from the current portal user's contact entity
 - **`PortalUser.*`**: Access properties from the current portal user
-- **`NewPassword`**: The new password entered by the user (only available when `require_new_password` is `true`)
+- **`Scope.new_password`**: The new password entered by the user (only available when `require_new_password` is `true`)
 
 #### Delete Account Hook
 
