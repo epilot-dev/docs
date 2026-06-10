@@ -31,8 +31,10 @@
   "category": "address-suggestions",
   "file_date": "2025-01-01",
   "external_id": "string",
-  "preview_summary": "string",
-  "short_summary": "string",
+  "preview_summary_de": "string",
+  "short_summary_de": "string",
+  "preview_summary_en": "string",
+  "short_summary_en": "string",
   "summary_status": "processing",
   "_files": {
     "$relation": [

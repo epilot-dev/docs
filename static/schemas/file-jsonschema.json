@@ -129,13 +129,21 @@
       "type": "string",
       "description": "External ID"
     },
-    "preview_summary": {
+    "preview_summary_de": {
       "type": "string",
-      "description": "Preview Summary"
+      "description": "Preview Summary (DE)"
     },
-    "short_summary": {
+    "short_summary_de": {
       "type": "string",
-      "description": "Short Summary"
+      "description": "Short Summary (DE)"
+    },
+    "preview_summary_en": {
+      "type": "string",
+      "description": "Preview Summary (EN)"
+    },
+    "short_summary_en": {
+      "type": "string",
+      "description": "Short Summary (EN)"
     },
     "summary_status": {
       "type": "string",
