@@ -147,6 +147,123 @@ curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationI
   -H 'Authorization: Bearer <token>'
 ```
 
+### Outbound Use Case Configuration
+
+Outbound use cases deliver standardized epilot events (event-catalog events) to your external system. The configuration consists of an `event_catalog_event` and one or more `mappings`:
+
+```bash
+curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Contract Sync",
+    "type": "outbound",
+    "enabled": true,
+    "configuration": {
+      "event_catalog_event": "contract.updated",
+      "mappings": [
+        {
+          "id": "b8f1c9a0-58dd-4f7a-9a3e-000000000001",
+          "name": "ERP Contract Sync",
+          "enabled": true,
+          "jsonata_expression": "{ \"id\": entity._id, \"customer\": entity.customer_name }",
+          "delivery": {
+            "type": "webhook",
+            "webhook_id": "wh-123"
+          }
+        }
+      ]
+    }
+  }'
+```
+
+#### Mapping Properties
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `id` | string (UUID) | Yes | Unique identifier for the mapping |
+| `name` | string | Yes | Display name for the mapping |
+| `enabled` | boolean | Yes | Whether this mapping is active |
+| `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook` delivery; ignored for `poll` delivery |
+| `delivery` | object | Yes | How the event is delivered — discriminated on `type`: `webhook` or `poll` |
+
+#### Delivery Types
+
+**Webhook delivery (push):** the event payload is transformed with the mapping's `jsonata_expression` and pushed to a pre-configured webhook (epilot Webhooks):
+
+```json
+"delivery": {
+  "type": "webhook",
+  "webhook_id": "wh-123"
+}
+```
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `webhook_id` | string | Yes | Reference to the webhook configuration in epilot Webhooks |
+| `webhook_name` | string | No | Cached webhook name for display purposes |
+
+**Poll delivery (pull):** for ERPs that cannot expose an inbound HTTP endpoint (firewalled, on-prem, batch systems). Items are placed on a pull-based queue that your system fetches. Poll items carry the **raw standardized event payload** — no JSONata transform is applied:
+
+```jsonc
+// DeliveryConfig — poll variant
+"delivery": {
+  "type": "poll",                    // discriminator: 'webhook' | 'poll'
+  "retention_days": 30,              // optional; default 30, min 1, max 90
+  "poison_policy": "dead_letter",    // 'dead_letter' (default) | 'block'
+  "max_delivery_attempts": 5         // delivery attempts before poison_policy applies
+}
+```
+
+| Property | Type | Required | Default | Bounds | Description |
+|----------|------|----------|---------|--------|-------------|
+| `retention_days` | integer | No | `30` | min 1, max 90 | How long undelivered queue items are retained before expiry |
+| `poison_policy` | string | No | `"dead_letter"` | `dead_letter` \| `block` | What happens when an item exhausts `max_delivery_attempts`: `dead_letter` routes the item to the dead-letter queue; `block` halts the queue until action is taken |
+| `max_delivery_attempts` | integer | No | `5` | min 1, max 100 | Maximum delivery attempts before the `poison_policy` is applied |
+
+:::info
+- At most **one** poll mapping is allowed per use case. Webhook mappings may coexist alongside the poll mapping — push and poll for the same event is allowed.
+- A `poll` delivery must not carry webhook fields (`webhook_id`, `webhook_name`), and a `webhook` delivery must not carry poll fields (`retention_days`, `poison_policy`, `max_delivery_attempts`).
+- The polling/acknowledgement API for consuming queued items is documented separately when available.
+:::
+
+#### Retention Semantics
+
+- Changing `retention_days` affects **new items only** — already-enqueued items keep the TTL computed at enqueue time (existing retention windows are not migrated).
+- An expired item is never delivered: the poll API filters expired items even before the storage layer reaps them, and each expiry of an **unconsumed** item emits an `MSG_EXPIRED_UNPOLLED` monitoring error so silent data loss is always visible.
+- Dead-lettered items get a **re-armed retention window** at dead-letter time (a full `retention_days` from that moment), giving operators the whole window to redrive instead of whatever sliver remained.
+
+#### Poll-Mode Monitoring Codes
+
+Poll-queue message lifecycle events flow through the standard V2 monitoring pipeline (monitoring dashboards, stats endpoint) with these codes:
+
+| Code | Level | Emitted when |
+|------|-------|--------------|
+| `MSG_ENQUEUED` | info | A new queue item is enqueued for a poll-mode use case (duplicates emit nothing) |
+| `MSG_ACKED` | success | A polled message is acknowledged (one event per accepted message id) |
+| `MSG_EXPIRED_UNPOLLED` | error | An item's retention window elapsed without it ever being consumed — the offline-consumer loss signal |
+| `MSG_DEAD_LETTERED` | error | An item exhausted `max_delivery_attempts` under the `dead_letter` policy, or an operator skipped a blocked head (includes `delivery_attempts` in the event detail) |
+| `MSG_HEAD_BLOCKED` | error | The stream halted on a poisoned head under the `block` policy — emitted **once per blocked episode**, not on every poll (includes `delivery_attempts` in the event detail) |
+
+#### Dead-Letter Queue and Operator Actions
+
+Operator endpoints (all require the `integration:manage` grant — consumer tokens with only `integration:consume` receive 403):
+
+| Endpoint | Action |
+|----------|--------|
+| `GET /v1/integrations/{integrationId}/outbound/messages/dlq` | List dead-lettered messages (paginated; delivery metadata only, payloads are not included) |
+| `POST /v1/integrations/{integrationId}/outbound/messages/dlq/redrive` | Redrive selected messages back into the live stream |
+| `POST /v1/integrations/{integrationId}/outbound/messages/unblock` | Skip (dead-letter) the current blocked head under the `block` policy, with an optional `reason` |
+
+:::caution Redrive ordering
+A redriven message is re-enqueued at the **tail** with a new id and sequence — it is delivered out of its original per-entity order (the stream has moved on). This is inherent to redrive and matches SQS DLQ semantics.
+:::
+
+Notes:
+
+- **Skip equals dead-letter:** unblocking a halted stream dead-letters the blocked head (recording the supplied `reason`) and emits `MSG_DEAD_LETTERED` — the message then becomes redrivable from the DLQ like any other dead-lettered item. A late acknowledgement from the consumer also unblocks the stream naturally.
+- **Queue health in `outbound-status`:** for poll-mode use cases, `GET /v1/integrations/{integrationId}/outbound-status` reports a `poll` health object — queue depth, oldest unconsumed item age, last poll/ack timestamps, a blocked-stream flag, and the DLQ count — plus poll-specific conflicts (`stream_blocked`, `dlq_items_present`). Webhook use cases keep their existing status shape unchanged.
+
 ## Mapping Configuration Schema
 
 ### Version 2.0 Structure
