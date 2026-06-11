@@ -33,7 +33,7 @@ epilot uses the OAuth 2.0 authorization code flow via Microsoft's MSAL library a
 |---|---|
 | Flow | Authorization code (`response_type=code`) |
 | Authority | `https://login.microsoftonline.com/{tenant_id}` |
-| Scopes | Delegated `*.Shared` mail, plus identity and `offline_access`. See [Setup → Scopes](./setup#scopes-requested). |
+| Scopes | Delegated `*.Shared` mail, plus identity and `offline_access`. See [Setup → Scopes](./setup.md#scopes-requested). |
 | State parameter | HMAC-SHA-256 signed payload binding the org ID, a nonce, a timestamp, and the requested features, such as mail or calendar (coming soon). Maximum age: 1 hour. |
 | Client secret | Held only on the server, sourced from a managed secret store, KMS-encrypted, rotated periodically. |
 

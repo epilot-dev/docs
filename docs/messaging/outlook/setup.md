@@ -66,4 +66,4 @@ The epilot admin can disconnect at any time from **Email Settings → Connection
 
 Your Microsoft 365 admin can also revoke independently in Entra (Enterprise applications → epilot → Permissions → Review permissions → Remove). After revocation, every Graph call from epilot returns `401` until the integration is reconnected.
 
-Messages already synced into epilot remain until they are removed through epilot's normal retention controls – see [Security & Privacy → Retention](./security-and-privacy#retention).
+Messages already synced into epilot remain until they are removed through epilot's normal retention controls – see [Security & Privacy → Retention](./security-and-privacy.md#retention).

@@ -175,7 +175,7 @@ The `params` object maps URL parameter names to values resolved from the payload
 
 > **Note:** The standard parameters `orgId`, `integrationId`, and `useCaseId`/`useCaseSlug` are always included automatically. You only need to configure additional custom parameters in `params`. If no `integrationContext` is available (e.g., in mapping simulation mode), the `file_proxy_url` field is silently skipped.
 
-See also: [File Proxy Configuration](../file-proxy#proxy-url-generation) for details on the proxy URL format and parameter requirements.
+See also: [File Proxy Configuration](../file-proxy.md#proxy-url-generation) for details on the proxy URL format and parameter requirements.
 
 ### Portal Reference Mapping {#portal-ref-mapping}
 
@@ -790,7 +790,7 @@ Transform and validate in one expression:
 
 ## Next Steps
 
-- [Unique Identifiers](./unique-identifiers) - Advanced entity lookup strategies
-- [Relations](./relations) - Link entities together
-- [Pricing](./pricing) - Map ERP line items and calculate prices
-- [Meter Readings](./meter-readings) - Handle meter reading data
+- [Unique Identifiers](./unique-identifiers.md) - Advanced entity lookup strategies
+- [Relations](./relations.md) - Link entities together
+- [Pricing](./pricing.md) - Map ERP line items and calculate prices
+- [Meter Readings](./meter-readings.md) - Handle meter reading data

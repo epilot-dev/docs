@@ -14,7 +14,7 @@ Clone this repo and use it as a starting point for your own mapping configuratio
 
 ## Overview
 
-The repo contains sample mapping configurations, sample ERP payloads, and integration tests that validate mappings against the [mapping simulation API](./inbound/getting-started#step-3-send-events) without persisting any data.
+The repo contains sample mapping configurations, sample ERP payloads, and integration tests that validate mappings against the [mapping simulation API](./inbound/getting-started.md#step-3-send-events) without persisting any data.
 
 | Component | Description |
 |-----------|-------------|
@@ -308,6 +308,6 @@ The repo includes a GitHub Actions workflow (`.github/workflows/test.yml`) that 
 ## Next Steps
 
 - [Fork the repo](https://github.com/epilot-dev/erp-toolkit-mapping-examples) and add your own mappings
-- Read the [Mapping Configuration](./inbound/mapping) guide for the full mapping syntax reference
-- Use the [mapping simulation endpoint](./inbound/getting-started) to test mappings interactively
-- See the [Inbound Examples](./inbound/examples) for additional mapping patterns
+- Read the [Mapping Configuration](./inbound/mapping.md) guide for the full mapping syntax reference
+- Use the [mapping simulation endpoint](./inbound/getting-started.md) to test mappings interactively
+- See the [Inbound Examples](./inbound/examples.md) for additional mapping patterns

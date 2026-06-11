@@ -50,7 +50,7 @@ Most integrations start with inbound use cases (syncing master data into epilot)
 
 ## Inbound Use Cases (ERP to epilot)
 
-Inbound use cases push data from your ERP system into epilot via the [Inbound API](./inbound/getting-started). Your middle layer or ERP sends events to the `/v3/erp/updates/events` endpoint, the ERP Toolkit applies [JSONata mappings](./inbound/mapping), and epilot entities are created or updated.
+Inbound use cases push data from your ERP system into epilot via the [Inbound API](./inbound/getting-started.md). Your middle layer or ERP sends events to the `/v3/erp/updates/events` endpoint, the ERP Toolkit applies [JSONata mappings](./inbound/mapping.md), and epilot entities are created or updated.
 
 ### Keep Customer In Sync
 
@@ -186,7 +186,7 @@ flowchart LR
 
 ### Sync Meter Readings
 
-Synchronize meter reading history from ERP to epilot. See the dedicated [Meter Readings](./inbound/meter-readings) guide for configuration details.
+Synchronize meter reading history from ERP to epilot. See the dedicated [Meter Readings](./inbound/meter-readings.md) guide for configuration details.
 
 ```mermaid
 flowchart LR
@@ -228,7 +228,7 @@ flowchart LR
 - Middle layer sends document metadata and file content to epilot
 
 **What happens in epilot:**
-- File entities are created with either the document content or a `custom_download_url` pointing to the [File Proxy](./file-proxy)
+- File entities are created with either the document content or a `custom_download_url` pointing to the [File Proxy](./file-proxy.md)
 - Files are linked to the relevant contact, contract or billing account entities using identifiers (e.g. contract number, customer number, billing account number)
 
 **Core Entities:** [`file`](/docs/entities/core-entities#file), [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account)
@@ -236,7 +236,7 @@ flowchart LR
 **Typical fields mapped:** file name, document type, MIME type, file date, language, `shared_with_end_customer` flag, `is_invoice` flag, file content (binary or `custom_download_url`)
 
 :::tip[File Proxy Alternative]
-When migrating a large document archive is impractical, use the **[File Proxy](./file-proxy)** instead. During inbound sync, only document metadata is synced — file entities are created with a `custom_download_url` pointing to the file proxy. The actual file content is fetched on demand when a user views the document. See the [File Proxy configuration guide](./file-proxy) for setup details.
+When migrating a large document archive is impractical, use the **[File Proxy](./file-proxy.md)** instead. During inbound sync, only document metadata is synced — file entities are created with a `custom_download_url` pointing to the file proxy. The actual file content is fetched on demand when a user views the document. See the [File Proxy configuration guide](./file-proxy.md) for setup details.
 :::
 
 :::info
@@ -783,11 +783,11 @@ This enables end-to-end monitoring in the Integration Hub: per-use-case status i
 
 ## Next Steps
 
-- [Inbound Getting Started](./inbound/getting-started) -- Set up your first inbound sync
-- [Mapping Configuration](./inbound/mapping) -- Configure field mappings and JSONata transforms
-- [Meter Readings](./inbound/meter-readings) -- Detailed guide for meter reading sync
-- [Examples](./inbound/examples) -- Complete working examples
-- [Mapping Examples](./mapping-examples) -- Open source example repo with TDD patterns
+- [Inbound Getting Started](./inbound/getting-started.md) -- Set up your first inbound sync
+- [Mapping Configuration](./inbound/mapping.md) -- Configure field mappings and JSONata transforms
+- [Meter Readings](./inbound/meter-readings.md) -- Detailed guide for meter reading sync
+- [Examples](./inbound/examples.md) -- Complete working examples
+- [Mapping Examples](./mapping-examples.md) -- Open source example repo with TDD patterns
 - [Core Entities](/docs/entities/core-entities) -- Entity schema reference
 - [Core Events](/docs/integrations/core-events) -- Event schema reference
 - [Webhooks](/docs/integrations/webhooks) -- Configure outbound event delivery

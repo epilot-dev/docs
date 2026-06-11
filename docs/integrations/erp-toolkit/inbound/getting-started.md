@@ -123,7 +123,7 @@ Events flow through the following pipeline:
 
 ## Next Steps
 
-- [Entity Mapping](./mapping) - Learn about field mappings and transformations
-- [Unique Identifiers](./unique-identifiers) - Configure entity lookup strategies
-- [Relations](./relations) - Link entities together
-- [Examples](./examples) - See complete integration examples
+- [Entity Mapping](./mapping.md) - Learn about field mappings and transformations
+- [Unique Identifiers](./unique-identifiers.md) - Configure entity lookup strategies
+- [Relations](./relations.md) - Link entities together
+- [Examples](./examples.md) - See complete integration examples

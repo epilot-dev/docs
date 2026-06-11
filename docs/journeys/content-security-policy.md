@@ -6,7 +6,7 @@ sidebar_position: 10
 
 Content Security Policy (CSP) is a feature that helps to prevent or minimize the risk of certain types of security threats. It consists of a series of instructions from a website to a browser, which instruct the browser to place restrictions on the things that the code comprising the site is allowed to do. [Read more](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
 
-In case of Journeys, this is relevant if you're [embedding Journeys](./embedding) to your website and need to whitelist all associated features.
+In case of Journeys, this is relevant if you're [embedding Journeys](./embedding.md) to your website and need to whitelist all associated features.
 
 ## Recommended rules
 

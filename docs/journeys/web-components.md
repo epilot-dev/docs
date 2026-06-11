@@ -74,7 +74,7 @@ All attributes are set as standard HTML attributes on the `<epilot-journey>` ele
 | `close-button`           | `"true"` \| `"false"`         | `"true"`        | Whether to show the close button in the top bar.                                                                                                                        |
 | `context-data`           | JSON string                   | —               | Additional contextual data passed to the Journey and included with the submission. Must be a JSON-encoded string of key-value pairs. See [Context Data](#context-data). |
 | `data-injection-options` | JSON string                   | —               | Pre-fill Journey fields and control the starting step. Must be a JSON-encoded string. See [Data Injection](#data-injection).                                            |
-| `journey-token`          | `string`                      | —               | A JWT token used for [post-qualification Journeys](./post-qualification).                                                                                               |
+| `journey-token`          | `string`                      | —               | A JWT token used for [post-qualification Journeys](./post-qualification.md).                                                                                               |
 | `as-organization-id`     | `string`                      | —               | Organization ID to use as the Journey's organization context. Sent as the `x-epilot-org-id` header on entity requests. Useful in partner / shared-entities scenarios where the Journey needs to access data owned by a different organization. |
 | `is-full-screen-entered` | `"true"` \| `"false"`         | `"false"`       | Controls whether a full-screen Journey is visible. Set to `"true"` to open it. Only applies when `mode` is `"full-screen"`.                                             |
 | `is-embedded`            | `"true"` \| `"false"`         | `"false"`       | Indicates the Journey is embedded on a host app.                                                                                                                        |
@@ -393,7 +393,7 @@ These rules are subject to change as we're rolling out new features and web comp
 
 :::
 
-See the dedicated [Content-Security-Policy](./content-security-policy) page for additional guidance on nonces and inline script handling.
+See the dedicated [Content-Security-Policy](./content-security-policy.md) page for additional guidance on nonces and inline script handling.
 
 ## Migrating from iframes
 
@@ -428,6 +428,6 @@ If you are currently embedding Journeys using iframes with the `__epilot` embed 
 
 3. **Migrate event listeners** — replace `__epilot.on()` calls with standard `window.addEventListener()`. The event names are the same as the iframe postMessage events, so no renaming is needed. See the [Events](#events) section for the full list.
 
-4. **Update CSP rules** — the same epilot domain rules apply. See [Content-Security-Policy](./content-security-policy).
+4. **Update CSP rules** — the same epilot domain rules apply. See [Content-Security-Policy](./content-security-policy.md).
 
 The attribute names on the Web Component map directly to the options you previously passed to `__epilot.init()`, converted to kebab-case (e.g. `topBar` becomes `top-bar`, `scrollToTop` becomes `scroll-to-top`).

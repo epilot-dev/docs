@@ -27,13 +27,13 @@ The ERP Toolkit is composed of the following components. Each plays a specific r
 | **[Integration Hub](#integration-hub)** | Admin UI in epilot 360 to configure and monitor integrations | In progress |
 | **[ERP Integration API](#erp-integration-api)** | CRUD API to manage integrations, use cases, and mappings | Stable |
 | **[ERP Inbound API](#inbound-api)** | Dedicated API to receive and simulate inbound ERP events | Stable |
-| **[Use Cases](./use-cases)** | Documented integration flows with testing support | Stable |
+| **[Use Cases](./use-cases.md)** | Documented integration flows with testing support | Stable |
 | **[Core Entities](/docs/entities/core-entities)** | Standardized entity schemas for mapping targets | Stable |
 | **[Changesets](/docs/entities/changesets)** | Pending attribute updates that wait for ERP confirmation or human approval | Stable |
 | **[Core Events](/docs/integrations/core-events)** | Standardized event payloads for outbound notifications | Stable |
 | **[Webhooks](/docs/integrations/webhooks)** | Push events from epilot to ERPs via core events | Stable |
 | **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
-| **[File Proxy](./file-proxy)** | Serve files from external archives on demand without migrating them into epilot | Stable |
+| **[File Proxy](./file-proxy.md)** | Serve files from external archives on demand without migrating them into epilot | Stable |
 | **[Managed Calls](#managed-calls)** | Synchronous external API calls with JSONata mapping via connector integrations | Stable |
 | **[Secure Proxy](#secure-proxy)** | Route HTTP requests through epilot's secure proxy for static IP egress or VPN access | Stable |
 | **[Monitoring and ACKs](#monitoring-and-acks)** | Central logging, error tracking, and event replay | In progress |
@@ -58,7 +58,7 @@ The `/v2/integrations` CRUD API centralizes all integration configuration in one
 
 Integrations support two types: `erp` (default, for standard ERP flows) and `connector` (for complex proxy integrations with external APIs).
 
-See the [Configuration Guide](./configuration) for API details.
+See the [Configuration Guide](./configuration.md) for API details.
 
 ### Inbound API
 
@@ -69,7 +69,7 @@ Two dedicated endpoints for receiving ERP data:
 | `/v3/erp/updates/events` | Receive raw ERP data as events for processing |
 | `/v2/erp/updates/mapping_simulation` | Dry-run events to verify mappings before going live |
 
-See the [Inbound Integration Guide](./inbound/getting-started) for setup instructions.
+See the [Inbound Integration Guide](./inbound/getting-started.md) for setup instructions.
 
 ### Use Cases
 
@@ -80,11 +80,11 @@ A **use case** is a documented ERP integration flow: a description of how epilot
 - Expected ERP behavior and response
 - Testing via simulated events or webhook test triggers with ACK confirmation
 
-See the [Use Cases](./use-cases) page for a complete list of inbound and outbound integration flows.
+See the [Use Cases](./use-cases.md) page for a complete list of inbound and outbound integration flows.
 
 ### File Proxy
 
-The [File Proxy](./file-proxy) enables epilot to serve files from external document systems (e.g., ERP archives, DMS) on demand. Instead of migrating file content during inbound sync, file entities are created with a `custom_download_url` pointing to the proxy. When a user views the file, the proxy fetches the document from the external system in real time using a declarative, multi-step HTTP configuration.
+The [File Proxy](./file-proxy.md) enables epilot to serve files from external document systems (e.g., ERP archives, DMS) on demand. Instead of migrating file content during inbound sync, file entities are created with a `custom_download_url` pointing to the proxy. When a user views the file, the proxy fetches the document from the external system in real time using a declarative, multi-step HTTP configuration.
 
 ### Managed Calls
 
@@ -96,7 +96,7 @@ Key capabilities:
 - **Inbound routing** — Optionally queue the response to the inbound pipeline for async entity processing
 - **Secure proxy support** — Route calls through a static IP or VPN connection when needed
 
-See the [Configuration Guide](./configuration#managed-call-use-cases) for setup details.
+See the [Configuration Guide](./configuration.md#managed-call-use-cases) for setup details.
 
 ### Secure Proxy
 
@@ -106,7 +106,7 @@ The Secure Proxy routes HTTP requests through epilot's dedicated proxy infrastru
 - **Secure Link mode** — Routes through a VPN connection for access to private networks
 - Domain whitelisting and CIDR-based IP allowlisting enforce strict access control
 
-See the [Configuration Guide](./configuration#secure-proxy-use-cases) for setup details.
+See the [Configuration Guide](./configuration.md#secure-proxy-use-cases) for setup details.
 
 ### JSONata Mapping
 
@@ -140,7 +140,7 @@ Push data from your ERP into epilot. Typical flows:
 - Submit meter readings and consumption data
 - Update billing and payment information
 
-[Inbound Integration Guide](./inbound/getting-started)
+[Inbound Integration Guide](./inbound/getting-started.md)
 
 ### Outbound (epilot to ERP)
 
@@ -209,10 +209,10 @@ Many integrations use a **hybrid approach**: event-driven for simple, real-time 
 
 ## Getting Started
 
-1. **Create an integration** -- register your ERP connection via the [Configuration API](./configuration) or Integration Hub
+1. **Create an integration** -- register your ERP connection via the [Configuration API](./configuration.md) or Integration Hub
 2. **Configure use cases** -- define inbound/outbound data flows with entity mappings
-3. **Test mappings** -- use the mapping simulation endpoint to validate before going live. See the [Mapping Examples](./mapping-examples) repo for a TDD approach
+3. **Test mappings** -- use the mapping simulation endpoint to validate before going live. See the [Mapping Examples](./mapping-examples.md) repo for a TDD approach
 4. **Send events** -- push data from your ERP to the inbound API
 5. **Monitor** -- track processing status, errors, and ACKs in the Integration Hub
 
-Continue to the [Inbound Integration Guide](./inbound/getting-started) for step-by-step setup.
+Continue to the [Inbound Integration Guide](./inbound/getting-started.md) for step-by-step setup.

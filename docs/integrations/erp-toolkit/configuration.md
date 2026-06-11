@@ -122,7 +122,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 | `configuration` | object | Yes | Type-specific configuration (see sections below) |
 
 :::info
-- `file_proxy` — On-demand file serving from external document systems. See the [File Proxy guide](./file-proxy).
+- `file_proxy` — On-demand file serving from external document systems. See the [File Proxy guide](./file-proxy.md).
 - `managed_call` — Synchronous external API calls with JSONata mapping. See [Managed Call Use Cases](#managed-call-use-cases).
 - `secure_proxy` — Route requests through epilot's secure proxy for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).
 :::

@@ -29,6 +29,6 @@ Outlook Calendar sync, plus Teams presence and meetings, are on the roadmap but 
 
 ## Where to go next
 
-- [Setup](./setup) – the admin-consent and connect flow.
+- [Setup](./setup.md) – the admin-consent and connect flow.
 - [Mail](https://help.epilot.cloud/e-mails/outlook-e-mail-integration) – what gets synced, how sending works, what to expect in the UI.
-- [Security & Privacy](./security-and-privacy) – identities, scopes, data flow, encryption, retention.
+- [Security & Privacy](./security-and-privacy.md) – identities, scopes, data flow, encryption, retention.
