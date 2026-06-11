@@ -32,6 +32,7 @@ The ERP Toolkit is composed of the following components. Each plays a specific r
 | **[Changesets](/docs/entities/changesets)** | Pending attribute updates that wait for ERP confirmation or human approval | Stable |
 | **[Core Events](/docs/integrations/core-events)** | Standardized event payloads for outbound notifications | Stable |
 | **[Webhooks](/docs/integrations/webhooks)** | Push events from epilot to ERPs via core events | Stable |
+| **[Pollable Outbound](./pollable-outbound.md)** | Pull-based outbound delivery — ERPs poll a queue instead of receiving webhooks | In progress |
 | **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
 | **[File Proxy](./file-proxy.md)** | Serve files from external archives on demand without migrating them into epilot | Stable |
 | **[Managed Calls](#managed-calls)** | Synchronous external API calls with JSONata mapping via connector integrations | Stable |
@@ -152,6 +153,8 @@ Push epilot events to your ERP via webhooks. Typical flows:
 - Meter reading submissions
 
 Outbound events use [Core Events](/docs/integrations/core-events) and are delivered through [Webhooks](/docs/integrations/webhooks). JSONata transforms simplify payloads before delivery.
+
+For ERPs that cannot receive webhooks (firewalled, on-prem, or batch-oriented systems), [Pollable Outbound](./pollable-outbound.md) offers a pull-based alternative: your middleware polls a queue inside the ERP Integration API on its own schedule and acknowledges items once consumed.
 
 For self-service flows that need ERP confirmation before the local value is changed (IBAN updates, address changes, payment method changes, etc.), use [Changesets](/docs/entities/changesets). Set `edit_mode: external` on the attribute, configure a matcher, and enable `apply_changesets: true` on the outbound webhook — the ERP receives the proposed new value directly on the entity fields, and the changeset auto-clears when the ERP confirms via `?direct=true` inbound sync.
 

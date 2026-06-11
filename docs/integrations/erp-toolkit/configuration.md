@@ -203,7 +203,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 | `webhook_id` | string | Yes | Reference to the webhook configuration in epilot Webhooks |
 | `webhook_name` | string | No | Cached webhook name for display purposes |
 
-**Poll delivery (pull):** for ERPs that cannot expose an inbound HTTP endpoint (firewalled, on-prem, batch systems). Items are placed on a pull-based queue that your system fetches. Poll items carry the **raw standardized event payload** — no JSONata transform is applied:
+**Poll delivery (pull):** for ERPs that cannot expose an inbound HTTP endpoint (firewalled, on-prem, batch systems). Items are placed on a pull-based queue that your system fetches and acknowledges. Poll items carry the **raw standardized event payload** — no JSONata transform is applied. See [Pollable Outbound](./pollable-outbound.md) for the full feature documentation (polling API, ordering guarantees, dead-letter handling, monitoring):
 
 ```jsonc
 // DeliveryConfig — poll variant
@@ -224,45 +224,9 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 :::info
 - At most **one** poll mapping is allowed per use case. Webhook mappings may coexist alongside the poll mapping — push and poll for the same event is allowed.
 - A `poll` delivery must not carry webhook fields (`webhook_id`, `webhook_name`), and a `webhook` delivery must not carry poll fields (`retention_days`, `poison_policy`, `max_delivery_attempts`).
-- The polling/acknowledgement API for consuming queued items is documented separately when available.
 :::
 
-#### Retention Semantics
-
-- Changing `retention_days` affects **new items only** — already-enqueued items keep the TTL computed at enqueue time (existing retention windows are not migrated).
-- An expired item is never delivered: the poll API filters expired items even before the storage layer reaps them, and each expiry of an **unconsumed** item emits an `MSG_EXPIRED_UNPOLLED` monitoring error so silent data loss is always visible.
-- Dead-lettered items get a **re-armed retention window** at dead-letter time (a full `retention_days` from that moment), giving operators the whole window to redrive instead of whatever sliver remained.
-
-#### Poll-Mode Monitoring Codes
-
-Poll-queue message lifecycle events flow through the standard V2 monitoring pipeline (monitoring dashboards, stats endpoint) with these codes:
-
-| Code | Level | Emitted when |
-|------|-------|--------------|
-| `MSG_ENQUEUED` | info | A new queue item is enqueued for a poll-mode use case (duplicates emit nothing) |
-| `MSG_ACKED` | success | A polled message is acknowledged (one event per accepted message id) |
-| `MSG_EXPIRED_UNPOLLED` | error | An item's retention window elapsed without it ever being consumed — the offline-consumer loss signal |
-| `MSG_DEAD_LETTERED` | error | An item exhausted `max_delivery_attempts` under the `dead_letter` policy, or an operator skipped a blocked head (includes `delivery_attempts` in the event detail) |
-| `MSG_HEAD_BLOCKED` | error | The stream halted on a poisoned head under the `block` policy — emitted **once per blocked episode**, not on every poll (includes `delivery_attempts` in the event detail) |
-
-#### Dead-Letter Queue and Operator Actions
-
-Operator endpoints (all require the `integration:manage` grant — consumer tokens with only `integration:consume` receive 403):
-
-| Endpoint | Action |
-|----------|--------|
-| `GET /v1/integrations/{integrationId}/outbound/messages/dlq` | List dead-lettered messages (paginated; delivery metadata only, payloads are not included) |
-| `POST /v1/integrations/{integrationId}/outbound/messages/dlq/redrive` | Redrive selected messages back into the live stream |
-| `POST /v1/integrations/{integrationId}/outbound/messages/unblock` | Skip (dead-letter) the current blocked head under the `block` policy, with an optional `reason` |
-
-:::caution Redrive ordering
-A redriven message is re-enqueued at the **tail** with a new id and sequence — it is delivered out of its original per-entity order (the stream has moved on). This is inherent to redrive and matches SQS DLQ semantics.
-:::
-
-Notes:
-
-- **Skip equals dead-letter:** unblocking a halted stream dead-letters the blocked head (recording the supplied `reason`) and emits `MSG_DEAD_LETTERED` — the message then becomes redrivable from the DLQ like any other dead-lettered item. A late acknowledgement from the consumer also unblocks the stream naturally.
-- **Queue health in `outbound-status`:** for poll-mode use cases, `GET /v1/integrations/{integrationId}/outbound-status` reports a `poll` health object — queue depth, oldest unconsumed item age, last poll/ack timestamps, a blocked-stream flag, and the DLQ count — plus poll-specific conflicts (`stream_blocked`, `dlq_items_present`). Webhook use cases keep their existing status shape unchanged.
+Everything beyond the configuration contract — the polling and acknowledgement API, lease and ordering semantics, retention and expiry behavior, the dead-letter queue and operator actions, and poll-mode monitoring — is documented on the dedicated [Pollable Outbound](./pollable-outbound.md) page.
 
 ## Mapping Configuration Schema
 
