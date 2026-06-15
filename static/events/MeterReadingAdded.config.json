@@ -2,7 +2,7 @@
   "event_name": "MeterReadingAdded",
   "event_title": "Meter Reading Added",
   "event_description": "Triggered for every meter reading added event",
-  "event_version": "2.0",
+  "event_version": "2.1",
   "event_tags": [
     "builtin",
     "erp",
@@ -381,6 +381,11 @@
         "id": "billing_account",
         "schema": "billing_account",
         "cardinality": "one"
+      },
+      {
+        "id": "account",
+        "schema": "account",
+        "cardinality": "one"
       }
     ],
     "edges": [
@@ -407,6 +412,10 @@
       {
         "from": "contract",
         "to": "billing_account"
+      },
+      {
+        "from": "billing_account",
+        "to": "account"
       }
     ]
   }
