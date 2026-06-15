@@ -61,6 +61,16 @@
     "unit_amount_decimal": "5.00",
     "display_mode": "hidden"
   },
+  "journeys": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
   "_files": {
     "$relation": [
       {

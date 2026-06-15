@@ -129,6 +129,10 @@
       "type": "string",
       "description": "External ID"
     },
+    "journeys": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Journeys"
+    },
     "preview_summary_de": {
       "type": "string",
       "description": "Preview Summary (DE)"

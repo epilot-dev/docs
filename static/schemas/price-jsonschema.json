@@ -228,6 +228,10 @@
       "$ref": "#/definitions/PriceTier",
       "description": "Tiers"
     },
+    "journeys": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Journeys"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },

@@ -113,6 +113,10 @@
       "$ref": "#/definitions/BaseRelation",
       "description": "Availability File"
     },
+    "journeys": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Journeys"
+    },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"
     },
