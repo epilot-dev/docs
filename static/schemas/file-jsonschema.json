@@ -129,6 +129,10 @@
       "type": "string",
       "description": "External ID"
     },
+    "custom_download_url": {
+      "type": "string",
+      "description": "Custom Download URL"
+    },
     "journeys": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Journeys"

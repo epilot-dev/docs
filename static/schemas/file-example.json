@@ -31,6 +31,7 @@
   "category": "address-suggestions",
   "file_date": "2025-01-01",
   "external_id": "string",
+  "custom_download_url": "string",
   "journeys": {
     "$relation": [
       {
