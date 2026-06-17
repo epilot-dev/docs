@@ -507,7 +507,9 @@ type DataInjectionOptions = {
    * - recommended: an object keyed by stable block id -> block value
    * - deprecated (legacy): an array indexed by step position, each entry keyed by block name
    */
-  initialState?: Record<string, Record<string, unknown>> | Record<string, unknown>[]
+  initialState?:
+    | Record<string, Record<string, unknown>>
+    | Record<string, unknown>[]
   /** Control which blocks/fields are disabled */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
@@ -555,11 +557,13 @@ The same `.dataInjectionOptions({ ... })` call works with either backend — swa
 
 ### Populating `initialState`
 
-The recommended form keys `initialState` by **block ID**. Each entry is an object of the field values for that block. Because the state is keyed by block ID, you only list the blocks you actually want to prefill — no per-step ordering or empty `{}` placeholders are needed, and the mapping is unaffected by block renames or step reordering.
+The recommended form keys `initialState` by **block ID**. Each entry is an object of the field values for that block. Because the state is keyed by block ID, you only list the blocks you actually want to prefill — no per-step ordering or empty `{}` placeholders are needed, and the mapping is unaffected by block renames or step reordering. To find a block's ID, open the block configurator in the Journey builder.
 
-To discover the correct block IDs and field structure, open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
+### Data Injection Options builder
 
-![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
+You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated options straight into your `.dataInjectionOptions()` call.
+
+![Data injection preview builder](../../static/img/data-injection-demo.gif)
 
 :::note Legacy step-index form (deprecated)
 
@@ -572,23 +576,32 @@ $epilot
   .mode('inline')
   .dataInjectionOptions({
     initialStepIndex: 1,
-    initialState: [{}, { 'Product Selection': { selectedProduct: 'solar-panel-basic', _isValid: true } }],
+    initialState: [
+      {},
+      {
+        'Product Selection': {
+          selectedProduct: 'solar-panel-basic',
+          _isValid: true,
+        },
+      },
+    ],
     blocksDisplaySettings: [
-      { type: 'DISABLED', blockName: 'Product Selection', stepIndex: 1, blockFields: ['selectedProduct'] },
+      {
+        type: 'DISABLED',
+        blockName: 'Product Selection',
+        stepIndex: 1,
+        blockFields: ['selectedProduct'],
+      },
     ],
   })
   .append('#embed-target')
 ```
 
+Open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
+
+![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
+
 :::
-
-### Data Injection builder (preview)
-
-You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated options straight into your `.dataInjectionOptions()` call.
-
-<!-- TODO: replace with recording -->
-
-![Data injection preview builder](../../static/img/journey-data-injection-builder.gif)
 
 ## Events
 

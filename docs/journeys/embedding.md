@@ -57,7 +57,9 @@ export type DataInjectionOptions = {
    * - recommended: an object keyed by the block's stable, journey-wide id -> block value
    * - deprecated (legacy): an array indexed by step position, each entry keyed by block name
    * */
-  initialState?: Record<string, Record<string, unknown>> | Record<string, unknown>[]
+  initialState?:
+    | Record<string, Record<string, unknown>>
+    | Record<string, unknown>[]
   /** the display options to be passed to the journey, for now it is used to disable some fields */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
@@ -74,9 +76,7 @@ export type BlockDisplaySetting = {
 }
 ```
 
-The **recommended** form keys `initialState` by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the journey is restructured. To find a block's ID, open the journey in **debug mode** (see video below) and copy the block IDs from the journey state.
-
-![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
+The **recommended** form keys `initialState` by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the journey is restructured. To find a block's ID, open the block configurator in the Journey builder.
 
 A complete example combines all three: start the journey at a step by its stable `initialStepId`, prefill `initialState` keyed by block ID, and disable a block by `blockId`. Pass `dataInjectionOptions` alongside the rest of the options in `__epilot.init()`:
 
@@ -102,37 +102,39 @@ __epilot.init([
 ])
 ```
 
-With the block-ID form you only list the blocks you actually want to prefill — there is no need to pad earlier steps with empty objects, and the mapping is unaffected by block renames or step reordering.
+With the block-ID form you only list the blocks you actually want to prefill — there is no need to pad earlier steps with empty objects, and the mapping is unaffected by block renames or step reordering. To find a block's ID, open the block configurator in the Journey builder.
+
+### Data Injection builder (preview)
+
+You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated snippet straight into your `__epilot.init()` call.
+
+![Data injection preview builder](../../static/img/data-injection-demo.gif)
 
 :::note Legacy step-index form (deprecated)
 
 The earlier array form of `initialState` (one entry per step indexed by **step position**, keyed by block **name**, with empty `{}` objects for steps you don't prefill) and the `blockName` + `stepIndex` form of `blocksDisplaySettings` are **deprecated but still supported** for backward compatibility. They break silently when blocks are renamed or steps are reordered, so prefer the block-ID form for new integrations.
 
 ```typescript title="Injecting data by step index + block name (deprecated)"
-  initialState: [
-    {},
-    {
-      "Binary Input": false
+initialState: [
+  {},
+  {
+    'Binary Input': false,
+  },
+  {
+    'Personal Data Input': {
+      salutation: 'Ms. / Mrs.',
+      firstName: 'Test Name',
+      _isValid: false,
     },
-    {
-      "Personal Data Input": {
-        "salutation": "Ms. / Mrs.",
-        "firstName": "Test Name",
-        "_isValid": false
-      }
-    }
-  ]
+  },
+]
 ```
 
+Open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
+
+![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
+
 :::
-
-### Data Injection builder (preview)
-
-You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated snippet straight into your `__epilot.init()` call.
-
-<!-- TODO: replace with recording -->
-
-![Data injection preview builder](../../static/img/journey-data-injection-builder.gif)
 
 ## Configuration Possibilities
 

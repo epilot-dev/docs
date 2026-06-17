@@ -64,21 +64,21 @@ The Journey will render inline on your page. Read on for the full attribute refe
 
 All attributes are set as standard HTML attributes on the `<epilot-journey>` element. Boolean attributes accept `"true"` or `"false"` as string values.
 
-| Attribute                | Type                          | Default         | Description                                                                                                                                                             |
-| ------------------------ | ----------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `journey-id`             | `string`                      | —               | **Required.** The ID of the Journey to render.                                                                                                                          |
-| `mode`                   | `"inline"` \| `"full-screen"` | `"full-screen"` | The display mode. `inline` renders the Journey within the page flow. `full-screen` renders it as an overlay.                                                            |
-| `lang`                   | `"de"` \| `"en"` \| `"fr"`    | `"de"`          | Overrides the UI language. This affects UI labels and copy, but does not automatically translate static content configured in the Journey Builder.                      |
-| `top-bar`                | `"true"` \| `"false"`         | `"true"`        | Whether to show the top navigation bar. Only applies in `inline` mode — in `full-screen` mode the top bar is always visible and cannot be hidden.                       |
-| `scroll-to-top`          | `"true"` \| `"false"`         | `"true"`        | Whether to scroll the page to the top of the Journey when the user navigates to a new step.                                                                             |
-| `close-button`           | `"true"` \| `"false"`         | `"true"`        | Whether to show the close button in the top bar.                                                                                                                        |
-| `context-data`           | JSON string                   | —               | Additional contextual data passed to the Journey and included with the submission. Must be a JSON-encoded string of key-value pairs. See [Context Data](#context-data). |
-| `data-injection-options` | JSON string                   | —               | Pre-fill Journey fields and control the starting step. Must be a JSON-encoded string. See [Data Injection](#data-injection).                                            |
-| `journey-token`          | `string`                      | —               | A JWT token used for [post-qualification Journeys](./post-qualification.md).                                                                                               |
+| Attribute                | Type                          | Default         | Description                                                                                                                                                                                                                                    |
+| ------------------------ | ----------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `journey-id`             | `string`                      | —               | **Required.** The ID of the Journey to render.                                                                                                                                                                                                 |
+| `mode`                   | `"inline"` \| `"full-screen"` | `"full-screen"` | The display mode. `inline` renders the Journey within the page flow. `full-screen` renders it as an overlay.                                                                                                                                   |
+| `lang`                   | `"de"` \| `"en"` \| `"fr"`    | `"de"`          | Overrides the UI language. This affects UI labels and copy, but does not automatically translate static content configured in the Journey Builder.                                                                                             |
+| `top-bar`                | `"true"` \| `"false"`         | `"true"`        | Whether to show the top navigation bar. Only applies in `inline` mode — in `full-screen` mode the top bar is always visible and cannot be hidden.                                                                                              |
+| `scroll-to-top`          | `"true"` \| `"false"`         | `"true"`        | Whether to scroll the page to the top of the Journey when the user navigates to a new step.                                                                                                                                                    |
+| `close-button`           | `"true"` \| `"false"`         | `"true"`        | Whether to show the close button in the top bar.                                                                                                                                                                                               |
+| `context-data`           | JSON string                   | —               | Additional contextual data passed to the Journey and included with the submission. Must be a JSON-encoded string of key-value pairs. See [Context Data](#context-data).                                                                        |
+| `data-injection-options` | JSON string                   | —               | Pre-fill Journey fields and control the starting step. Must be a JSON-encoded string. See [Data Injection](#data-injection).                                                                                                                   |
+| `journey-token`          | `string`                      | —               | A JWT token used for [post-qualification Journeys](./post-qualification.md).                                                                                                                                                                   |
 | `as-organization-id`     | `string`                      | —               | Organization ID to use as the Journey's organization context. Sent as the `x-epilot-org-id` header on entity requests. Useful in partner / shared-entities scenarios where the Journey needs to access data owned by a different organization. |
-| `is-full-screen-entered` | `"true"` \| `"false"`         | `"false"`       | Controls whether a full-screen Journey is visible. Set to `"true"` to open it. Only applies when `mode` is `"full-screen"`.                                             |
-| `is-embedded`            | `"true"` \| `"false"`         | `"false"`       | Indicates the Journey is embedded on a host app.                                                                                                                        |
-| `debug`                  | `"true"` \| `"false"`         | `"false"`       | Enables debug mode for development and troubleshooting.                                                                                                                 |
+| `is-full-screen-entered` | `"true"` \| `"false"`         | `"false"`       | Controls whether a full-screen Journey is visible. Set to `"true"` to open it. Only applies when `mode` is `"full-screen"`.                                                                                                                    |
+| `is-embedded`            | `"true"` \| `"false"`         | `"false"`       | Indicates the Journey is embedded on a host app.                                                                                                                                                                                               |
+| `debug`                  | `"true"` \| `"false"`         | `"false"`       | Enables debug mode for development and troubleshooting.                                                                                                                                                                                        |
 
 :::tip Accessible name
 
@@ -190,7 +190,9 @@ type DataInjectionOptions = {
    * - recommended: an object keyed by stable block id -> block value
    * - deprecated (legacy): an array indexed by step position, each entry keyed by block name
    */
-  initialState?: Record<string, Record<string, unknown>> | Record<string, unknown>[]
+  initialState?:
+    | Record<string, Record<string, unknown>>
+    | Record<string, unknown>[]
   /** Control which blocks/fields are disabled */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
@@ -248,9 +250,11 @@ el.setAttribute(
 
 The recommended form keys `initialState` by **block ID**. Each entry is an object of the field values for that block. Because the state is keyed by block ID, you only list the blocks you actually want to prefill — no per-step ordering or empty `{}` placeholders are needed, and the mapping is unaffected by block renames or step reordering.
 
-To discover the correct block IDs and field structure, open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
+### Data Injection builder (preview)
 
-![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
+You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated `data-injection-options` snippet straight onto your `<epilot-journey>` element.
+
+![Data injection preview builder](../../static/img/data-injection-demo.gif)
 
 :::note Legacy step-index form (deprecated)
 
@@ -261,23 +265,31 @@ el.setAttribute(
   'data-injection-options',
   JSON.stringify({
     initialStepIndex: 1,
-    initialState: [{}, { 'Product Selection': { selectedProduct: 'solar-panel-basic', _isValid: true } }],
+    initialState: [
+      {},
+      {
+        'Product Selection': {
+          selectedProduct: 'solar-panel-basic',
+          _isValid: true,
+        },
+      },
+    ],
     blocksDisplaySettings: [
-      { type: 'DISABLED', blockName: 'Product Selection', stepIndex: 1, blockFields: ['selectedProduct'] },
+      {
+        type: 'DISABLED',
+        blockName: 'Product Selection',
+        stepIndex: 1,
+        blockFields: ['selectedProduct'],
+      },
     ],
   })
 )
 ```
 
+Open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
+
+![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
 :::
-
-### Data Injection builder (preview)
-
-You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated `data-injection-options` snippet straight onto your `<epilot-journey>` element.
-
-<!-- TODO: replace with recording -->
-
-![Data injection preview builder](../../static/img/journey-data-injection-builder.gif)
 
 ## Dynamic Attribute Updates
 
