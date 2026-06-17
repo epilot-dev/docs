@@ -9,6 +9,12 @@ The Journey Embed SDK is a chainable JavaScript API for rendering epilot Journey
 - A **rewritten iframe engine** that replaces the legacy [`__epilot` script](/docs/journeys/embedding) with a faster, cleaner host integration.
 - The [`<epilot-journey>` Web Component](/docs/journeys/web-components), a custom HTML element that renders in Shadow DOM.
 
+:::info Backward compatibility
+
+Existing embeds using the [legacy `__epilot` script](/docs/journeys/embedding) continue to work, but this SDK is preferred going forward
+
+:::
+
 :::tip When to use the SDK
 
 For iframe embedding, the SDK is the new default. It replaces the legacy `__epilot` script.
