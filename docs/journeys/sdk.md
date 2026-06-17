@@ -9,12 +9,6 @@ The Journey Embed SDK is a chainable JavaScript API for rendering epilot Journey
 - A **rewritten iframe engine** that replaces the legacy [`__epilot` script](/docs/journeys/embedding) with a faster, cleaner host integration.
 - The [`<epilot-journey>` Web Component](/docs/journeys/web-components), a custom HTML element that renders in Shadow DOM.
 
-:::info Beta
-
-The SDK is in beta. Test it before rolling out to production. Existing embeds using the [legacy `__epilot` script](/docs/journeys/embedding) continue to work.
-
-:::
-
 :::tip When to use the SDK
 
 For iframe embedding, the SDK is the new default. It replaces the legacy `__epilot` script.
@@ -87,7 +81,7 @@ Before the bundle loads, `onReady(cb)` pushes `cb` onto a queue. When the bundle
 
 ### Option 3: npm package
 
-For bundler-based apps (Next.js, Vite, Webpack, etc.), install the SDK from npm. You'll get full TypeScript types and autocomplete:
+For bundler-based apps (Next.js, Vite, Webpack, etc.), install [`@epilot/journey-embed-sdk`](https://www.npmjs.com/package/@epilot/journey-embed-sdk) from npm. You'll get full TypeScript types and autocomplete:
 
 ```bash
 npm install @epilot/journey-embed-sdk
