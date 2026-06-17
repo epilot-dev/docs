@@ -44,32 +44,41 @@ The `DataInjectionOptions` type below defines all available options. See the [Em
 
 ```typescript title="DataInjectionOptions"
 export type DataInjectionOptions = {
-  /** the stable id of the step to start the journey from. aka, where to start the journey from */
+  /** the stable id of the step to start the journey from. aka, where to start the journey from (recommended) */
   initialStepId?: string
-  /** the initial step index of the journey. Legacy alternative to initialStepId */
+  /**
+   * the initial step index of the journey.
+   * @deprecated legacy alternative to initialStepId; the 0-based index shifts when steps are reordered
+   */
   initialStepIndex?: number
   /**
-   * the initial state of the journey. aka, what data to prefill the journey with
-   * Keyed by the block's stable, journey-wide id. Read section below to understand how to populate this
+   * the initial state of the journey. aka, what data to prefill the journey with.
+   * Read section below to understand how to populate this. Two forms are supported:
+   * - recommended: an object keyed by the block's stable, journey-wide id -> block value
+   * - deprecated (legacy): an array indexed by step position, each entry keyed by block name
    * */
-  initialState?: Record<string, Record<string, unknown>>
+  initialState?: Record<string, Record<string, unknown>> | Record<string, unknown>[]
   /** the display options to be passed to the journey, for now it is used to disable some fields */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
 
 export type BlockDisplaySetting = {
   type: 'DISABLED'
-  /** the stable, journey-wide id of the block to target */
-  blockId: string
+  /** the stable, journey-wide id of the block to target (recommended) */
+  blockId?: string
+  /** @deprecated legacy alternative to blockId; the block name breaks silently when the block is renamed */
+  blockName?: string
+  /** @deprecated legacy alternative to blockId; the 0-based step index shifts when steps are reordered */
+  stepIndex?: number
   blockFields?: string[]
 }
 ```
 
-`initialState` is keyed by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the journey is restructured. To find a block's ID, open the journey in **debug mode** (see video below) and copy the block IDs from the journey state.
+The **recommended** form keys `initialState` by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the journey is restructured. To find a block's ID, open the journey in **debug mode** (see video below) and copy the block IDs from the journey state.
 
 ![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
 
-Because the state is keyed by block ID, you only list the blocks you actually want to prefill — there is no need to pad earlier steps with empty objects. The example below prefills a binary input and a personal-data block that live on two different steps:
+With the block-ID form you only list the blocks you actually want to prefill — there is no need to pad earlier steps with empty objects. The example below prefills a binary input and a personal-data block that live on two different steps:
 
 ```typescript title="Injecting data by block ID"
   initialState: {
@@ -105,9 +114,25 @@ To disable a block (or specific fields of it), target it by `blockId` in `blocks
   ]
 ```
 
-:::note Legacy step-index form
+:::note Legacy step-index form (deprecated)
 
-The earlier array form of `initialState` (one entry per step, keyed by block **name**, with empty `{}` objects for steps you don't prefill) and the `blockName` + `stepIndex` form of `blocksDisplaySettings` still work. Prefer the block-ID form for new integrations — it survives block renames and step reordering.
+The earlier array form of `initialState` (one entry per step indexed by **step position**, keyed by block **name**, with empty `{}` objects for steps you don't prefill) and the `blockName` + `stepIndex` form of `blocksDisplaySettings` are **deprecated but still supported** for backward compatibility. They break silently when blocks are renamed or steps are reordered, so prefer the block-ID form for new integrations.
+
+```typescript title="Injecting data by step index + block name (deprecated)"
+  initialState: [
+    {},
+    {
+      "Binary Input": false
+    },
+    {
+      "Personal Data Input": {
+        "salutation": "Ms. / Mrs.",
+        "firstName": "Test Name",
+        "_isValid": false
+      }
+    }
+  ]
+```
 
 :::
 
@@ -406,4 +431,4 @@ See the [SDK documentation](/docs/journeys/sdk) for setup, the full API referenc
 
 ### 2026-06-11
 
-- Data injection now supports stable **block IDs**: `initialState` keyed by block ID, `initialStepId` for the starting step, and `blocksDisplaySettings` targeting blocks by `blockId`. Block IDs are unique journey-wide and resilient to block renames and step reordering. The legacy step-index + block-name forms continue to work.
+- Data injection now documents stable **block IDs** as the recommended form: `initialState` keyed by block ID, `initialStepId` for the starting step, and `blocksDisplaySettings` targeting blocks by `blockId`. Block IDs are unique journey-wide and resilient to block renames and step reordering. The legacy step-index + block-name forms remain supported but are deprecated.

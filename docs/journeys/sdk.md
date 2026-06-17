@@ -495,27 +495,38 @@ The `.dataInjectionOptions()` method accepts a `DataInjectionOptions` object wit
 
 ```typescript title="DataInjectionOptions"
 type DataInjectionOptions = {
-  /** The stable id of the step to start the Journey from */
+  /** The stable id of the step to start the Journey from (recommended) */
   initialStepId?: string
-  /** The step index to start the Journey from (0-based). Legacy alternative to initialStepId */
+  /**
+   * The step index to start the Journey from (0-based).
+   * @deprecated Legacy alternative to initialStepId; the index shifts when steps are reordered
+   */
   initialStepIndex?: number
-  /** Pre-fill data, keyed by block id */
-  initialState?: Record<string, Record<string, unknown>>
+  /**
+   * Pre-fill data. Two forms are supported:
+   * - recommended: an object keyed by stable block id -> block value
+   * - deprecated (legacy): an array indexed by step position, each entry keyed by block name
+   */
+  initialState?: Record<string, Record<string, unknown>> | Record<string, unknown>[]
   /** Control which blocks/fields are disabled */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
 
 type BlockDisplaySetting = {
   type: 'DISABLED'
-  /** The stable, journey-wide id of the block to target */
-  blockId: string
+  /** The stable, journey-wide id of the block to target (recommended) */
+  blockId?: string
+  /** @deprecated Legacy alternative to blockId; breaks silently when the block is renamed */
+  blockName?: string
+  /** @deprecated Legacy alternative to blockId; the 0-based step index shifts when steps are reordered */
+  stepIndex?: number
   blockFields?: string[]
 }
 ```
 
 ### Setting data injection options
 
-`initialState` is keyed by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole Journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the Journey is restructured.
+The **recommended** form keys `initialState` by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole Journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the Journey is restructured.
 
 Pass the object inline in your embed chain:
 
@@ -575,15 +586,30 @@ $epilot
 
 ### Populating `initialState`
 
-`initialState` is an object keyed by **block ID**. Each entry is an object of the field values for that block. Because the state is keyed by block ID, you only list the blocks you actually want to prefill — no per-step ordering or empty `{}` placeholders are needed, and the mapping is unaffected by block renames or step reordering.
+The recommended form keys `initialState` by **block ID**. Each entry is an object of the field values for that block. Because the state is keyed by block ID, you only list the blocks you actually want to prefill — no per-step ordering or empty `{}` placeholders are needed, and the mapping is unaffected by block renames or step reordering.
 
 To discover the correct block IDs and field structure, open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
 
 ![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
 
-:::note Legacy step-index form
+:::note Legacy step-index form (deprecated)
 
-The earlier array form of `initialState` (one entry per step, keyed by block **name**, with empty `{}` objects for steps you don't prefill) and the `blockName` + `stepIndex` form of `blocksDisplaySettings` still work. Prefer the block-ID form for new integrations — it survives block renames and step reordering.
+`initialState` also accepts an array form (one entry per step indexed by **step position**, keyed by block **name**, with empty `{}` objects for steps you don't prefill), and `blocksDisplaySettings` also accepts the `blockName` + `stepIndex` pair. Both legacy forms are **deprecated but still supported** for backward compatibility; they break silently when blocks are renamed or steps are reordered, so prefer the block-ID form for new integrations.
+
+```javascript title="Legacy array form (deprecated)"
+$epilot
+  .embed('<your-journey-id>')
+  .asWebComponent()
+  .mode('inline')
+  .dataInjectionOptions({
+    initialStepIndex: 1,
+    initialState: [{}, { 'Product Selection': { selectedProduct: 'solar-panel-basic', _isValid: true } }],
+    blocksDisplaySettings: [
+      { type: 'DISABLED', blockName: 'Product Selection', stepIndex: 1, blockFields: ['selectedProduct'] },
+    ],
+  })
+  .append('#embed-target')
+```
 
 :::
 
@@ -769,4 +795,4 @@ Some `OptionsInit` fields from the legacy script have no SDK equivalent:
 
 ### 2026-06-11
 
-- Data injection now supports stable **block IDs**: `.dataInjectionOptions()` accepts `initialState` keyed by block ID, `initialStepId` for the starting step, and `blocksDisplaySettings` targeting blocks by `blockId`. Block IDs are unique journey-wide and resilient to block renames and step reordering. The legacy step-index + block-name forms continue to work.
+- Data injection now documents stable **block IDs** as the recommended form: `.dataInjectionOptions()` accepts `initialState` keyed by block ID, `initialStepId` for the starting step, and `blocksDisplaySettings` targeting blocks by `blockId`. Block IDs are unique journey-wide and resilient to block renames and step reordering. The legacy step-index + block-name forms remain supported but are deprecated.
