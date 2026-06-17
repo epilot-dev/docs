@@ -1,26 +1,26 @@
 ---
 sidebar_position: 1
 title: Overview
-description: Introduction to the ERP Toolkit for integrating ERP systems with epilot
-slug: /integrations/erp-toolkit/overview
+description: Introduction to the Integration Toolkit for integrating ERP systems with epilot
+slug: /integrations/integration-toolkit/overview
 ---
 
-# ERP Toolkit
+# Integration Toolkit
 
-The ERP Toolkit is epilot's opinionated integration platform for building, monitoring, and maintaining ERP integrations. It combines **standardized entity and event schemas**, **JSONata-based mapping**, **a dedicated inbound ingestion API**, **configuration APIs**, **central monitoring**, and **packaged Blueprints/Apps** into a single, cohesive system.
+The Integration Toolkit is epilot's opinionated integration platform for building, monitoring, and maintaining ERP integrations. It combines **standardized entity and event schemas**, **JSONata-based mapping**, **a dedicated inbound ingestion API**, **configuration APIs**, **central monitoring**, and **packaged Blueprints/Apps** into a single, cohesive system.
 
-![ERP Toolkit High Level](/img/erp-toolkit-high-level.jpg)
+![Integration Toolkit High Level](/img/erp-toolkit-high-level.jpg)
 
 The toolkit is optimized for energy-sector use cases: end-customer self-service via portals, meter reading propagation, contract lifecycle management, and billing account synchronization.
 
 :::info
-The ERP Toolkit does not remove the need for middleware. It standardizes the interface between epilot and your middle layer, radically reducing the complexity compared to direct API integration.
+The Integration Toolkit does not remove the need for middleware. It standardizes the interface between epilot and your middle layer, radically reducing the complexity compared to direct API integration.
 :::
 
 
 ## Components
 
-The ERP Toolkit is composed of the following components. Each plays a specific role in the integration lifecycle.
+The Integration Toolkit is composed of the following components. Each plays a specific role in the integration lifecycle.
 
 | Component | Description | Status |
 |-----------|-------------|--------|
@@ -128,7 +128,7 @@ All inbound and outbound events are centrally logged and surfaced in the Integra
 
 ## Architecture
 
-![ERP Toolkit Integration Architecture](/img/integrations/overview.svg)
+![Integration Toolkit Architecture](/img/integrations/overview.svg)
 
 ## Integration Directions
 
@@ -160,7 +160,7 @@ For self-service flows that need ERP confirmation before the local value is chan
 
 ## Operational Model
 
-The ERP Toolkit and your middle layer have clearly separated responsibilities.
+The Integration Toolkit and your middle layer have clearly separated responsibilities.
 
 | Toolkit (epilot) | Middle Layer (yours) |
 |-------------------|---------------------|
@@ -182,13 +182,13 @@ Two primary patterns exist. The right choice depends on your ERP's capabilities.
 
 ### Event-Driven (Direct)
 
-Your ERP or middleware sends events directly to the ERP Toolkit when data changes.
+Your ERP or middleware sends events directly to the Integration Toolkit when data changes.
 
 **Best for:** systems that support webhooks, need real-time sync, and require minimal transformation beyond mapping configuration.
 
 ### Pull-Based (Delta Sync with Middleware)
 
-A middleware layer periodically queries your ERP for changes and pushes them to the ERP Toolkit.
+A middleware layer periodically queries your ERP for changes and pushes them to the Integration Toolkit.
 
 **Best for:** ERPs without webhook support, complex multi-source aggregation, or scenarios requiring custom validation and retry logic.
 

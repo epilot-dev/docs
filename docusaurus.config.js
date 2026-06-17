@@ -86,6 +86,15 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
           if (existingPath.includes('/docs/apps')) {
             return [existingPath.replace('/docs/apps', '/apps')];
           }
+          // Redirect old ERP Toolkit paths to the rebranded Integration Toolkit
+          if (existingPath.includes('/docs/integrations/integration-toolkit')) {
+            return [
+              existingPath.replace(
+                '/docs/integrations/integration-toolkit',
+                '/docs/integrations/erp-toolkit'
+              ),
+            ];
+          }
           return undefined;
         },
       },
@@ -102,7 +111,7 @@ The platform provides:
 - **Automation Engine**: Rule-based automation for entity mapping, document generation, and integrations
 - **Portal Framework**: Customer (ECP) and installer portals with granular permissions and self-service capabilities
 - **Messaging Hub**: Centralized email and messaging with templates and shared inboxes
-- **Integration Hub (ERP Toolkit)**: Pre-built connectors for SAP, Wilken, and other ERP/billing systems
+- **Integration Toolkit**: Pre-built connectors for SAP, Wilken, and other ERP/billing systems
 - **REST APIs & SDK**: Comprehensive APIs for all platform capabilities with TypeScript SDK
 - **Document Generation**: Template-based document creation with variable support
 - **Pricing & Product Catalog**: Flexible product management with tiered pricing and availability rules

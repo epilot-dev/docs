@@ -186,6 +186,6 @@ Failed tasks are retried up to 3 times before being marked as permanently failed
 | Scenario | Recommended approach |
 |---|---|
 | Bulk entity upserts from middleware | Batch API |
-| Real-time ERP sync with mapping | [ERP Toolkit](/docs/integrations/erp-toolkit/overview) |
+| Real-time ERP sync with mapping | [Integration Toolkit](/docs/integrations/integration-toolkit/overview) |
 | Single API call | Direct API |
 | Event-driven notifications | [Webhooks](/docs/integrations/webhooks) |

@@ -2,7 +2,7 @@
 sidebar_position: 5
 title: File Proxy
 description: Serve files from external document systems on demand without migrating them into epilot storage
-slug: /integrations/erp-toolkit/file-proxy
+slug: /integrations/integration-toolkit/file-proxy
 ---
 
 # File Proxy

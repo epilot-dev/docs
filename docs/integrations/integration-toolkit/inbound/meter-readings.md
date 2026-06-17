@@ -6,7 +6,7 @@ description: Synchronize meter reading data from ERP systems
 
 # Meter Readings
 
-The ERP Toolkit provides specialized support for meter reading data, common in utility and energy industry integrations.
+The Integration Toolkit provides specialized support for meter reading data, common in utility and energy industry integrations.
 
 ## Overview
 

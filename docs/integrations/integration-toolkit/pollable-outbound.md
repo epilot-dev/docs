@@ -2,7 +2,7 @@
 sidebar_position: 6
 title: Pollable Outbound
 description: Pull-based outbound delivery — poll and acknowledge standardized epilot events instead of receiving webhooks
-slug: /integrations/erp-toolkit/pollable-outbound
+slug: /integrations/integration-toolkit/pollable-outbound
 ---
 
 # Pollable Outbound

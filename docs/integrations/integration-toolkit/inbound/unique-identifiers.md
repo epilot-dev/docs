@@ -6,7 +6,7 @@ description: Configure how entities are matched and looked up
 
 # Unique Identifiers
 
-Unique identifiers determine how the ERP Toolkit finds existing entities in epilot. When processing an event, the system searches for entities matching the specified identifiers to decide whether to create or update.
+Unique identifiers determine how the Integration Toolkit finds existing entities in epilot. When processing an event, the system searches for entities matching the specified identifiers to decide whether to create or update.
 
 ## Basic Usage
 

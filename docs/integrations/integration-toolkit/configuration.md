@@ -6,7 +6,7 @@ description: Configure integrations and use cases
 
 # Configuration
 
-This guide covers how to configure integrations, use cases, and manage your ERP Toolkit setup.
+This guide covers how to configure integrations, use cases, and manage your Integration Toolkit setup.
 
 ## Integration Management
 

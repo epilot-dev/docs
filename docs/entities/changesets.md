@@ -441,7 +441,7 @@ Additional activity types fire for explicit resolution:
 
 ## Use in ERP Integrations
 
-Changesets are the default pattern for ERP-backed self-service in the [ERP Toolkit](/docs/integrations/erp-toolkit/overview). They make end-to-end flows safe and legible:
+Changesets are the default pattern for ERP-backed self-service in the [Integration Toolkit](/docs/integrations/integration-toolkit/overview). They make end-to-end flows safe and legible:
 
 1. End-customer or service agent submits a change (portal, journey, 360 UI, automation).
 2. Entity API intercepts the write, parks it in `_changesets`, and leaves the live value untouched.

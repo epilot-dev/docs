@@ -6,7 +6,7 @@ description: Open source mapping examples with test-driven development patterns
 
 # Mapping Examples
 
-The [erp-toolkit-mapping-examples](https://github.com/epilot-dev/erp-toolkit-mapping-examples) repository is an open source reference project that demonstrates how to build and test ERP Toolkit mapping configurations using a **test-driven development (TDD)** approach.
+The [erp-toolkit-mapping-examples](https://github.com/epilot-dev/erp-toolkit-mapping-examples) repository is an open source reference project that demonstrates how to build and test Integration Toolkit mapping configurations using a **test-driven development (TDD)** approach.
 
 :::tip
 Clone this repo and use it as a starting point for your own mapping configurations. The TDD workflow lets you iterate on mappings locally before deploying to production.
