@@ -44,45 +44,97 @@ The `DataInjectionOptions` type below defines all available options. See the [Em
 
 ```typescript title="DataInjectionOptions"
 export type DataInjectionOptions = {
-  /** the initial step index of the journey. aka, where to start the journey from */
+  /** the stable id of the step to start the journey from. aka, where to start the journey from (recommended) */
+  initialStepId?: string
+  /**
+   * the initial step index of the journey.
+   * @deprecated legacy alternative to initialStepId; the 0-based index shifts when steps are reordered
+   */
   initialStepIndex?: number
   /**
-   * the initial state of the journey. aka, what data to prefill the journey with
-   * Read section below to understand how to populate this
+   * the initial state of the journey. aka, what data to prefill the journey with.
+   * Read section below to understand how to populate this. Two forms are supported:
+   * - recommended: an object keyed by the block's stable, journey-wide id -> block value
+   * - deprecated (legacy): an array indexed by step position, each entry keyed by block name
    * */
-  initialState?: Record<string, unknown>[]
+  initialState?:
+    | Record<string, Record<string, unknown>>
+    | Record<string, unknown>[]
   /** the display options to be passed to the journey, for now it is used to disable some fields */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
+
+export type BlockDisplaySetting = {
+  type: 'DISABLED'
+  /** the stable, journey-wide id of the block to target (recommended) */
+  blockId?: string
+  /** @deprecated legacy alternative to blockId; the block name breaks silently when the block is renamed */
+  blockName?: string
+  /** @deprecated legacy alternative to blockId; the 0-based step index shifts when steps are reordered */
+  stepIndex?: number
+  blockFields?: string[]
+}
 ```
 
-To populate `initialState` in `DataInjectionOptions` properly, open the journey in **debug mode** (see video below) and copy the journey state per step.
+The **recommended** form keys `initialState` by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the journey is restructured. To find a block's ID, open the block configurator in the Journey builder.
+
+A complete example combines all three: start the journey at a step by its stable `initialStepId`, prefill `initialState` keyed by block ID, and disable a block by `blockId`. Pass `dataInjectionOptions` alongside the rest of the options in `__epilot.init()`:
+
+```typescript title="Init with data injection by block ID"
+__epilot.init([
+  {
+    journeyId: '123',
+    mode: 'full-screen',
+    dataInjectionOptions: {
+      initialStepId: 'f0e1d2c3-b4a5-6789-0abc-def012345678',
+      initialState: {
+        'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': { city: 'Berlin' },
+      },
+      blocksDisplaySettings: [
+        {
+          type: 'DISABLED',
+          blockId: 'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+          blockFields: ['city'],
+        },
+      ],
+    },
+  },
+])
+```
+
+With the block-ID form you only list the blocks you actually want to prefill — there is no need to pad earlier steps with empty objects, and the mapping is unaffected by block renames or step reordering. To find a block's ID, open the block configurator in the Journey builder.
+
+### Data Injection builder (preview)
+
+You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated snippet straight into your `__epilot.init()` call.
+
+![Data injection preview builder](../../static/img/data-injection-demo.gif)
+
+:::note Legacy step-index form (deprecated)
+
+The earlier array form of `initialState` (one entry per step indexed by **step position**, keyed by block **name**, with empty `{}` objects for steps you don't prefill) and the `blockName` + `stepIndex` form of `blocksDisplaySettings` are **deprecated but still supported** for backward compatibility. They break silently when blocks are renamed or steps are reordered, so prefer the block-ID form for new integrations.
+
+```typescript title="Injecting data by step index + block name (deprecated)"
+initialState: [
+  {},
+  {
+    'Binary Input': false,
+  },
+  {
+    'Personal Data Input': {
+      salutation: 'Ms. / Mrs.',
+      firstName: 'Test Name',
+      _isValid: false,
+    },
+  },
+]
+```
+
+Open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
 
 ![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
 
-**Note**: `initialState` must be filled sequentially based on the order of steps; steps that are not injected into must be an **empty object**.
-See example below to inject data into Step 2 and Step 3. Notice that Step 1 needs to be empty for this to work properly
-
-```typescript title="Injecting data into Steps 2 and 3"
-  initialState: [
-    {},
-    {
-      "Binary Input": false,
-    },
-    {
-      "Personal Data Input": {
-        "salutation": "Ms. / Mrs.",
-        "firstName": "Test Name",
-        "lastName": "",
-        "email": "",
-        "telephone": "",
-        "_isValid": false
-      }
-    },
-    {}
-  ]
-}
-```
+:::
 
 ## Configuration Possibilities
 
@@ -142,6 +194,8 @@ type OptionsInit = {
 ```typescript
 __epilot.init([{ journeyId: '123', mode: 'full-screen', topBar: false }])
 ```
+
+To prefill data, pass `dataInjectionOptions` keyed by block ID alongside the rest of the options. See [Journey Data Injection](#journey-data-injection) for the full example and option reference.
 
 ### update
 
@@ -350,3 +404,9 @@ For new integrations, use the [Journey Embed SDK](/docs/journeys/sdk). It replac
 - The [`<epilot-journey>` Web Component](/docs/journeys/web-components) — renders directly in your page using Shadow DOM for better performance, accessibility, and tighter host integration.
 
 See the [SDK documentation](/docs/journeys/sdk) for setup, the full API reference, and a migration guide from `__epilot.init()`.
+
+## Changelog
+
+### 2026-06-11
+
+- Data injection now documents stable **block IDs** as the recommended form: `initialState` keyed by block ID, `initialStepId` for the starting step, and `blocksDisplaySettings` targeting blocks by `blockId`. Block IDs are unique journey-wide and resilient to block renames and step reordering. The legacy step-index + block-name forms remain supported but are deprecated.
