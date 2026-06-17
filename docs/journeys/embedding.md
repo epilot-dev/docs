@@ -78,41 +78,31 @@ The **recommended** form keys `initialState` by **block ID** — the block's sta
 
 ![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
 
-With the block-ID form you only list the blocks you actually want to prefill — there is no need to pad earlier steps with empty objects. The example below prefills a binary input and a personal-data block that live on two different steps:
+A complete example combines all three: start the journey at a step by its stable `initialStepId`, prefill `initialState` keyed by block ID, and disable a block by `blockId`. Pass `dataInjectionOptions` alongside the rest of the options in `__epilot.init()`:
 
-```typescript title="Injecting data by block ID"
-  initialState: {
-    "b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d": {
-      "value": false
+```typescript title="Init with data injection by block ID"
+__epilot.init([
+  {
+    journeyId: '123',
+    mode: 'full-screen',
+    dataInjectionOptions: {
+      initialStepId: 'f0e1d2c3-b4a5-6789-0abc-def012345678',
+      initialState: {
+        'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': { city: 'Berlin' },
+      },
+      blocksDisplaySettings: [
+        {
+          type: 'DISABLED',
+          blockId: 'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+          blockFields: ['city'],
+        },
+      ],
     },
-    "a9b8c7d6-5e4f-3a2b-1c0d-9e8f7a6b5c4d": {
-      "salutation": "Ms. / Mrs.",
-      "firstName": "Test Name",
-      "lastName": "",
-      "email": "",
-      "telephone": "",
-      "_isValid": false
-    }
-  }
+  },
+])
 ```
 
-To start the journey on a particular step, set `initialStepId` to that step's stable id:
-
-```typescript title="Starting the journey at a step"
-  initialStepId: "f0e1d2c3-b4a5-6789-0abc-def012345678"
-```
-
-To disable a block (or specific fields of it), target it by `blockId` in `blocksDisplaySettings`:
-
-```typescript title="Disabling a block by block ID"
-  blocksDisplaySettings: [
-    {
-      type: "DISABLED",
-      blockId: "b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-      blockFields: ["city"]
-    }
-  ]
-```
+With the block-ID form you only list the blocks you actually want to prefill — there is no need to pad earlier steps with empty objects, and the mapping is unaffected by block renames or step reordering.
 
 :::note Legacy step-index form (deprecated)
 
@@ -135,6 +125,14 @@ The earlier array form of `initialState` (one entry per step indexed by **step p
 ```
 
 :::
+
+### Data Injection builder (preview)
+
+You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated snippet straight into your `__epilot.init()` call.
+
+<!-- TODO: replace with recording -->
+
+![Data injection preview builder](../../static/img/journey-data-injection-builder.gif)
 
 ## Configuration Possibilities
 
@@ -195,29 +193,7 @@ type OptionsInit = {
 __epilot.init([{ journeyId: '123', mode: 'full-screen', topBar: false }])
 ```
 
-To prefill data, pass `dataInjectionOptions` keyed by block ID alongside the rest of the options:
-
-```typescript title="Init with data injection by block ID"
-__epilot.init([
-  {
-    journeyId: '123',
-    mode: 'full-screen',
-    dataInjectionOptions: {
-      initialStepId: 'f0e1d2c3-b4a5-6789-0abc-def012345678',
-      initialState: {
-        'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': { city: 'Berlin' },
-      },
-      blocksDisplaySettings: [
-        {
-          type: 'DISABLED',
-          blockId: 'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
-          blockFields: ['city'],
-        },
-      ],
-    },
-  },
-])
-```
+To prefill data, pass `dataInjectionOptions` keyed by block ID alongside the rest of the options. See [Journey Data Injection](#journey-data-injection) for the full example and option reference.
 
 ### update
 
