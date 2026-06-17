@@ -528,61 +528,30 @@ type BlockDisplaySetting = {
 
 The **recommended** form keys `initialState` by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole Journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the Journey is restructured.
 
-Pass the object inline in your embed chain:
+Pass the object inline in your embed chain. The complete example below combines all three features in a single call — start the Journey at a step by its stable `initialStepId`, prefill `initialState` keyed by block id, and disable a block by `blockId`:
 
-```html title="Pre-filling journey data"
-<div id="embed-target"></div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    $epilot
-      .embed('<your-journey-id>')
-      .asWebComponent()
-      .mode('inline')
-      .dataInjectionOptions({
-        initialState: {
-          'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': {
-            startDate: '2026-02-19',
-            endDate: null,
-            _isValid: true,
-          },
-          'a9b8c7d6-5e4f-3a2b-1c0d-9e8f7a6b5c4d': {
-            numberInput: '3',
-            numberUnit: '',
-            _isValid: true,
-          },
-        },
-      })
-      .append('#embed-target')
-  })
-</script>
-```
-
-You can combine all three features (a starting step, pre-filled state, and disabled fields) in a single call. Start the Journey at a step by its stable id, prefill state by block id, and disable a block by `blockId`:
-
-```javascript title="Setting data injection dynamically"
+```javascript title="Pre-filling journey data"
 $epilot
-  .embed('<your-journey-id>')
-  .asWebComponent()
-  .mode('inline')
+  .embed('123')
+  .asIframe()
+  .mode('full-screen')
   .dataInjectionOptions({
     initialStepId: 'f0e1d2c3-b4a5-6789-0abc-def012345678',
     initialState: {
-      'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': {
-        selectedProduct: 'solar-panel-basic',
-        _isValid: true,
-      },
+      'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': { city: 'Berlin' },
     },
     blocksDisplaySettings: [
       {
         type: 'DISABLED',
         blockId: 'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
-        blockFields: ['selectedProduct'],
+        blockFields: ['city'],
       },
     ],
   })
-  .append('#embed-target')
+  .append('#target')
 ```
+
+The same `.dataInjectionOptions({ ... })` call works with either backend — swap `.asIframe()` for `.asWebComponent()` to prefill a web component embed.
 
 ### Populating `initialState`
 
@@ -612,6 +581,14 @@ $epilot
 ```
 
 :::
+
+### Data Injection builder (preview)
+
+You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated options straight into your `.dataInjectionOptions()` call.
+
+<!-- TODO: replace with recording -->
+
+![Data injection preview builder](../../static/img/journey-data-injection-builder.gif)
 
 ## Events
 

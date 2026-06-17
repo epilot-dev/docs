@@ -211,17 +211,17 @@ type BlockDisplaySetting = {
 
 The **recommended** form keys `initialState` by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole Journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the Journey is restructured.
 
-Pass the JSON directly as a string attribute using single quotes around the attribute value:
+Pass the JSON directly as a string attribute using single quotes around the attribute value. The complete example below starts the Journey at a step by its stable `initialStepId`, prefills a block by id via `initialState`, and disables that block's field by `blockId`:
 
 ```html title="Pre-filling journey data"
 <epilot-journey
   journey-id="<your-journey-id>"
   mode="inline"
-  data-injection-options='{"initialState":{"b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d":{"startDate":"2026-02-19","endDate":null,"_isValid":true},"a9b8c7d6-5e4f-3a2b-1c0d-9e8f7a6b5c4d":{"numberInput":"3","numberUnit":"","_isValid":true}}}'
+  data-injection-options='{"initialStepId":"f0e1d2c3-b4a5-6789-0abc-def012345678","initialState":{"b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d":{"city":"Berlin"}},"blocksDisplaySettings":[{"type":"DISABLED","blockId":"b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d","blockFields":["city"]}]}'
 ></epilot-journey>
 ```
 
-You can also set it dynamically via JavaScript. The example below starts the Journey at a step by its stable id, prefills a block by id, and disables a block by `blockId`:
+You can also set it dynamically via JavaScript, building the same options with `JSON.stringify`:
 
 ```javascript title="Setting data injection dynamically"
 const el = document.querySelector('epilot-journey')
@@ -231,16 +231,13 @@ el.setAttribute(
   JSON.stringify({
     initialStepId: 'f0e1d2c3-b4a5-6789-0abc-def012345678',
     initialState: {
-      'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': {
-        selectedProduct: 'solar-panel-basic',
-        _isValid: true,
-      },
+      'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': { city: 'Berlin' },
     },
     blocksDisplaySettings: [
       {
         type: 'DISABLED',
         blockId: 'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
-        blockFields: ['selectedProduct'],
+        blockFields: ['city'],
       },
     ],
   })
@@ -273,6 +270,14 @@ el.setAttribute(
 ```
 
 :::
+
+### Data Injection builder (preview)
+
+You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated `data-injection-options` snippet straight onto your `<epilot-journey>` element.
+
+<!-- TODO: replace with recording -->
+
+![Data injection preview builder](../../static/img/journey-data-injection-builder.gif)
 
 ## Dynamic Attribute Updates
 
