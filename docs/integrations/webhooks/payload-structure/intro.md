@@ -17,6 +17,10 @@ Webhook payloads vary by trigger type. The two trigger types are:
 
 Every payload contains a `metadata` object with the organization ID and event context. The `entity` object holds the primary entity data. The `relations` and `activity` objects are optional and depend on the webhook configuration.
 
+:::tip
+For events that carry files (e.g. **File Created**), a webhook can also deliver the actual file bytes — as Base64 in the JSON payload or as `multipart/form-data`. See [File Data Delivery](./file-delivery.md).
+:::
+
 ```json title="Webhook payload structure"
 {
    "metadata": {

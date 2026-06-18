@@ -156,6 +156,50 @@ async function verifyWebhookFull(req: Request, orgId: string): Promise<boolean> 
 }
 ```
 
+## Verifying Multipart Signatures
+
+When a webhook uses [`binary_multipart` file delivery](./payload-structure/file-delivery.md), the signature **cannot** be computed over the raw request body — the `multipart/form-data` boundary is randomized on each request. Instead, epilot signs a **deterministic content string** derived from the delivered files.
+
+The signed body is built per file as:
+
+```text title="Per-file signed segment"
+<sha256_hex_of_file_bytes>.<canonical_metadata_json>
+```
+
+where `canonical_metadata_json` is the file's metadata serialized with its keys in **alphabetical order**:
+
+```json title="Canonical metadata (keys sorted alphabetically)"
+{"entity_id":"...","filename":"...","mime_type":"...","size_bytes":204800,"version_index":0}
+```
+
+When multiple files are sent, each per-file segment is joined with a newline (`\n`) in the order the files appear in the request. This joined string is the `request_body` used in the signed content format above — everything else (the `webhook-id.webhook-timestamp.` prefix, the `v1a`/`v1` signatures) works exactly as for JSON webhooks.
+
+```typescript title="Reconstruct the signed body for a single-file multipart request"
+import crypto from "node:crypto";
+
+// `fileBuffer` is the raw bytes of the received file part.
+// filename / mime_type are read from the part's Content-Disposition and
+// Content-Type headers; size_bytes is the part's byte length. entity_id and
+// version_index are not in the part — deliver them yourself via `extraFields`.
+function multipartSignedBody(
+  fileBuffer: Buffer,
+  metadata: {
+    entity_id: string;
+    filename: string;
+    mime_type: string;
+    size_bytes: number;
+    version_index: number;
+  }
+): string {
+  const sha256 = crypto.createHash("sha256").update(fileBuffer).digest("hex");
+  // Keys MUST be serialized in alphabetical order
+  const canonicalMeta = JSON.stringify(metadata, Object.keys(metadata).sort());
+  return `${sha256}.${canonicalMeta}`;
+}
+```
+
+Verify this reconstructed string with the same `v1`/`v1a` logic shown above. Note that `extraFields` scalar parts are **not** included in the signed content.
+
 ## Fetching the Public Key
 
 To fetch your organization's public key, include your organization ID as a query parameter:
