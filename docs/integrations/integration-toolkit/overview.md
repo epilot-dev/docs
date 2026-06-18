@@ -1,39 +1,40 @@
 ---
 sidebar_position: 1
 title: Overview
-description: Introduction to the ERP Toolkit for integrating ERP systems with epilot
-slug: /integrations/erp-toolkit/overview
+description: Introduction to the Integration Toolkit for integrating ERP systems with epilot
+slug: /integrations/integration-toolkit/overview
 ---
 
-# ERP Toolkit
+# Integration Toolkit
 
-The ERP Toolkit is epilot's opinionated integration platform for building, monitoring, and maintaining ERP integrations. It combines **standardized entity and event schemas**, **JSONata-based mapping**, **a dedicated inbound ingestion API**, **configuration APIs**, **central monitoring**, and **packaged Blueprints/Apps** into a single, cohesive system.
+The Integration Toolkit is epilot's opinionated integration platform for building, monitoring, and maintaining ERP integrations. It combines **standardized entity and event schemas**, **JSONata-based mapping**, **a dedicated inbound ingestion API**, **configuration APIs**, **central monitoring**, and **packaged Blueprints/Apps** into a single, cohesive system.
 
-![ERP Toolkit High Level](/img/erp-toolkit-high-level.jpg)
+![Integration Toolkit High Level](/img/erp-toolkit-high-level.jpg)
 
 The toolkit is optimized for energy-sector use cases: end-customer self-service via portals, meter reading propagation, contract lifecycle management, and billing account synchronization.
 
 :::info
-The ERP Toolkit does not remove the need for middleware. It standardizes the interface between epilot and your middle layer, radically reducing the complexity compared to direct API integration.
+The Integration Toolkit does not remove the need for middleware. It standardizes the interface between epilot and your middle layer, radically reducing the complexity compared to direct API integration.
 :::
 
 
 ## Components
 
-The ERP Toolkit is composed of the following components. Each plays a specific role in the integration lifecycle.
+The Integration Toolkit is composed of the following components. Each plays a specific role in the integration lifecycle.
 
 | Component | Description | Status |
 |-----------|-------------|--------|
 | **[Integration Hub](#integration-hub)** | Admin UI in epilot 360 to configure and monitor integrations | In progress |
 | **[ERP Integration API](#erp-integration-api)** | CRUD API to manage integrations, use cases, and mappings | Stable |
 | **[ERP Inbound API](#inbound-api)** | Dedicated API to receive and simulate inbound ERP events | Stable |
-| **[Use Cases](./use-cases)** | Documented integration flows with testing support | Stable |
+| **[Use Cases](./use-cases.md)** | Documented integration flows with testing support | Stable |
 | **[Core Entities](/docs/entities/core-entities)** | Standardized entity schemas for mapping targets | Stable |
 | **[Changesets](/docs/entities/changesets)** | Pending attribute updates that wait for ERP confirmation or human approval | Stable |
 | **[Core Events](/docs/integrations/core-events)** | Standardized event payloads for outbound notifications | Stable |
 | **[Webhooks](/docs/integrations/webhooks)** | Push events from epilot to ERPs via core events | Stable |
+| **[Pollable Outbound](./pollable-outbound.md)** | Pull-based outbound delivery — ERPs poll a queue instead of receiving webhooks | In progress |
 | **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
-| **[File Proxy](./file-proxy)** | Serve files from external archives on demand without migrating them into epilot | Stable |
+| **[File Proxy](./file-proxy.md)** | Serve files from external archives on demand without migrating them into epilot | Stable |
 | **[Managed Calls](#managed-calls)** | Synchronous external API calls with JSONata mapping via connector integrations | Stable |
 | **[Secure Proxy](#secure-proxy)** | Route HTTP requests through epilot's secure proxy for static IP egress or VPN access | Stable |
 | **[Monitoring and ACKs](#monitoring-and-acks)** | Central logging, error tracking, and event replay | In progress |
@@ -58,7 +59,7 @@ The `/v2/integrations` CRUD API centralizes all integration configuration in one
 
 Integrations support two types: `erp` (default, for standard ERP flows) and `connector` (for complex proxy integrations with external APIs).
 
-See the [Configuration Guide](./configuration) for API details.
+See the [Configuration Guide](./configuration.md) for API details.
 
 ### Inbound API
 
@@ -69,7 +70,7 @@ Two dedicated endpoints for receiving ERP data:
 | `/v3/erp/updates/events` | Receive raw ERP data as events for processing |
 | `/v2/erp/updates/mapping_simulation` | Dry-run events to verify mappings before going live |
 
-See the [Inbound Integration Guide](./inbound/getting-started) for setup instructions.
+See the [Inbound Integration Guide](./inbound/getting-started.md) for setup instructions.
 
 ### Use Cases
 
@@ -80,11 +81,11 @@ A **use case** is a documented ERP integration flow: a description of how epilot
 - Expected ERP behavior and response
 - Testing via simulated events or webhook test triggers with ACK confirmation
 
-See the [Use Cases](./use-cases) page for a complete list of inbound and outbound integration flows.
+See the [Use Cases](./use-cases.md) page for a complete list of inbound and outbound integration flows.
 
 ### File Proxy
 
-The [File Proxy](./file-proxy) enables epilot to serve files from external document systems (e.g., ERP archives, DMS) on demand. Instead of migrating file content during inbound sync, file entities are created with a `custom_download_url` pointing to the proxy. When a user views the file, the proxy fetches the document from the external system in real time using a declarative, multi-step HTTP configuration.
+The [File Proxy](./file-proxy.md) enables epilot to serve files from external document systems (e.g., ERP archives, DMS) on demand. Instead of migrating file content during inbound sync, file entities are created with a `custom_download_url` pointing to the proxy. When a user views the file, the proxy fetches the document from the external system in real time using a declarative, multi-step HTTP configuration.
 
 ### Managed Calls
 
@@ -96,7 +97,7 @@ Key capabilities:
 - **Inbound routing** — Optionally queue the response to the inbound pipeline for async entity processing
 - **Secure proxy support** — Route calls through a static IP or VPN connection when needed
 
-See the [Configuration Guide](./configuration#managed-call-use-cases) for setup details.
+See the [Configuration Guide](./configuration.md#managed-call-use-cases) for setup details.
 
 ### Secure Proxy
 
@@ -106,7 +107,7 @@ The Secure Proxy routes HTTP requests through epilot's dedicated proxy infrastru
 - **Secure Link mode** — Routes through a VPN connection for access to private networks
 - Domain whitelisting and CIDR-based IP allowlisting enforce strict access control
 
-See the [Configuration Guide](./configuration#secure-proxy-use-cases) for setup details.
+See the [Configuration Guide](./configuration.md#secure-proxy-use-cases) for setup details.
 
 ### JSONata Mapping
 
@@ -127,7 +128,7 @@ All inbound and outbound events are centrally logged and surfaced in the Integra
 
 ## Architecture
 
-![ERP Toolkit Integration Architecture](/img/integrations/overview.svg)
+![Integration Toolkit Architecture](/img/integrations/overview.svg)
 
 ## Integration Directions
 
@@ -140,7 +141,7 @@ Push data from your ERP into epilot. Typical flows:
 - Submit meter readings and consumption data
 - Update billing and payment information
 
-[Inbound Integration Guide](./inbound/getting-started)
+[Inbound Integration Guide](./inbound/getting-started.md)
 
 ### Outbound (epilot to ERP)
 
@@ -153,11 +154,13 @@ Push epilot events to your ERP via webhooks. Typical flows:
 
 Outbound events use [Core Events](/docs/integrations/core-events) and are delivered through [Webhooks](/docs/integrations/webhooks). JSONata transforms simplify payloads before delivery.
 
+For ERPs that cannot receive webhooks (firewalled, on-prem, or batch-oriented systems), [Pollable Outbound](./pollable-outbound.md) offers a pull-based alternative: your middleware polls a queue inside the ERP Integration API on its own schedule and acknowledges items once consumed.
+
 For self-service flows that need ERP confirmation before the local value is changed (IBAN updates, address changes, payment method changes, etc.), use [Changesets](/docs/entities/changesets). Set `edit_mode: external` on the attribute, configure a matcher, and enable `apply_changesets: true` on the outbound webhook — the ERP receives the proposed new value directly on the entity fields, and the changeset auto-clears when the ERP confirms via `?direct=true` inbound sync.
 
 ## Operational Model
 
-The ERP Toolkit and your middle layer have clearly separated responsibilities.
+The Integration Toolkit and your middle layer have clearly separated responsibilities.
 
 | Toolkit (epilot) | Middle Layer (yours) |
 |-------------------|---------------------|
@@ -179,13 +182,13 @@ Two primary patterns exist. The right choice depends on your ERP's capabilities.
 
 ### Event-Driven (Direct)
 
-Your ERP or middleware sends events directly to the ERP Toolkit when data changes.
+Your ERP or middleware sends events directly to the Integration Toolkit when data changes.
 
 **Best for:** systems that support webhooks, need real-time sync, and require minimal transformation beyond mapping configuration.
 
 ### Pull-Based (Delta Sync with Middleware)
 
-A middleware layer periodically queries your ERP for changes and pushes them to the ERP Toolkit.
+A middleware layer periodically queries your ERP for changes and pushes them to the Integration Toolkit.
 
 **Best for:** ERPs without webhook support, complex multi-source aggregation, or scenarios requiring custom validation and retry logic.
 
@@ -209,10 +212,10 @@ Many integrations use a **hybrid approach**: event-driven for simple, real-time 
 
 ## Getting Started
 
-1. **Create an integration** -- register your ERP connection via the [Configuration API](./configuration) or Integration Hub
+1. **Create an integration** -- register your ERP connection via the [Configuration API](./configuration.md) or Integration Hub
 2. **Configure use cases** -- define inbound/outbound data flows with entity mappings
-3. **Test mappings** -- use the mapping simulation endpoint to validate before going live. See the [Mapping Examples](./mapping-examples) repo for a TDD approach
+3. **Test mappings** -- use the mapping simulation endpoint to validate before going live. See the [Mapping Examples](./mapping-examples.md) repo for a TDD approach
 4. **Send events** -- push data from your ERP to the inbound API
 5. **Monitor** -- track processing status, errors, and ACKs in the Integration Hub
 
-Continue to the [Inbound Integration Guide](./inbound/getting-started) for step-by-step setup.
+Continue to the [Inbound Integration Guide](./inbound/getting-started.md) for step-by-step setup.

@@ -129,6 +129,40 @@
       "type": "string",
       "description": "External ID"
     },
+    "custom_download_url": {
+      "type": "string",
+      "description": "Custom Download URL"
+    },
+    "journeys": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Journeys"
+    },
+    "preview_summary_de": {
+      "type": "string",
+      "description": "Preview Summary (DE)"
+    },
+    "short_summary_de": {
+      "type": "string",
+      "description": "Short Summary (DE)"
+    },
+    "preview_summary_en": {
+      "type": "string",
+      "description": "Preview Summary (EN)"
+    },
+    "short_summary_en": {
+      "type": "string",
+      "description": "Short Summary (EN)"
+    },
+    "summary_status": {
+      "type": "string",
+      "enum": [
+        "processing",
+        "completed",
+        "failed",
+        "unsupported"
+      ],
+      "description": "Summary Status"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },

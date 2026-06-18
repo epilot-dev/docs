@@ -9,9 +9,9 @@ The Journey Embed SDK is a chainable JavaScript API for rendering epilot Journey
 - A **rewritten iframe engine** that replaces the legacy [`__epilot` script](/docs/journeys/embedding) with a faster, cleaner host integration.
 - The [`<epilot-journey>` Web Component](/docs/journeys/web-components), a custom HTML element that renders in Shadow DOM.
 
-:::info Beta
+:::info Backward compatibility
 
-The SDK is in beta. Test it before rolling out to production. Existing embeds using the [legacy `__epilot` script](/docs/journeys/embedding) continue to work.
+Existing embeds using the [legacy `__epilot` script](/docs/journeys/embedding) continue to work, but this SDK is preferred going forward
 
 :::
 
@@ -87,7 +87,7 @@ Before the bundle loads, `onReady(cb)` pushes `cb` onto a queue. When the bundle
 
 ### Option 3: npm package
 
-For bundler-based apps (Next.js, Vite, Webpack, etc.), install the SDK from npm. You'll get full TypeScript types and autocomplete:
+For bundler-based apps (Next.js, Vite, Webpack, etc.), install [`@epilot/journey-embed-sdk`](https://www.npmjs.com/package/@epilot/journey-embed-sdk) from npm. You'll get full TypeScript types and autocomplete:
 
 ```bash
 npm install @epilot/journey-embed-sdk
@@ -495,56 +495,81 @@ The `.dataInjectionOptions()` method accepts a `DataInjectionOptions` object wit
 
 ```typescript title="DataInjectionOptions"
 type DataInjectionOptions = {
-  /** The step index to start the Journey from (0-based) */
+  /** The stable id of the step to start the Journey from (recommended) */
+  initialStepId?: string
+  /**
+   * The step index to start the Journey from (0-based).
+   * @deprecated Legacy alternative to initialStepId; the index shifts when steps are reordered
+   */
   initialStepIndex?: number
-  /** Pre-fill data for each step */
-  initialState?: Record<string, unknown>[]
+  /**
+   * Pre-fill data. Two forms are supported:
+   * - recommended: an object keyed by stable block id -> block value
+   * - deprecated (legacy): an array indexed by step position, each entry keyed by block name
+   */
+  initialState?:
+    | Record<string, Record<string, unknown>>
+    | Record<string, unknown>[]
   /** Control which blocks/fields are disabled */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
 
 type BlockDisplaySetting = {
   type: 'DISABLED'
-  blockName: string
-  stepIndex: number
+  /** The stable, journey-wide id of the block to target (recommended) */
+  blockId?: string
+  /** @deprecated Legacy alternative to blockId; breaks silently when the block is renamed */
+  blockName?: string
+  /** @deprecated Legacy alternative to blockId; the 0-based step index shifts when steps are reordered */
+  stepIndex?: number
   blockFields?: string[]
 }
 ```
 
 ### Setting data injection options
 
-Pass the object inline in your embed chain:
+The **recommended** form keys `initialState` by **block ID** — the block's stable, journey-wide identifier. Block IDs are unique across the whole Journey and are unaffected by block renames or by reordering steps, so an embed keyed by block ID keeps working even after the Journey is restructured.
 
-```html title="Pre-filling journey data"
-<div id="embed-target"></div>
+Pass the object inline in your embed chain. The complete example below combines all three features in a single call — start the Journey at a step by its stable `initialStepId`, prefill `initialState` keyed by block id, and disable a block by `blockId`:
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    $epilot
-      .embed('<your-journey-id>')
-      .asWebComponent()
-      .mode('inline')
-      .dataInjectionOptions({
-        initialState: [
-          {
-            Date: { startDate: '2026-02-19', endDate: null, _isValid: true },
-            'Number Input': {
-              numberInput: '3',
-              numberUnit: '',
-              _isValid: true,
-            },
-            'Binary Input': true,
-          },
-        ],
-      })
-      .append('#embed-target')
+```javascript title="Pre-filling journey data"
+$epilot
+  .embed('123')
+  .asIframe()
+  .mode('full-screen')
+  .dataInjectionOptions({
+    initialStepId: 'f0e1d2c3-b4a5-6789-0abc-def012345678',
+    initialState: {
+      'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d': { city: 'Berlin' },
+    },
+    blocksDisplaySettings: [
+      {
+        type: 'DISABLED',
+        blockId: 'b1f2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+        blockFields: ['city'],
+      },
+    ],
   })
-</script>
+  .append('#target')
 ```
 
-You can combine all three features (a starting step, pre-filled state, and disabled fields) in a single call:
+The same `.dataInjectionOptions({ ... })` call works with either backend — swap `.asIframe()` for `.asWebComponent()` to prefill a web component embed.
 
-```javascript title="Setting data injection dynamically"
+### Populating `initialState`
+
+The recommended form keys `initialState` by **block ID**. Each entry is an object of the field values for that block. Because the state is keyed by block ID, you only list the blocks you actually want to prefill — no per-step ordering or empty `{}` placeholders are needed, and the mapping is unaffected by block renames or step reordering. To find a block's ID, open the block configurator in the Journey builder.
+
+### Data Injection Options builder
+
+You don't have to hand-write block IDs. The Journey Builder includes a **Data Injection (preview)** tool that lets you build the configuration visually: pick the blocks and fields to prefill, set their pre-fill values, mark blocks as read-only, choose the starting step, then copy the generated options straight into your `.dataInjectionOptions()` call.
+
+![Data injection preview builder](../../static/img/data-injection-demo.gif)
+
+:::note Legacy step-index form (deprecated)
+
+`initialState` also accepts an array form (one entry per step indexed by **step position**, keyed by block **name**, with empty `{}` objects for steps you don't prefill), and `blocksDisplaySettings` also accepts the `blockName` + `stepIndex` pair. Both legacy forms are **deprecated but still supported** for backward compatibility; they break silently when blocks are renamed or steps are reordered, so prefer the block-ID form for new integrations.
+
+```javascript title="Legacy array form (deprecated)"
 $epilot
   .embed('<your-journey-id>')
   .asWebComponent()
@@ -572,16 +597,11 @@ $epilot
   .append('#embed-target')
 ```
 
-### Populating `initialState`
-
-`initialState` is an array where each element corresponds to a Journey step (by index). Each step entry is an object keyed by block name, containing the field values for that block.
-
-- Steps that should not be pre-filled must be empty objects `{}`.
-- The array must be ordered sequentially to match step order.
-
-To discover the correct block names and field structure, open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
+Open your Journey in **debug mode** from the Journey Builder and inspect the state for each step. See below:
 
 ![Journey Embed Mode](../../static/img/journey-debug-mode.gif)
+
+:::
 
 ## Events
 
@@ -760,3 +780,9 @@ Some `OptionsInit` fields from the legacy script have no SDK equivalent:
 - `journeyUrl`: not supported. The SDK derives the iframe URL from `baseUrl`; pass it via `new Epilot({ baseUrl })` if you need a non-default Journey app.
 
 > The legacy `name` option **is** supported as `.name(value)`, which sets the iframe's `name` and `title`, or the web component's `title`.
+
+## Changelog
+
+### 2026-06-11
+
+- Data injection now documents stable **block IDs** as the recommended form: `.dataInjectionOptions()` accepts `initialState` keyed by block ID, `initialStepId` for the starting step, and `blocksDisplaySettings` targeting blocks by `blockId`. Block IDs are unique journey-wide and resilient to block renames and step reordering. The legacy step-index + block-name forms remain supported but are deprecated.

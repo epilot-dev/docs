@@ -1,15 +1,12 @@
 {
-  "_schema": "file",
+  "_schema": "calendar_event",
   "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_org": "123",
   "_title": "Entity Title",
   "_tags": [
     "family:label"
   ],
-  "_purpose": [
-    "7675dc56-fd1b-46ee-9c35-defe0667b32e"
-  ],
-  "_thumbnail": {
+  "calendar": {
     "$relation": [
       {
         "entity_id": "123e4567-e89b-12d3-a456-426614174000",
@@ -19,34 +16,32 @@
       }
     ]
   },
-  "filename": "string",
-  "mime_type": "string",
-  "type": "document",
-  "readable_size": "string",
-  "language": "de",
-  "alt_text": "string",
-  "access_control": "private",
-  "public_url": "string",
-  "shared_with_end_customer": true,
-  "category": "address-suggestions",
-  "file_date": "2025-01-01",
-  "external_id": "string",
-  "custom_download_url": "string",
-  "journeys": {
-    "$relation": [
-      {
-        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
-        "_tags": [
-          "example"
-        ]
-      }
-    ]
-  },
-  "preview_summary_de": "string",
-  "short_summary_de": "string",
-  "preview_summary_en": "string",
-  "short_summary_en": "string",
-  "summary_status": "processing",
+  "subject": "string",
+  "description": "string",
+  "event_type": "singleInstance",
+  "status": "free",
+  "start_time": "1970-01-01T00:00:00.000Z",
+  "end_time": "1970-01-01T00:00:00.000Z",
+  "timezone": "string",
+  "is_all_day": true,
+  "location": "string",
+  "is_cancelled": true,
+  "sensitivity": "normal",
+  "importance": "low",
+  "is_online_meeting": true,
+  "online_meeting_url": "string",
+  "web_link": "string",
+  "response_status": "none",
+  "organizer_email": "user@example.com",
+  "attendees": "string",
+  "is_recurring": true,
+  "series_master_id": "string",
+  "source_type": "native",
+  "source_provider": "outlook",
+  "provider_event_id": "string",
+  "provider_event_url": "string",
+  "etag": "string",
+  "last_synced_at": "1970-01-01T00:00:00.000Z",
   "_files": {
     "$relation": [
       {

@@ -6,7 +6,7 @@ description: Common ERP integration use cases for inbound and outbound flows
 
 # Use Cases
 
-This page describes the standard ERP integration use cases that the ERP Toolkit supports. Each use case is classified as **inbound** (ERP to epilot) or **outbound** (epilot to ERP) and documents what happens on each side, which [Core Entities](/docs/entities/core-entities) are involved, and which [Core Events](/docs/integrations/core-events) are emitted or consumed.
+This page describes the standard ERP integration use cases that the Integration Toolkit supports. Each use case is classified as **inbound** (ERP to epilot) or **outbound** (epilot to ERP) and documents what happens on each side, which [Core Entities](/docs/entities/core-entities) are involved, and which [Core Events](/docs/integrations/core-events) are emitted or consumed.
 
 :::tip
 Most integrations start with inbound use cases (syncing master data into epilot) and then add outbound use cases (self-service actions from portals and journeys).
@@ -50,7 +50,7 @@ Most integrations start with inbound use cases (syncing master data into epilot)
 
 ## Inbound Use Cases (ERP to epilot)
 
-Inbound use cases push data from your ERP system into epilot via the [Inbound API](./inbound/getting-started). Your middle layer or ERP sends events to the `/v3/erp/updates/events` endpoint, the ERP Toolkit applies [JSONata mappings](./inbound/mapping), and epilot entities are created or updated.
+Inbound use cases push data from your ERP system into epilot via the [Inbound API](./inbound/getting-started.md). Your middle layer or ERP sends events to the `/v3/erp/updates/events` endpoint, the Integration Toolkit applies [JSONata mappings](./inbound/mapping.md), and epilot entities are created or updated.
 
 ### Keep Customer In Sync
 
@@ -68,10 +68,10 @@ flowchart LR
 **What happens in the ERP:**
 - Customer record is created or updated (name, address, email, phone, tax ID)
 - ERP or middle layer detects the change (via delta sync, change events, or polling)
-- Middle layer sends the customer payload to the ERP Toolkit inbound API
+- Middle layer sends the customer payload to the Integration Toolkit inbound API
 
 **What happens in epilot:**
-- ERP Toolkit matches the incoming data to an existing [contact](/docs/entities/core-entities#contact) entity using a unique identifier (e.g., `customer_number`)
+- Integration Toolkit matches the incoming data to an existing [contact](/docs/entities/core-entities#contact) entity using a unique identifier (e.g., `customer_number`)
 - Contact entity is created or updated with mapped fields (name, address, email, phone)
 - Related entities (billing accounts, contracts) are linked if identifiers are present
 
@@ -99,7 +99,7 @@ flowchart LR
 - Middle layer sends contract payload with related customer and meter identifiers
 
 **What happens in epilot:**
-- ERP Toolkit matches to an existing [contract](/docs/entities/core-entities#contract) entity using the contract number
+- Integration Toolkit matches to an existing [contract](/docs/entities/core-entities#contract) entity using the contract number
 - Contract entity is created or updated
 - Relations to contact, billing account, and meter entities are established based on identifiers in the payload
 
@@ -127,7 +127,7 @@ flowchart LR
 - Middle layer sends one or more events covering the changed sub-domain (account header, billing address, payment method)
 
 **What happens in epilot:**
-- ERP Toolkit matches the [billing_account](/docs/entities/core-entities#billing_account) by the billing account number
+- Integration Toolkit matches the [billing_account](/docs/entities/core-entities#billing_account) by the billing account number
 - The billing account entity is created or updated with the appropriate attributes
 - Bank account details (IBAN, BIC, account holder, SEPA mandate, debit/credit usage) are stored on the `payment_method` attribute
 - Relations to contact and contract entities are established
@@ -171,7 +171,7 @@ flowchart LR
 - Middle layer sends meter data with device numbers and counter registers
 
 **What happens in epilot:**
-- ERP Toolkit matches to an existing [meter](/docs/entities/core-entities#meter) entity using the meter number (device number)
+- Integration Toolkit matches to an existing [meter](/docs/entities/core-entities#meter) entity using the meter number (device number)
 - Meter entity is created or updated
 - Meter counter entities are created for each register (e.g., HT/NT for dual-tariff meters)
 - Relations to contract and contact entities are established
@@ -186,7 +186,7 @@ flowchart LR
 
 ### Sync Meter Readings
 
-Synchronize meter reading history from ERP to epilot. See the dedicated [Meter Readings](./inbound/meter-readings) guide for configuration details.
+Synchronize meter reading history from ERP to epilot. See the dedicated [Meter Readings](./inbound/meter-readings.md) guide for configuration details.
 
 ```mermaid
 flowchart LR
@@ -201,7 +201,7 @@ flowchart LR
 - Middle layer sends reading data as an array referencing meters by ID
 
 **What happens in epilot:**
-- ERP Toolkit looks up the meter entity by meter number
+- Integration Toolkit looks up the meter entity by meter number
 - Meter readings are created on the matched meter counter
 - Deduplication prevents duplicate readings based on the configured matching strategy (`external_id` or `strict-date`)
 
@@ -228,7 +228,7 @@ flowchart LR
 - Middle layer sends document metadata and file content to epilot
 
 **What happens in epilot:**
-- File entities are created with either the document content or a `custom_download_url` pointing to the [File Proxy](./file-proxy)
+- File entities are created with either the document content or a `custom_download_url` pointing to the [File Proxy](./file-proxy.md)
 - Files are linked to the relevant contact, contract or billing account entities using identifiers (e.g. contract number, customer number, billing account number)
 
 **Core Entities:** [`file`](/docs/entities/core-entities#file), [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account)
@@ -236,7 +236,7 @@ flowchart LR
 **Typical fields mapped:** file name, document type, MIME type, file date, language, `shared_with_end_customer` flag, `is_invoice` flag, file content (binary or `custom_download_url`)
 
 :::tip[File Proxy Alternative]
-When migrating a large document archive is impractical, use the **[File Proxy](./file-proxy)** instead. During inbound sync, only document metadata is synced — file entities are created with a `custom_download_url` pointing to the file proxy. The actual file content is fetched on demand when a user views the document. See the [File Proxy configuration guide](./file-proxy) for setup details.
+When migrating a large document archive is impractical, use the **[File Proxy](./file-proxy.md)** instead. During inbound sync, only document metadata is synced — file entities are created with a `custom_download_url` pointing to the file proxy. The actual file content is fetched on demand when a user views the document. See the [File Proxy configuration guide](./file-proxy.md) for setup details.
 :::
 
 :::info
@@ -293,7 +293,7 @@ flowchart LR
 - Middle layer sends the full schedule as an array of `deductions` (date + amount + currency) referencing the billing account
 
 **What happens in epilot:**
-- ERP Toolkit looks up the [billing_account](/docs/entities/core-entities#billing_account) by external ID
+- Integration Toolkit looks up the [billing_account](/docs/entities/core-entities#billing_account) by external ID
 - One [billing_event](/docs/entities/core-entities#billing_event) per scheduled deduction is upserted with `direction: "debit"`, a deterministic `external_id` (e.g. `DEDUCTION-<customerAccountId>-<date>`), `booking_date`, and `billing_amount`
 - Subsequent recalculations re-upsert the same IDs so the schedule stays current
 
@@ -364,7 +364,7 @@ flowchart LR
 **What happens in the ERP:**
 - Middle layer receives the webhook and extracts meter reading data
 - Middle layer calls the ERP API to submit the reading (e.g., meter reading endpoint)
-- Middle layer sends an [ACK](/docs/integrations/erp-toolkit/overview#monitoring-and-acks) back to epilot to confirm processing
+- Middle layer sends an [ACK](/docs/integrations/integration-toolkit/overview#monitoring-and-acks) back to epilot to confirm processing
 
 **Core Event:** [`MeterReadingAdded`](/docs/integrations/core-events#MeterReadingAdded)
 
@@ -690,7 +690,7 @@ flowchart LR
 **What happens in the ERP:**
 - Middle layer receives the webhook and identifies what to sync
 - Middle layer fetches current data from the ERP (contact details, contracts, meters, bank accounts, account statement)
-- Middle layer sends the data back as inbound events to the ERP Toolkit `/v3/erp/updates/events` endpoint, reusing the existing inbound mappings
+- Middle layer sends the data back as inbound events to the Integration Toolkit `/v3/erp/updates/events` endpoint, reusing the existing inbound mappings
 
 **Core Events:** [`OnDemandSyncCustomerRequested`](/docs/integrations/core-events#OnDemandSyncCustomerRequested), [`OnDemandSyncContractRequested`](/docs/integrations/core-events#OnDemandSyncContractRequested)
 
@@ -768,7 +768,7 @@ flowchart LR
 
 ## ACK Tracking
 
-All outbound use cases support [ACK tracking](/docs/integrations/erp-toolkit/overview#monitoring-and-acks). After processing a webhook, your middle layer should send an acknowledgment back to epilot:
+All outbound use cases support [ACK tracking](/docs/integrations/integration-toolkit/overview#monitoring-and-acks). After processing a webhook, your middle layer should send an acknowledgment back to epilot:
 
 ```bash title="Send ACK"
 curl -X POST 'https://erp-integration.sls.epilot.io/v1/erp/tracking/acknowledgement' \
@@ -783,11 +783,11 @@ This enables end-to-end monitoring in the Integration Hub: per-use-case status i
 
 ## Next Steps
 
-- [Inbound Getting Started](./inbound/getting-started) -- Set up your first inbound sync
-- [Mapping Configuration](./inbound/mapping) -- Configure field mappings and JSONata transforms
-- [Meter Readings](./inbound/meter-readings) -- Detailed guide for meter reading sync
-- [Examples](./inbound/examples) -- Complete working examples
-- [Mapping Examples](./mapping-examples) -- Open source example repo with TDD patterns
+- [Inbound Getting Started](./inbound/getting-started.md) -- Set up your first inbound sync
+- [Mapping Configuration](./inbound/mapping.md) -- Configure field mappings and JSONata transforms
+- [Meter Readings](./inbound/meter-readings.md) -- Detailed guide for meter reading sync
+- [Examples](./inbound/examples.md) -- Complete working examples
+- [Mapping Examples](./mapping-examples.md) -- Open source example repo with TDD patterns
 - [Core Entities](/docs/entities/core-entities) -- Entity schema reference
 - [Core Events](/docs/integrations/core-events) -- Event schema reference
 - [Webhooks](/docs/integrations/webhooks) -- Configure outbound event delivery

@@ -9,7 +9,7 @@ description: Map ERP line items and calculate prices during inbound synchronizat
 Pricing mappings calculate prices for line items on contract and order entities as part of inbound ERP event processing. The system:
 
 1. Extracts line item data from the ERP payload
-2. Resolves product and price entity references by unique keys (similar to [relations](./relations))
+2. Resolves product and price entity references by unique keys (similar to [relations](./relations.md))
 3. Calls the epilot Pricing API (`calculatePricingDetails`) to compute totals, taxes, and breakdowns
 4. Persists the calculated `line_items`, totals, and `total_details` on the target entity
 
@@ -76,7 +76,7 @@ Reference existing product and price entities by unique keys. The system resolve
 | `unit_amount_override` | FieldValue | No | Override the price's `unit_amount` for this line item |
 | `description_override` | FieldValue | No | Override the line item description |
 
-**PricingEntityRef** follows the same pattern as [relation unique IDs](./relations):
+**PricingEntityRef** follows the same pattern as [relation unique IDs](./relations.md):
 
 ```json
 {
@@ -456,5 +456,5 @@ The JSONata expression maps each position to the Pricing API format, handling bo
 
 ## Next Steps
 
-- [Meter Readings](./meter-readings) - Handle meter reading data
-- [Examples](./examples) - Complete integration examples
+- [Meter Readings](./meter-readings.md) - Handle meter reading data
+- [Examples](./examples.md) - Complete integration examples

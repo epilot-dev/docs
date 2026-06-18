@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="430" viewBox="0 0 720 430" role="img" aria-labelledby="title desc">
+  <title id="title">Outlook integration data flow</title>
+  <desc id="desc">Seven-step data flow: tenant consent, token storage, subscription creation, change notification (no body), full message fetch with the service account token, persistence and surfacing to permitted users, and teardown on disconnect or revocation.</desc>
+  <defs>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#0064FF"/>
+    </marker>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#6B7280"/>
+    </marker>
+    <style>
+      .bg{fill:#fff}
+      .cardMs{fill:#F3F4F6;stroke:#6B7280;stroke-width:2}
+      .cardEp{fill:#EFF6FF;stroke:#0064FF;stroke-width:2}
+      .cardAccent{fill:#F0F9FF;stroke:#38BDF8;stroke-width:2}
+      .teardown{fill:#FFF7ED;stroke:#F97316;stroke-width:2}
+      .blueArrow{stroke:#0064FF;stroke-width:2.2;fill:none;marker-end:url(#arrowBlue)}
+      .grayArrow{stroke:#6B7280;stroke-width:2.2;fill:none;marker-end:url(#arrowGray)}
+      .h{font:600 16px system-ui,-apple-system,Segoe UI,sans-serif;fill:#111827}
+      .t{font:14px system-ui,-apple-system,Segoe UI,sans-serif;fill:#374151}
+      .num{font:700 15px system-ui,-apple-system,Segoe UI,sans-serif;fill:#0064FF}
+      .numMs{font:700 15px system-ui,-apple-system,Segoe UI,sans-serif;fill:#6B7280}
+      .numWarn{font:700 15px system-ui,-apple-system,Segoe UI,sans-serif;fill:#C2410C}
+      .tag{font:700 14px system-ui,-apple-system,Segoe UI,sans-serif;fill:#0369A1}
+    </style>
+  </defs>
+
+  <rect class="bg" width="720" height="430"/>
+
+  <rect class="cardMs" x="36" y="48" width="150" height="94" rx="8"/>
+  <text class="numMs" x="56" y="76">1</text>
+  <text class="t" x="56" y="102">
+    <tspan x="56" dy="0">Tenant admin</tspan>
+    <tspan x="56" dy="20">grants consent</tspan>
+  </text>
+
+  <rect class="cardEp" x="226" y="48" width="150" height="94" rx="8"/>
+  <text class="num" x="246" y="76">2</text>
+  <text class="t" x="246" y="102">
+    <tspan x="246" dy="0">epilot stores</tspan>
+    <tspan x="246" dy="20">OAuth tokens</tspan>
+  </text>
+  <text class="tag" x="246" y="132">encrypted</text>
+
+  <rect class="cardEp" x="416" y="48" width="188" height="94" rx="8"/>
+  <text class="num" x="436" y="76">3</text>
+  <text class="t" x="436" y="102">
+    <tspan x="436" dy="0">epilot creates Graph</tspan>
+    <tspan x="436" dy="20">subscriptions per mailbox</tspan>
+  </text>
+
+  <path class="grayArrow" d="M186 95 H226"/>
+  <path class="blueArrow" d="M376 95 H416"/>
+
+  <path class="blueArrow" d="M510 142 C510 174 138 172 138 204"/>
+
+  <rect class="cardAccent" x="36" y="204" width="172" height="108" rx="8"/>
+  <text class="num" x="56" y="232">4</text>
+  <text class="t" x="56" y="258">
+    <tspan x="56" dy="0">Outlook change</tspan>
+    <tspan x="56" dy="20">triggers a notification</tspan>
+  </text>
+  <text class="tag" x="56" y="296">no body</text>
+
+  <rect class="cardEp" x="264" y="198" width="172" height="138" rx="8"/>
+  <text class="num" x="284" y="232">5</text>
+  <text class="t" x="284" y="252">
+    <tspan x="284" dy="0">epilot fetches</tspan>
+    <tspan x="284" dy="20">the full message</tspan>
+    <tspan x="284" dy="20">via Graph</tspan>
+  </text>
+  <text class="tag" x="284" y="314">
+    <tspan x="284" dy="0">service account</tspan>
+    <tspan x="284" dy="17">token</tspan>
+  </text>
+
+  <rect class="cardEp" x="492" y="204" width="172" height="108" rx="8"/>
+  <text class="num" x="512" y="232">6</text>
+  <text class="t" x="512" y="258">
+    <tspan x="512" dy="0">epilot persists</tspan>
+    <tspan x="512" dy="20">and surfaces it</tspan>
+    <tspan x="512" dy="20">to permitted users</tspan>
+  </text>
+
+  <path class="blueArrow" d="M208 258 H264"/>
+  <path class="blueArrow" d="M436 258 H492"/>
+
+  <path class="blueArrow" d="M578 312 C578 338 442 336 442 356"/>
+
+  <rect class="teardown" x="234" y="356" width="420" height="58" rx="8"/>
+  <text class="numWarn" x="256" y="391">7</text>
+  <text class="h" x="284" y="382">Disconnect or consent revocation</text>
+  <text class="t" x="284" y="404">Deletes subscriptions, tokens, and mailbox mappings.</text>
+</svg>

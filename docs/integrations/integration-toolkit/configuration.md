@@ -6,7 +6,7 @@ description: Configure integrations and use cases
 
 # Configuration
 
-This guide covers how to configure integrations, use cases, and manage your ERP Toolkit setup.
+This guide covers how to configure integrations, use cases, and manage your Integration Toolkit setup.
 
 ## Integration Management
 
@@ -122,7 +122,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 | `configuration` | object | Yes | Type-specific configuration (see sections below) |
 
 :::info
-- `file_proxy` — On-demand file serving from external document systems. See the [File Proxy guide](./file-proxy).
+- `file_proxy` — On-demand file serving from external document systems. See the [File Proxy guide](./file-proxy.md).
 - `managed_call` — Synchronous external API calls with JSONata mapping. See [Managed Call Use Cases](#managed-call-use-cases).
 - `secure_proxy` — Route requests through epilot's secure proxy for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).
 :::
@@ -146,6 +146,87 @@ View the change history for a use case:
 curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases/{useCaseId}/history' \
   -H 'Authorization: Bearer <token>'
 ```
+
+### Outbound Use Case Configuration
+
+Outbound use cases deliver standardized epilot events (event-catalog events) to your external system. The configuration consists of an `event_catalog_event` and one or more `mappings`:
+
+```bash
+curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Contract Sync",
+    "type": "outbound",
+    "enabled": true,
+    "configuration": {
+      "event_catalog_event": "contract.updated",
+      "mappings": [
+        {
+          "id": "b8f1c9a0-58dd-4f7a-9a3e-000000000001",
+          "name": "ERP Contract Sync",
+          "enabled": true,
+          "jsonata_expression": "{ \"id\": entity._id, \"customer\": entity.customer_name }",
+          "delivery": {
+            "type": "webhook",
+            "webhook_id": "wh-123"
+          }
+        }
+      ]
+    }
+  }'
+```
+
+#### Mapping Properties
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `id` | string (UUID) | Yes | Unique identifier for the mapping |
+| `name` | string | Yes | Display name for the mapping |
+| `enabled` | boolean | Yes | Whether this mapping is active |
+| `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook` delivery; ignored for `poll` delivery |
+| `delivery` | object | Yes | How the event is delivered — discriminated on `type`: `webhook` or `poll` |
+
+#### Delivery Types
+
+**Webhook delivery (push):** the event payload is transformed with the mapping's `jsonata_expression` and pushed to a pre-configured webhook (epilot Webhooks):
+
+```json
+"delivery": {
+  "type": "webhook",
+  "webhook_id": "wh-123"
+}
+```
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `webhook_id` | string | Yes | Reference to the webhook configuration in epilot Webhooks |
+| `webhook_name` | string | No | Cached webhook name for display purposes |
+
+**Poll delivery (pull):** for ERPs that cannot expose an inbound HTTP endpoint (firewalled, on-prem, batch systems). Items are placed on a pull-based queue that your system fetches and acknowledges. Poll items carry the **raw standardized event payload** — no JSONata transform is applied. See [Pollable Outbound](./pollable-outbound.md) for the full feature documentation (polling API, ordering guarantees, dead-letter handling, monitoring):
+
+```jsonc
+// DeliveryConfig — poll variant
+"delivery": {
+  "type": "poll",                    // discriminator: 'webhook' | 'poll'
+  "retention_days": 30,              // optional; default 30, min 1, max 90
+  "poison_policy": "dead_letter",    // 'dead_letter' (default) | 'block'
+  "max_delivery_attempts": 5         // delivery attempts before poison_policy applies
+}
+```
+
+| Property | Type | Required | Default | Bounds | Description |
+|----------|------|----------|---------|--------|-------------|
+| `retention_days` | integer | No | `30` | min 1, max 90 | How long undelivered queue items are retained before expiry |
+| `poison_policy` | string | No | `"dead_letter"` | `dead_letter` \| `block` | What happens when an item exhausts `max_delivery_attempts`: `dead_letter` routes the item to the dead-letter queue; `block` halts the queue until action is taken |
+| `max_delivery_attempts` | integer | No | `5` | min 1, max 100 | Maximum delivery attempts before the `poison_policy` is applied |
+
+:::info
+- At most **one** poll mapping is allowed per use case. Webhook mappings may coexist alongside the poll mapping — push and poll for the same event is allowed.
+- A `poll` delivery must not carry webhook fields (`webhook_id`, `webhook_name`), and a `webhook` delivery must not carry poll fields (`retention_days`, `poison_policy`, `max_delivery_attempts`).
+:::
+
+Everything beyond the configuration contract — the polling and acknowledgement API, lease and ordering semantics, retention and expiry behavior, the dead-letter queue and operator actions, and poll-mode monitoring — is documented on the dedicated [Pollable Outbound](./pollable-outbound.md) page.
 
 ## Mapping Configuration Schema
 

@@ -2,14 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "_schema"
+    "_schema",
+    "calendar",
+    "event_type",
+    "start_time",
+    "end_time",
+    "source_type"
   ],
   "properties": {
     "_schema": {
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "journey",
+      "example": "calendar_event",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -43,57 +48,158 @@
       ],
       "description": "Entity Labels"
     },
-    "_purpose": {
-      "$ref": "#/definitions/PurposeAttribute",
-      "description": "Purposes"
+    "calendar": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Calendar"
     },
-    "journey_name": {
+    "subject": {
       "type": "string",
-      "description": "Journey name"
+      "description": "Subject"
     },
-    "journey_id": {
+    "description": {
       "type": "string",
-      "description": "Journey Id"
+      "description": "Description"
     },
-    "journey_type": {
-      "type": "string",
-      "description": "Journey Type"
-    },
-    "access_mode": {
+    "event_type": {
       "type": "string",
       "enum": [
-        "PUBLIC",
-        "PRIVATE"
+        "singleInstance",
+        "occurrence",
+        "exception",
+        "seriesMaster"
       ],
-      "description": "Journey Access Mode"
+      "description": "Event Type"
     },
-    "design": {
+    "status": {
       "type": "string",
-      "description": "Design"
+      "enum": [
+        "free",
+        "tentative",
+        "busy",
+        "oof",
+        "workingElsewhere",
+        "unknown"
+      ],
+      "description": "Status"
     },
-    "created_by": {
-      "$ref": "#/definitions/User",
-      "description": "Created by"
-    },
-    "journey_version": {
+    "start_time": {
       "type": "string",
-      "description": "Version"
+      "format": "date-time",
+      "description": "Start Time"
     },
-    "is_active": {
+    "end_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End Time"
+    },
+    "timezone": {
+      "type": "string",
+      "description": "Timezone"
+    },
+    "is_all_day": {
       "type": "boolean",
-      "description": "Published"
+      "description": "All Day"
     },
-    "products": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Products"
+    "location": {
+      "type": "string",
+      "description": "Location"
     },
-    "prices": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Prices"
+    "is_cancelled": {
+      "type": "boolean",
+      "description": "Cancelled"
     },
-    "files": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Files"
+    "sensitivity": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "personal",
+        "private",
+        "confidential"
+      ],
+      "description": "Sensitivity"
+    },
+    "importance": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high"
+      ],
+      "description": "Importance"
+    },
+    "is_online_meeting": {
+      "type": "boolean",
+      "description": "Online Meeting"
+    },
+    "online_meeting_url": {
+      "type": "string",
+      "description": "Online Meeting URL"
+    },
+    "web_link": {
+      "type": "string",
+      "description": "Web Link"
+    },
+    "response_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "organizer",
+        "tentativelyAccepted",
+        "accepted",
+        "declined",
+        "notResponded"
+      ],
+      "description": "Response Status"
+    },
+    "organizer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Organizer Email"
+    },
+    "attendees": {
+      "type": "string",
+      "description": "Attendees"
+    },
+    "is_recurring": {
+      "type": "boolean",
+      "description": "Recurring"
+    },
+    "series_master_id": {
+      "type": "string",
+      "description": "Series Master ID"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "native",
+        "synced"
+      ],
+      "description": "Source Type"
+    },
+    "source_provider": {
+      "type": "string",
+      "enum": [
+        "outlook",
+        "google"
+      ],
+      "description": "Source Provider"
+    },
+    "provider_event_id": {
+      "type": "string",
+      "description": "Provider Event ID"
+    },
+    "provider_event_url": {
+      "type": "string",
+      "description": "Provider Event URL"
+    },
+    "etag": {
+      "type": "string",
+      "description": "ETag"
+    },
+    "last_synced_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last Synced At"
     },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
@@ -176,16 +282,6 @@
     }
   },
   "definitions": {
-    "PurposeAttribute": {
-      "type": "array",
-      "description": "List of purpose ids",
-      "items": {
-        "type": "string"
-      },
-      "example": [
-        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
-      ]
-    },
     "BaseUUID": {
       "type": "string",
       "format": "uuid",
@@ -221,109 +317,6 @@
           }
         }
       }
-    },
-    "UserId": {
-      "description": "User's unique identifier",
-      "type": "string",
-      "readOnly": true
-    },
-    "OrganizationId": {
-      "description": "Organization unique identifier",
-      "type": "string",
-      "readOnly": true,
-      "example": "123"
-    },
-    "User": {
-      "type": "object",
-      "description": "User information",
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/UserId"
-        },
-        "organization_id": {
-          "$ref": "#/definitions/OrganizationId"
-        },
-        "email": {
-          "type": "string",
-          "format": "email",
-          "example": "user@example.com"
-        },
-        "display_name": {
-          "type": "string",
-          "example": "John Doe",
-          "deprecated": true
-        },
-        "name": {
-          "type": "string",
-          "example": "John Doe",
-          "deprecated": true
-        },
-        "preferred_language": {
-          "type": "string",
-          "example": "de",
-          "description": "ISO 639-1 language code"
-        },
-        "signature": {
-          "type": "string",
-          "example": "<p>Best regards,<br/>John Doe</p>",
-          "description": "HTML email signature"
-        },
-        "roles": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "example": "Owner"
-          },
-          "deprecated": true,
-          "description": "Deprecated! Please use Permissions API instead"
-        },
-        "image_uri": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "original": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
-            },
-            "thumbnail_32": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
-            }
-          },
-          "nullable": true
-        },
-        "properties": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "profileImageName"
-              },
-              "value": {
-                "type": "string",
-                "example": "avatar.png"
-              }
-            },
-            "required": [
-              "name",
-              "value"
-            ]
-          }
-        }
-      },
-      "required": [
-        "id",
-        "organization_id",
-        "email",
-        "name",
-        "preferred_language",
-        "roles",
-        "properties"
-      ]
     }
   }
 }

@@ -6,7 +6,7 @@ description: Synchronize meter reading data from ERP systems
 
 # Meter Readings
 
-The ERP Toolkit provides specialized support for meter reading data, common in utility and energy industry integrations.
+The Integration Toolkit provides specialized support for meter reading data, common in utility and energy industry integrations.
 
 ## Overview
 
@@ -104,7 +104,7 @@ The `meter` object defines how to find the associated meter entity:
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `unique_ids` | object[] | Fields to identify the meter entity. See [Unique ID Options](./relations#relation-unique-id-options) |
+| `unique_ids` | object[] | Fields to identify the meter entity. See [Unique ID Options](./relations.md#relation-unique-id-options) |
 
 ### Meter Identifier Source
 
@@ -120,7 +120,7 @@ The meter identifier value comes from the reading data via the `unique_ids` conf
 }
 ```
 
-Each `unique_ids` entry supports the same value sources as [relation unique IDs](./relations#relation-unique-id-options): `field`, `jsonataExpression`, and `constant`.
+Each `unique_ids` entry supports the same value sources as [relation unique IDs](./relations.md#relation-unique-id-options): `field`, `jsonataExpression`, and `constant`.
 
 ### Meter Counter (Multi-Tariff)
 
@@ -584,4 +584,4 @@ Use JSONata to validate readings:
 
 ## Next Steps
 
-- [Examples](./examples) - Complete integration examples with meter readings
+- [Examples](./examples.md) - Complete integration examples with meter readings

@@ -6,7 +6,7 @@ description: Link entities together during synchronization
 
 # Entity Relations
 
-Relations connect entities in epilot. The ERP Toolkit creates and updates relations between entities during synchronization.
+Relations connect entities in epilot. The Integration Toolkit creates and updates relations between entities during synchronization.
 
 ## Relation Basics
 
@@ -505,7 +505,7 @@ The `value` field in a relation_ref item supports the same value sources as regu
 
 ## Relation Resolution Strategy
 
-The ERP Toolkit uses an **all-or-nothing** strategy:
+The Integration Toolkit uses an **all-or-nothing** strategy:
 
 1. If ANY related entity in a relation attribute cannot be found, the ENTIRE attribute is deferred to post_actions
 2. Post_actions will create the missing entities first
@@ -600,6 +600,6 @@ Avoid failures from missing optional relations:
 
 ## Next Steps
 
-- [Pricing](./pricing) - Map ERP line items and calculate prices
-- [Meter Readings](./meter-readings) - Handle meter reading data
-- [Examples](./examples) - Complete integration examples
+- [Pricing](./pricing.md) - Map ERP line items and calculate prices
+- [Meter Readings](./meter-readings.md) - Handle meter reading data
+- [Examples](./examples.md) - Complete integration examples

@@ -2,6 +2,72 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-06-15 Email Template API
+
+- New `GET /v1/email-template/templates/{id}:references` endpoint added, returning where a template is currently referenced
+
+## 2026-06-15 Integration Toolkit API
+
+- New endpoints added for managing outbound message queues: `POST /v1/integrations/{integrationId}/outbound/messages/poll`, `.../ack`, and `.../unblock`, plus `GET /v1/integrations/{integrationId}/outbound/messages/dlq` and `POST .../outbound/messages/dlq/redrive` for dead-letter handling
+- Outbound use case delivery configuration was restructured into a discriminated union of `WebhookDeliveryConfig` and the new `PollDeliveryConfig`; the previous flat `type`, `webhook_id`, `webhook_name`, and `webhook_url` delivery fields were removed (breaking)
+
+## 2026-06-15 Core Entities
+
+- The `journey` entity gained new relations to `products`, `prices`, and `files`; correspondingly, the `product`, `price`, and `file` entities each gained a new `journeys` relation
+
+## 2026-06-15 Event: Meter Reading Added
+
+- New `account` field added carrying the full account entity related to the reading (company details, addresses, payment data, contacts, and related entities)
+
+## 2026-06-12 Access Token API
+
+- New optional `read_only` field added when creating access tokens (`POST /v1/access-tokens`); a read-only token may only perform view, export, and download actions regardless of the roles it carries
+
+## 2026-06-08 Workflows Execution API
+
+- New `POST /v2/flows/executions/{execution_id}/tasks/{task_id}/reconcile-automation` endpoint added for reconciling the status of a stuck automation task
+
+## 2026-06-07 Event Catalog API
+
+- New `GET /v1/events/{event_name}/versions` endpoint added listing the available payload schema versions for an event, and a new optional `Epilot-Event-Version` header on the JSON-schema and example endpoints to request a specific version
+- New `_downgrades` field added to event history responses, describing how a payload was downgraded to an older schema version
+
+## 2026-06-07 Webhooks API
+
+- New optional `eventVersion` field (`MAJOR.MINOR` format) added to webhook configuration to pin deliveries to a specific event payload schema version
+
+## 2026-06-05 Targeting API
+
+- New `POST /v1/campaign:setup` endpoint added for atomically creating a campaign together with its related entities (e.g. a tariff-change campaign with its journey, portal widget, and email channel)
+
+## 2026-06-09 Calendar API
+
+- New endpoints added for managing calendars and events: `POST /v1/calendar`, `PATCH`/`DELETE /v1/calendar/{calendar_id}`, `POST /v1/calendar/events`, and `PATCH`/`DELETE /v1/calendar/events/{event_id}`, plus `POST /v1/calendar/sources/outlook` and `GET /v1/calendar/sources/outlook/available` for connecting Outlook calendars
+
+## 2026-06-04 Calendar Entity
+
+- New `calendar` entity introduced, with required `name` and `source_type` attributes and relations to its owning user and to files
+
+## 2026-06-04 Calendar Event Entity
+
+- New `calendar_event` entity introduced, with a required `calendar` relation and required `event_type`, `start_time`, `end_time`, and `source_type` attributes
+
+## 2026-06-03 Blueprint API
+
+- New `POST /v3/blueprint-manifest/blueprint-instances/{blueprint_instance_id}:restore` and `POST /v3/blueprint-manifest/blueprints/{blueprint_id}/deployments/{job_id}:restore` endpoints added for rolling back deployments, along with new `snapshot_id`, `restore_status`, and `last_restore_job_id` deployment fields
+
+## 2026-06-03 Webhooks API
+
+- New optional `retryPolicy` object (`enabled`, `maxAttempts`) added to webhook configuration for automatic delivery retries, and a `retry_attempt` field added to webhook event records
+
+## 2026-06-02 Workflows Definition API
+
+- Decision task condition statements now accept an `attributes` array and an `attributes_match` mode, allowing a single condition to evaluate multiple entity attributes at once
+
+## 2026-05-29 Blueprint Manifest API
+
+- The blueprint install endpoint now accepts a `source_blueprint_file` as an alternative to `source_org_id` plus `source_blueprint_id`, and adds optional `source_auth_token` and `destination_auth_token` fields for cross-org installs
+
 ## 2026-05-27 File API
 
 - New `POST /v1/files/{id}/summary:generate` endpoint added for generating an AI summary of a file, alongside new `preview_summary`, `short_summary`, and `summary_status` response fields

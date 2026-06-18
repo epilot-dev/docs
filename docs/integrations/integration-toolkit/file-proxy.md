@@ -2,12 +2,12 @@
 sidebar_position: 5
 title: File Proxy
 description: Serve files from external document systems on demand without migrating them into epilot storage
-slug: /integrations/erp-toolkit/file-proxy
+slug: /integrations/integration-toolkit/file-proxy
 ---
 
 # File Proxy
 
-The File Proxy enables epilot to serve files from external document systems (e.g., ERP document archives, document management systems) **on demand**, without migrating files into epilot's storage. During [inbound sync](./inbound/getting-started), file entities are created with a `custom_download_url` pointing to the file proxy. When a user views the file, epilot's file service verifies the request and the proxy fetches the document from the external system in real time.
+The File Proxy enables epilot to serve files from external document systems (e.g., ERP document archives, document management systems) **on demand**, without migrating files into epilot's storage. During [inbound sync](./inbound/getting-started.md), file entities are created with a `custom_download_url` pointing to the file proxy. When a user views the file, epilot's file service verifies the request and the proxy fetches the document from the external system in real time.
 
 Each file proxy configuration is stored as a **use case** with `type: 'file_proxy'` within an integration. The configuration describes how to authenticate, which HTTP calls to make, and how to extract the file from the response — all declaratively, without code changes for new integrations.
 
@@ -386,7 +386,7 @@ This generates a URL like:
 https://erp-file-proxy.sls.epilot.io/download?orgId=123&integrationId=abc&useCaseSlug=document-download&documentId=DOC-001&tenantId=ACME
 ```
 
-See the [Inbound Mapping Specification](./inbound/mapping#file-proxy-url-mapping) for the full reference on parameter resolution modes.
+See the [Inbound Mapping Specification](./inbound/mapping.md#file-proxy-url-mapping) for the full reference on parameter resolution modes.
 
 ## Large File Handling
 

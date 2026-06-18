@@ -11,7 +11,7 @@ epilot provides multiple integration paths depending on your use case -- from hi
 
 | Approach | Use case | Entry point |
 |---|---|---|
-| **[ERP Toolkit](/docs/integrations/erp-toolkit/overview)** | Standardized ERP integration with mapping, monitoring, and event-driven sync | Best for energy-sector ERP systems (SAP, Wilken, Schleupen) |
+| **[Integration Toolkit](/docs/integrations/integration-toolkit/overview)** | Standardized ERP integration with mapping, monitoring, and event-driven sync | Best for energy-sector ERP systems (SAP, Wilken, Schleupen) |
 | **[Batch API](/docs/integrations/batch-api)** | Execute multiple API calls in a single request | Best for bulk data operations and middleware with message quotas |
 | **[3rd Party Journeys](/docs/integrations/3rd-party-journeys)** | Submit data from external forms and frontends | Best for custom checkout flows and headless integrations |
 | **[Webhooks](/docs/integrations/webhooks)** | Receive real-time event notifications | Best for event-driven architectures |
@@ -19,7 +19,7 @@ epilot provides multiple integration paths depending on your use case -- from hi
 
 ## Rate Limits
 
-All epilot APIs enforce [rate limits](/docs/integrations/rate-limits) to ensure fair usage. Use the Batch API or ERP Toolkit for high-volume operations.
+All epilot APIs enforce [rate limits](/docs/integrations/rate-limits) to ensure fair usage. Use the Batch API or Integration Toolkit for high-volume operations.
 
 ## Authentication
 

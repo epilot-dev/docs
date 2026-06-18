@@ -244,6 +244,7 @@ System metadata fields (`_id`, `_title`, `_org`, `_schema`, `_created_at`, `_upd
 | `integration:*` | All integration operations |
 | `integration:view` | View integrations |
 | `integration:manage` | Manage integrations |
+| `integration:consume` | Consume integration data (poll and acknowledge outbound queue messages) |
 
 ## Dashboard
 

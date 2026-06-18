@@ -4,15 +4,14 @@
   "required": [
     "_schema",
     "name",
-    "internal_name",
-    "type"
+    "source_type"
   ],
   "properties": {
     "_schema": {
       "readOnly": true,
       "type": "string",
       "pattern": "^[a-zA-Z0-9_-]+$",
-      "example": "product",
+      "example": "calendar",
       "description": "URL-friendly identifier for the entity schema"
     },
     "_id": {
@@ -46,79 +45,59 @@
       ],
       "description": "Entity Labels"
     },
-    "_purpose": {
-      "$ref": "#/definitions/PurposeAttribute",
-      "description": "Purposes"
-    },
     "name": {
       "type": "string",
       "description": "Name"
-    },
-    "internal_name": {
-      "type": "string",
-      "description": "Internal Name"
-    },
-    "type": {
-      "type": "string",
-      "enum": [
-        "product",
-        "service"
-      ],
-      "description": "Type"
-    },
-    "code": {
-      "type": "string",
-      "description": "Code"
-    },
-    "active": {
-      "type": "boolean",
-      "description": "Active"
     },
     "description": {
       "type": "string",
       "description": "Description"
     },
-    "categories": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Categories"
-    },
-    "legal_footnote": {
+    "color": {
       "type": "string",
-      "description": "Legal Footnote"
+      "description": "Color"
     },
-    "feature": {
+    "is_default": {
+      "type": "boolean",
+      "description": "Default Calendar"
+    },
+    "read_only": {
+      "type": "boolean",
+      "description": "Read Only"
+    },
+    "owner_email": {
       "type": "string",
-      "description": "Feature"
+      "format": "email",
+      "description": "Owner Email"
     },
-    "price_options": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Price Options"
+    "owner": {
+      "$ref": "#/definitions/User",
+      "description": "Owner"
     },
-    "cross_sellable_products": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Products for Cross-selling"
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "native",
+        "synced"
+      ],
+      "description": "Source Type"
     },
-    "product_images": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Images"
+    "source_provider": {
+      "type": "string",
+      "enum": [
+        "outlook",
+        "google"
+      ],
+      "description": "Source Provider"
     },
-    "product_downloads": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Downloads"
+    "provider_calendar_id": {
+      "type": "string",
+      "description": "Provider Calendar ID"
     },
-    "_availability_files": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Availability File"
-    },
-    "journeys": {
-      "$ref": "#/definitions/BaseRelation",
-      "description": "Journeys"
-    },
-    "workflows": {
-      "$ref": "#/definitions/WorkflowOverview"
+    "last_synced_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last Synced At"
     },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
@@ -201,16 +180,6 @@
     }
   },
   "definitions": {
-    "PurposeAttribute": {
-      "type": "array",
-      "description": "List of purpose ids",
-      "items": {
-        "type": "string"
-      },
-      "example": [
-        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
-      ]
-    },
     "BaseUUID": {
       "type": "string",
       "format": "uuid",
@@ -247,151 +216,108 @@
         }
       }
     },
-    "WorkflowStatus": {
+    "UserId": {
+      "description": "User's unique identifier",
       "type": "string",
-      "enum": [
-        "STARTED",
-        "DONE",
-        "CLOSED"
-      ]
+      "readOnly": true
     },
-    "StepType": {
+    "OrganizationId": {
+      "description": "Organization unique identifier",
       "type": "string",
-      "enum": [
-        "MANUAL",
-        "AUTOMATION"
-      ]
+      "readOnly": true,
+      "example": "123"
     },
-    "StepStatus": {
-      "type": "string",
-      "enum": [
-        "UNASSIGNED",
-        "ASSIGNED",
-        "COMPLETED",
-        "SKIPPED",
-        "IN_PROGRESS"
-      ]
-    },
-    "PhaseInEntity": {
+    "User": {
       "type": "object",
-      "description": "Workflow phase information",
-      "properties": {
-        "phase_id": {
-          "type": "string"
-        },
-        "phase_name": {
-          "type": "string"
-        },
-        "phase_progress": {
-          "type": "number"
-        }
-      },
-      "required": [
-        "phase_id",
-        "phase_name",
-        "phase_progress"
-      ]
-    },
-    "WorkflowInEntity": {
-      "type": "object",
+      "description": "User information",
       "properties": {
         "id": {
-          "type": "string"
+          "$ref": "#/definitions/UserId"
         },
-        "definition_id": {
-          "type": "string"
+        "organization_id": {
+          "$ref": "#/definitions/OrganizationId"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "user@example.com"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
         },
         "name": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/definitions/WorkflowStatus"
-        },
-        "assignees": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "progress": {
-          "type": "number"
-        },
-        "phases_in_progress": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PhaseInEntity"
-          }
-        },
-        "last_update_time": {
           "type": "string",
-          "format": "date-time"
+          "example": "John Doe",
+          "deprecated": true
         },
-        "upcoming_tasks_assignees": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "task_id": {
-          "type": "string"
-        },
-        "task_name": {
-          "type": "string"
-        },
-        "task_assignees": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "task_duedate": {
+        "preferred_language": {
           "type": "string",
-          "format": "date-time"
+          "example": "de",
+          "description": "ISO 639-1 language code"
         },
-        "task_execution_type": {
-          "$ref": "#/definitions/StepType"
+        "signature": {
+          "type": "string",
+          "example": "<p>Best regards,<br/>John Doe</p>",
+          "description": "HTML email signature"
         },
-        "task_status": {
-          "$ref": "#/definitions/StepStatus"
-        },
-        "phase_id": {
-          "type": "string"
-        },
-        "phase_name": {
-          "type": "string"
-        },
-        "phase_assignees": {
+        "roles": {
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "type": "string",
+            "example": "Owner"
+          },
+          "deprecated": true,
+          "description": "Deprecated! Please use Permissions API instead"
         },
-        "phase_progress": {
-          "type": "number"
+        "image_uri": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "original": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
+            },
+            "thumbnail_32": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
+            }
+          },
+          "nullable": true
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "profileImageName"
+              },
+              "value": {
+                "type": "string",
+                "example": "avatar.png"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          }
         }
       },
       "required": [
         "id",
-        "definition_id",
+        "organization_id",
+        "email",
         "name",
-        "status",
-        "assignees",
-        "last_update_time"
+        "preferred_language",
+        "roles",
+        "properties"
       ]
-    },
-    "WorkflowOverview": {
-      "type": "object",
-      "properties": {
-        "primary": {
-          "$ref": "#/definitions/WorkflowInEntity"
-        }
-      },
-      "additionalProperties": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/WorkflowInEntity"
-        }
-      }
     }
   }
 }
