@@ -337,7 +337,7 @@ The consumption hook may return more than one record per timestamp by adding a `
 
 The `type` values are free-form, but they only render meaningfully when the portal knows how to label, color and combine them. That information comes from the **Visualization Metadata** hook described below — each `type` returned by the data hook should match a `type_options[].id` returned by the metadata hook.
 
-### Visualization Metadata Hook
+#### Visualization Metadata Hook
 
 The `visualizationMetadata` hook returns runtime metadata describing **how** a visualization should be rendered for the current portal context (which meter, contract, etc. the user is looking at). The portal invokes it _before_ the data hook, with the same context, so the shape of the chart can vary per meter or contract — different tariff models, available intervals, or history depth.
 
@@ -392,15 +392,17 @@ Because the method is per-type, a single visualization can mix bar-shaped and li
 `use_static_ips` is deprecated on all hook types — prefer `secure_proxy` (route requests through the ERP Integration secure proxy by setting `integration_id` and `use_case_slug`). The `resolved.dataPath` field has also been renamed to `resolved.data_path`; the old name still works but is deprecated.
 :::
 
-### Worked Examples: epilot Example Integration
+#### Examples
 
 The epilot **example integration** service is a reference backend that powers Dynamic Tariff and Consumption blocks against synthetic-but-realistic German energy data. It exposes the data-retrieval endpoints (`/example/price`, `/example/consumption`, `/example/cost`) and a `/example/visualization/metadata` endpoint, and accepts a `setup` query parameter that selects a predefined deployment scenario. Using the same `setup` across the metadata and data hooks keeps the advertised `type_options` aligned with the records the data hooks return.
 
 The endpoints also accept `from`, `to` and `interval` (and, for consumption/cost, an optional `multiplier` for B2B scenarios). The two scenarios below show the prosumer and load-cycle setups end-to-end.
 
-#### Prosumer (feed-in / feed-out)
+##### Prosumer (feed-in / feed-out)
 
 A household with a rooftop PV system both imports from and exports to the grid. The `prosumer` setup advertises two series — `feed-in` (surplus exported to the grid, peaks midday) and `feed-out` (drawn from the grid, mostly at night) — as separate groups so they render as distinct series.
+
+![Prosumer visualization example](/img/apps/portal-extensions/prosumer.png)
 
 ```json title="Visualization metadata response (setup=prosumer)"
 {
@@ -468,9 +470,11 @@ The matching consumption response (hourly) returns a `feed-in` and a `feed-out` 
 
 For a line-chart variant of the same data, the example integration also ships a `prosumer-line` setup (feed-in/feed-out advertised with `statistical_method: average`).
 
-#### Load Cycle (min / average / max)
+##### Load Cycle (min / average / max)
 
 An industrial / B2B site is billed on instantaneous power (kW) rather than energy. The `load-cycle` setup advertises three series — `min`, `average` and `max` — sharing a single `aggregation_group` but each carrying its own `statistical_method`. The portal renders this as a min–max area band with the average drawn as a line on top.
+
+![Prosumer visualization example](/img/apps/portal-extensions/load-cycle.png)
 
 ```json title="Visualization metadata response (setup=load-cycle)"
 {
@@ -499,7 +503,7 @@ An industrial / B2B site is billed on instantaneous power (kW) rather than energ
 
 The hook configuration is identical to the prosumer consumption hook above, only with `"setup": "load-cycle"` in `call.params`.
 
-#### Other Built-in Setups
+##### Other Example Setups
 
 The example integration ships further setups you can point the `setup` parameter at to exercise different chart shapes and discovery payloads:
 
