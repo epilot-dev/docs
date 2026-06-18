@@ -87,6 +87,14 @@
       "type": "string",
       "description": "Portal ID"
     },
+    "editor_type": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "template_builder"
+      ],
+      "description": "Editor type"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
