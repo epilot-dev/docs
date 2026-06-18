@@ -2,6 +2,29 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-06-17 AI Agents API
+
+- New `POST /v1/conversations/{conversation_id}/feedback` endpoint added for submitting thumbs up/down feedback (with optional comment) on an assistant message; conversation message items now also expose `trace_id` and `feedback`
+
+## 2026-06-17 Targeting API
+
+- `automation_status` query parameter on `GET /v1/campaign/{campaign_id}/recipients` changed from a single-value enum to a repeatable array parameter (breaking)
+- `POST /v1/campaign:setup` no longer requires `automation_id` on the email channel and accepts a new optional `template_id`, allowing the flow to be created from a template instead of a pre-selected automation
+
+## 2026-06-16 Blueprint API
+
+- New `GET /v3/blueprint-manifest/blueprints/{blueprint_id}/deployments/{job_id}/restore-preview` endpoint added, returning the predicted outcome of reverting a deployment without making any changes
+- `POST /v3/blueprint-manifest/blueprint-instances/{blueprint_instance_id}:restore` endpoint removed; deployment restore now runs only via `POST .../blueprints/{blueprint_id}/deployments/{job_id}:restore` (breaking)
+
+## 2026-06-16 Snapshot API
+
+- New `POST /v1/snapshots:capture-org` endpoint added for asynchronously snapshotting the caller's entire organization
+- `POST /v1/snapshots/{id}:restore` now accepts optional `preserve_modified` and `preserve_co_owned` boolean flags controlling how modified and co-owned destination resources are handled during restore
+
+## 2026-06-16 User API
+
+- New public password-reset endpoints added: `POST /v2/users/public/requestPasswordReset` and `POST /v2/users/public/resetPassword` (unauthenticated, rate-limited), plus an authenticated `POST /v2/users:sendPasswordReset` for triggering a reset email for a user in the caller's organization
+
 ## 2026-06-15 Email Template API
 
 - New `GET /v1/email-template/templates/{id}:references` endpoint added, returning where a template is currently referenced
@@ -10,6 +33,10 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - New endpoints added for managing outbound message queues: `POST /v1/integrations/{integrationId}/outbound/messages/poll`, `.../ack`, and `.../unblock`, plus `GET /v1/integrations/{integrationId}/outbound/messages/dlq` and `POST .../outbound/messages/dlq/redrive` for dead-letter handling
 - Outbound use case delivery configuration was restructured into a discriminated union of `WebhookDeliveryConfig` and the new `PollDeliveryConfig`; the previous flat `type`, `webhook_id`, `webhook_name`, and `webhook_url` delivery fields were removed (breaking)
+
+## 2026-06-15 Automation API
+
+- New optional `evaluation_order` (`AFTER_SCHEDULE` / `BEFORE_SCHEDULE`) and `allow_failure` fields added to flow condition items — `evaluation_order` controls how a condition combines with its schedule, and `allow_failure` lets execution continue past a condition block that errors
 
 ## 2026-06-15 Core Entities
 
@@ -64,7 +91,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - Decision task condition statements now accept an `attributes` array and an `attributes_match` mode, allowing a single condition to evaluate multiple entity attributes at once
 
-## 2026-05-29 Blueprint Manifest API
+## 2026-05-29 Blueprint API
 
 - The blueprint install endpoint now accepts a `source_blueprint_file` as an alternative to `source_org_id` plus `source_blueprint_id`, and adds optional `source_auth_token` and `destination_auth_token` fields for cross-org installs
 
@@ -245,7 +272,7 @@ This changelog covers breaking changes, new features, and significant updates to
 - New endpoints added for managing environment variable groups: `GET /v1/environments/groups` (list groups), `PUT /v1/environments/groups/{name}` (create or update a group), `DELETE /v1/environments/groups/{name}` (delete a group)
 - New optional `group` and `protected` fields added to environment variables across all endpoints; `group` assigns a variable to a named group, `protected` marks a variable as read-only
 
-## 2026-04-13 Blueprint Manifest API
+## 2026-04-13 Blueprint API
 
 - New `GET /v1/marketplace-listings` endpoint added for listing all marketplace listings for the authenticated organization
 - `documentation_link` field removed from marketplace listing responses and request bodies
@@ -281,7 +308,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - New `input_entity` field added to `AutomationTrigger` for email thread triggers, specifying which entity (`thread`, `first_email`, or `last_email`) is used as input for automation and decision tasks
 
-## 2026-04-08 Blueprint Manifest API
+## 2026-04-08 Blueprint API
 
 - New `POST /v3/blueprint-manifest/blueprint:install` endpoint added for installing blueprints using the V3 engine (direct API calls with checkpoint-based resume on failure)
 - New `GET /v3/blueprint-manifest/blueprints/{blueprint_id}/lineage` endpoint added for retrieving lineage registry entries mapping source IDs to destination resource IDs
@@ -420,7 +447,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - New optional `secureProxy` object added to webhook configuration — routes webhook HTTP requests through the VPC secure proxy; requires `integration_id` and `use_case_slug` referencing a configured ERP integration secure proxy use case
 
-## 2026-03-12 Blueprint Manifest API
+## 2026-03-12 Blueprint API
 
 - New `POST /v2/blueprint-manifest/blueprints:publish` endpoint added for publishing a blueprint to the marketplace
 - New `GET /v2/blueprint-manifest/marketplace/slugs` endpoint added for listing available marketplace slugs from the Webflow CMS
