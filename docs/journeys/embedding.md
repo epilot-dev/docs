@@ -60,7 +60,11 @@ export type DataInjectionOptions = {
   initialState?:
     | Record<string, Record<string, unknown>>
     | Record<string, unknown>[]
-  /** the display options to be passed to the journey, for now it is used to disable some fields */
+  /**
+   * the display options to be passed to the journey — used to render blocks (or
+   * specific fields) read-only. read-only is currently supported only for these
+   * block types: Personal Information, Address, Availability Check, and Text Input.
+   */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
 
@@ -103,6 +107,19 @@ __epilot.init([
 ```
 
 With the block-ID form you only list the blocks you actually want to prefill — there is no need to pad earlier steps with empty objects, and the mapping is unaffected by block renames or step reordering. To find a block's ID, open the block configurator in the Journey builder.
+
+### Making blocks read-only
+
+`blocksDisplaySettings` renders a block — or specific fields within it — as read-only: the prefilled values are shown but the end customer can't edit them. Each entry sets `type: 'DISABLED'` and targets a block by its stable `blockId` (recommended); add `blockFields` to lock only certain fields instead of the whole block.
+
+Read-only is currently supported only for these block types:
+
+- **Personal Information**
+- **Address**
+- **Availability Check**
+- **Text Input**
+
+Other block types don't support read-only.
 
 ### Data Injection builder (preview)
 

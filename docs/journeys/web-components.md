@@ -193,7 +193,11 @@ type DataInjectionOptions = {
   initialState?:
     | Record<string, Record<string, unknown>>
     | Record<string, unknown>[]
-  /** Control which blocks/fields are disabled */
+  /**
+   * Control which blocks are disabled (rendered read-only). Read-only is
+   * currently supported only for these block types: Personal Information,
+   * Address, Availability Check, and Text Input.
+   */
   blocksDisplaySettings?: BlockDisplaySetting[]
 }
 
@@ -249,6 +253,19 @@ el.setAttribute(
 ### Populating `initialState`
 
 The recommended form keys `initialState` by **block ID**. Each entry is an object of the field values for that block. Because the state is keyed by block ID, you only list the blocks you actually want to prefill — no per-step ordering or empty `{}` placeholders are needed, and the mapping is unaffected by block renames or step reordering.
+
+### Making blocks read-only
+
+`blocksDisplaySettings` renders a block — or specific fields within it — as read-only: the prefilled values are shown but the end customer can't edit them. Each entry sets `type: 'DISABLED'` and targets a block by its stable `blockId` (recommended); add `blockFields` to lock only certain fields instead of the whole block.
+
+Read-only is currently supported only for these block types:
+
+- **Personal Information**
+- **Address**
+- **Availability Check**
+- **Text Input**
+
+Other block types don't support read-only.
 
 ### Data Injection builder (preview)
 
