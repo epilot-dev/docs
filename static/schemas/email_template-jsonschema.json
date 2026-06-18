@@ -91,7 +91,7 @@
       "type": "string",
       "enum": [
         "standard",
-        "template_builder"
+        "visual"
       ],
       "description": "Editor type"
     },
