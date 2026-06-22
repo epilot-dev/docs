@@ -98,6 +98,9 @@ Run `epilot <api>` to list available operations. Run `epilot <api> <operationId>
 # Browser-based login (opens epilot portal)
 epilot auth login
 
+# Browser-based login restricted to a read-only session
+epilot auth login --readonly
+
 # Manual token
 epilot auth login --token <your-token>
 
@@ -107,7 +110,7 @@ epilot entity listSchemas --token <your-token>
 # Or via environment variable
 EPILOT_TOKEN=<your-token> epilot entity listSchemas
 
-# Check auth status
+# Check auth status (shows whether the token is read-only)
 epilot auth status
 
 # Logout
@@ -120,6 +123,28 @@ Token resolution order:
 3. Active profile token
 4. Stored credentials (`~/.config/epilot/credentials.json`)
 5. Interactive prompt (if TTY)
+
+### Read-only sessions
+
+Pass `--readonly` to `epilot auth login` to obtain a read-only token. A read-only session can perform read actions (view, export, download) but is denied any write action, regardless of the roles your account holds.
+
+```bash
+epilot auth login --readonly
+```
+
+When you run this, the browser authorize page pre-checks and locks the **Read-only mode** option, so the resulting CLI session is always read-only. You can also opt into read-only mode manually from that page during a normal `epilot auth login` (the checkbox is left unchecked by default).
+
+`epilot auth status` reports the current token's access level on the `Access` line:
+
+```
+Access:  read-only
+```
+
+vs. a normal read-write token:
+
+```
+Access:  read-write
+```
 
 ## Parameters
 
