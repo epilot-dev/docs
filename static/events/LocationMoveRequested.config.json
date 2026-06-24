@@ -2,7 +2,7 @@
   "event_name": "LocationMoveRequested",
   "event_title": "Move Request",
   "event_description": "Customer request to move or relocate a service",
-  "event_version": "1.0",
+  "event_version": "2.0",
   "event_tags": [
     "builtin",
     "erp",
@@ -37,9 +37,9 @@
         ]
       },
       {
-        "id": "meter_counter",
+        "id": "meter_counters",
         "schema": "meter_counter",
-        "cardinality": "one"
+        "cardinality": "many"
       },
       {
         "id": "customer",
@@ -67,7 +67,7 @@
       },
       {
         "from": "ticket",
-        "to": "meter_counter"
+        "to": "meter_counters"
       },
       {
         "from": "ticket",

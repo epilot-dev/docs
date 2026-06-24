@@ -3,7 +3,7 @@
   "_event_time": "1970-01-01T00:00:00.000Z",
   "_event_id": "string",
   "_event_name": "LocationMoveRequested",
-  "_event_version": "1.0",
+  "_event_version": "2.0",
   "_event_source": "string",
   "_ack_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_trigger_source_type": "api",
@@ -180,27 +180,29 @@
     "_schema": "submission",
     "_org": "123"
   },
-  "meter_counter": {
-    "_schema": "meter_counter",
-    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "_org": "123",
-    "_title": "John Doe",
-    "_tags": [
-      "family:label"
-    ],
-    "_purpose": {},
-    "obis_number": "string",
-    "direction": "feed-in",
-    "tariff_type": "ht",
-    "transformer_ratio": "string",
-    "unit": "w",
-    "conversion_factor": "string",
-    "meter": {},
-    "external_id": "string",
-    "_files": {},
-    "_created_at": "1970-01-01T00:00:00.000Z",
-    "_updated_at": "1970-01-01T00:00:00.000Z"
-  },
+  "meter_counters": [
+    {
+      "_schema": "meter_counter",
+      "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "_org": "123",
+      "_title": "John Doe",
+      "_tags": [
+        "family:label"
+      ],
+      "_purpose": {},
+      "obis_number": "string",
+      "direction": "feed-in",
+      "tariff_type": "ht",
+      "transformer_ratio": "string",
+      "unit": "w",
+      "conversion_factor": "string",
+      "meter": {},
+      "external_id": "string",
+      "_files": {},
+      "_created_at": "1970-01-01T00:00:00.000Z",
+      "_updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
   "customer": {
     "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "_schema": "customer"
