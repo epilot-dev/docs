@@ -45,6 +45,8 @@
     ]
   },
   "portal_id": "string",
+  "first_login": "1970-01-01T00:00:00.000Z",
+  "last_login": "1970-01-01T00:00:00.000Z",
   "_files": {
     "$relation": [
       {

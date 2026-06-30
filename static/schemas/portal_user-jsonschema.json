@@ -121,6 +121,16 @@
       "type": "string",
       "description": "Portal ID"
     },
+    "first_login": {
+      "type": "string",
+      "format": "date-time",
+      "description": "First Login"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last Login"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
