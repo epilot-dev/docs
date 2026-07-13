@@ -165,6 +165,11 @@
           "remark": {
             "type": "string",
             "description": "Free-text remark left by the submitter for this counter"
+          },
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Entity ID of the file (photo) submitted with this reading — matches event_attachments[].entity_id, enabling deterministic reading↔attachment pairing"
           }
         },
         "additionalProperties": false
@@ -269,7 +274,7 @@
         ],
         "additionalProperties": false
       },
-      "description": "All files related to the ticket. The ticket schema is org-specific, so we cannot reliably identify \"the meter photo\" — consumers should filter on `relation_tags`, `_tags`, `mime_type`, or `_created_at` proximity to `reading_timestamp`."
+      "description": "All files related to the ticket. The ticket schema is org-specific, so we cannot reliably identify \"the meter photo\" server-side. When `meter_readings[].file_id` is present, consumers should pair attachments deterministically via `entity_id = meter_readings[].file_id`; otherwise fall back to filtering on `relation_tags`, `_tags`, `mime_type`, or `_created_at` proximity to `reading_timestamp`."
     },
     "ticket": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
