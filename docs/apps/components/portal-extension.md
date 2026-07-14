@@ -597,9 +597,16 @@ Self-assignment hooks support the standard template variables plus the identifie
 
 #### Meter Reading Plausibility
 
-Use the plausibility check hook to validate meter readings before they are submitted and return limits for validation feedback.
+Use the plausibility check hook to validate meter readings against a third-party system. The hook supports two modes, selected via the optional `plausibility_mode` property:
 
-```json title="Meter reading plausibility check hook"
+- **`check`** (default): the hook is called when the user submits a reading and decides whether the reading is plausible.
+- **`range`**: the hook is called before the user submits a reading and returns the minimum/maximum allowed value for each counter of the meter, so the portal can validate the input and show the allowed range to the user as they type.
+
+##### Check Mode
+
+In `check` mode, the hook makes a POST call whenever a portal user tries to save a meter reading. The response should indicate whether the reading is plausible (`valid`) and can optionally return limits for validation feedback.
+
+```json title="Meter reading plausibility check hook (check mode)"
 {
   "id": "PLAUSIBILITY_CHECK",
   "type": "meterReadingPlausibilityCheck",
@@ -623,6 +630,61 @@ Use the plausibility check hook to validate meter readings before they are submi
 }
 ```
 
+##### Range Mode
+
+In `range` mode, the hook makes a single POST call per meter when the portal user opens the meter reading form. Instead of validating a submitted value, the third-party system returns the allowed reading range for each counter (register) of the meter. The portal validates the input against these limits before submission and displays them to the user.
+
+Because the call happens before a value is entered, `MeterCounter.*` and `Reading.value` are not available in the request template — the call is made for the whole meter, and `Reading.*` only carries the `timestamp` of the planned reading.
+
+The `resolved` block in range mode supports the following properties:
+
+- **`data_path`** (optional): Path to an array in the response (e.g. `data.results`). If the path points to an array, the remaining `resolved` properties are interpolated once per array item, with the current item available as the **`Item`** variable. If omitted (or the path does not resolve to an array), the `resolved` block is interpolated once against `CallResponse` and produces a single range.
+- **`counter_identifiers`**: An object of meter counter properties used to match each returned range to one of the meter's counters (e.g. `{"obis_code": "{{Item.obis}}"}`). A counter matches when all listed properties equal the counter's values. epilot resolves the match to the counter's `meter_counter_id` in the final response — the third-party system does not need to know epilot entity IDs.
+- **`lower_limit`** / **`upper_limit`**: The minimum/maximum allowed reading value for the matched counter. Missing values resolve to `null`, meaning no limit in that direction.
+- **`error_message_path`** (optional): Path to a human-readable error message in the third-party response body, forwarded to the end user when the call fails with a non-2xx status.
+
+```json title="Meter reading plausibility check hook (range mode)"
+{
+  "id": "PLAUSIBILITY_RANGE",
+  "type": "meterReadingPlausibilityCheck",
+  "plausibility_mode": "range",
+  "call": {
+    "url": "https://webhook.site/5e6eae4f-a0ea-4858-ab1a-3f7cb96f5abd",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "meter_number": "{{Meter.meter_number}}",
+      "timestamp": "{{Reading.timestamp}}"
+    }
+  },
+  "resolved": {
+    "data_path": "data.results",
+    "counter_identifiers": {
+      "obis_code": "{{Item.obis}}"
+    },
+    "lower_limit": "{{Item.min}}",
+    "upper_limit": "{{Item.max}}",
+    "error_message_path": "error.message"
+  }
+}
+```
+
+With the configuration above, a third-party response like this:
+
+```json title="Third-party response (range mode)"
+{
+  "data": {
+    "results": [
+      { "obis": "1-1:1.8.0", "min": 4200, "max": 4900 },
+      { "obis": "1-1:2.8.0", "min": 100, "max": 350 }
+    ]
+  }
+}
+```
+
+is mapped over each item, matched against the meter's counters by `obis_code`, and returned to the portal as one `{ meter_counter_id, min_value, max_value }` entry per counter.
+
 #### Template Variables
 
 Meter reading plausibility hooks support the standard template variables plus meter reading context:
@@ -630,8 +692,9 @@ Meter reading plausibility hooks support the standard template variables plus me
 - **`Options.*`**: Access values from the app options configured during installation
 - **`Contact.*`**: Access properties from the current portal user's contact entity
 - **`Meter.*`**: Access properties of the meter
-- **`MeterCounter.*`**: Access properties of the meter register
-- **`Reading.*`**: Access properties of the submitted reading
+- **`MeterCounter.*`**: Access properties of the meter register (`check` mode only)
+- **`Reading.*`**: Access properties of the submitted reading (in `range` mode, only `Reading.timestamp` is available)
 - **`CallResponse.*`**: Access data from the call response
+- **`Item.*`**: Access the current item when `resolved.data_path` points to an array in the response (`range` mode only)
 
 For questions about portal extensions, [contact our developer support team](https://developers.epilot.cloud/contact).
