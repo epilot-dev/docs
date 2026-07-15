@@ -56,10 +56,6 @@ GET {download_url}
 The response body is the **raw binary file content**, served with the file's original `Content-Type`.
 
 :::note
-The download URL always serves binary data, never Base64. If your integration platform (BPMS, iPaaS, low-code tool) shows Base64-encoded content, that is the platform's internal representation of binary response bodies — decode it back to binary before saving the file.
-:::
-
-:::note
 Public files can also be downloaded directly via their `public_url` property. However, `downloadFile` works for both public and private files and is the recommended approach.
 :::
 
