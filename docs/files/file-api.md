@@ -11,6 +11,22 @@ Files in epilot are uploaded and managed through the [File API](/api/file).
 
 ## Downloading Files
 
+Downloading a file is a **two-step process**: the File API returns a temporary download URL, and the file content itself is then fetched from that URL with a second request.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant FileAPI as File API
+    participant S3 as S3
+
+    Client->>FileAPI: GET /v1/files/{id}/download
+    FileAPI-->>Client: download_url
+    Client->>S3: GET download_url
+    S3-->>Client: 200 OK (binary file content)
+```
+
+### Step 1: Get a download URL
+
 The [`downloadFile` operation](/api/file#tag/files/operation/downloadFile) returns a temporary presigned S3 URL for downloading a file.
 
 ```
@@ -29,8 +45,36 @@ The `download_url` is valid for 15 minutes.
 The `downloadFile` operation requires a valid access token.
 :::
 
+### Step 2: Fetch the file from the download URL
+
+Make a `GET` request to the returned `download_url` to retrieve the actual file. No `Authorization` header is needed for this request — the URL is presigned.
+
+```
+GET {download_url}
+```
+
+The response body is the **raw binary file content**, served with the file's original `Content-Type`.
+
+:::note
+The download URL always serves binary data, never Base64. If your integration platform (BPMS, iPaaS, low-code tool) shows Base64-encoded content, that is the platform's internal representation of binary response bodies — decode it back to binary before saving the file.
+:::
+
 :::note
 Public files can also be downloaded directly via their `public_url` property. However, `downloadFile` works for both public and private files and is the recommended approach.
+:::
+
+### Downloading by S3 Reference
+
+When you have a file's `s3ref` (bucket and key) but not its entity ID — for example from a webhook payload or an entity attribute value — use the [`downloadS3File` operation](/api/file#tag/File/operation/downloadS3File) instead:
+
+```
+POST /v1/files:downloadS3?s3_bucket={bucket}&s3_key={key}
+```
+
+It returns the same `download_url` response as `downloadFile`. Fetch the file with a second `GET` request as described above.
+
+:::tip
+Pass the `s3_key` value exactly as returned by the API. Object keys store the filename segment percent-encoded (e.g. a file named `Straße 1.pdf` is stored under `.../Stra%C3%9Fe%201.pdf`), so make sure your HTTP client URL-encodes the query parameter value — a literal `%` must arrive encoded as `%25`.
 :::
 
 ## Uploading Files
