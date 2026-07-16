@@ -657,6 +657,75 @@ An image attachment. Same schema as `file` but with image-specific preview rende
 
 ## Special Types
 
+### Table
+
+A dynamic data table with configurable columns. The value is stored as an array of row objects, where each object is keyed by the column `name`.
+
+```json title="Schema definition"
+{
+  "type": "table",
+  "name": "meter_readings",
+  "label": "Meter Readings",
+  "columns": [
+    { "name": "date", "label": "Date", "type": "date", "required": true },
+    { "name": "reading", "label": "Reading (kWh)", "type": "number", "width": "120px" },
+    { "name": "estimated", "label": "Estimated", "type": "boolean" }
+  ],
+  "min_rows": 1,
+  "max_rows": 12
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `columns` | `array` | Column definitions (see below) |
+| `min_rows` | `integer` | Minimum number of rows required (default: `0`) |
+| `max_rows` | `integer` | Maximum number of rows allowed. In transposed mode, caps the number of periods |
+| `transposed` | `boolean` | Flip the layout so rows become metrics and columns become periods (default: `false`) |
+| `column_header` | `object` | Header generation config for transposed mode (see [Transposed tables](#transposed-tables)) |
+
+**Column definition:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `name` | `string` | **Required.** Column identifier, used as the object key in row data |
+| `label` | `string` | **Required.** Display label for the column header |
+| `type` | `string` | Cell data type: `"string"` (default), `"number"`, `"date"`, or `"boolean"` |
+| `width` | `string` | Optional column width (e.g. `"100px"`, `"20%"`) |
+| `required` | `boolean` | Whether the column must have a value in each row (default: `false`) |
+| `bold` | `boolean` | Render the row in bold (only applies in transposed mode; default: `false`) |
+
+```json title="Stored value"
+[
+  { "date": "2025-01-01", "reading": 1200, "estimated": false },
+  { "date": "2025-02-01", "reading": 1350, "estimated": true }
+]
+```
+
+#### Transposed tables
+
+Set `transposed: true` to flip the layout: the attributes you define in `columns` become the **row metrics**, and the **periods** become the visible columns. The number of periods is bounded by `max_rows`, and their headers are generated from `column_header`.
+
+```json title="Schema definition (transposed)"
+{
+  "type": "table",
+  "name": "consumption_forecast",
+  "label": "Consumption Forecast",
+  "transposed": true,
+  "max_rows": 3,
+  "column_header": { "template": "Year {{i}}", "start": 1 },
+  "columns": [
+    { "name": "consumption", "label": "Consumption (kWh)", "type": "number" },
+    { "name": "cost", "label": "Cost (EUR)", "type": "number", "bold": true }
+  ]
+}
+```
+
+| `column_header` property | Type | Description |
+|--------------------------|------|-------------|
+| `template` | `string` | Header label pattern with `{{i}}` as the index placeholder (e.g. `"Year {{i}}"`) |
+| `start` | `integer` | Starting index value for the placeholder (default: `0`) |
+
 ### Sequence
 
 An auto-incrementing identifier with a configurable prefix. Commonly used for order numbers and ticket IDs.
@@ -817,6 +886,7 @@ A hidden field with no UI representation. Used to store arbitrary JSON data prog
 |------|-------------|
 | `internal_user` | Internal epilot user information |
 | `invitation_email` | Email address for partner invitations |
+| `message_email_address` | Email address used by messaging features |
 | `partner_status` | Partner relationship status |
 | `partner_organisation` | Shared partner organization data |
 | `portal_access` | Portal access configuration |
