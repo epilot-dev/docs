@@ -216,6 +216,10 @@ POST /v2/files
 
 epilot retrieves external files on the fly with a short-lived signature and streams them directly to the end user. Use the [`verifyCustomDownloadUrl` operation](/api/file#tag/files/operation/verifyCustomDownloadUrl) to verify that a download request originates from epilot.
 
+:::info Signature verification details
+Pass the **full request URL exactly as received** to `verifyCustomDownloadUrl`. The signature covers a canonical form of the URL (query parameters sorted by key), so validity does not depend on the query parameter **order** — but every parameter and value must be present and unmodified. Signatures are cryptographically bound to the epilot organization and expire **15 minutes** after minting.
+:::
+
 ![External file download flow](../../static/img/file-custom-url-flow.png)
 
 :::warning
