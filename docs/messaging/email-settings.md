@@ -16,17 +16,9 @@ epilot supports sending emails from its default domain, but you can also bring y
 We recommend having someone familiar with DNS records handle this integration.
 :::
 
-### Subdomain Delegation
+### Domain Setup
 
-The recommended approach is to delegate your subdomain to epilot. With delegation:
-
-- epilot manages the subdomain entirely.
-- Email sending and receiving work out of the box.
-- The subdomain can also serve as a portal domain for end customers or installers. See the [portal domain setup guide](https://help.epilot.cloud) for details.
-
-### Self-Managed Subdomain
-
-If you prefer not to delegate full domain access, epilot provides a DNS configuration file containing 8 records required for email activation:
+When you add a subdomain in epilot, the portal generates a DNS configuration containing the 8 records required to activate email. You add these records at your DNS provider, and epilot verifies them automatically once they propagate:
 
 | Record Type | Count | Purpose |
 |-------------|-------|---------|
@@ -34,19 +26,22 @@ If you prefer not to delegate full domain access, epilot provides a DNS configur
 | MX | 2 | Mail exchange |
 | TXT | 3 | SPF (2) and DMARC (1) |
 
-Contact [epilot support](mailto:support@epilot.cloud) to request the DNS configuration.
+To set up your subdomain:
+
+1. Open **Email Settings** in the portal and add your subdomain.
+2. Copy the 8 generated DNS records shown for that subdomain.
+3. Create each record at your DNS provider exactly as displayed.
+4. Wait for DNS propagation -- epilot verifies the records and activates the subdomain automatically. Propagation can take up to 48 hours, though it is usually much faster.
+
+Once verified, email sending and receiving are enabled for the subdomain.
 
 :::warning
 Do not remove the DNS records after setup. Removing them breaks email sending and receiving.
 :::
 
-:::info
-If you manage your own subdomain, epilot may occasionally ask you to update DNS records for security or deliverability reasons. This is not needed when the subdomain is delegated.
-:::
-
 ### SPF, DMARC, and DKIM
 
-When you delegate a subdomain, epilot creates all necessary MX and TXT records in an AWS-hosted zone:
+The DNS records you add during setup configure the standard email authentication mechanisms:
 
 - **SPF** (Sender Policy Framework) -- specifies which servers can send email for your domain.
 - **DMARC** (Domain-based Message Authentication, Reporting and Conformance) -- sets an authentication policy and enables reporting.
