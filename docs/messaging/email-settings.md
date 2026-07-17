@@ -60,7 +60,20 @@ Per [AWS SES best practices](https://docs.aws.amazon.com/ses/latest/dg/mail-from
 
 ### Transport Security
 
-All emails are transmitted over TLS by default via AWS SES, protecting message contents in transit.
+By default, AWS SES uses **opportunistic TLS** when sending email. This means SES attempts to establish a secure TLS connection with the receiving mail server and, if the server advertises TLS support, delivers the message encrypted -- protecting its contents in transit.
+
+If the receiving server does not support TLS, the message is still delivered, but over an unencrypted connection rather than being dropped. This prioritizes deliverability: emails always reach their destination, and they are encrypted whenever the recipient's server allows it.
+
+### Sending IP Addresses
+
+epilot sends outbound email through the following dedicated IP addresses:
+
+| IP Address |
+|------------|
+| `54.240.88.116` |
+| `54.240.88.117` |
+
+If your organization (or a recipient's mail server) enforces IP-based filtering, allowlist these addresses to ensure emails sent from epilot are accepted. Mail servers that only permit known senders may otherwise reject or bounce messages originating from unrecognized IPs.
 
 ### Attachment Scanning
 
