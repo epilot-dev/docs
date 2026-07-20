@@ -32,6 +32,7 @@
   "file_date": "2025-01-01",
   "external_id": "string",
   "custom_download_url": "string",
+  "custom_download_url_auth": "string",
   "journeys": {
     "$relation": [
       {

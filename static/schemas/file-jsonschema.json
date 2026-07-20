@@ -133,6 +133,10 @@
       "type": "string",
       "description": "Custom Download URL"
     },
+    "custom_download_url_auth": {
+      "type": "string",
+      "description": "Custom Download URL Auth"
+    },
     "journeys": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Journeys"
