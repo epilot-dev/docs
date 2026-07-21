@@ -2,9 +2,235 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
-## 2026-06-17 AI Agents API
+## 2026-07-21 Notification API
 
-- New `POST /v1/conversations/{conversation_id}/feedback` endpoint added for submitting thumbs up/down feedback (with optional comment) on an assistant message; conversation message items now also expose `trace_id` and `feedback`
+- New optional `allowed_channels` field (`email`, `in_app`) added when creating notifications and returned on notification reads; it caps which delivery channels a notification may use, with actual delivery being the intersection of this list and each recipient's own channel preferences (an empty array suppresses all delivery)
+
+## 2026-07-16 Entity API
+
+- Entity data can now be returned with PII removed: an optional `anonymize` query parameter was added to the entity read endpoints (`GET /v1/entity/{slug}/{id}` and its v2/v3 variants, plus the `activity`, `changesets`, `relations`, `/v1/entity/activity/{id}`, and `/v1/entity:autocomplete` operations), and an optional `anonymize` request-body flag was added to `POST /v1/entity:search`, `:list`, and `:export`; when `true`, identifiers such as names, emails, phone numbers, and IBANs are replaced with deterministic pseudonyms (anonymization is forced regardless of the flag when the access token was created with `anonymize: true`)
+- New optional `data_classification` field (`pii` or `public`) added to every entity schema attribute type — returned by the schema endpoints and settable via `POST /v1/entity/schemas/attributes` — where `pii` always anonymizes the attribute value in anonymized responses and `public` never does, overriding the built-in defaults
+
+## 2026-07-16 File API
+
+- New `GET /v1/files/{id}/text` endpoint added, returning the plain-text representation of a file entity (`FileText`); its `status` is `ready` (text available), `not_ready` while the text is still being prepared, or `unsupported` when text is unavailable for the file or organization
+
+## 2026-07-15 Access Token API
+
+- New optional `anonymize` flag added when creating access tokens (`POST /v1/access-tokens`, including the app-token and assume-token variants); when `true`, all entity data returned to the token is PII-anonymized and the bearer cannot turn it off — the flag is also returned on token list, create, and delete responses
+
+## 2026-07-15 Blueprint API
+
+- New `POST /v3/blueprint-manifest/blueprints/{blueprint_id}:publish` endpoint added for starting an asynchronous V3 blueprint publication
+
+## 2026-07-15 Customer Portal API
+
+- New `POST /v2/portal/contract/{id}/resolve-templates` endpoint added — a POST variant of get-contract that accepts Handlebars templates and returns their resolved output per related meter (`templates_output`)
+
+## 2026-07-15 Journey Config API
+
+- `POST /v1/journey/document:generate` now accepts an optional `context_entity_id`, resolving entity and relational template variables against that entity when generating the document
+
+## 2026-07-14 Message API
+
+- New `POST /v2/message/threads:workload` endpoint added, returning the number of open threads assigned directly to each of up to 100 requested users (matching their central-inbox open view) for use in assignment load-balancing
+
+## 2026-07-14 Webhooks API
+
+- Webhook filter conditions can now be expressed as a single JSONata expression: a new optional `jsonata_expression` field (max 15000 characters) was added to `filterConditions.conditions[]`, evaluated against the event payload and passing when the result is truthy, and `field`/`operation` became optional — a condition is now either a classic field + operation comparison or a JSONata expression (the two are mutually exclusive), accepted on `POST`/`PUT /v1/webhooks/configs` and returned in config responses
+
+## 2026-07-13 File API
+
+- New optional read-only `etag` field (the file's S3 content hash) added to file responses — on both the file attributes and each entry in `versions[]` — across the v1 and v2 file endpoints, letting clients detect real content changes without re-downloading the file
+
+## 2026-07-13 Webhooks API
+
+- Webhook filter conditions now support six length-based operators (`length_equals`, `length_not_equals`, `length_greater_than`, `length_less_than`, `length_greater_than_or_equals`, `length_less_than_or_equals`) on `filterConditions.conditions[].operation`, letting event delivery be filtered by the item count of a field value (an array yields its length, a missing/null value yields `0`, any other single value yields `1`); accepted on `POST`/`PUT /v1/webhooks/configs` and returned in config responses
+
+## 2026-07-10 Event: Service Meter Reading Added
+
+- New optional `file_id` field added to each `meter_readings` item, carrying the entity ID of the photo submitted with that reading; it matches an `event_attachments[].entity_id`, so consumers can pair a reading with its attachment deterministically instead of relying on the `relation_tags`/`_tags`/`mime_type`/`_created_at` heuristics (which remain the fallback when `file_id` is absent)
+
+## 2026-07-09 Blueprint API
+
+- The `schema`, `taxonomy`, `family`, and `permission` resource types are no longer accepted by the uniqueness-criteria endpoints (`GET`/`PUT`/`DELETE /v1/blueprint-manifest/uniqueness-criteria/{resource_type}`) and no longer appear in their responses (breaking)
+
+## 2026-07-09 Integration Toolkit API
+
+- The integration notification rule `type` enum was narrowed — the `consecutive_failures`, `first_error`, `new_error_code`, `auth_expiry`, `ack_timeout`, and `validation_surge` values are no longer accepted on create/update or returned in responses, and the related `consecutive` rule field was removed from both requests and responses (breaking)
+
+## 2026-07-09 User API
+
+- New optional `in_app_notification_setting` field added to users — returned across the `/v2/users` list, get, `me`, invite, and group responses and settable via `PATCH /v2/users/{id}` — controlling per-type in-app notification delivery preferences
+
+## 2026-07-08 Targeting API
+
+- New `POST /v1/campaign:discover` and `PATCH /v1/campaign/{campaign_id}/recipient/{recipient_id}/entity_ui:status` endpoints added for Entity-UI Next Best Actions, along with new `entity_ui_status`, `entity_ui_status_updated_at`, and `resolution` fields on campaign recipient responses
+- Each recommended action returned by `POST /v1/campaign:discover` carries an `nba.cta` whose `type` is `journey`, `workflow`, or `flow` (a flow template ID); the previous `url` CTA type and the `nba.cta.label` field are not part of the response
+
+## 2026-07-07 App API
+
+- New `PUT`, `PATCH`, and `DELETE /v1/public/app/{appId}/proxy/{proxyName}/{path}` endpoints added, letting apps forward those HTTP methods through to a registered proxy target
+- New `changeEmail`, `changePassword`, and `deleteAccount` portal extension hook types added, letting apps replace the built-in change-email, change-password, and delete-account flows for portal users
+- The app proxy configuration (`ApiProxyComponent`) gained an optional `headers` map for injecting request headers server-side, with values resolved from encrypted component options via `{{option_key}}` interpolation so credentials never reach the client; the proxy `target` URL now supports the same `{{option_key}}` interpolation for per-installation hosts
+
+## 2026-07-07 Workflows APIs
+
+- New optional `linear` flag added to flow templates (settable on `POST`/`PUT /v2/flows/templates`); when `true`, task enablement is computed at runtime from the flow graph — a task becomes enabled once all its direct predecessors are complete — overriding any explicit per-task requirements
+- New optional `linear` flag added to flow executions (copied from the flow template when the execution starts); when `true`, task enablement is computed at runtime from the flow graph — a task becomes enabled once all its direct predecessors are complete — instead of from each task's explicit requirements
+
+## 2026-07-04 Call Entity
+
+- New `call` entity introduced for tracking customer calls, with an `agent` relation and a `contact` relation, plus `duration` (in seconds), `recording` (link), `transcript`, and `external_id` attributes
+
+## 2026-07-03 Customer Portal API
+
+- New optional `password_history_size` field added to the Cognito password policy (0–24) across the v2/v3 portal config endpoints, preventing reuse of that many previous passwords (`0` disables it)
+
+## 2026-07-03 Deduplication API
+
+- `POST /v1/deduplicate` and `POST /v1/deduplicate/job` now reject empty input — the request body must contain at least one merge instruction, each instruction's `toDelete` list must contain at least one id, and `toKeep` and every `toDelete` id must be a non-empty string (previously empty arrays and empty strings were accepted) (breaking)
+
+## 2026-07-03 Metering API
+
+- `POST /v1/metering/readings` and `POST /v2/metering/readings` now accept an optional `create_ticket` query parameter (default `true`); set it to `false` for authoritative system-driven writes (e.g. ERP inbound) to suppress creation of the manual-intervention review ticket
+
+## 2026-07-02 Billing API
+
+- New pricing-information and configuration-history endpoints added for both contracts and billing accounts: `GET /v1/billing/contracts/{id}/pricing_information`, `GET /v1/billing/contracts/{id}/configuration_history`, `GET /v1/billing/billing_accounts/{id}/pricing_information`, and `GET /v1/billing/billing_accounts/{id}/configuration_history`
+- New `invoice` billing event type added — invoice events can now be created via `POST /v1/billing/events` and are returned alongside the other billing event types
+
+## 2026-07-02 Calendar API
+
+- New user-absence endpoints added: list absent users in a time window (`GET /v1/calendar/absence/users`), get a single user's absence (`GET /v1/calendar/absence/users/{user_id}`), search absence for multiple users at once (`POST /v1/calendar/absence:search`), search current-moment absence for a batch of users (`POST /v1/calendar/absence:search-now`, returning an `absent_until` timestamp marking the end of any active absence), and create, read, update, and delete manual absence adjustments (`.../absence/users/{user_id}/adjustments`)
+- `GET /v1/calendar/absence/users/{user_id}` also returns an optional `external_calendars` array listing the user's connected Outlook/Google calendars and each provider's `last_synced_at`
+
+## 2026-07-02 Workflows Definition API
+
+- New optional `limit_warnings` array added to flow templates, listing non-blocking warnings about configuration limits a saved flow exceeds while remaining fully usable
+- `POST /v2/flows/templates` and `PUT /v2/flows/templates/{flowId}` now accept an optional `enforce_limits` query parameter (default `false`); when `true`, size/count limit violations are rejected as `400` errors instead of being accepted and returned as non-blocking `limit_warnings`
+
+## 2026-07-01 Dashboard API
+
+- New `GET /v1/dashboard/insights/tags` endpoint added, returning the distinct tags used across an organization's saved insights
+- `GET /v1/dashboard/dashboards` and `GET /v1/dashboard/insights` now accept filtering, sorting, and pagination query parameters (`q`, `created_by`, `created_after`/`created_before`, `updated_after`/`updated_before`, `shared_with`, `owner`, `accessible_to`, `sort`, `order`, `limit`, `offset`); insights additionally accept `visualisation_id`, `tags`, and `tags_match`
+- List responses now return a `pagination` object (`total`, `limit`, `offset`, `has_more`) and always include `results`
+- New optional `tags` array field added to insights
+
+## 2026-07-01 Entity API
+
+- New `user` location added to taxonomy classifications, so a taxonomy can now be enabled for the `user` entity (accepted in `enabled_locations` on `POST`/`PUT /v1/entity/taxonomies`, `POST /v1/entity/taxonomies/{taxonomySlug}/classifications`, and the v2 classification endpoints)
+- New optional `source_context` object added to activity-log operations (`GET /v1/entity/activity/{id}` and `GET /v1/entity/{slug}/{id}/activity`), reporting the origin and actor behind each change (`source`, `source_label`, `source_system`, `source_reference`, `actor_type`, `actor_id`, `effective_at`)
+
+## 2026-07-01 File API
+
+- `GET /v1/files/public/{id}/preview` can now respond with `302` (redirect to the original file when a preview cannot be generated) or `204` (no preview and no redirect target available); clients should handle both in addition to the normal image response
+
+## 2026-07-01 Message API
+
+- New optional `save_to_entity` flag added to file attachments on `POST`/`PUT /v1/message/messages`, `POST /v1/message/drafts`, and thread endpoints; when `false`, the file is kept on the message for inline rendering instead of being propagated to the related destination entity (defaults to `true`)
+
+## 2026-07-01 User API
+
+- New optional `tags` array added to users — returned across the `/v2/users` endpoints (list, get, `me`, invite, and group responses) and settable via `PATCH /v2/users/{id}`
+
+## 2026-06-30 Blueprint API
+
+- New bulk-install endpoints added for installing one blueprint into many organizations in a single request: `POST /v3/blueprint-manifest/bulk-installs`, `GET /v3/blueprint-manifest/bulk-installs/{bulk_job_id}`, `GET .../bulk-installs/{bulk_job_id}/targets`, and `POST .../bulk-installs/{bulk_job_id}/targets/{destination_org_id}:retry` for retrying an individual failed target
+- The Terraform-based v2 install, validate, export, and patch endpoints were deprecated in favor of the V3 install engine (`POST /v2/blueprint-manifest/blueprint:install`, `POST .../blueprints/{blueprint_id}/validate`, `POST .../blueprints/{blueprint_id}:export`, and the `.../blueprints/{blueprint_id}/patches` family)
+- `POST /v3/blueprint-manifest/blueprint:install` now accepts an optional `auto_apply` flag; when `true`, the install is applied automatically after the plan and snapshot steps instead of waiting for a separate `:continue` call
+
+## 2026-06-30 Customer Portal API
+
+- New endpoints added to request an asynchronous CSV export of a portal user's contracts, delivery points, and meters, and to poll the export job for a download link once it is ready
+- The export request now requires a JSON body specifying the entity `schema` and ordered `columns` to export (with optional `search` filters); the `language` query parameter was removed in favor of a body field (breaking)
+
+## 2026-06-30 Event Catalog API
+
+- New optional `success_criteria` field added to event configurations (returned by `GET /v1/events` and `GET /v1/events/{event_name}`, settable via `PATCH /v1/events/{event_name}`), listing the entity attributes an organization considers required for an event to be complete
+
+## 2026-06-30 Webhooks API
+
+- Event replay can now re-run the JSONata transform: `POST /v1/webhooks/configs/{configId}/events/{eventId}/replay` and `.../events/replay-batch` accept an optional `reapply_transform` flag that reconstructs the original pre-transform input and re-runs the full delivery pipeline (default `false`, which resends the post-transform payload as-is)
+- Webhook event responses now include `original_payload` (the raw pre-transform input, when available), `can_reapply_transform`, and `can_reapply_transform_reason`; single-event replay can now return `422` when the original input cannot be reconstructed
+
+## 2026-06-29 Message API
+
+- `PUT /v1/message/messages` can now return `409 Conflict` when a draft has been edited by someone else since it was loaded, including the current server version of the message so clients can reload and retry
+- New optional `updated_by` field added to message and thread responses, recording the user who last edited the message
+
+## 2026-06-29 Portal User Entity
+
+- New read-only `first_login` and `last_login` date-time attributes added, recording when a portal user first and most recently signed in
+
+## 2026-06-26 Audit Log API
+
+- `POST /v1/logs` now accepts `resource_id`, `resource_type`, and `action` filters for narrowing audit-log searches to the resource an event targets and its semantic action name (e.g. `blueprint.resource_added`); the same three fields are now returned on each log record
+
+## 2026-06-26 Customer Portal API
+
+- New endpoints added to read and update a portal's mobile app configuration (`GET`/`PUT /v1/portal/mobile-config`), covering app branding, iOS and Android settings, and over-the-air (OTA) update settings
+
+## 2026-06-26 Integration Toolkit API
+
+- New optional `prevent_indirect_serving` field added to FileProxy use case configuration; when `true`, files too large to be served directly in the proxy response are rejected instead of being served via a temporary S3 redirect, so files never transit epilot's temporary storage
+
+## 2026-06-25 Entity API
+
+- New optional `q` query parameter added to `GET /v1/entity/views` for free-text searching saved views by name
+
+## 2026-06-25 Calendar API
+
+- New `DELETE /v1/calendar/sources/outlook/{calendar_id}` endpoint added for disconnecting a previously connected Outlook calendar
+
+## 2026-06-25 Snapshot API
+
+- New endpoints added to schedule recurring organization snapshots — read, create or update, and delete a per-organization snapshot schedule (`GET`/`PUT`/`DELETE /v1/org-snapshot-schedule`) with a cron expression, timezone, retention window, and excluded resource types
+
+## 2026-06-25 Integration Toolkit API
+
+- New integration notification-monitoring endpoints added: `GET /v2/integrations/{integrationId}/notifications/history` (paginated history of fired and suppressed notifications), `GET /v2/integrations/{integrationId}/notifications/status` (live per-rule alert state and baseline bands), and `POST /v2/integrations/{integrationId}/notifications/test` (send a test notification to the calling user)
+- Integration settings now carry an optional `notifications` configuration object (recipients, delivery channels, alert rules, and digest schedule) on the v1 and v2 create, update, and read endpoints
+
+## 2026-06-24 File API
+
+- AI file summaries are now managed as asynchronous jobs: new `GET /v1/files/{id}/summary` returns the current summary text and status, `POST /v1/files/{id}/summary-jobs` creates (or returns) the current summary job, and `GET /v1/files/{id}/summary-jobs/current` and `GET /v1/files/{id}/summary-jobs/{job_id}` poll job status; the summary response now exposes per-language `preview_summary_de`/`preview_summary_en` and `short_summary_de`/`short_summary_en` fields
+- The `summary_status` field was removed from file response objects — read summary state from the new summary endpoints instead (breaking)
+
+## 2026-06-24 Workflows Execution API
+
+- New optional read-only `error_reason` field added to the `schedule` (`DelayedSchedule`/`RelativeSchedule`) of automation and decision tasks across flow execution responses; it is populated when scheduling the task failed (e.g. the referenced date attribute is empty or the resolved fire time is already in the past) and cleared once the task is successfully re-armed
+
+## 2026-06-24 Event: Location Move Requested
+
+- The single `meter_counter` field was replaced by a `meter_counters` array, so moves involving multiple meter counters are now fully represented (breaking)
+
+## 2026-06-22 Email Template API
+
+- `POST /v1/email-template/templates/{id}:convertToBuilder` now accepts an optional `as_copy` flag (with an optional name) to convert a template to the visual builder as a new copy, leaving the original template unchanged
+
+## 2026-06-22 SSO API
+
+- `POST /v1/sso/public/login` responses now include an optional `role_assignment` object, reporting the roles assigned to the user by the SSO provider's role mapping and whether they changed during this login
+
+## 2026-06-19 Dashboard API
+
+- New Insights resource added for managing reusable saved charts independently of dashboards: `GET`/`POST /v1/dashboard/insights` and `GET`/`PUT`/`PATCH`/`DELETE /v1/dashboard/insights/{id}`
+- New `PATCH /v1/dashboard/dashboards/{id}` endpoint added for partially updating a dashboard
+- Dashboards and insights now carry ownership and sharing metadata (`owners`, `shared_with`, `org_access`); sharing is managed via the new `PATCH` operations and only owners may change it
+- Dashboard tiles can now reference a saved insight via `insight_id`, in addition to the existing inline visualisation
+
+## 2026-06-19 Workflows Execution API
+
+- New optional `outcome` field added to AI agent task responses, exposing the server-computed result of the agent execution (e.g. `assigned`, `recommended`, `no_eligible_partner`, `missing_input`)
+
+## 2026-06-18 Email Settings API
+
+- `POST /v2/outlook/mailbox/connect` now accepts new optional fields: `name` (sender name for the mailbox), `user_ids` and `group_ids` (users and groups the mailbox is available to by default), and `default_signature_id`
+
+## 2026-06-17 ERP Integration API
+
+- `POST /v1/secure-proxy` now returns a structured error body on `502` (a required `message` category plus optional `code` and `reason`), so clients can distinguish an upstream-side failure — TLS/certificate, DNS, connection refused/reset, or timeout — from an epilot-side one; successful upstream responses still pass through their original status and body unchanged
 
 ## 2026-06-17 Targeting API
 
@@ -19,7 +245,8 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-06-16 Snapshot API
 
 - New `POST /v1/snapshots:capture-org` endpoint added for asynchronously snapshotting the caller's entire organization
-- `POST /v1/snapshots/{id}:restore` now accepts optional `preserve_modified` and `preserve_co_owned` boolean flags controlling how modified and co-owned destination resources are handled during restore
+- `POST /v1/snapshots/{id}:restore` now accepts an optional `exclude_target_ids` array (target IDs the caller wants left untouched during restore)
+- The `preserve_modified` option was removed from `POST /v1/snapshots/{id}:restore`, and the related `skipped` arrays (and `SkippedResource` schema) were removed from restore and capture results on `GET /v1/snapshots` and `GET /v1/snapshots/{id}`; drift-based skipping is no longer performed during restore (breaking)
 
 ## 2026-06-16 User API
 
