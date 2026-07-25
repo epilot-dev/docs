@@ -2,6 +2,14 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-07-24 Integration Previous Provider API
+
+- New `GET /v2/integration/{type}/providers` endpoint added, listing the available previous providers for a given integration type
+
+## 2026-07-22 Metering API
+
+- New `POST /v2/metering/readings/prune` endpoint added for removing meter readings
+
 ## 2026-07-21 Notification API
 
 - New optional `allowed_channels` field (`email`, `in_app`) added when creating notifications and returned on notification reads; it caps which delivery channels a notification may use, with actual delivery being the intersection of this list and each recipient's own channel preferences (an empty array suppresses all delivery)
@@ -170,6 +178,7 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-06-26 Customer Portal API
 
 - New endpoints added to read and update a portal's mobile app configuration (`GET`/`PUT /v1/portal/mobile-config`), covering app branding, iOS and Android settings, and over-the-air (OTA) update settings
+- New `POST /v2/portal/entity/{slug}` and `PATCH /v2/portal/entity/{slug}/{id}` endpoints added for creating and updating entities in the portal context
 
 ## 2026-06-26 Integration Toolkit API
 
