@@ -2,6 +2,10 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-07-27 Integration Toolkit API
+
+- Passing `group_id` on events is now supported for parallelization within a batch of events in `POST /v3/erp/updates/events`
+
 ## 2026-07-24 Integration Previous Provider API
 
 - New `GET /v2/integration/{type}/providers` endpoint added, listing the available previous providers for a given integration type
