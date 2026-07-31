@@ -800,6 +800,10 @@ Some `OptionsInit` fields from the legacy script have no SDK equivalent:
 
 ## Changelog
 
+### 2026-07-31
+
+- Fixed: `.contextData()` no longer discards the host page's URL query parameters. Both are merged into `journey_context`, with `.contextData()` taking precedence only on overlapping keys. The `.asWebComponent()` backend was affected worst, losing every query parameter; `.asIframe()` kept the ones declared as context parameters in the Journey Builder but lost the rest.
+
 ### 2026-06-11
 
 - Data injection now documents stable **block IDs** as the recommended form: `.dataInjectionOptions()` accepts `initialState` keyed by block ID, `initialStepId` for the starting step, and `blocksDisplaySettings` targeting blocks by `blockId`. Block IDs are unique journey-wide and resilient to block renames and step reordering. The legacy step-index + block-name forms remain supported but are deprecated.

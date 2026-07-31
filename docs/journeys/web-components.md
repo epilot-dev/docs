@@ -500,6 +500,11 @@ The attribute names on the Web Component map directly to the options you previou
 
 ## Changelog
 
+### 2026-07-31
+
+- Fixed: setting the `context-data` attribute no longer discards the host page's URL query parameters. Both are merged into `journey_context`, with `context-data` taking precedence only on overlapping keys. Previously any `context-data` value dropped every query parameter, since the attribute is the web component's only context source.
+- The resolved configuration is now logged to the browser console on initialization, matching iframe embeds. Invalid attributes are reported there too, and no longer prevent the element from rendering.
+
 ### 2026-06-11
 
 - Data injection now documents stable **block IDs** as the recommended form: `initialState` is keyed by block ID, `initialStepId` selects the starting step, and `blocksDisplaySettings` targets blocks by `blockId`. Block IDs are unique journey-wide and resilient to block renames and step reordering. The legacy step-index + block-name forms remain supported but are deprecated.
