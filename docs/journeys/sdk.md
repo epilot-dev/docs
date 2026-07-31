@@ -481,7 +481,7 @@ $epilot
   .append('#embed-target')
 ```
 
-The Journey also automatically picks up URL search parameters from the host page. Values passed via `.contextData()` take precedence when keys overlap.
+The Journey also automatically picks up URL search parameters from the host page, whether or not they are declared as context parameters in the Journey Builder, and includes them in the submission's `journey_context`. Values passed via `.contextData()` take precedence when keys overlap. Parameters reserved by the Journey app (`journeyId`, `journeyToken`, `previewId`, `nonce`, `asOrganizationId`, `embedSource`, `dataInjectionOptions`, `mode`, `lang`, `topBar`, `isEmbedded`, `debug`, `preview`) are consumed by the app instead of being forwarded.
 
 ## Data Injection
 
