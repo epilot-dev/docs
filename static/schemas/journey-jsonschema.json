@@ -95,6 +95,10 @@
       "$ref": "#/definitions/BaseRelation",
       "description": "Files"
     },
+    "journeys": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Journeys"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
