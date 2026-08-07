@@ -2,13 +2,153 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-08-06 Blueprint API
+
+- Adding resources to a blueprint (`POST /v2/blueprint-manifest/blueprints/{blueprint_id}/resources` and `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/resources/bulk`) now reports partial failures — new optional `errors`, `total_errors`, `errors_truncated`, and `skipped` fields were added to the response, so a `200` no longer means every requested resource was added
+
+## 2026-08-06 Calendar API
+
+- New `GET`/`PUT`/`DELETE /v1/calendar/working-hours/users/{user_id}` endpoints added for reading, setting, and removing the working hours of a user
+- Absence intervals can now originate from working hours — `source` may be `working_hours` on `GET /v1/calendar/absence/users`, `GET /v1/calendar/absence/users/{user_id}`, `POST /v1/calendar/absence:search`, and `POST /v1/calendar/absence:search-now`, and a new optional `working_hours_granularity` parameter controls how finely those intervals are split
+
+## 2026-08-06 Dashboard API
+
+- Dashboards can now be marked as favorites: new `PUT`/`DELETE /v1/dashboard/dashboards/{id}/favorite` endpoints added for marking and unmarking a dashboard, and `GET /v1/dashboard/dashboards/favorites` for listing the favorited ones
+- New optional `favorite` and `favorites_first` query parameters added to `GET /v1/dashboard/dashboards` for returning only favorites or listing them first, and a `favorited` flag is now returned on the dashboard list, read, create, update, and delete responses
+
+## 2026-08-06 Entity API
+
+- New optional `adjust_installment` field added to entity schema capabilities — settable via `POST`/`PUT /v1/entity/schemas/capabilities/{composite_id}` and `PUT /v1/entity/schemas/{slug}`, and returned by the schema, capability, available-capability, and blueprint read endpoints
+
+## 2026-08-06 Message API
+
+- Thread timelines (`GET /v1/message/threads/{id}/timeline`) now also report workflow started, thread user assigned, message label added and removed, message entity linked and unlinked, auto-reply sent, and thread moved to inbox, trashed, and restored events, so consumers must be prepared for these additional event shapes in `events[].data`
+- New optional `id`, `message_id`, `actor`, `source`, `automated`, and `automation` fields added to timeline events, identifying the event and who or what triggered it
+
+## 2026-08-06 User API
+
+- New optional `parent_production_org_id` field added to `LoginParameters` responses, identifying the production organization a login belongs to — returned by `GET /v1/users/username/{username}:getLoginParameters`, `GET /v2/users/public/username/{username}:getLoginParameters`, and `POST /v2/users/public/passkeys:resolveCredential`
+
+## 2026-08-06 Workflows Execution API
+
+- `automation_execution_id` and `schedule.schedule_id` on workflow tasks may now be `null` where a string was previously guaranteed — affecting all flow execution and task responses (`POST /v2/flows/executions`, `GET`/`PATCH /v2/flows/executions/{execution_id}`, the task create, update, execute, automation-run, reconcile-automation, and schedule run-now endpoints, and `POST /v2/flows/executions:search`) (breaking)
+
+## 2026-08-06 Journey Entity
+
+- New `journeys` relation added to the `journey` entity, letting a journey be linked to other journeys
+
+## 2026-08-05 App API
+
+- New optional `icon_url` field added to apps, returned by `GET /v1/app`, `GET /v1/app/{appId}`, `POST /v1/app/{appId}`, and `POST /v1/app/{appId}/promote-to/{version}`
+
+## 2026-08-05 Automation API
+
+- New `POST /v1/automation/executions:search` endpoint added for searching automation executions
+
+## 2026-08-05 Calendar API
+
+- New `POST /v1/calendar/events/{event_id}/share` and `DELETE /v1/calendar/events/{event_id}/share/{user_id}` endpoints added for sharing a calendar event with a user and for revoking that share
+- Absence adjustments now carry a `status`, which is required when creating one via `POST /v1/calendar/absence/users/{user_id}/adjustments` and is always returned by the adjustment read, list, create, and update endpoints; an optional `type` field was added alongside it (breaking)
+- New optional `include_busy` parameter added to `GET /v1/calendar/absence/users`, `GET /v1/calendar/absence/users/{user_id}`, `POST /v1/calendar/absence:search`, and `POST /v1/calendar/absence:search-now`, including busy time from users' calendars in the returned intervals
+
+## 2026-08-05 Workflows Definition API
+
+- Flow template search (`POST /v2/flows/templates:search`) now supports sorting by `name`, `id`, and `enabled` in addition to the previously available `sort_by` values
+
+## 2026-08-04 App API
+
+- New `widget` app component type added — `configuration.type` now accepts `widget` on `POST`/`PATCH /v1/app-configurations/{appId}/versions/{version}/components` and returns it on the app, app-configuration, and public component read endpoints
+
+## 2026-08-04 Pricing API
+
+- New `GET /v1/conditional-pricing/{slug}/condition-sets` endpoint added, returning the condition sets defined for a conditional pricing
+- The `tax` field on line item taxes now also accepts and returns the `Tax` and `TaxItem` object shapes, in addition to the previously supported ones — affecting `POST /v1/order`, `PUT /v1/order/{id}`, `POST /v1/pricing:compute`, `POST /v1/public/cart:checkout`, and the public external-catalog and product-recommendation endpoints (breaking for consumers that assume a fixed shape for `tax`)
+
+## 2026-08-04 Targeting API
+
+- The optional `resolution` field was removed from all campaign recipient responses (`POST /v1/campaign/{campaign_id}/recipient`, `PATCH /v1/campaign/{campaign_id}/recipient/{recipient_id}` and its `entity_ui:status` and `portal:status` variants, and `GET /v1/campaign/{campaign_id}/recipients`), and the `Resolution` schema is no longer part of the API (breaking)
+
+## 2026-08-03 User API
+
+- New optional `passkeys_registered` field added to `LoginParameters` responses, indicating whether the user already has a passkey registered — returned by `GET /v1/users/username/{username}:getLoginParameters`, `GET /v2/users/public/username/{username}:getLoginParameters`, and `POST /v2/users/public/passkeys:resolveCredential`
+
+## 2026-08-01 Integration Toolkit API
+
+- New endpoints added for importing data from an ERP system: `GET`/`POST /v2/erp/imports` for listing and creating an import, `GET /v2/erp/imports/{importId}` for reading a single import, `POST /v2/erp/imports/{importId}:execute` for starting it, and `POST /v2/erp/imports/{importId}:abort` for stopping one that is still running
+
+## 2026-07-31 Entity API
+
+- New optional `variant_overridable` field added to entity schema attributes — settable via `POST`/`PUT /v1/entity/schemas/attributes/{composite_id}`, `PUT /v1/entity/schemas/{slug}`, and the capability endpoints, and returned by the schema, capability, and blueprint read endpoints — marking whether an attribute may be overridden per entity variant
+- New optional `conditions` field added to entity schemas, accepted on `PUT /v1/entity/schemas/{slug}` and returned by the schema read, list, versions, freeze, and unfreeze endpoints
+
+## 2026-07-31 Workflows Definition API
+
+- New optional `keep_task_automations_in_sync` field added to flow templates, accepted on `POST`/`PUT /v2/flows/templates/{flowId}` and returned by the template read, list, search, and duplicate endpoints
+
+## 2026-07-31 Workflows Execution API
+
+- New `POST /v2/flows/executions:portal-search-batch` endpoint added for running several portal execution searches in one request; the request body takes a required `entities` array (the `entity_ids` and `entity_schema` fields it briefly accepted are no longer part of it)
+
+## 2026-07-30 Blueprint API
+
+- New `POST /v3/blueprint-manifest/blueprints:pre-install` endpoint added for checking what a blueprint installation would do before actually starting it
+
+## 2026-07-30 Journey Config API
+
+- The journey `settings.savingProgress` fields were renamed: `savingMode` is now `mode` and `supportedVersion` is now `supportedRevision`. The old names are no longer accepted on `POST`/`PUT /v1/journey/configuration` and are no longer returned by the v1 journey configuration endpoints (breaking)
+- `settings.savingProgress` is now also supported on the v2 journey configuration endpoints — accepted by `POST`/`PUT /v2/journey/configuration` and returned by `GET /v2/journey/configuration/{id}` and the v2 create, update, and patch responses
+
+## 2026-07-30 Pricing API
+
+- New optional `fields` request property added to `POST /v1/catalog` and `POST /v1/public/catalog`, limiting the catalog response to the listed fields
+
+## 2026-07-30 User API
+
+- New optional `totp_enabled` field added to users, showing whether two-factor authentication is set up for a user; it is returned by the user and group read endpoints (`GET /v2/users`, `/v2/users/me`, `/v2/users/{id}`, `/v2/users/{id}/groups`, the invite endpoints, and the `/v1/groups` endpoints) and can be set to `false` via `PATCH /v2/users/{id}` to turn two-factor authentication off for that user
+
+## 2026-07-29 Workflows Execution API
+
+- New `POST /v2/flows/executions:portal-search` endpoint added for searching flow executions exposed to the customer portal; the request requires an `audience` field, which accepts `all` alongside the individual audience values
+
+## 2026-07-28 Entity API
+
+- New `POST /v1/entity:abortImport` endpoint added for aborting an entity import that is still running
+
+## 2026-07-27 App API
+
+- New optional `change_mode` and `delete_contact` fields added to portal extension hook configuration — settable via `POST`/`PATCH /v1/app-configurations/{appId}/versions/{version}/components` and returned by the app, app-configuration, and public component read endpoints
+
+## 2026-07-27 Blueprint API
+
+- Blueprints can now carry notes: new `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/notes`, `PATCH /v2/blueprint-manifest/blueprints/{blueprint_id}/notes/{note_id}`, and `DELETE /v2/blueprint-manifest/blueprints/{blueprint_id}/notes/{note_id}` endpoints added for adding, editing, and removing a note, and a `notes` field is now accepted when creating or updating a blueprint (`POST`/`PUT /v2/blueprint-manifest/blueprints`) and returned on the blueprint read, list, create, update, and delete responses; each note also carries an `updated_at` timestamp
+- New optional `sync_notes` install option added to `POST /v2/blueprint-manifest/blueprint:install`, `POST /v3/blueprint-manifest/blueprint:install`, `POST /v3/blueprint-manifest/bulk-installs`, and `POST /v2/blueprint-manifest/jobs/{job_id}:continue`, controlling whether blueprint notes are carried over during installation
+
 ## 2026-07-27 Integration Toolkit API
 
 - Passing `group_id` on events is now supported for parallelization within a batch of events in `POST /v3/erp/updates/events`
+- `POST /v1/integrations/{integrationId}/events/replay` responses now always include `replayed` and `results`, reporting how many events were replayed and the outcome for each one
+
+## 2026-07-26 Blueprint API
+
+- New `POST /v3/blueprint-manifest/blueprints/{blueprint_id}/deployments/{job_id}:health-check` and `GET /v3/blueprint-manifest/blueprints/{blueprint_id}/deployments/{job_id}/health-report` endpoints added for starting a health check on a blueprint deployment and reading the resulting health report
+
+## 2026-07-26 Email Settings API
+
+- New endpoints added for managing custom SMTP connections: `GET`/`POST /v2/smtp/connections` for listing and creating connections, `GET`/`PUT`/`DELETE /v2/smtp/connections/{connectionId}` for reading, updating, and removing a single connection, and `POST /v2/smtp/connections/{connectionId}/test` for verifying that a connection works
+- New endpoints added for managing the sender addresses used with those connections: `GET`/`POST /v2/smtp/senders` for listing and adding senders, and `DELETE /v2/smtp/senders/{email}` for removing one
+
+## 2026-07-25 Integration Toolkit API
+
+- New `POST /v2/integrations/{integrationId}/monitoring/external-events` and `GET /v2/integrations/{integrationId}/monitoring/traces/{correlationId}` endpoints added for reporting externally-observed events into integration monitoring and for reading the full trace belonging to one correlation ID
+- New optional `correlation_id` field added to ERP update events (`POST /v1/erp/updates/events` and `POST /v2/erp/updates/events`) and returned for each event on `POST /v1/integrations/{integrationId}/events`, letting an event be tied to a monitoring trace
 
 ## 2026-07-24 Integration Previous Provider API
 
 - New `GET /v2/integration/{type}/providers` endpoint added, listing the available previous providers for a given integration type
+
+## 2026-07-22 Message API
+
+- New optional `inbox_id` field added to `POST /v1/message/threads:searchIds`, limiting the returned thread IDs to threads in that inbox
 
 ## 2026-07-22 Metering API
 
