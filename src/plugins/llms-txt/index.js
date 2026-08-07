@@ -110,6 +110,46 @@ function resolveDocRoute(relativePath, frontMatter) {
 }
 
 /**
+ * Scans the docs/ directory and resolves each source file to its route.
+ */
+async function collectDocs(siteDir) {
+  const docsDir = path.join(siteDir, 'docs');
+  const files = [];
+
+  async function scanDir(dir, relativePath = '') {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      const relPath = path.join(relativePath, entry.name);
+
+      if (entry.isDirectory()) {
+        await scanDir(fullPath, relPath);
+      } else if (entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) {
+        files.push({ fullPath, relativePath: relPath });
+      }
+    }
+  }
+
+  if (await fs.pathExists(docsDir)) {
+    await scanDir(docsDir);
+  }
+
+  const docs = [];
+  for (const { fullPath, relativePath } of files) {
+    try {
+      const { data: frontMatter } = matter(await fs.readFile(fullPath, 'utf-8'));
+      docs.push({ fullPath, relativePath, frontMatter, route: resolveDocRoute(relativePath, frontMatter) });
+    } catch (err) {
+      console.error(`[${PLUGIN_NAME}] Failed to parse ${relativePath}:`, err.message);
+    }
+  }
+  return docs;
+}
+
+const docTitle = (doc) =>
+  doc.frontMatter.title || doc.frontMatter.sidebar_label || doc.route.split('/').pop();
+
+/**
  * Loads the OpenAPI spec list from redoc.config.js for the llms.txt APIs section.
  */
 function loadApiSpecs(siteDir) {
@@ -218,29 +258,9 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
     name: PLUGIN_NAME,
 
     async postBuild({ siteConfig, outDir, siteDir }) {
-      // Collect all doc files from the docs/ directory
-      const docsDir = path.join(siteDir, 'docs');
-      const allDocFiles = [];
+      const allDocs = await collectDocs(siteDir);
 
-      async function scanDir(dir, relativePath = '') {
-        const entries = await fs.readdir(dir, { withFileTypes: true });
-        for (const entry of entries) {
-          const fullPath = path.join(dir, entry.name);
-          const relPath = path.join(relativePath, entry.name);
-
-          if (entry.isDirectory()) {
-            await scanDir(fullPath, relPath);
-          } else if (entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) {
-            allDocFiles.push({ fullPath, relativePath: relPath });
-          }
-        }
-      }
-
-      if (await fs.pathExists(docsDir)) {
-        await scanDir(docsDir);
-      }
-
-      console.log(`[${PLUGIN_NAME}] Found ${allDocFiles.length} doc files to process.`);
+      console.log(`[${PLUGIN_NAME}] Found ${allDocs.length} doc files to process.`);
 
       const items = [];
       let successCount = 0;
@@ -248,22 +268,17 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
 
       // Generate per-page markdown (.md) and legacy llms.txt files
       await Promise.all(
-        allDocFiles.map(async ({ fullPath, relativePath }) => {
+        allDocs.map(async (doc) => {
           try {
-            const content = await generatePageContent(fullPath);
+            const content = await generatePageContent(doc.fullPath);
             if (!content) return;
-
-            const fileContent = await fs.readFile(fullPath, 'utf-8');
-            const { data: frontMatter } = matter(fileContent);
-
-            const docPath = resolveDocRoute(relativePath, frontMatter);
 
             // Only emit for routes that exist in the build output, so llms.txt
             // never links to pages that 404.
-            const routeDir = path.join(outDir, docPath);
+            const routeDir = path.join(outDir, doc.route);
             if (!(await fs.pathExists(path.join(routeDir, 'index.html')))) {
               unresolvedCount++;
-              console.warn(`[${PLUGIN_NAME}] No built page for ${relativePath} at ${docPath}, skipping.`);
+              console.warn(`[${PLUGIN_NAME}] No built page for ${doc.relativePath} at ${doc.route}, skipping.`);
               return;
             }
 
@@ -275,14 +290,13 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
             successCount++;
 
             // Collect metadata for root index
-            const title = frontMatter.title || frontMatter.sidebar_label || docPath.split('/').pop();
             items.push({
-              path: docPath,
-              title,
-              description: frontMatter.description,
+              path: doc.route,
+              title: docTitle(doc),
+              description: doc.frontMatter.description,
             });
           } catch (err) {
-            console.error(`[${PLUGIN_NAME}] Failed to process ${relativePath}:`, err.message);
+            console.error(`[${PLUGIN_NAME}] Failed to process ${doc.relativePath}:`, err.message);
           }
         }),
       );
@@ -323,7 +337,7 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
         fullLines.push('---');
         fullLines.push('');
 
-        for (const { fullPath, relativePath } of allDocFiles.sort((a, b) => a.relativePath.localeCompare(b.relativePath))) {
+        for (const { fullPath } of allDocs.sort((a, b) => a.relativePath.localeCompare(b.relativePath))) {
           const content = await generatePageContent(fullPath);
           if (content) {
             fullLines.push(content);
