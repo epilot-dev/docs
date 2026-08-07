@@ -1,0 +1,11 @@
+# docs.epilot.io — public developer documentation.
+# All content here is intended to be read, indexed, and used by both humans
+# and AI agents. LLM-friendly resources:
+#   - /llms.txt          (index for LLM agents, https://llmstxt.org/)
+#   - /llms-full.txt     (complete documentation in one file)
+#   - append .md to any docs URL for the raw markdown version
+
+User-agent: *
+Allow: /
+
+Sitemap: https://docs.epilot.io/sitemap.xml

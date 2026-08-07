@@ -65,7 +65,8 @@ async function generatePageContent(filePath) {
   let result = '';
 
   const title = frontMatter.title || frontMatter.sidebar_label;
-  if (title) {
+  // Skip the frontmatter title when the body already opens with its own H1.
+  if (title && !/^#\s/.test(cleanedContent)) {
     result += `# ${title}\n\n`;
   }
 
@@ -78,34 +79,58 @@ async function generatePageContent(filePath) {
   return result;
 }
 
-/**
- * Recursively collects all doc routes with source file paths.
- */
-function collectDocRoutes(routes) {
-  const result = [];
+// Docusaurus strips number prefixes like "1-entities" from path segments.
+const stripNumberPrefix = (segment) => segment.replace(/^\d+[-_.]+/, '');
 
-  function walk(routeList) {
-    for (const route of routeList) {
-      if (route.metadata && route.metadata.sourceFilePath) {
-        result.push({
-          path: route.path,
-          sourceFilePath: route.metadata.sourceFilePath,
-        });
-      }
-      if (route.routes) {
-        walk(route.routes);
-      }
+/**
+ * Resolves the actual Docusaurus route for a doc source file, mirroring the
+ * docs plugin's slug rules: frontmatter `slug` wins (absolute slugs are
+ * relative to the docs base), `index`/`README` files map to their directory,
+ * and number prefixes are stripped from every path segment.
+ */
+function resolveDocRoute(relativePath, frontMatter) {
+  const posixPath = relativePath.replace(/\\/g, '/').replace(/\.mdx?$/, '');
+  const segments = posixPath.split('/').map(stripNumberPrefix);
+  const baseName = segments[segments.length - 1];
+  const dirSegments = segments.slice(0, -1);
+
+  const slug = frontMatter.slug;
+  if (typeof slug === 'string' && slug.length > 0) {
+    if (slug.startsWith('/')) {
+      return `/docs${slug === '/' ? '' : slug}`.replace(/\/$/, '') || '/docs';
     }
+    return ['/docs', ...dirSegments, slug].join('/');
   }
 
-  walk(routes);
-  return result;
+  if (/^(index|readme)$/i.test(baseName)) {
+    return ['/docs', ...dirSegments].join('/').replace(/\/$/, '') || '/docs';
+  }
+
+  return ['/docs', ...segments].join('/');
 }
 
 /**
- * Generates the root llms.txt content with a page index.
+ * Loads the OpenAPI spec list from redoc.config.js for the llms.txt APIs section.
  */
-function generateRootLlmsTxt(siteConfig, items, siteDescription) {
+function loadApiSpecs(siteDir) {
+  try {
+    // eslint-disable-next-line import/no-dynamic-require
+    const { specs } = require(path.join(siteDir, 'redoc.config.js'));
+    return specs.map((spec) => ({
+      title: spec.layout.title,
+      routePath: spec.routePath,
+      specUrl: spec.specUrl,
+    }));
+  } catch (err) {
+    console.warn(`[${PLUGIN_NAME}] Could not load redoc.config.js:`, err.message);
+    return [];
+  }
+}
+
+/**
+ * Generates the root llms.txt content with agent instructions and a page index.
+ */
+function generateRootLlmsTxt(siteConfig, items, siteDescription, apiSpecs) {
   const siteUrl = siteConfig.url;
   const lines = [];
 
@@ -117,6 +142,33 @@ function generateRootLlmsTxt(siteConfig, items, siteDescription) {
     lines.push('');
   } else if (siteConfig.tagline) {
     lines.push(siteConfig.tagline);
+    lines.push('');
+  }
+
+  lines.push('## Instructions for LLM agents');
+  lines.push('');
+  lines.push(
+    '- Every documentation page is available as raw markdown by appending `.md` to its URL (e.g. `' +
+      siteUrl +
+      '/docs/intro.md`). Prefer the markdown version over the HTML page.',
+  );
+  lines.push(`- The complete documentation in a single file: ${siteUrl}/llms-full.txt`);
+  lines.push(
+    '- REST API contracts are published as raw OpenAPI 3.0 YAML specs (see the APIs section below). Use the spec, not the HTML API reference pages, which render client-side.',
+  );
+  lines.push(
+    '- Official TypeScript SDK: `@epilot/sdk` on npm, plus per-API clients (e.g. `@epilot/entity-client`, `@epilot/pricing-client`). Check the npm registry for current versions instead of relying on memorized ones.',
+  );
+  lines.push('');
+
+  if (apiSpecs.length > 0) {
+    lines.push('## APIs');
+    lines.push('');
+    lines.push('Raw OpenAPI 3.0 specifications for every epilot API:');
+    lines.push('');
+    for (const spec of apiSpecs) {
+      lines.push(`- [${spec.title}](${spec.specUrl}): reference at ${siteUrl}${spec.routePath}`);
+    }
     lines.push('');
   }
 
@@ -142,10 +194,8 @@ function generateRootLlmsTxt(siteConfig, items, siteDescription) {
 
     for (const item of groupItems) {
       const fullUrl = `${siteUrl}${item.path}`;
-      lines.push(`- [${item.title}](${fullUrl}): ${fullUrl}/llms.txt`);
-      if (item.description) {
-        lines.push(`  ${item.description}`);
-      }
+      const description = item.description ? `: ${item.description}` : '';
+      lines.push(`- [${item.title}](${fullUrl}.md)${description}`);
     }
     lines.push('');
   }
@@ -167,14 +217,8 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
   return {
     name: PLUGIN_NAME,
 
-    async postBuild({ siteConfig, routes, outDir, siteDir }) {
-      const docRoutes = collectDocRoutes(routes);
-
-      if (docRoutes.length === 0) {
-        console.warn(`[${PLUGIN_NAME}] No doc routes with source files found. Falling back to docs/ directory scan.`);
-      }
-
-      // Collect all doc files from the docs/ directory as a reliable source
+    async postBuild({ siteConfig, outDir, siteDir }) {
+      // Collect all doc files from the docs/ directory
       const docsDir = path.join(siteDir, 'docs');
       const allDocFiles = [];
 
@@ -200,8 +244,9 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
 
       const items = [];
       let successCount = 0;
+      let unresolvedCount = 0;
 
-      // Generate per-page llms.txt files
+      // Generate per-page markdown (.md) and legacy llms.txt files
       await Promise.all(
         allDocFiles.map(async ({ fullPath, relativePath }) => {
           try {
@@ -211,29 +256,26 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
             const fileContent = await fs.readFile(fullPath, 'utf-8');
             const { data: frontMatter } = matter(fileContent);
 
-            // Determine the URL path for this doc
-            // e.g. docs/journeys/journey-builder.md -> /docs/journeys/journey-builder
-            let urlPath = relativePath
-              .replace(/\.mdx?$/, '')
-              .replace(/\\/g, '/');
+            const docPath = resolveDocRoute(relativePath, frontMatter);
 
-            // Handle index files (intro.md or index.md at directory level)
-            if (urlPath.endsWith('/intro')) {
-              // Keep as-is, Docusaurus maps these to the directory path or /intro
+            // Only emit for routes that exist in the build output, so llms.txt
+            // never links to pages that 404.
+            const routeDir = path.join(outDir, docPath);
+            if (!(await fs.pathExists(path.join(routeDir, 'index.html')))) {
+              unresolvedCount++;
+              console.warn(`[${PLUGIN_NAME}] No built page for ${relativePath} at ${docPath}, skipping.`);
+              return;
             }
 
-            const docPath = `/docs/${urlPath}`;
+            // Raw markdown at the parallel .md URL (industry convention)
+            await fs.writeFile(`${routeDir}.md`, content, 'utf-8');
 
-            // Write llms.txt for this page
-            const outputDir = path.join(outDir, docPath);
-            const outputPath = path.join(outputDir, 'llms.txt');
-
-            await fs.ensureDir(outputDir);
-            await fs.writeFile(outputPath, content, 'utf-8');
+            // Legacy per-page llms.txt location, kept for existing consumers
+            await fs.writeFile(path.join(routeDir, 'llms.txt'), content, 'utf-8');
             successCount++;
 
             // Collect metadata for root index
-            const title = frontMatter.title || frontMatter.sidebar_label || urlPath.split('/').pop();
+            const title = frontMatter.title || frontMatter.sidebar_label || docPath.split('/').pop();
             items.push({
               path: docPath,
               title,
@@ -245,14 +287,19 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
         }),
       );
 
-      console.log(`[${PLUGIN_NAME}] Generated ${successCount} per-page llms.txt files.`);
+      console.log(
+        `[${PLUGIN_NAME}] Generated ${successCount} per-page .md/llms.txt files` +
+          (unresolvedCount ? ` (${unresolvedCount} files had no matching route).` : '.'),
+      );
 
       // Sort items by path
       items.sort((a, b) => a.path.localeCompare(b.path));
 
+      const apiSpecs = loadApiSpecs(siteDir);
+
       // Generate root llms.txt
       try {
-        const rootContent = generateRootLlmsTxt(siteConfig, items, siteDescription);
+        const rootContent = generateRootLlmsTxt(siteConfig, items, siteDescription, apiSpecs);
         const rootPath = path.join(outDir, 'llms.txt');
         await fs.writeFile(rootPath, rootContent, 'utf-8');
         console.log(`[${PLUGIN_NAME}] Generated root llms.txt with ${items.length} entries.`);
