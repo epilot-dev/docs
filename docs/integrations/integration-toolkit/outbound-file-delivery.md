@@ -13,7 +13,7 @@ Outbound file delivery sends files referenced by an epilot event to an external 
 
 :::caution Attachment readiness
 
-`CustomerRequestSubmitted` is emitted when the ticket is created. Its attachments are a snapshot of the ticket relations visible when Event Catalog processes that event; it does not wait for a later relation write. In the usual journey flow the files already exist and the relation is normally visible by then, but this timing is not guaranteed. An empty snapshot produces `FAN_OUT_EMPTY` and is not automatically replayed when the relation appears.
+`CustomerRequestSubmitted` is emitted when the ticket is created. In the standard Journey flow, the file entities already exist, but automation creates the ticket and copies its file relations in a second request. Event Catalog processes the ticket creation asynchronously and reads the current relation graph. The relation request usually finishes first, which is why the attachments are normally present, but this ordering is not guaranteed. An empty snapshot produces `FAN_OUT_EMPTY`; the later relation write does not emit another `CustomerRequestSubmitted` or automatically replay the delivery.
 
 If the integration needs strict ordering after ticket creation, use a `FileUpdated` handoff after the workflow writes the ticket reference onto the file, or trigger a dedicated workflow event after all relations are complete.
 
@@ -265,6 +265,9 @@ Environment values are resolved after Handlebars. In the JSON sent to the API, w
 - `upload.max_file_bytes` defaults to the platform maximum of 100 MiB. Known size is checked before fetch; the limit is always enforced while buffering.
 - `upload.success_when` can reject a nominally successful response, such as an HTTP 200 response containing an error envelope.
 - `upload.external_id` records the target document ID without failing an otherwise successful delivery if extraction is unsuccessful.
+- External HTTP `408`, `429`, and `5xx` responses are retried. Other `4xx` responses are terminal. Timeouts, OAuth refresh failures, and transient file-fetch failures are retried up to the configured attempt limit.
+- Configuration and data errors that will not improve on retry—such as a missing file, invalid mapping result, missing required parameter, or invalid step template—fail terminally. JSONata expressions and Handlebars syntax are also checked when the recipe is saved.
+- Terminal and exhausted deliveries are recorded as failed and completed without deliberately filling the dead-letter queue with permanent errors.
 
 ## Monitoring
 
@@ -296,6 +299,7 @@ General configuration and mapping codes, including `USE_CASE_NOT_FOUND`, `USE_CA
 | JSON body breaks for some filenames | Replace plain interpolation with `{{json params.filename}}`. |
 | Event succeeds without uploading | Inspect `FAN_OUT_EMPTY`, the split expression, and `event_filter`. |
 | File fetch fails | Verify `entity_id`, `version_index`, and the configured file-size limit. |
+| Target `4xx` is not retried | This is expected except for `408` and `429`; correct the request mapping or target configuration. |
 
 ## Related documentation
 
