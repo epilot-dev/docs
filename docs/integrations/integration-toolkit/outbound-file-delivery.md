@@ -11,6 +11,14 @@ Outbound file delivery sends files referenced by an epilot event to an external 
 
 `CustomerRequestSubmitted` is the main example: one submitted request can contain several `event_attachments`, and each attachment is delivered and monitored independently.
 
+:::caution Attachment readiness
+
+`CustomerRequestSubmitted` is emitted when the ticket is created. Its attachments are a snapshot of the ticket relations visible when Event Catalog processes that event; it does not wait for a later relation write. In the usual journey flow the files already exist and the relation is normally visible by then, but this timing is not guaranteed. An empty snapshot produces `FAN_OUT_EMPTY` and is not automatically replayed when the relation appears.
+
+If the integration needs strict ordering after ticket creation, use a `FileUpdated` handoff after the workflow writes the ticket reference onto the file, or trigger a dedicated workflow event after all relations are complete.
+
+:::
+
 :::info Upload versus download
 This page covers files moving **out of epilot**. To serve files from an external archive when a user opens them in epilot, use the [download File Proxy](./file-proxy.md).
 :::
