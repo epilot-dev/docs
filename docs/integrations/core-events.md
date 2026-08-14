@@ -36,6 +36,8 @@ All events include these fields:
 
 ### Customer
 
+<EventSchemaViewer event="CustomerRequestSubmitted" />
+
 <EventSchemaViewer event="CustomerDetailsUpdated" />
 
 ### Billing Account
