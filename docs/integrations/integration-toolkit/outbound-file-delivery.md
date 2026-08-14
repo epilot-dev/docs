@@ -13,7 +13,9 @@ Outbound file delivery sends files referenced by an epilot event to an external 
 
 :::caution Attachment readiness
 
-`CustomerRequestSubmitted` is emitted when the ticket is created. In the standard Journey flow, the file entities already exist, but automation creates the ticket and copies its file relations in a second request. Event Catalog processes the ticket creation asynchronously and reads the current relation graph. The relation request usually finishes first, which is why the attachments are normally present, but this ordering is not guaranteed. An empty snapshot produces `FAN_OUT_EMPTY`; the later relation write does not emit another `CustomerRequestSubmitted` or automatically replay the delivery.
+`CustomerRequestSubmitted` is emitted when the ticket is created. In the standard Journey flow, the file entities already exist, but automation creates the ticket and copies its file relations in a second request. Event Catalog processes the ticket creation asynchronously and reads the current relation graph. The relation request usually finishes first, which is why the attachments are normally present, but this ordering is not guaranteed. The later relation write does not emit another `CustomerRequestSubmitted` or automatically replay an empty snapshot.
+
+Without an attachment-count `event_filter`, an empty fan-out records `FAN_OUT_EMPTY`. With the example `$count(event_attachments) > 0` filter below, the use case is filtered out before fan-out, so no delivery is enqueued and no `FAN_OUT_EMPTY` is emitted for that mapping.
 
 If the integration needs strict ordering after ticket creation, use a `FileUpdated` handoff after the workflow writes the ticket reference onto the file, or trigger a dedicated workflow event after all relations are complete.
 
