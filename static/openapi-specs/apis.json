@@ -382,6 +382,86 @@
           "url": "https://docs.api.epilot.io/kanban.yaml"
         }
       ]
+    },
+    {
+      "name": "Validation Rules API",
+      "baseURL": "https://validation-rules.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/validation-rules.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Integration Toolkit API",
+      "baseURL": "https://integration-toolkit.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/erp-integration.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Environments API",
+      "baseURL": "https://environments.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/environments.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Event Catalog API",
+      "baseURL": "https://event-catalog.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/event-catalog.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Targeting API",
+      "baseURL": "https://targeting.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/targeting.yaml"
+        }
+      ]
+    },
+    {
+      "name": "App API",
+      "baseURL": "https://app.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Audit Log API",
+      "baseURL": "https://audit-logs.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/audit-log.yaml"
+        }
+      ]
+    },
+    {
+      "name": "Data Governance API",
+      "baseURL": "https://data-governance.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/data-governance.yaml"
+        }
+      ]
     }
   ]
 }

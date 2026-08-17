@@ -1,3 +1,5 @@
+// Adding an API here also publishes it to static/openapi-specs/apis.json,
+// the discovery document used by MCP clients (npm run generate-api-discovery).
 module.exports.specs = [
   {
     layout: { title: 'Access Token API' },
