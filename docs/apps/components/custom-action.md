@@ -22,6 +22,10 @@ Custom Actions provide several key benefits:
 
 ## How to Create a Custom Action
 
+:::tip Run code inside epilot instead?
+Custom action components call **your** servers. If you want epilot to run your JavaScript for you — no infrastructure on your side — use a [workflow function](/docs/apps/functions/workflow-functions) instead: it appears in the flow builder automatically, no component required.
+:::
+
 ## External Integration
 
 ### How To Integrate External Systems
