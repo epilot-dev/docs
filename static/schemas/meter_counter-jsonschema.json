@@ -104,6 +104,14 @@
       "type": "string",
       "description": "External ID"
     },
+    "digits": {
+      "type": "string",
+      "description": "Digits"
+    },
+    "decimals": {
+      "type": "string",
+      "description": "Decimals"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
