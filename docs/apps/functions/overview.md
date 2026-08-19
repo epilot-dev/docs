@@ -12,7 +12,7 @@ Functions are the unit for all custom server-side logic in an app. Where they ru
 
 | Type | Triggered by | Typical use |
 |---|---|---|
-| `workflow` | An org admin adds your function as an **action in the flow builder**; it runs whenever the flow reaches that step, with the triggering entity as input | Enrich an entity, call your API through the [API Proxy](/docs/apps/components/api-proxy), validate data, reserve something in an external system |
+| `workflow` | A `CUSTOM_FLOW_ACTION` component references it (`{ "type": "function", "function_name": "…" }`); org admins add that action in the flow builder and it runs with the triggering entity as input | Enrich an entity, call your API through the [API Proxy](/docs/apps/components/api-proxy), validate data, reserve something in an external system |
 | `scheduled` | A **cron schedule**, automatically, once per installation | Poll a system that has no webhooks, sync a catalog nightly, refresh cached data |
 
 ```json title="manifest.json"
@@ -21,7 +21,6 @@ Functions are the unit for all custom server-side logic in an app. Where they ru
     {
       "name": "reserve-slot",
       "type": "workflow",
-      "label": { "de": "Slot reservieren", "en": "Reserve slot" },
       "handler": "./functions/reserve-slot/dist/handler.js"
     },
     {
@@ -38,7 +37,7 @@ Functions are the unit for all custom server-side logic in an app. Where they ru
 
 Components are the **surfaces** of your app — journey blocks, custom pages, portal blocks, API proxies. Functions are its **behavior**. They complement each other:
 
-- A `workflow` function appears **automatically** in the flow builder of every organization that installs your app — you do not create a component for it. (Flow action components still exist, but only for [external integrations](/docs/apps/components/custom-action): webhook calls to *your* servers.)
+- A `workflow` function is wired into the flow builder through a `CUSTOM_FLOW_ACTION` component that references it — the component carries the org-facing name, options and config UI; the function carries the code. (`external_integration` components remain for [webhook calls](/docs/apps/components/custom-action) to *your* servers.)
 - A `scheduled` function runs without any user interaction at all.
 - Functions can call external APIs through your app's **API Proxy** component, so external credentials stay on the installation and never appear in function code.
 
@@ -54,8 +53,8 @@ npx @epilot/cli app deploy
 
 ## What installing organizations see
 
-- **Workflow functions** show up in the flow builder's action picker under your app's name, using the function's `label`.
-- The installed app's details page has a read-only **Functions** tab listing every function with its label, type and — for scheduled functions — the cron expression: full transparency about what the app runs on the org's behalf.
+- **Workflow functions** show up in the flow builder's action picker through their referencing component, under the component's name.
+- The installed app's details page lists the app's functions in a compact summary on the **Configuration tab**: cron functions with their cadence ("every 30 minutes"), workflow functions marked as available flow actions — transparency about what the app runs on the org's behalf, without a technical surface of its own.
 - Every run is recorded in the app's **Insights**, so you (the developer) can monitor failures per version and component.
 
 Continue with [Writing functions](/docs/apps/functions/writing-functions) for the runtime contract.

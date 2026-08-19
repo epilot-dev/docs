@@ -73,13 +73,21 @@ The `$schema` reference gives you validation and autocompletion in editors like 
 | `name` | ✓ | Unique kebab-case identifier (max 64 chars) — treat it as a public contract |
 | `type` | ✓ | `workflow` (flow builder action) or `scheduled` (cron per installation) |
 | `handler` | ✓ | Local path to the **built** JavaScript file — inlined as code on deploy |
-| `label` | — | Display name (TranslatedString) shown to org admins, e.g. in the flow builder picker |
+| `label` | — | Display name (TranslatedString), e.g. shown in the installed app's functions summary |
 | `description` | — | TranslatedString |
 | `schedule` | scheduled | 5-field cron or `rate(...)` — see [Scheduled Functions](/docs/apps/functions/scheduled-functions) |
 | `schedule_timezone` | — | IANA timezone for cron evaluation (default `Europe/Berlin`) |
 | `secrets` | — | Keys of secret options to decrypt into `input.app_options` — prefer the [API Proxy](/docs/apps/components/api-proxy) instead |
-| `wait_for_callback` | — | Workflow only — pause the flow until your system calls back |
-| `assets.zip` | — | Workflow only — built config UI shown in the flow builder |
+
+A `workflow` function is wired into the flow builder by a `CUSTOM_FLOW_ACTION` component whose configuration references it — the component carries the org-facing name, options, config surface and `wait_for_callback`:
+
+```json
+{
+  "component_type": "CUSTOM_FLOW_ACTION",
+  "name": { "de": "Meine Aktion" },
+  "configuration": { "type": "function", "function_name": "my-action" }
+}
+```
 
 Limits: at most 10 functions per app, at most 5 of them scheduled, 300 KB code per function.
 

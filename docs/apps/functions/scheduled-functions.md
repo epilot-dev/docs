@@ -75,4 +75,4 @@ Two more habits that keep scheduled syncs well-behaved:
 
 ## Observability
 
-Every run is recorded in your app's **Insights** (source `APP_FUNCTION`) — successes, skips and failures with their messages, per version and per installing organization. Installing orgs see the schedule (expression, timezone, description) in the read-only **Functions** tab of the installed app.
+Every run is recorded in your app's **Insights** (source `APP_FUNCTION`) — successes, skips and failures with their messages, per version and per installing organization. Installing orgs see the schedule as a plain-language summary ("every 30 minutes") on the installed app's **Configuration tab**.

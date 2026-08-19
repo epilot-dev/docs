@@ -6,7 +6,7 @@ sidebar_position: 3
 
 # Workflow Functions
 
-A function with `type: "workflow"` becomes a **selectable action in the flow builder** of every organization that installs your app. The org admin drags it into their flow like any built-in action; whenever the flow reaches that step, epilot runs your handler with the triggering entity.
+A function with `type: "workflow"` provides the **code behind a flow action**. The pairing works like this: a `CUSTOM_FLOW_ACTION` component is the org-facing contract — its name appears in the flow builder's action picker, it carries the [installation options](/docs/apps/components/configure-options) and the optional per-flow config UI — and its configuration **references the function that runs**:
 
 ```json title="manifest.json"
 {
@@ -14,16 +14,27 @@ A function with `type: "workflow"` becomes a **selectable action in the flow bui
     {
       "name": "check-connection-request",
       "type": "workflow",
-      "label": { "de": "Netzanschlussprüfung", "en": "Grid Connection Check" },
-      "description": { "de": "Prüft die Anschlussanfrage im externen System." },
       "handler": "./functions/check-connection-request/dist/handler.js"
+    }
+  ],
+  "components": [
+    {
+      "id": "d493351b-…",
+      "component_type": "CUSTOM_FLOW_ACTION",
+      "name": { "de": "Netzanschlussprüfung", "en": "Grid Connection Check" },
+      "description": { "de": "Prüft die Anschlussanfrage im externen System." },
+      "options": [
+        { "key": "region", "label": "Region", "type": "text", "required": true }
+      ],
+      "configuration": { "type": "function", "function_name": "check-connection-request" }
     }
   ]
 }
 ```
 
-- **`label`** is what the org admin sees in the action picker — always provide one.
-- No component is needed. The function appears in the picker automatically once the app is installed.
+Why the split? The component reuses everything components already have — display name and description in the picker, installation options (including secrets), the config surface — while the function stays a pure unit of code. Deploy-time validation checks the reference: the named function must exist in the same version with `type: "workflow"`.
+
+When the org admin adds the action to a flow and the flow reaches that step, epilot runs your handler with the triggering entity.
 
 ## The run
 
@@ -45,24 +56,17 @@ async function handler(input, context) {
 
 Workflow runs block a flow step, so keep them fast — do one thing per action. Long-running work belongs in a [scheduled function](/docs/apps/functions/scheduled-functions) or behind `wait_for_callback`.
 
+## Installation options
+
+Options declared on the **component** are filled in by the org admin at install time and reach your handler as `input.app_options` (secret options stay encrypted; declare the ones your function needs in the function's `secrets` list — or better, use an [API Proxy](/docs/apps/components/api-proxy)).
+
 ## Per-flow configuration UI (optional)
 
-If your action needs configuration when it's added to a flow (mappings, mode switches), ship a config UI. Point the function's `assets.zip` at a built web app; the CLI uploads it and the flow builder embeds it when the admin configures the action:
-
-```json
-{
-  "name": "check-connection-request",
-  "type": "workflow",
-  "handler": "./functions/check-connection-request/dist/handler.js",
-  "assets": { "zip": "./functions/check-connection-request-config/dist/" }
-}
-```
-
-Values saved by your config UI arrive in the handler as `input.action_config.custom_action_config`.
+If your action needs configuration when it's added to a flow (mappings, mode switches), ship a config UI on the **component**, exactly as flow actions always have — `surfaces.flow_action_config` plus `assets.zip`. Values saved by your config UI arrive in the handler as `input.action_config.custom_action_config`.
 
 ## Waiting for a callback
 
-Set `wait_for_callback: true` when the action starts something asynchronous (e.g. a human approval in your system) and the flow should pause until you confirm. The flow execution pauses at your action and resumes when your system calls the automation resume endpoint with the execution's resume token.
+Set `wait_for_callback: true` in the **component's** configuration when the action starts something asynchronous (e.g. a human approval in your system) and the flow should pause until you confirm. The flow execution pauses at your action and resumes when your system calls the automation resume endpoint with the execution's resume token.
 
 ## Failure behavior
 

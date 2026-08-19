@@ -9,8 +9,9 @@ sidebar_position: 5
 ## Adding a function
 
 ```bash
-# workflow function (flow builder action)
-npx @epilot/cli app add-function reserve-slot --type workflow --label "Reserve slot"
+# workflow function (code behind a flow action component)
+npx @epilot/cli app add-function reserve-slot --type workflow
+npx @epilot/cli app add-component reserve-slot-action --type CUSTOM_FLOW_ACTION_FUNCTION
 
 # scheduled function (--schedule implies --type scheduled)
 npx @epilot/cli app add-function sync-things --schedule "rate(30 minutes)"
@@ -44,8 +45,8 @@ There is no separate "function update" mechanism to think about: ship a version,
 
 ## Renaming and removing
 
-- **Renaming** a function is a remove-plus-add: the old schedule (and its run history context) is dropped, a fresh one is created. Flows that referenced a renamed **workflow** function by its old name will fail their action step until the org admin re-selects the action — treat workflow function names as a public contract and prefer changing the `label`, not the `name`.
-- **Removing** a scheduled function stops its schedules in every installation on their next version update; removing a workflow function breaks flows that use it (the flow builder shows the action as unavailable). Both are legitimate — just changelog them.
+- **Renaming** a scheduled function is a remove-plus-add: the old schedule (and its run bookkeeping) is dropped, a fresh one is created. Renaming a **workflow** function requires updating the referencing component's `function_name` in the same deploy — the reference is validated, so a dangling name is rejected before it can break anything.
+- **Removing** a scheduled function stops its schedules in every installation on their next version update; removing a workflow function requires removing (or repointing) its referencing component too. Flows that used the removed action show it as unavailable — legitimate, just changelog it.
 
 ## Publishing review
 

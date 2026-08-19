@@ -33,14 +33,14 @@ Scaffolds a new app project: a monorepo with `manifest.json`, `components/`, Tur
 
 ### `epilot app add-component <name> --type <TYPE>`
 
-Adds a component package under `components/<name>/` from a template and registers it in the manifest. Types: `CUSTOM_CAPABILITY`, `CUSTOM_PAGE`, `CUSTOM_JOURNEY_BLOCK`, `CUSTOM_PORTAL_BLOCK`, `CUSTOM_FLOW_ACTION_EXTERNAL`, `PORTAL_EXTENSION`, `EXTERNAL_PRODUCT_CATALOG`, `API_PROXY`.
+Adds a component package under `components/<name>/` from a template and registers it in the manifest. Types: `CUSTOM_CAPABILITY`, `CUSTOM_PAGE`, `CUSTOM_JOURNEY_BLOCK`, `CUSTOM_PORTAL_BLOCK`, `CUSTOM_FLOW_ACTION_FUNCTION` (flow action running a workflow function), `CUSTOM_FLOW_ACTION_EXTERNAL` (webhook), `PORTAL_EXTENSION`, `EXTERNAL_PRODUCT_CATALOG`, `API_PROXY`.
 
 ### `epilot app add-function <name> [--type workflow|scheduled] [--schedule "<expr>"] [--label "<text>"]`
 
-Adds a server-side [function](/docs/apps/functions/overview) under `functions/<name>/` and registers it in the manifest. `--schedule` implies `--type scheduled`; workflow functions should get a `--label` (that's what org admins see in the flow builder).
+Adds a server-side [function](/docs/apps/functions/overview) under `functions/<name>/` and registers it in the manifest. `--schedule` implies `--type scheduled`. Workflow functions are wired into the flow builder via a `CUSTOM_FLOW_ACTION` component that references them (`add-component … --type CUSTOM_FLOW_ACTION_FUNCTION`).
 
 ```bash
-epilot app add-function reserve-slot --type workflow --label "Reserve slot"
+epilot app add-function reserve-slot --type workflow
 epilot app add-function nightly-sync --schedule "0 3 * * *"
 ```
 
