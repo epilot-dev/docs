@@ -62,10 +62,10 @@ epilot supports multiple token types for different use cases:
 | Token Type | Lifetime | Use Case |
 |---|---|---|
 | **OAuth Access Token** | 60 minutes | Interactive user sessions |
-| **Access Token (Long-lived)** | No expiration | Third-party integrations, automation |
+| **Access Token** | Configurable expiry, up to 365 days (set at creation) | Third-party integrations, automation |
 | **Publishable Token** | No expiration | Client-side embedding (journeys, portals) |
 
-Long-lived Access Tokens inherit the creating user's roles and permissions, and can be revoked at any time. Publishable Tokens are restricted to a narrow set of public-facing operations. See [Access Tokens](/docs/auth/access-tokens) and [Token Types](/docs/auth/token-types) for details.
+Access Tokens support an optional expiry, set when the token is created — either in the management UI or via the `expires_in` parameter of the [Access Token API](/api/access-token). Tokens created without an expiry remain valid until revoked; tokens created with one can live up to 365 days and stay listed and revocable until they expire. Access Tokens inherit the creating user's roles and permissions, and can be revoked at any time. Publishable Tokens are restricted to a narrow set of public-facing operations. See [Access Tokens](/docs/auth/access-tokens) and [Token Types](/docs/auth/token-types) for details.
 
 ### Authentication Methods
 
@@ -197,7 +197,7 @@ WAF rules are continuously tuned based on traffic patterns and threat intelligen
 
 epilot distinguishes between two categories of API credentials:
 
-- **Access Tokens** — Secret, long-lived tokens that carry the creating user's full permissions. Keep confidential; use for server-to-server integrations. See [Access Tokens](/docs/auth/access-tokens).
+- **Access Tokens** — Secret tokens that carry the creating user's permissions. Keep confidential; use for server-to-server integrations, and set an expiry at creation to limit exposure. See [Access Tokens](/docs/auth/access-tokens).
 - **Publishable Tokens** — Safe to embed in client-side code (journey embed scripts, portal widgets). Restricted to public operations and cannot access sensitive data. See [Token Types](/docs/auth/token-types).
 
 :::warning
@@ -282,6 +282,6 @@ epilot maintains the following certifications and compliance measures:
 - [Passkeys](/docs/auth/passkeys) -- Phishing-resistant biometric and hardware key authentication
 - [SSO](/docs/sso/single-sign-on) — Single sign-on with OIDC and SAML identity providers
 - [Authorization](/docs/auth/authorization) — JWT validation, API Gateway authorizer, Permissions API
-- [Access Tokens](/docs/auth/access-tokens) — Creating and managing long-lived API tokens
+- [Access Tokens](/docs/auth/access-tokens) — Creating and managing API tokens
 - [Token Types](/docs/auth/token-types) — Comparison of access tokens vs. publishable tokens
 - [Permissions](/docs/auth/permissions) — RBAC model, grant evaluation, role management
