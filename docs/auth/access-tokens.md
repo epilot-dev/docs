@@ -72,13 +72,25 @@ POST /v1/access-tokens
 }
 ```
 
-Set an optional expiry with the `expires_in` parameter — a number of seconds (e.g. `3600`) or a duration string with time units (e.g. `'10h'`, `'7d'`, `'2 days'`). Without `expires_in`, the token does not expire.
+Set an optional expiry with the `expires_in` parameter — a number of seconds (e.g. `3600`) or a duration string with time units (e.g. `'10h'`, `'7d'`, `'2 days'`), bounded between 30 seconds and 365 days. Without `expires_in`, the token does not expire.
 
 ```json title="Request body with expiry"
 {
   "name": "Postman Access Token",
   "assume_roles": ["123:owner"],
   "expires_in": "30d"
+}
+```
+
+Tokens created with `expires_in` are stored, listed, and revocable exactly like non-expiring tokens. The response includes an `expires_at` timestamp, and the token stops working — and drops out of the token list — once it expires:
+
+```json title="201 response for a token with expiry"
+{
+  "id": "api_5ZugdRXasLfWBypHi93Fk",
+  "created_at": "2019-08-24T14:15:22Z",
+  "expires_at": "2019-09-23T14:15:22.000Z",
+  "name": "Postman Access Token",
+  "assignments": ["123:owner"]
 }
 ```
 

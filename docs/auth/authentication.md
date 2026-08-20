@@ -118,7 +118,7 @@ sequenceDiagram
 
 | Token | Lifetime | Use case |
 |---|---|---|
-| **Access Token** | Configurable expiry (valid until revoked if unset) | Server-side API integrations, scripts, third-party apps |
+| **Access Token** | Configurable expiry, up to 365 days (valid until revoked if unset) | Server-side API integrations, scripts, third-party apps |
 | **OAuth 2.0 Token** | 60 minutes | Interactive user sessions in the epilot portal |
 | **Publishable Token** | Long-lived | Client-side public apps (journeys, portals) |
 

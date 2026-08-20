@@ -62,10 +62,10 @@ epilot supports multiple token types for different use cases:
 | Token Type | Lifetime | Use Case |
 |---|---|---|
 | **OAuth Access Token** | 60 minutes | Interactive user sessions |
-| **Access Token** | Configurable expiry (set at creation) | Third-party integrations, automation |
+| **Access Token** | Configurable expiry, up to 365 days (set at creation) | Third-party integrations, automation |
 | **Publishable Token** | No expiration | Client-side embedding (journeys, portals) |
 
-Access Tokens support an optional expiry, set when the token is created — either in the management UI or via the `expires_in` parameter of the [Access Token API](/api/access-token). Tokens created without an expiry remain valid until revoked. Access Tokens inherit the creating user's roles and permissions, and can be revoked at any time. Publishable Tokens are restricted to a narrow set of public-facing operations. See [Access Tokens](/docs/auth/access-tokens) and [Token Types](/docs/auth/token-types) for details.
+Access Tokens support an optional expiry, set when the token is created — either in the management UI or via the `expires_in` parameter of the [Access Token API](/api/access-token). Tokens created without an expiry remain valid until revoked; tokens created with one can live up to 365 days and stay listed and revocable until they expire. Access Tokens inherit the creating user's roles and permissions, and can be revoked at any time. Publishable Tokens are restricted to a narrow set of public-facing operations. See [Access Tokens](/docs/auth/access-tokens) and [Token Types](/docs/auth/token-types) for details.
 
 ### Authentication Methods
 
