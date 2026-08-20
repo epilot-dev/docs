@@ -11,7 +11,7 @@ epilot uses three token types for authentication. Choose the right one for your 
 
 | | OAuth 2.0 Token | Access Token | Publishable Token |
 |---|---|---|---|
-| **Lifetime** | 60 minutes | Long-lived (no expiry) | Long-lived (no expiry) |
+| **Lifetime** | 60 minutes | Configurable expiry (valid until revoked if unset) | Long-lived (no expiry) |
 | **Use case** | Interactive user sessions | Server-side API integrations | Client-side public apps (journeys, portals) |
 | **Format** | JWT (Cognito-issued) | JWT (epilot-issued) | JWT (epilot-issued, public key) |
 | **Refresh** | Via refresh token | Not needed | Not needed |
@@ -35,12 +35,12 @@ On successful authentication, Cognito issues three tokens:
 OAuth tokens expire after **60 minutes**. Use the refresh token to obtain new tokens transparently.
 
 :::tip
-OAuth tokens suit interactive user sessions. For API integrations, use long-lived [Access Tokens](/docs/auth/access-tokens) instead.
+OAuth tokens suit interactive user sessions. For API integrations, use [Access Tokens](/docs/auth/access-tokens) instead.
 :::
 
 ## Access Tokens
 
-Access Tokens are long-lived JWTs for server-side integrations — the recommended authentication method for backend systems, scripts, and third-party applications. See [Access Tokens](/docs/auth/access-tokens) for full management details.
+Access Tokens are JWTs for server-side integrations — the recommended authentication method for backend systems, scripts, and third-party applications. You can set an expiry when creating a token; tokens created without one stay valid until revoked. See [Access Tokens](/docs/auth/access-tokens) for full management details.
 
 ### How They Work
 
@@ -63,6 +63,7 @@ authorize(accessTokenClient, cognitoIdToken);
 const { data } = await accessTokenClient.createAccessToken(null, {
   name: 'SAP Integration',
   assume_roles: ['123:sap_integration_role'],
+  expires_in: '30d', // optional expiry — seconds or a duration string
 });
 
 // data.access_token contains the token — save it securely
@@ -77,6 +78,12 @@ Scope each Access Token to specific roles via `assume_roles`. If omitted, the to
   "assume_roles": ["123:sap_integration_role"]
 }
 ```
+
+### Token Expiry
+
+Set an optional expiry when creating a token via the `expires_in` parameter — either a number of seconds (e.g. `3600`) or a duration string with time units (e.g. `'10h'`, `'7d'`, `'2 days'`). Expired tokens are rejected by the API Gateway authorizer like any other expired JWT.
+
+If `expires_in` is omitted, the token does not expire and remains valid until revoked.
 
 :::warning
 Creating access tokens requires the `token:create` permission. The generated token is shown **only once** and cannot be recovered.
@@ -139,6 +146,7 @@ All token types use JWT (JSON Web Token) format, signed with RS256.
 | `assume_roles` | List of role IDs (e.g., `["123:owner"]`) |
 | `iss` | Access Token service issuer URL |
 | `iat` | Issued-at timestamp |
+| `exp` | Expiration timestamp (present when the token was created with an expiry) |
 
 ### Token Verification
 

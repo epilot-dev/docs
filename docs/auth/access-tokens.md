@@ -27,6 +27,8 @@ Manage Access Tokens from [Settings > Access Tokens](https://portal.epilot.cloud
 
 By default, a new Access Token inherits the roles and permissions of the creating user.
 
+When creating a token, you can optionally set an **expiry**. A token with an expiry is automatically invalidated once it passes; a token created without one remains valid until revoked. Setting an expiry is recommended to limit the impact of a leaked token.
+
 ![Access Token create view](/img/create-access-token.png)
 
 :::note
@@ -67,6 +69,16 @@ POST /v1/access-tokens
 {
   "name": "Postman Access Token",
   "assume_roles": ["123:owner"]
+}
+```
+
+Set an optional expiry with the `expires_in` parameter — a number of seconds (e.g. `3600`) or a duration string with time units (e.g. `'10h'`, `'7d'`, `'2 days'`). Without `expires_in`, the token does not expire.
+
+```json title="Request body with expiry"
+{
+  "name": "Postman Access Token",
+  "assume_roles": ["123:owner"],
+  "expires_in": "30d"
 }
 ```
 

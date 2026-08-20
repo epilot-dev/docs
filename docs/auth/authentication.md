@@ -12,10 +12,10 @@ Authorization: Bearer <your-token>
 
 ## Getting Started
 
-The recommended way to authenticate with epilot APIs is using **Access Tokens** — long-lived, scoped tokens designed for integrations.
+The recommended way to authenticate with epilot APIs is using **Access Tokens** — scoped tokens designed for integrations.
 
 1. Go to [Settings > Access Tokens](https://portal.epilot.cloud/app/tokens) in the epilot portal
-2. Create a new token, optionally scoping it to specific roles
+2. Create a new token, optionally scoping it to specific roles and setting an expiry
 3. Pass the token as a bearer token in your API requests
 
 ```typescript
@@ -95,7 +95,7 @@ See the [SDK documentation](/docs/sdk/overview) for the full SDK reference.
 
 epilot authentication is built on [OAuth 2.0](https://oauth.net/2/) with [Amazon Cognito User Pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) as the identity provider. Each epilot tenant has its own Cognito User Pool.
 
-When a user logs in to the epilot portal, Cognito issues short-lived OAuth tokens (60 min). For API integrations, the [Access Token service](/api/access-token) issues long-lived JWTs with claims compatible with Cognito tokens, so all epilot APIs accept them seamlessly.
+When a user logs in to the epilot portal, Cognito issues short-lived OAuth tokens (60 min). For API integrations, the [Access Token service](/api/access-token) issues JWTs with claims compatible with Cognito tokens, so all epilot APIs accept them seamlessly. These tokens support an optional expiry set at creation and stay valid until revoked if none is set.
 
 All tokens are verified by the API Gateway authorizer using JWKS endpoints before reaching backend services.
 
@@ -118,7 +118,7 @@ sequenceDiagram
 
 | Token | Lifetime | Use case |
 |---|---|---|
-| **Access Token** | Long-lived | Server-side API integrations, scripts, third-party apps |
+| **Access Token** | Configurable expiry (valid until revoked if unset) | Server-side API integrations, scripts, third-party apps |
 | **OAuth 2.0 Token** | 60 minutes | Interactive user sessions in the epilot portal |
 | **Publishable Token** | Long-lived | Client-side public apps (journeys, portals) |
 
