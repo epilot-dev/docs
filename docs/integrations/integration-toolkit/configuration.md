@@ -122,7 +122,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 | `configuration` | object | Yes | Type-specific configuration (see sections below) |
 
 :::info
-- `file_proxy` — On-demand file serving from external document systems. See the [File Proxy guide](./file-proxy.md).
+- `file_proxy` — On-demand file serving from external systems or outbound delivery of epilot files. See the [File Proxy](./file-proxy.md) and [Outbound File Delivery](./outbound-file-delivery.md) guides.
 - `managed_call` — Synchronous external API calls with JSONata mapping. See [Managed Call Use Cases](#managed-call-use-cases).
 - `secure_proxy` — Route requests through epilot's secure proxy for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).
 :::
@@ -181,11 +181,11 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `id` | string (UUID) | Yes | Unique identifier for the mapping |
+| `id` | string (UUID) | No | Unique identifier for the mapping; generated when omitted |
 | `name` | string | Yes | Display name for the mapping |
 | `enabled` | boolean | Yes | Whether this mapping is active |
-| `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook` delivery; ignored for `poll` delivery |
-| `delivery` | object | Yes | How the event is delivered — discriminated on `type`: `webhook` or `poll` |
+| `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook`, ignored for `poll`, and rejected for `file_proxy` delivery |
+| `delivery` | object | Yes | How the event is delivered — discriminated on `type`: `webhook`, `poll`, or `file_proxy` |
 
 #### Delivery Types
 
@@ -227,6 +227,19 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 :::
 
 Everything beyond the configuration contract — the polling and acknowledgement API, lease and ordering semantics, retention and expiry behavior, the dead-letter queue and operator actions, and poll-mode monitoring — is documented on the dedicated [Pollable Outbound](./pollable-outbound.md) page.
+
+**File proxy delivery (push):** points to an upload-direction `file_proxy` use case in the same integration. The referenced recipe owns fan-out, payload mapping, authentication, and HTTP steps. `jsonata_expression` is rejected on this mapping type, and the use case's `event_catalog_event` must declare `event_attachments`. See [Outbound File Delivery](./outbound-file-delivery.md) for the complete setup and runtime behavior.
+
+```json
+"delivery": {
+  "type": "file_proxy",
+  "use_case_slug": "customer-request-document-upload"
+}
+```
+
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| `use_case_slug` | string | Yes | Slug of an upload-direction `file_proxy` use case in the same integration |
 
 ## Mapping Configuration Schema
 

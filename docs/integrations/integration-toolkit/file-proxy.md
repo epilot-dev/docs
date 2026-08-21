@@ -7,6 +7,10 @@ slug: /integrations/integration-toolkit/file-proxy
 
 # File Proxy
 
+:::info File direction
+This page covers files moving **into epilot on demand** from an external archive. To deliver files referenced by epilot events to an external API, see [Outbound File Delivery](./outbound-file-delivery.md).
+:::
+
 The File Proxy enables epilot to serve files from external document systems (e.g., ERP document archives, document management systems) **on demand**, without migrating files into epilot's storage. During [inbound sync](./inbound/getting-started.md), file entities are created with a `custom_download_url` pointing to the file proxy. When a user views the file, epilot's file service verifies the request and the proxy fetches the document from the external system in real time.
 
 Each file proxy configuration is stored as a **use case** with `type: 'file_proxy'` within an integration. The configuration describes how to authenticate, which HTTP calls to make, and how to extract the file from the response — all declaratively, without code changes for new integrations.

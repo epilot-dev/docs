@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 title: External Monitoring Events
 description: Push monitoring events from an external system (e.g. an integration middleware) into epilot so the Integration Hub is your central monitoring point, with a cross-system event trace
 slug: /integrations/integration-toolkit/external-monitoring-events

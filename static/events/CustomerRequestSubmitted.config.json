@@ -1,0 +1,169 @@
+{
+  "event_name": "CustomerRequestSubmitted",
+  "event_title": "Customer Request Submitted",
+  "event_description": "Explicitly triggered by Automation after a customer request ticket and its file attachments are ready",
+  "event_version": "1.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "automation",
+    "ticket",
+    "attachment",
+    "customer-request"
+  ],
+  "schema_fields": {
+    "event_attachments": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "entity_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Entity ID of the file"
+            },
+            "filename": {
+              "type": "string",
+              "description": "Name of the file"
+            },
+            "mime_type": {
+              "type": "string",
+              "description": "MIME type of the file (e.g., application/pdf)"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "File size in bytes"
+            },
+            "s3ref": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "S3 bucket name"
+                },
+                "key": {
+                  "type": "string",
+                  "description": "S3 object key"
+                }
+              },
+              "required": [
+                "bucket",
+                "key"
+              ],
+              "additionalProperties": false,
+              "description": "S3 reference for the file content"
+            },
+            "version_index": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Latest version index of the file (versions[].length - 1, or 0 if no versions array)"
+            },
+            "readable_size": {
+              "type": "string",
+              "description": "Human-readable file size (e.g., \"200 KB\")"
+            },
+            "_tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Tags on the file entity (semantic labels set by uploader/automation)"
+            },
+            "relation_tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Tags on the ticket→file relation (e.g. journey step label like \"_hidden_ Neuer Schritt - Nachweis\" plus the upload block's configured tags)"
+            },
+            "category": {
+              "type": "string",
+              "description": "File category select value (e.g., \"address-suggestions\", \"unknown\")"
+            },
+            "file_date": {
+              "type": "string",
+              "description": "User-provided file date"
+            },
+            "_created_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the file entity was created — useful for time-window filtering"
+            }
+          },
+          "required": [
+            "entity_id",
+            "version_index"
+          ],
+          "additionalProperties": false
+        },
+        "description": "All files related to the ticket, empty when the request carries none. A single submission can carry many documents across several upload blocks. Consumers identify a given upload via `relation_tags` / `_tags` and scope the use case via the `_purpose` taxonomy IDs on the ticket node (IDs only — resolving them to names is up to the consumer)."
+      },
+      "required": true,
+      "graph_source": "[ticket_files.{\"entity_id\": _id, \"filename\": filename, \"mime_type\": mime_type, \"size_bytes\": size_bytes, \"s3ref\": s3ref, \"version_index\": ($count(versions) > 0 ? $count(versions) - 1 : 0), \"readable_size\": readable_size, \"_tags\": _tags, \"relation_tags\": relation_tags, \"category\": category, \"file_date\": file_date, \"_created_at\": _created_at}]"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "ticket",
+        "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "submission",
+        "schema": "submission",
+        "cardinality": "one",
+        "fields": [
+          "_id"
+        ]
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      },
+      {
+        "id": "ticket_files",
+        "schema": "file",
+        "cardinality": "many"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ticket",
+        "to": "submission"
+      },
+      {
+        "from": "ticket",
+        "to": "contact"
+      },
+      {
+        "from": "ticket",
+        "to": "contract"
+      },
+      {
+        "from": "ticket",
+        "to": "billing_account"
+      },
+      {
+        "from": "ticket",
+        "to": "ticket_files"
+      }
+    ]
+  },
+  "automation_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket"
+}

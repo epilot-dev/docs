@@ -35,6 +35,7 @@ The Integration Toolkit is composed of the following components. Each plays a sp
 | **[Pollable Outbound](./pollable-outbound.md)** | Pull-based outbound delivery — ERPs poll a queue instead of receiving webhooks | In progress |
 | **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
 | **[File Proxy](./file-proxy.md)** | Serve files from external archives on demand without migrating them into epilot | Stable |
+| **[Outbound File Delivery](./outbound-file-delivery.md)** | Deliver files referenced by epilot events to external document APIs | Stable |
 | **[Managed Calls](#managed-calls)** | Synchronous external API calls with JSONata mapping via connector integrations | Stable |
 | **[Secure Proxy](#secure-proxy)** | Route HTTP requests through epilot's secure proxy for static IP egress or VPN access | Stable |
 | **[Monitoring and ACKs](#monitoring-and-acks)** | Central logging, error tracking, and event replay | In progress |
@@ -86,6 +87,8 @@ See the [Use Cases](./use-cases.md) page for a complete list of inbound and outb
 ### File Proxy
 
 The [File Proxy](./file-proxy.md) enables epilot to serve files from external document systems (e.g., ERP archives, DMS) on demand. Instead of migrating file content during inbound sync, file entities are created with a `custom_download_url` pointing to the proxy. When a user views the file, the proxy fetches the document from the external system in real time using a declarative, multi-step HTTP configuration.
+
+The upload direction is documented separately as [Outbound File Delivery](./outbound-file-delivery.md). It subscribes to Event Catalog events, fans one event out into per-file deliveries, fetches the referenced epilot files, and runs a declarative external HTTP workflow with independent retries and monitoring.
 
 ### Managed Calls
 
@@ -152,7 +155,7 @@ Push epilot events to your ERP via webhooks. Typical flows:
 - Self-service requests (IBAN changes, installment adjustments)
 - Meter reading submissions
 
-Outbound events use [Core Events](/docs/integrations/core-events) and are delivered through [Webhooks](/docs/integrations/webhooks). JSONata transforms simplify payloads before delivery.
+Outbound events use [Core Events](/docs/integrations/core-events). They can be delivered through [Webhooks](/docs/integrations/webhooks), made available through [Pollable Outbound](./pollable-outbound.md), or used to [deliver referenced files](./outbound-file-delivery.md) to an external API. JSONata transforms simplify event and file payloads before delivery.
 
 For ERPs that cannot receive webhooks (firewalled, on-prem, or batch-oriented systems), [Pollable Outbound](./pollable-outbound.md) offers a pull-based alternative: your middleware polls a queue inside the ERP Integration API on its own schedule and acknowledges items once consumed.
 
