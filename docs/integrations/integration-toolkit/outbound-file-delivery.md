@@ -1,385 +1,279 @@
 ---
 sidebar_position: 7
 title: Outbound File Delivery
-description: Deliver files referenced by epilot events to an external API with fan-out, mapping, retries, and monitoring
+description: Configure Integration Hub to deliver files from epilot events to an external API
 slug: /integrations/integration-toolkit/outbound-file-delivery
 ---
 
 # Outbound File Delivery
 
-Outbound file delivery sends files referenced by an epilot event to an external document API. The Integration Toolkit fetches each file from epilot, maps the event and the file into the target API's format, and runs a declarative HTTP workflow.
+Outbound file delivery sends files attached to an epilot event to an external document API. Configure the trigger, file selection, authentication, request mapping, retries, and monitoring in Integration Hub.
 
-`CustomerRequestSubmitted` is the main example: one submitted request can contain several `event_attachments`, and with fan-out enabled each attachment is delivered and monitored independently.
-
-:::caution Trigger after attachments are ready
-
-`CustomerRequestSubmitted` is triggered explicitly by Automation; ticket creation no longer emits it automatically. Place the trigger action after the workflow has created the ticket and written its file relations. Event Catalog then hydrates the ticket's current graph and builds `event_attachments` from every related file.
-
-An empty attachment array is valid because a customer request may contain no uploads. If Automation triggers the event before the file relations are written, that empty snapshot is published and a later relation update does not replay it automatically.
-
-Without an attachment-count `event_filter`, an event with no attachments records `FAN_OUT_EMPTY`. With the example `$count(event_attachments) > 0` filter below, the use case is filtered out before fan-out, so no delivery is enqueued and no `FAN_OUT_EMPTY` is emitted for that mapping.
-
-For strict upload ordering, make the `CustomerRequestSubmitted` trigger action depend on the relation-writing step. If that workflow cannot provide the ordering, use a `FileUpdated` handoff or another dedicated event after the relations are complete.
-
-:::
+`CustomerRequestSubmitted` is a common example: a submitted request can contain several `event_attachments`, and each attachment can be delivered separately.
 
 :::info Upload versus download
-This page covers files moving **out of epilot**. To serve files from an external archive when a user opens them in epilot, use the [download File Proxy](./file-proxy.md).
+This page covers files moving **out of epilot**. To make files from an external archive available in epilot, use the [download File Proxy](./file-proxy.md).
 :::
 
-## How it works
+## Configure in Integration Hub
 
-The setup uses two use cases in the same integration:
+An upload uses two use cases in the same integration:
 
-| Use case | Decides | Configuration |
-| --- | --- | --- |
-| `outbound` | **When** to deliver | Event Catalog event, optional event filter, and a pointer to the upload recipe |
-| `file_proxy` with `direction: "upload"` | **What and how** to deliver | Fan-out, mapping, authentication, HTTP steps, and limits |
+| Integration Hub use case | Purpose |
+| --- | --- |
+| **File Proxy · Upload** | Defines how files are grouped, authenticated, mapped, and sent to the external API. |
+| **Outbound** | Selects the event that triggers delivery and points it to the upload File Proxy. |
 
-```mermaid
-sequenceDiagram
-    participant Event as Event Catalog
-    participant Outbound as Outbound delivery
-    participant Queue as File delivery queue
-    participant File as epilot File API
-    participant Target as External document API
-
-    Event->>Outbound: CustomerRequestSubmitted
-    Outbound->>Outbound: Apply event_filter and fan_out
-    loop Each event attachment
-        Outbound->>Queue: Enqueue durable delivery
-        Queue->>File: Fetch entity_id + version_index
-        File-->>Queue: File bytes and metadata
-        Queue->>Queue: Evaluate enabled and body_jsonata per step
-        Queue->>Target: Execute configured HTTP steps
-        Target-->>Queue: Result
-    end
-```
-
-The outbound delivery is a pure pointer to the file-proxy use-case slug. The recipe is resolved at runtime, so you can create the two use cases in either order. A missing, disabled, or wrong-direction target is reported through monitoring when the event is handled.
-
-## Before you start
+### Before you start
 
 You need:
 
-- an Integration Toolkit integration;
-- an Event Catalog event that declares `event_attachments`, such as [`CustomerRequestSubmitted`](/docs/integrations/core-events#customer);
+- an integration in Integration Hub;
+- an Event Catalog event that provides file attachments, such as [`CustomerRequestSubmitted`](/docs/integrations/core-events#customer);
 - an external HTTP endpoint that accepts the file; and
-- environment values for target URLs and credentials.
+- target URLs and credentials stored on the integration's **Environment** tab.
 
-The examples use the Integration Toolkit API at `https://integration-toolkit.sls.epilot.io`.
+### 1. Create an upload File Proxy
 
-## 1. Create the upload recipe
+1. Open **Integration Hub**, select the integration, and open **Use Cases**.
+2. Under **Other use cases**, select **Create → File Proxy**.
+3. Enter a name and slug, set **Direction** to **Upload**, and enable the use case.
+4. Configure the upload:
+   - **Delivery split → One per file** sends each attachment separately. Leave it off to send all attachments in one delivery.
+   - **OAuth2 Authentication** configures Client Credentials or Resource Owner Password authentication. Leave it unconfigured for an unauthenticated endpoint.
+   - **Delivery rules** sets **Attempts per file** and **Maximum file size**.
+   - **Request steps** defines the target URL, method, headers, request body, and response type. Add more steps for multi-request APIs.
+   - **Proxy** optionally routes requests through a Secure Proxy from the same integration.
+5. In **Live preview**, select a sample event or load one from event history. Check the rendered URL, headers, and request body for each step.
+6. Select **Create Use Case**.
 
-Create a `file_proxy` use case with `direction: "upload"`:
+The preview does not fetch a file or call the target API. It shows the request shape using the selected event and placeholder values for file content, environment values, and earlier step results.
 
-```bash
-curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
-  -H 'Authorization: Bearer <token>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "name": "Customer request document upload",
-    "slug": "customer-request-document-upload",
-    "type": "file_proxy",
-    "enabled": true,
-    "configuration": {
-      "direction": "upload",
-      "fan_out": {
-        "enabled": true
-      },
-      "auth": {
-        "type": "oauth2_client_credentials",
-        "token_url": "{{env.DOCUMENT_TOKEN_URL}}",
-        "client_id": "{{env.DOCUMENT_CLIENT_ID}}",
-        "client_secret": "{{env.DOCUMENT_CLIENT_SECRET}}"
-      },
-      "steps": [
-        {
-          "method": "POST",
-          "url": "{{env.DOCUMENT_API_URL}}/documents",
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "body_jsonata": "{ \"customerNumber\": contact.customer_number, \"filename\": $file_data[0].filename, \"mimeType\": $file_data[0].mime_type, \"fileData\": $file_data[0].base64, \"sourceSystem\": \"epilot\", \"idempotencyKey\": $file_data[0].entity_id & \":\" & _event_id, \"submittedAt\": $germanDate($now()) }",
-          "response_type": "json"
-        }
-      ],
-      "upload": {
-        "max_file_bytes": 26214400,
-        "max_delivery_attempts": 8
-      }
-    }
-  }'
-```
+### 2. Add the outbound trigger
 
-### Upload configuration
+1. Return to **Use Cases** and add an **Outbound** use case.
+2. Under **Event Type**, select the event that should trigger the upload. File deliveries only support events that provide file attachments.
+3. Optionally add an **Event filter**. For example, `$count(event_attachments) > 0` handles only events that contain files.
+4. Under **File Deliveries**, select **Add file delivery**.
+5. Give the delivery a name, select the upload File Proxy under **Send files through**, and enable it.
+6. For a file-only outbound use case, turn off **Track acknowledgements**. If the same use case also contains a webhook that expects acknowledgements, leave it on or use a separate outbound use case for the file delivery.
+7. Select **Create Use Case**.
 
-| Field | Required | Description |
-| --- | --- | --- |
-| `direction` | Yes | Must be `upload`. Omitting it means the existing download behavior. |
-| `steps` | Yes | One or more HTTP requests. Upload steps support `GET`, `POST`, `PUT`, and `PATCH`. |
-| `upload` | Yes | Size ceilings and the retry limit. |
-| `fan_out` | No | Whether one event produces one delivery per file or a single delivery carrying all of them. |
-| `auth` | No | OAuth2 client credentials or password authentication. |
-| `secure_proxy` | No | Routes the steps through a `secure_proxy` use case in the same integration. |
+## Configuration object reference
 
-Each step is configured with:
+Integration Hub edits the same `configuration` objects exposed by the Integration Toolkit API. The objects below show the relationship between the UI and API without including use-case metadata such as name, slug, type, or enabled state.
 
-| Field | Required | Description |
-| --- | --- | --- |
-| `url` | Yes | Handlebars template for the request URL. |
-| `method` | Yes | `GET`, `POST`, `PUT`, or `PATCH`. |
-| `response_type` | Yes | `json` or `binary`. |
-| `headers` | No | Object whose values are Handlebars templates. |
-| `body_jsonata` | No | JSONata producing the request body as data. Leave it out to send the delivery's files unchanged. |
-| `enabled` | No | JSONata returning a boolean that decides whether this step runs. Absent means it runs. |
-
-Download-only fields are rejected for upload recipes: `params`, `response`, `allowed_origins`, `prevent_indirect_serving`, and a Handlebars `body` on a step.
-
-Fields that earlier versions of this feature carried are rejected as well, each naming its replacement: `params_mapping`, `required_params`, `constants`, `lookups`, `shared`, `file_source`, `fan_out.split_expression`, and a step's `required_keys` or `body_source`.
-
-`upload.success_when` and `upload.external_id` have also been removed. For compatibility they are not rejected, but they have no effect: a final response below `400` completes the workflow, and no external ID is stored or added to monitoring. Remove both fields from existing recipes.
-
-## 2. Subscribe to the event
-
-Create an outbound use case whose delivery points to the upload recipe's slug:
-
-```bash
-curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
-  -H 'Authorization: Bearer <token>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "name": "Deliver customer request documents",
-    "slug": "deliver-customer-request-documents",
-    "type": "outbound",
-    "enabled": true,
-    "configuration": {
-      "event_catalog_event": "CustomerRequestSubmitted",
-      "event_filter": "$count(event_attachments) > 0",
-      "ack_tracking": "off",
-      "mappings": [
-        {
-          "name": "External document archive",
-          "enabled": true,
-          "delivery": {
-            "type": "file_proxy",
-            "use_case_slug": "customer-request-document-upload"
-          }
-        }
-      ]
-    }
-  }'
-```
-
-The event's catalog schema must declare `event_attachments`. An outbound use case with a `file_proxy` mapping is rejected with `400` when that field is absent from the schema — the message names the event and the offending mapping — because such a configuration would fan out to nothing on every event it ever sees and report no error anywhere. An individual event may still carry an empty array. If the event catalog cannot be reached to check the schema, the save fails with a retryable `503` rather than being let through.
-
-Do not add `jsonata_expression` to a `file_proxy` outbound mapping. The referenced recipe owns payload mapping, and the API rejects an expression that would otherwise be ignored. Mapping IDs and timestamps are generated when omitted.
-
-The delivery object is now only `{ "type": "file_proxy", "use_case_slug": "..." }`. Legacy delivery fields are rejected: `attachment_selector` has no replacement because the split is fixed to `event_attachments`; `constants` and `lookups` belong inline in a step's `body_jsonata`; and `max_delivery_attempts` belongs at `upload.max_delivery_attempts` on the referenced recipe.
-
-Use `ack_tracking: "off"` for a file-only outbound use case: durable delivery state is tracked per file. If a webhook mapping in the same outbound use case requires acknowledgements, keep acknowledgement tracking enabled or separate the webhook and file deliveries.
-
-## Fan-out
-
-`fan_out.enabled` is the only decision. The split is always over the event's `event_attachments`, so there is no expression to write — an upload only ever runs on events that declare that field.
-
-```json
-"fan_out": {
-  "enabled": true
-}
-```
-
-- **`enabled: true`** — one delivery per attachment. Each is fully independent: its own idempotency record, its own retry schedule, its own monitoring events. A four-file event can therefore end up three-of-four delivered, which is the honest state to report.
-- **`enabled: false`** (or omitted) — the event produces exactly one delivery carrying every attachment.
-
-The split is evaluated once, when the event is enqueued, so item indices — and therefore idempotency keys — stay stable across retries.
-
-An event carrying no attachments produces no deliveries and records `FAN_OUT_EMPTY` at info level, which is the normal outcome for a catch-all subscription seeing an event with nothing to send. Use `event_filter` to decide whether the event should be handled at all.
-
-## Mapping the request body
-
-A step's `body_jsonata` produces the request body as **data**; the result is serialized to JSON and sent. Use it for every JSON body: it cannot emit malformed JSON, and it omits a key whose value is undefined instead of sending it empty, which is what makes optional fields work without a conditional guard.
-
-The evaluation root is the event, so `contact.customer_number`, `ticket._purpose` and `_event_id` are reachable directly, unprefixed. Everything else is a `$`-prefixed binding:
-
-| JSONata value | Contains |
-| --- | --- |
-| `$file_data` | The files this delivery carries, always an array |
-| `$steps` | Results of the steps already executed, each `{statusCode, headers, body}` |
-| `$ack_id` | Triggering event acknowledgement ID, when present |
-| `$env` | Organization environment variables |
-| `$now()` | Current ISO timestamp, one value for the whole delivery |
-| `$germanDate(iso)` | An ISO timestamp formatted as a German date |
-
-`$file_data` is the single binding for files, in both fan-out modes: one entry when fanning out, every attachment when not. `$file_data[0].filename` therefore works either way. Each entry starts with the event's `event_attachments` object. The worker resolves the file by `entity_id` and `version_index`, adds `base64`, and replaces the filename, MIME type, and size with the values of the file version it actually loaded. An event `s3ref` is passed through as metadata; it is not used as the download source.
-
-| Field | Contains |
-| --- | --- |
-| `entity_id` | File entity ID |
-| `filename` | File name returned by File API |
-| `mime_type` | MIME type returned by File API |
-| `size_bytes` | Loaded size in bytes |
-| `base64` | File content, base64-encoded |
-| `s3ref` | `bucket` and `key` of the stored file |
-| `version_index` | Which file version the event referenced |
-| `readable_size` | Human-readable size, such as `1.2 MB` |
-| `_tags` | File entity tags |
-| `relation_tags` | Tags on the relation that attached the file |
-| `category` | File category |
-| `file_date` | Document date |
-| `_created_at` | When the file entity was created |
-
-:::warning JSONata bindings
-Write `$file_data[0].filename`, including the `$`. `file_data[0].filename` reads a field named `file_data` on the event, which does not exist, and silently produces no value. Every `$` binding is checked when the recipe is saved, so a mistyped binding is rejected rather than quietly producing a missing key.
-:::
-
-Only `undefined` omits a key. `null`, `""`, `false` and `0` are values and are all sent. Write the two-arm ternary with no else branch to omit a key when a test is false:
-
-```
-{ "pin": $exists(contact.customer_pin) ? $string(contact.customer_pin) }
-```
-
-Avoid `x ? $string(x)` as the test: JSONata reads `0` and `""` as false, so a meter number of `"0"` would silently vanish. And `: undefined` is not a literal — JSONata has no `undefined` keyword, so it is a path lookup that happens to find nothing.
-
-### Sending the files unchanged
-
-Leave `body_jsonata` out and the delivery sends its files exactly as they are: the single attachment object when fanning out, the whole array when not. No mapping is needed for the common case.
-
-```json
-"steps": [
-  {
-    "method": "POST",
-    "url": "{{env.DOCUMENT_API_URL}}/documents",
-    "headers": { "Content-Type": "application/json" },
-    "response_type": "json"
-  }
-]
-```
-
-### Translating codes
-
-Codes are translated with an inline map in the expression itself. A miss yields `undefined`, so the key is simply left out; bind the map with `:=` when you also want a fallback:
-
-```
-(
-  $types := { "termination": "CANCELLATION", "complaint": "COMPLAINT" };
-  {
-    "documentType": [$lookup($types, ticket._purpose[0]), "OTHER"][0],
-    "filename": $file_data[0].filename,
-    "fileData": $file_data[0].base64
-  }
-)
-```
-
-Names the expression binds itself with `:=` are accepted alongside the built-in bindings. If the delivery must not go out at all when a code is unmapped, test for it in the step's `enabled` expression instead.
-
-## Skipping a step
-
-A step's optional `enabled` expression is JSONata returning a boolean that decides whether the step runs. Absent means it runs.
+### Upload File Proxy configuration
 
 ```json
 {
-  "enabled": "$file_data[0].mime_type = \"application/pdf\"",
-  "method": "POST",
-  "url": "{{env.DOCUMENT_API_URL}}/documents",
-  "body_jsonata": "{ \"fileData\": $file_data[0].base64 }",
-  "response_type": "json"
+  "direction": "upload",
+  "fan_out": {
+    "enabled": true
+  },
+  "auth": {
+    "type": "oauth2_client_credentials",
+    "token_url": "{{env.DOCUMENT_TOKEN_URL}}",
+    "client_id": "{{env.DOCUMENT_CLIENT_ID}}",
+    "client_secret": "{{env.DOCUMENT_CLIENT_SECRET}}"
+  },
+  "steps": [
+    {
+      "method": "POST",
+      "url": "{{env.DOCUMENT_API_URL}}/documents",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body_jsonata": "{ \"filename\": $file_data[0].filename, \"fileData\": $file_data[0].base64 }",
+      "response_type": "json"
+    }
+  ],
+  "upload": {
+    "max_file_bytes": 26214400,
+    "max_delivery_attempts": 8
+  }
 }
 ```
 
-A false result is a **break**: this step is skipped and so is every step after it, and the delivery is recorded as `skipped` rather than delivered or failed. Earlier steps are not undone. The delivery is acknowledged and never retried, and a `STEP_DISABLED` monitoring event is emitted at info level — a disabled step is the configuration working, not a fault.
+| Configuration field | Integration Hub control | Purpose |
+| --- | --- | --- |
+| `direction` | **Direction → Upload** | Sends epilot files to an external system. |
+| `fan_out.enabled` | **Delivery split → One per file** | Chooses one delivery per attachment or one delivery containing all attachments. |
+| `auth` | **OAuth2 Authentication** | Configures the token request and credentials. |
+| `secure_proxy.use_case_slug` | **Proxy** | Routes requests through a Secure Proxy in the same integration. |
+| `steps[]` | **Request steps** | Defines the ordered HTTP requests. |
+| `steps[].enabled` | **Run this step when** | Runs the step only when its JSONata condition is true. |
+| `steps[].url` | **URL** | Handlebars template for the target URL. |
+| `steps[].method` | **Method** | `GET`, `POST`, `PUT`, or `PATCH`. |
+| `steps[].headers` | **Headers** | Request headers with optional Handlebars values. |
+| `steps[].body_jsonata` | **Body (JSONata)** | Produces a JSON object or array for the request body. |
+| `steps[].response_type` | **Response Type** | Treats the response as `json` or `binary`. |
+| `upload.max_delivery_attempts` | **Delivery rules → Attempts per file** | Sets 1–100 delivery attempts; the default is 8. |
+| `upload.max_file_bytes` | **Delivery rules → Maximum file size** | Sets a per-file limit up to the 100 MiB platform maximum. |
+| `upload.max_total_bytes` | Configuration object only | Optionally limits the combined size when **One per file** is off. |
 
-`enabled` reads the same bindings a body does, `$steps` included, so it can branch on what an earlier step returned. This is also how a single file is filtered out: with one delivery per attachment, a false result on the first step drops that file and leaves the others untouched.
-
-```
-$count($file_data[0].relation_tags[$ = "customer-document"]) > 0
-```
-
-Return exactly `true` or `false`. An expression that throws or returns any other value fails the delivery terminally with `MAPPING_EXPRESSION_FAILED` naming the step — a missing path must not be mistaken for a deliberate skip.
-
-## URLs, headers, and environment values
-
-Two expression languages, split by what they produce. **JSONata produces data**: `body_jsonata` and `enabled`. **Handlebars composes strings**: a step's `url` and `headers`. An upload step rejects a Handlebars `body` outright.
-
-Handlebars templates render exactly once, against a single context:
-
-| Namespace | Contents |
-| --- | --- |
-| `env` | Organization environment variables and secrets |
-| `file_data` | The same array `$file_data` holds, so `{{file_data.0.filename}}` reads the first file |
-| `steps` | Previous step results, such as `{{steps.0.body.documentId}}` |
-| `auth_token` | The acquired OAuth2 token, added automatically as a `Bearer` header unless a step sets its own `Authorization` |
-
-Environment values are part of that one context, so write them plainly:
+### Outbound configuration
 
 ```json
-"url": "{{env.DOCUMENT_API_URL}}/documents"
+{
+  "event_catalog_event": "CustomerRequestSubmitted",
+  "event_filter": "$count(event_attachments) > 0",
+  "ack_tracking": "off",
+  "mappings": [
+    {
+      "name": "External document archive",
+      "enabled": true,
+      "delivery": {
+        "type": "file_proxy",
+        "use_case_slug": "customer-request-document-upload"
+      }
+    }
+  ]
+}
 ```
 
-:::warning No backslash escape
-Upload templates render in a single pass. Do not write the legacy `\{{env.NAME}}` escape used by the [download direction](./file-proxy.md#environment-variable-resolution) — it is not rewritten here and renders as the literal text `{{env.NAME}}`, which the delivery then rejects rather than shipping.
-:::
+| Configuration field | Integration Hub control | Purpose |
+| --- | --- | --- |
+| `event_catalog_event` | **Event Type** | Selects the event that starts delivery. |
+| `event_filter` | **Event filter** | Optionally limits which events are handled. |
+| `ack_tracking` | **Track acknowledgements** | Waits for a consumer acknowledgement when enabled. |
+| `mappings[]` | **File Deliveries** | Adds one or more file-delivery targets. |
+| `mappings[].name` | File delivery name | Labels the delivery in Integration Hub and monitoring. |
+| `mappings[].enabled` | **Enabled** | Turns this file delivery on or off. |
+| `mappings[].delivery.use_case_slug` | **Send files through** | Selects an upload File Proxy from the same integration. |
 
-Two guards run on every rendered upload template, because single-pass rendering fails quietly by default. Both are terminal, and each names what to fix:
+For endpoint details and the full schema, see [Configuration](./configuration.md).
 
-- **A residual `{{` after rendering** — a configuration still carrying the `\{{` escape. Rewrite it without the backslash.
-- **A referenced `env` key absent from the environment** — checked before the URL is parsed, because an empty value in host position turns `https://{{env.host}}/document/import` into `https:///document/import`, whose host then parses as `document`. Provision the variable. A key that exists and is legitimately empty is fine; only absence fails.
+## Delivery split
 
-Store credentials and base URLs as organization environment variables using epilot's Environments & Secrets feature, following the [naming recommendations](./file-proxy.md#recommended-environment-variable-naming).
+The **One per file** setting controls what each delivery contains:
+
+- **On** — one delivery per attachment. Each file has its own retry and monitoring status.
+- **Off** — one delivery containing every attachment from the event.
+
+Request-step expressions use `$file_data` in both modes. It contains one item when **One per file** is on and all attachments when it is off.
+
+If the event contains no attachments, no request is sent. Use the outbound **Event filter** when events without files should be ignored before delivery.
+
+## Configure request steps
+
+Each request step has these UI fields:
+
+- **Run this step when** — optional JSONata condition;
+- **URL** — Handlebars template;
+- **Method** — `GET`, `POST`, `PUT`, or `PATCH`;
+- **Response Type** — `json` or `binary`;
+- **Headers** — optional name-value pairs; and
+- **Body (JSONata)** — optional JSONata mapping for write methods.
+
+### Map the request body
+
+**Body (JSONata)** must return an object or array. Leave it blank to send the files unchanged: a single attachment object when **One per file** is on, or the complete attachment array when it is off.
+
+The event payload is the expression root, so fields such as `contact.customer_number`, `ticket._purpose`, and `_event_id` are available directly. Additional bindings start with `$`:
+
+| Binding | Contains |
+| --- | --- |
+| `$file_data` | Files in this delivery, always as an array. |
+| `$steps` | Results of earlier request steps as `statusCode`, `headers`, and `body`. |
+| `$env` | Values from the integration's **Environment** tab. |
+| `$ack_id` | Event acknowledgement ID, when available. |
+| `$now()` | Current ISO timestamp. |
+| `$germanDate(iso)` | An ISO timestamp formatted as a German date. |
+
+Each `$file_data` item provides the values most commonly needed by a target API:
+
+| Field | Contains |
+| --- | --- |
+| `entity_id` | File entity ID. |
+| `version_index` | Referenced file version. |
+| `filename` | File name. |
+| `mime_type` | MIME type. |
+| `size_bytes` | File size in bytes. |
+| `base64` | Base64-encoded file content. |
+| `_tags` | File entity tags. |
+| `relation_tags` | Tags on the relation that attached the file. |
+| `category` | File category. |
+| `file_date` | Document date. |
+
+Example:
+
+```jsonata
+{
+  "customerNumber": contact.customer_number,
+  "filename": $file_data[0].filename,
+  "mimeType": $file_data[0].mime_type,
+  "fileData": $file_data[0].base64,
+  "idempotencyKey": $file_data[0].entity_id & ":" & _event_id
+}
+```
+
+Write `$file_data[0].filename`, including the `$`. A missing value is omitted from the resulting object; `null`, `""`, `false`, and `0` are sent as values. For an optional field, test its existence explicitly:
+
+```jsonata
+{ "pin": $exists(contact.customer_pin) ? $string(contact.customer_pin) }
+```
+
+### Configure URLs, headers, and authentication
+
+**URL**, **Headers**, and OAuth2 fields use Handlebars. Reference values from the integration's **Environment** tab as `{{env.NAME}}`:
+
+```text
+{{env.DOCUMENT_API_URL}}/documents
+```
+
+Previous JSON responses are available to later steps, for example `{{steps.0.body.documentId}}` in a URL or header and `$steps[0].body.documentId` in a JSONata body. Store base URLs and credentials as environment values rather than literals; see [Environments & Secrets](/docs/environments/environments-secrets).
+
+### Run steps conditionally
+
+Use **Run this step when** to enter a JSONata expression that returns `true` or `false`. A false result skips that step and the remaining steps for the delivery. For example, this sends only PDF files when **One per file** is on:
+
+```jsonata
+$file_data[0].mime_type = "application/pdf"
+```
+
+Use the outbound **Event filter** for event-level selection and **Run this step when** for file- or step-level selection.
 
 ## Delivery behavior
 
-The worker distinguishes three terminal outcomes: **delivered**, **skipped**, or **failed**. A skipped delivery is completed for idempotency purposes, acknowledged, and never retried; its monitoring code keeps it distinct from a workflow that reached its final step. When the final step runs, any response below `400` completes the workflow — there is no separate predicate re-judging a response the transport already accepted.
+- Delivery is at least once. If the target API supports idempotency keys, send a stable value such as `$file_data[0].entity_id & ":" & _event_id`.
+- Any HTTP response below `400` completes the delivery successfully.
+- `408`, `429`, and `5xx` responses, timeouts, and temporary authentication or file-fetch errors are retried up to **Attempts per file**. Other `4xx` responses are not retried.
+- **Maximum file size** defaults to the 100 MiB platform maximum. A lower value can be configured per upload File Proxy.
+- When **One per file** is off, `upload.max_total_bytes` can set an additional combined-size limit through the configuration API.
 
-- Delivery is **at least once**. Normal queue redelivery is deduplicated by a durable per-delivery record retained for 30 days.
-- A failure after the target accepts a file but before epilot commits success can still repeat the request. If the target supports an idempotency key, send it a value that is stable across retries of the same delivery. `$file_data[0].entity_id & ":" & _event_id` in `body_jsonata` distinguishes separate events for the same file; the Handlebars header context does not expose the root event ID.
-- The upload recipe is read again for queued retries, subject to a short cache. Correcting configuration affects later attempts without replaying the source event.
-- `upload.max_delivery_attempts` defaults to 8 and supports 1–100 attempts with jittered backoff. The default schedules at most 7 delays, totaling roughly 7 hours 40 minutes before jitter, so a normal ERP maintenance window does not immediately exhaust them.
-- `upload.max_file_bytes` is the per-file ceiling. It defaults to the platform maximum of 100 MiB (`104857600`) and cannot exceed it. Known size is checked before fetch; the limit is always enforced while buffering.
-- `upload.max_total_bytes` is the ceiling for all of a delivery's files together, in bytes, and cannot exceed the same platform maximum. It only has an effect with fan-out disabled, where one delivery carries every attachment and base64 inflates each by about a third.
-- External HTTP responses below `400` are accepted. `408`, `429`, and `5xx` responses are retried; other `4xx` responses are terminal. Timeouts, OAuth refresh failures, and transient file-fetch failures are retried up to the configured attempt limit.
-- Configuration and data errors that will not improve on retry — such as a missing file, an expression that cannot evaluate, a body expression that returns something other than an object or array, or an unresolvable step template — fail terminally. JSONata expressions, Handlebars syntax, and `$` bindings are also checked when the recipe is saved.
-- Terminal and exhausted deliveries are recorded as failed and completed without deliberately filling the dead-letter queue with permanent errors.
+## Monitor deliveries
 
-## Monitoring
+Open the integration's **Monitoring** tab to inspect deliveries and their event traces. With **One per file** enabled, each attachment has its own status, while all attachments from the same source event remain grouped by the event trace.
 
-File-delivery monitoring uses the source Event Catalog `_event_id` as both `event_id` and `correlation_id`, so all attachments from one event stay in one trace. Base details identify the event, mapping, upload recipe, attachment, item index, and item count.
+The most relevant monitoring codes are:
 
-Worker terminal outcomes add the attempt number. When the file proxy calls the target directly, a terminal record also includes the final request and response when available; credentials are redacted and long values such as base64 file content are elided. Retry records do not duplicate that exchange. When a recipe uses `secure_proxy`, the secure proxy records the partner exchange under its own use case instead.
-
-Worker terminal outcomes are emitted twice: once for the outbound use case and once for the upload `file_proxy` use case. Enqueue, empty-fan-out, and retry records are attributed only to the outbound use case.
-
-| Level | Code | Meaning |
+| Outcome | Code | Meaning |
 | --- | --- | --- |
-| Success | `FILE_PROXY_UPLOADED` | The workflow reached its final step with a response below `400`. |
-| Info | `FILE_PROXY_UPLOAD_ENQUEUED` | The mapping queued its deliveries; `item_count` records how many. |
-| Info | `FAN_OUT_EMPTY` | The event carried no attachments to send. |
-| Info | `STEP_DISABLED` | A step's `enabled` expression returned false, so the remaining workflow was skipped. Includes the zero-based `step_index`. A legacy or malformed queued item with no usable attachment also completes through this code, without `step_index`. |
-| Warning | `FILE_PROXY_UPLOAD_RETRYING` | The delivery failed and will be attempted again. |
-| Error | `FILE_PROXY_UPLOAD_FAILED` | Delivery failed terminally or exhausted attempts. |
-| Error | `FILE_FETCH_FAILED` | File API did not return usable content. |
-| Error | `FILE_TOO_LARGE` | A file, or all files in one non-fan-out delivery together, exceeded the recipe or platform limit. |
-| Error | `ATTACHMENT_NOT_FOUND` | The referenced file entity or version was not found. |
-| Error | `MAPPING_EXPRESSION_FAILED` | A `body_jsonata` or `enabled` expression could not be evaluated, or produced an unusable result. |
+| Delivered | `FILE_PROXY_UPLOADED` | The external API accepted the final request. |
+| Skipped | `FAN_OUT_EMPTY` | The event contained no attachments. |
+| Skipped | `STEP_DISABLED` | **Run this step when** evaluated to false. |
+| Retrying | `FILE_PROXY_UPLOAD_RETRYING` | Another delivery attempt is scheduled. |
+| Failed | `FILE_PROXY_UPLOAD_FAILED` | Delivery failed or exhausted its attempts. |
+| Failed | `FILE_FETCH_FAILED` | The file content could not be loaded. |
+| Failed | `FILE_TOO_LARGE` | A configured or platform size limit was exceeded. |
+| Failed | `ATTACHMENT_NOT_FOUND` | The referenced file or version was not found. |
+| Failed | `MAPPING_EXPRESSION_FAILED` | A body or condition expression was invalid or returned an unsupported result. |
 
-General configuration codes, including `USE_CASE_NOT_FOUND`, `USE_CASE_DISABLED`, `USE_CASE_INVALID_TYPE`, and `USE_CASE_MISSING_CONFIG`, can also apply. These are epilot-produced monitoring codes; they are separate from the `EXTERNAL_*` codes described in [External Monitoring Events](./external-monitoring-events.md).
-
-`REQUIRED_PARAM_MISSING`, `LOOKUP_UNMAPPED`, and `FAN_OUT_INVALID_RESULT` remain in the shared code enum but are no longer produced by this upload path; their configuration mechanisms were removed.
+Open an entry to see the use case, delivery, attachment, attempt, and available request or response details. Credentials and large values such as file content are not shown.
 
 ## Troubleshooting
 
-| Symptom | Check |
+| Symptom | Check in Integration Hub |
 | --- | --- |
-| The use case cannot be saved | A `file_proxy` mapping requires an event whose catalog schema declares `event_attachments`. The `400` message names the event. |
-| Target is unresolved | The delivery's `use_case_slug` must match an enabled upload-direction `file_proxy` use case in the same integration. Check `USE_CASE_NOT_FOUND`, `USE_CASE_DISABLED`, or `USE_CASE_INVALID_TYPE` monitoring. |
-| Mapped filename or bytes are empty | File bindings require `$file_data`, including the `$`, and an index: `$file_data[0].base64`. |
-| Target URL or credentials are empty | Write `{{env.NAME}}` without a leading backslash, and confirm the variable exists in the organization's environment. |
-| An optional field is missing from the body | Only `undefined` omits a key. Check the test in the two-arm ternary — `0` and `""` are false in JSONata. |
-| Everything reports skipped | An `enabled` expression is returning false. `STEP_DISABLED` names the `step_index`; if it is absent, inspect the queued attachment's `entity_id`. |
-| Event succeeds without uploading | Inspect `FAN_OUT_EMPTY` and `event_filter`; the event may carry no attachments. |
-| `CustomerRequestSubmitted` has no files | Place its Automation trigger action after the workflow step that writes the ticket's file relations. An empty attachment array is valid and is not replayed after a later relation update. |
-| File fetch fails | Verify `entity_id`, `version_index`, and the configured file-size limits. |
-| Target `4xx` is not retried | This is expected except for `408` and `429`; correct the request mapping or target configuration. |
+| No option appears under **Send files through** | Create a File Proxy in the same integration, set **Direction** to **Upload**, and enable it. |
+| The event does not appear under **Event Type** | File delivery requires an event that provides file attachments. |
+| The preview or delivery contains no files | Confirm the selected event contains `event_attachments` and check the outbound **Event filter**. |
+| A mapped filename or file body is missing | Use `$file_data`, including the `$` and an array index such as `$file_data[0].base64`. |
+| A URL or credential is empty | Confirm the value exists on the integration's **Environment** tab and reference it as `{{env.NAME}}`. |
+| Every delivery is skipped | Check **Run this step when** and the `STEP_DISABLED` monitoring entry. |
+| A target `4xx` response is not retried | Only `408` and `429` are retryable client errors. Correct the request mapping or target configuration. |
+| A file is rejected as too large | Check **Maximum file size** and, when sending all files together, `upload.max_total_bytes`. |
 
 ## Related documentation
 
