@@ -228,7 +228,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 
 Everything beyond the configuration contract — the polling and acknowledgement API, lease and ordering semantics, retention and expiry behavior, the dead-letter queue and operator actions, and poll-mode monitoring — is documented on the dedicated [Pollable Outbound](./pollable-outbound.md) page.
 
-**File proxy delivery (push):** points to an upload-direction `file_proxy` use case in the same integration. The referenced recipe owns fan-out, payload mapping, file selection, authentication, and HTTP steps. `jsonata_expression` is rejected on this mapping type. See [Outbound File Delivery](./outbound-file-delivery.md) for the complete setup and runtime behavior.
+**File proxy delivery (push):** points to an upload-direction `file_proxy` use case in the same integration. The referenced recipe owns fan-out, payload mapping, authentication, and HTTP steps. `jsonata_expression` is rejected on this mapping type, and the use case's `event_catalog_event` must declare `event_attachments`. See [Outbound File Delivery](./outbound-file-delivery.md) for the complete setup and runtime behavior.
 
 ```json
 "delivery": {
