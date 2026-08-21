@@ -1,7 +1,7 @@
 {
   "event_name": "CustomerRequestSubmitted",
   "event_title": "Customer Request Submitted",
-  "event_description": "Triggered when a customer request ticket is created, including all files attached to the ticket",
+  "event_description": "Explicitly triggered by Automation after a customer request ticket and its file attachments are ready",
   "event_version": "1.0",
   "event_tags": [
     "builtin",
@@ -12,40 +12,6 @@
     "customer-request"
   ],
   "schema_fields": {
-    "operation": {
-      "json_schema": {
-        "type": "string",
-        "enum": [
-          "createEntity"
-        ],
-        "description": "The entity operation type that triggered this event"
-      },
-      "required": true
-    },
-    "activity_id": {
-      "json_schema": {
-        "type": "string",
-        "description": "Activity ID associated with this operation (ULID)",
-        "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
-      },
-      "required": false
-    },
-    "activity_type": {
-      "json_schema": {
-        "type": "string",
-        "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
-        "example": "EntityUpdated"
-      },
-      "required": false
-    },
-    "trigger_entity": {
-      "json_schema": {
-        "type": "string",
-        "format": "uuid",
-        "description": "Entity ID of the entity that triggered this event"
-      },
-      "required": true
-    },
     "event_attachments": {
       "json_schema": {
         "type": "array",
@@ -132,9 +98,9 @@
           ],
           "additionalProperties": false
         },
-        "description": "All files related to the ticket. A single submission can carry many documents across several upload blocks. Consumers identify a given upload via `relation_tags` / `_tags` and scope the use case via the `_purpose` taxonomy IDs on the ticket node (IDs only — resolving them to names is up to the consumer)."
+        "description": "All files related to the ticket, empty when the request carries none. A single submission can carry many documents across several upload blocks. Consumers identify a given upload via `relation_tags` / `_tags` and scope the use case via the `_purpose` taxonomy IDs on the ticket node (IDs only — resolving them to names is up to the consumer)."
       },
-      "required": false,
+      "required": true,
       "graph_source": "[ticket_files.{\"entity_id\": _id, \"filename\": filename, \"mime_type\": mime_type, \"size_bytes\": size_bytes, \"s3ref\": s3ref, \"version_index\": ($count(versions) > 0 ? $count(versions) - 1 : 0), \"readable_size\": readable_size, \"_tags\": _tags, \"relation_tags\": relation_tags, \"category\": category, \"file_date\": file_date, \"_created_at\": _created_at}]"
     }
   },
@@ -197,13 +163,7 @@
       }
     ]
   },
-  "entity_operation": {
-    "operation": [
-      "createEntity"
-    ],
-    "schema": [
-      "ticket"
-    ]
-  },
-  "automation_trigger": true
+  "automation_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket"
 }

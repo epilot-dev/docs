@@ -9,15 +9,17 @@ slug: /integrations/integration-toolkit/outbound-file-delivery
 
 Outbound file delivery sends files referenced by an epilot event to an external document API. The Integration Toolkit fetches each file from epilot, maps the event and the file into the target API's format, and runs a declarative HTTP workflow.
 
-`CustomerRequestSubmitted` is the main example: one submitted request can contain several `event_attachments`, and each attachment is delivered and monitored independently.
+`CustomerRequestSubmitted` is the main example: one submitted request can contain several `event_attachments`, and with fan-out enabled each attachment is delivered and monitored independently.
 
-:::caution Attachment readiness
+:::caution Trigger after attachments are ready
 
-`CustomerRequestSubmitted` is emitted when the ticket is created. In the standard Journey flow, the file entities already exist, but automation creates the ticket and copies its file relations in a second request. Event Catalog processes the ticket creation asynchronously and reads the current relation graph. The relation request usually finishes first, which is why the attachments are normally present, but this ordering is not guaranteed. The later relation write does not emit another `CustomerRequestSubmitted` or automatically replay an empty snapshot.
+`CustomerRequestSubmitted` is triggered explicitly by Automation; ticket creation no longer emits it automatically. Place the trigger action after the workflow has created the ticket and written its file relations. Event Catalog then hydrates the ticket's current graph and builds `event_attachments` from every related file.
+
+An empty attachment array is valid because a customer request may contain no uploads. If Automation triggers the event before the file relations are written, that empty snapshot is published and a later relation update does not replay it automatically.
 
 Without an attachment-count `event_filter`, an event with no attachments records `FAN_OUT_EMPTY`. With the example `$count(event_attachments) > 0` filter below, the use case is filtered out before fan-out, so no delivery is enqueued and no `FAN_OUT_EMPTY` is emitted for that mapping.
 
-If the integration needs strict ordering after ticket creation, use a `FileUpdated` handoff after the workflow writes the ticket reference onto the file, or trigger a dedicated workflow event after all relations are complete.
+For strict upload ordering, make the `CustomerRequestSubmitted` trigger action depend on the relation-writing step. If that workflow cannot provide the ordering, use a `FileUpdated` handoff or another dedicated event after the relations are complete.
 
 :::
 
@@ -54,7 +56,7 @@ sequenceDiagram
     end
 ```
 
-The outbound delivery is a pure pointer to the file-proxy use-case slug. The recipe is resolved at runtime, so you can create the two use cases in either order. A missing or disabled target is visible through monitoring and the outbound status endpoint.
+The outbound delivery is a pure pointer to the file-proxy use-case slug. The recipe is resolved at runtime, so you can create the two use cases in either order. A missing, disabled, or wrong-direction target is reported through monitoring when the event is handled.
 
 ## Before you start
 
@@ -96,10 +98,9 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
           "method": "POST",
           "url": "{{env.DOCUMENT_API_URL}}/documents",
           "headers": {
-            "Content-Type": "application/json",
-            "Idempotency-Key": "{{file_data.0.entity_id}}"
+            "Content-Type": "application/json"
           },
-          "body_jsonata": "{ \"customerNumber\": contact.customer_number, \"filename\": $file_data[0].filename, \"mimeType\": $file_data[0].mime_type, \"fileData\": $file_data[0].base64, \"sourceSystem\": \"epilot\", \"submittedAt\": $germanDate($now()) }",
+          "body_jsonata": "{ \"customerNumber\": contact.customer_number, \"filename\": $file_data[0].filename, \"mimeType\": $file_data[0].mime_type, \"fileData\": $file_data[0].base64, \"sourceSystem\": \"epilot\", \"idempotencyKey\": $file_data[0].entity_id & \":\" & _event_id, \"submittedAt\": $germanDate($now()) }",
           "response_type": "json"
         }
       ],
@@ -135,7 +136,9 @@ Each step is configured with:
 
 Download-only fields are rejected for upload recipes: `params`, `response`, `allowed_origins`, `prevent_indirect_serving`, and a Handlebars `body` on a step.
 
-Fields that earlier versions of this feature carried are rejected as well, each naming its replacement: `params_mapping`, `required_params`, `constants`, `lookups`, `shared`, `file_source`, `fan_out.split_expression`, and a step's `required_keys`.
+Fields that earlier versions of this feature carried are rejected as well, each naming its replacement: `params_mapping`, `required_params`, `constants`, `lookups`, `shared`, `file_source`, `fan_out.split_expression`, and a step's `required_keys` or `body_source`.
+
+`upload.success_when` and `upload.external_id` have also been removed. For compatibility they are not rejected, but they have no effect: a final response below `400` completes the workflow, and no external ID is stored or added to monitoring. Remove both fields from existing recipes.
 
 ## 2. Subscribe to the event
 
@@ -168,17 +171,13 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
   }'
 ```
 
-The event must declare `event_attachments`. An outbound use case with a `file_proxy` mapping is rejected with `400` when its `event_catalog_event` carries no attachments — the message names the event and the offending mapping — because such a configuration would fan out to nothing on every event it ever sees and report no error anywhere. If the event catalog cannot be reached to check, the save fails with a retryable `503` rather than being let through.
+The event's catalog schema must declare `event_attachments`. An outbound use case with a `file_proxy` mapping is rejected with `400` when that field is absent from the schema — the message names the event and the offending mapping — because such a configuration would fan out to nothing on every event it ever sees and report no error anywhere. An individual event may still carry an empty array. If the event catalog cannot be reached to check the schema, the save fails with a retryable `503` rather than being let through.
 
 Do not add `jsonata_expression` to a `file_proxy` outbound mapping. The referenced recipe owns payload mapping, and the API rejects an expression that would otherwise be ignored. Mapping IDs and timestamps are generated when omitted.
 
+The delivery object is now only `{ "type": "file_proxy", "use_case_slug": "..." }`. Legacy delivery fields are rejected: `attachment_selector` has no replacement because the split is fixed to `event_attachments`; `constants` and `lookups` belong inline in a step's `body_jsonata`; and `max_delivery_attempts` belongs at `upload.max_delivery_attempts` on the referenced recipe.
+
 Use `ack_tracking: "off"` for a file-only outbound use case: durable delivery state is tracked per file. If a webhook mapping in the same outbound use case requires acknowledgements, keep acknowledgement tracking enabled or separate the webhook and file deliveries.
-
-Check target resolution with:
-
-```http
-GET /v1/integrations/{integrationId}/outbound-status
-```
 
 ## Fan-out
 
@@ -212,14 +211,14 @@ The evaluation root is the event, so `contact.customer_number`, `ticket._purpose
 | `$now()` | Current ISO timestamp, one value for the whole delivery |
 | `$germanDate(iso)` | An ISO timestamp formatted as a German date |
 
-`$file_data` is the single binding for files, in both fan-out modes: one entry when fanning out, every attachment when not. `$file_data[0].filename` therefore works either way. Each entry is the event's `event_attachments` object plus `base64`:
+`$file_data` is the single binding for files, in both fan-out modes: one entry when fanning out, every attachment when not. `$file_data[0].filename` therefore works either way. Each entry starts with the event's `event_attachments` object. The worker resolves the file by `entity_id` and `version_index`, adds `base64`, and replaces the filename, MIME type, and size with the values of the file version it actually loaded. An event `s3ref` is passed through as metadata; it is not used as the download source.
 
 | Field | Contains |
 | --- | --- |
 | `entity_id` | File entity ID |
-| `filename` | File name |
-| `mime_type` | MIME type |
-| `size_bytes` | Size in bytes |
+| `filename` | File name returned by File API |
+| `mime_type` | MIME type returned by File API |
+| `size_bytes` | Loaded size in bytes |
 | `base64` | File content, base64-encoded |
 | `s3ref` | `bucket` and `key` of the stored file |
 | `version_index` | Which file version the event referenced |
@@ -288,7 +287,7 @@ A step's optional `enabled` expression is JSONata returning a boolean that decid
 }
 ```
 
-A false result is a **break**: this step is skipped and so is every step after it, and the delivery is recorded as `skipped` rather than delivered or failed. It is acknowledged and never retried, and a `STEP_DISABLED` monitoring event is emitted at info level — a disabled step is the configuration working, not a fault.
+A false result is a **break**: this step is skipped and so is every step after it, and the delivery is recorded as `skipped` rather than delivered or failed. Earlier steps are not undone. The delivery is acknowledged and never retried, and a `STEP_DISABLED` monitoring event is emitted at info level — a disabled step is the configuration working, not a fault.
 
 `enabled` reads the same bindings a body does, `$steps` included, so it can branch on what an earlier step returned. This is also how a single file is filtered out: with one delivery per attachment, a false result on the first step drops that file and leaves the others untouched.
 
@@ -296,7 +295,7 @@ A false result is a **break**: this step is skipped and so is every step after i
 $count($file_data[0].relation_tags[$ = "customer-document"]) > 0
 ```
 
-Return a boolean. An expression that cannot evaluate fails the delivery terminally with `MAPPING_EXPRESSION_FAILED` naming the step — a broken predicate must not read as a deliberate skip.
+Return exactly `true` or `false`. An expression that throws or returns any other value fails the delivery terminally with `MAPPING_EXPRESSION_FAILED` naming the step — a missing path must not be mistaken for a deliberate skip.
 
 ## URLs, headers, and environment values
 
@@ -330,49 +329,55 @@ Store credentials and base URLs as organization environment variables using epil
 
 ## Delivery behavior
 
-Every delivery ends in one of three terminal outcomes, counted separately: **delivered**, **skipped**, or **failed**. A 2xx from the last step is the delivery — there is no separate predicate re-judging a response the transport already accepted.
+The worker distinguishes three terminal outcomes: **delivered**, **skipped**, or **failed**. A skipped delivery is completed for idempotency purposes, acknowledged, and never retried; its monitoring code keeps it distinct from a workflow that reached its final step. When the final step runs, any response below `400` completes the workflow — there is no separate predicate re-judging a response the transport already accepted.
 
-- Delivery is **at least once**. Normal queue redelivery is deduplicated by a durable per-file record retained for 30 days.
-- A failure after the target accepts a file but before epilot commits success can still repeat the request. If the target supports an idempotency key, send it a value that is stable across retries of the same delivery — `$file_data[0].entity_id & ":" & _event_id` in a body, or `{{file_data.0.entity_id}}` in a header.
+- Delivery is **at least once**. Normal queue redelivery is deduplicated by a durable per-delivery record retained for 30 days.
+- A failure after the target accepts a file but before epilot commits success can still repeat the request. If the target supports an idempotency key, send it a value that is stable across retries of the same delivery. `$file_data[0].entity_id & ":" & _event_id` in `body_jsonata` distinguishes separate events for the same file; the Handlebars header context does not expose the root event ID.
 - The upload recipe is read again for queued retries, subject to a short cache. Correcting configuration affects later attempts without replaying the source event.
 - `upload.max_delivery_attempts` defaults to 8 and supports 1–100 attempts with jittered backoff. The default schedules at most 7 delays, totaling roughly 7 hours 40 minutes before jitter, so a normal ERP maintenance window does not immediately exhaust them.
-- `upload.max_file_bytes` is the per-file ceiling. It defaults to, and is clamped by, the platform maximum of 100 MiB (`104857600`). Known size is checked before fetch; the limit is always enforced while buffering.
-- `upload.max_total_bytes` is the ceiling for all of a delivery's files together, in bytes, and is capped by the same platform maximum — it may lower it but never raise it. It only has an effect with fan-out disabled, where one delivery carries every attachment and base64 inflates each by about a third.
-- External HTTP `408`, `429`, and `5xx` responses are retried. Other `4xx` responses are terminal. Timeouts, OAuth refresh failures, and transient file-fetch failures are retried up to the configured attempt limit.
+- `upload.max_file_bytes` is the per-file ceiling. It defaults to the platform maximum of 100 MiB (`104857600`) and cannot exceed it. Known size is checked before fetch; the limit is always enforced while buffering.
+- `upload.max_total_bytes` is the ceiling for all of a delivery's files together, in bytes, and cannot exceed the same platform maximum. It only has an effect with fan-out disabled, where one delivery carries every attachment and base64 inflates each by about a third.
+- External HTTP responses below `400` are accepted. `408`, `429`, and `5xx` responses are retried; other `4xx` responses are terminal. Timeouts, OAuth refresh failures, and transient file-fetch failures are retried up to the configured attempt limit.
 - Configuration and data errors that will not improve on retry — such as a missing file, an expression that cannot evaluate, a body expression that returns something other than an object or array, or an unresolvable step template — fail terminally. JSONata expressions, Handlebars syntax, and `$` bindings are also checked when the recipe is saved.
 - Terminal and exhausted deliveries are recorded as failed and completed without deliberately filling the dead-letter queue with permanent errors.
 
 ## Monitoring
 
-Every per-file monitoring event uses the source Event Catalog `_event_id` as both `event_id` and `correlation_id`. Details include the use case, mapping, attachment, item index, and attempt, plus the captured request and response of the exchange with the target, with credentials redacted.
+File-delivery monitoring uses the source Event Catalog `_event_id` as both `event_id` and `correlation_id`, so all attachments from one event stay in one trace. Base details identify the event, mapping, upload recipe, attachment, item index, and item count.
+
+Worker terminal outcomes add the attempt number. When the file proxy calls the target directly, a terminal record also includes the final request and response when available; credentials are redacted and long values such as base64 file content are elided. Retry records do not duplicate that exchange. When a recipe uses `secure_proxy`, the secure proxy records the partner exchange under its own use case instead.
+
+Worker terminal outcomes are emitted twice: once for the outbound use case and once for the upload `file_proxy` use case. Enqueue, empty-fan-out, and retry records are attributed only to the outbound use case.
 
 | Level | Code | Meaning |
 | --- | --- | --- |
-| Success | `FILE_PROXY_UPLOADED` | The target accepted the file workflow. |
-| Info | `FILE_PROXY_UPLOAD_ENQUEUED` | Per-file deliveries were queued for an event. |
+| Success | `FILE_PROXY_UPLOADED` | The workflow reached its final step with a response below `400`. |
+| Info | `FILE_PROXY_UPLOAD_ENQUEUED` | The mapping queued its deliveries; `item_count` records how many. |
 | Info | `FAN_OUT_EMPTY` | The event carried no attachments to send. |
-| Info | `STEP_DISABLED` | A step's `enabled` expression returned false, so the delivery was skipped. Includes `step_index`. |
+| Info | `STEP_DISABLED` | A step's `enabled` expression returned false, so the remaining workflow was skipped. Includes the zero-based `step_index`. A legacy or malformed queued item with no usable attachment also completes through this code, without `step_index`. |
 | Warning | `FILE_PROXY_UPLOAD_RETRYING` | The delivery failed and will be attempted again. |
 | Error | `FILE_PROXY_UPLOAD_FAILED` | Delivery failed terminally or exhausted attempts. |
 | Error | `FILE_FETCH_FAILED` | File API did not return usable content. |
-| Error | `FILE_TOO_LARGE` | The file exceeded the recipe or platform limit. |
+| Error | `FILE_TOO_LARGE` | A file, or all files in one non-fan-out delivery together, exceeded the recipe or platform limit. |
 | Error | `ATTACHMENT_NOT_FOUND` | The referenced file entity or version was not found. |
 | Error | `MAPPING_EXPRESSION_FAILED` | A `body_jsonata` or `enabled` expression could not be evaluated, or produced an unusable result. |
-| Error | `FAN_OUT_INVALID_RESULT` | The event's `event_attachments` was not an array. |
 
 General configuration codes, including `USE_CASE_NOT_FOUND`, `USE_CASE_DISABLED`, `USE_CASE_INVALID_TYPE`, and `USE_CASE_MISSING_CONFIG`, can also apply. These are epilot-produced monitoring codes; they are separate from the `EXTERNAL_*` codes described in [External Monitoring Events](./external-monitoring-events.md).
+
+`REQUIRED_PARAM_MISSING`, `LOOKUP_UNMAPPED`, and `FAN_OUT_INVALID_RESULT` remain in the shared code enum but are no longer produced by this upload path; their configuration mechanisms were removed.
 
 ## Troubleshooting
 
 | Symptom | Check |
 | --- | --- |
-| The use case cannot be saved | A `file_proxy` mapping requires an event that declares `event_attachments`. The `400` message names the event. |
-| Target is unresolved | The delivery's `use_case_slug` must match an enabled upload-direction `file_proxy` use case in the same integration. |
+| The use case cannot be saved | A `file_proxy` mapping requires an event whose catalog schema declares `event_attachments`. The `400` message names the event. |
+| Target is unresolved | The delivery's `use_case_slug` must match an enabled upload-direction `file_proxy` use case in the same integration. Check `USE_CASE_NOT_FOUND`, `USE_CASE_DISABLED`, or `USE_CASE_INVALID_TYPE` monitoring. |
 | Mapped filename or bytes are empty | File bindings require `$file_data`, including the `$`, and an index: `$file_data[0].base64`. |
 | Target URL or credentials are empty | Write `{{env.NAME}}` without a leading backslash, and confirm the variable exists in the organization's environment. |
 | An optional field is missing from the body | Only `undefined` omits a key. Check the test in the two-arm ternary — `0` and `""` are false in JSONata. |
-| Everything reports skipped | An `enabled` expression is returning false. `STEP_DISABLED` names the `step_index`. |
+| Everything reports skipped | An `enabled` expression is returning false. `STEP_DISABLED` names the `step_index`; if it is absent, inspect the queued attachment's `entity_id`. |
 | Event succeeds without uploading | Inspect `FAN_OUT_EMPTY` and `event_filter`; the event may carry no attachments. |
+| `CustomerRequestSubmitted` has no files | Place its Automation trigger action after the workflow step that writes the ticket's file relations. An empty attachment array is valid and is not replayed after a later relation update. |
 | File fetch fails | Verify `entity_id`, `version_index`, and the configured file-size limits. |
 | Target `4xx` is not retried | This is expected except for `408` and `429`; correct the request mapping or target configuration. |
 

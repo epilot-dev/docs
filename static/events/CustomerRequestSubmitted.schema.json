@@ -27,7 +27,11 @@
     },
     "_event_source": {
       "type": "string",
-      "description": "Source that triggered the event"
+      "description": "Source that triggered the event",
+      "enum": [
+        "automation"
+      ],
+      "example": "automation"
     },
     "_ack_id": {
       "type": "string",
@@ -37,12 +41,16 @@
     "_trigger_source_type": {
       "type": "string",
       "description": "The type of system that triggered the event. Examples: api, automation, operation, portal_user",
-      "example": "api"
+      "enum": [
+        "automation"
+      ],
+      "example": "automation"
     },
     "_trigger_source": {
       "type": "string",
       "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
-      "example": "api_123456"
+      "minLength": 1,
+      "example": "execution-id/action-id"
     },
     "_has_pending_changesets": {
       "type": "boolean",
@@ -75,28 +83,6 @@
         ]
       },
       "description": "Per-key edit mode map; keys are a subset of _changeset_attributes (attribute names for entity changesets, changeset IDs for meter-reading changesets) — only those whose pending changeset has an \"external\" or \"approval\" mode. A \"direct\"/unrecognised mode is omitted here, though the key still appears in _changeset_attributes. Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
-    },
-    "operation": {
-      "type": "string",
-      "enum": [
-        "createEntity"
-      ],
-      "description": "The entity operation type that triggered this event"
-    },
-    "activity_id": {
-      "type": "string",
-      "description": "Activity ID associated with this operation (ULID)",
-      "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
-    },
-    "activity_type": {
-      "type": "string",
-      "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
-      "example": "EntityUpdated"
-    },
-    "trigger_entity": {
-      "type": "string",
-      "format": "uuid",
-      "description": "Entity ID of the entity that triggered this event"
     },
     "event_attachments": {
       "type": "array",
@@ -183,7 +169,7 @@
         ],
         "additionalProperties": false
       },
-      "description": "All files related to the ticket. A single submission can carry many documents across several upload blocks. Consumers identify a given upload via `relation_tags` / `_tags` and scope the use case via the `_purpose` taxonomy IDs on the ticket node (IDs only — resolving them to names is up to the consumer)."
+      "description": "All files related to the ticket, empty when the request carries none. A single submission can carry many documents across several upload blocks. Consumers identify a given upload via `relation_tags` / `_tags` and scope the use case via the `_purpose` taxonomy IDs on the ticket node (IDs only — resolving them to names is up to the consumer)."
     },
     "ticket": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1424,8 +1410,10 @@
     "_event_version",
     "_event_source",
     "_ack_id",
-    "operation",
-    "trigger_entity"
+    "event_attachments",
+    "ticket",
+    "_trigger_source_type",
+    "_trigger_source"
   ],
   "additionalProperties": true,
   "definitions": {
