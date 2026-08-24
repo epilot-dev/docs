@@ -57,7 +57,7 @@ context.fetch   // standard fetch() for everything else
 
 The **epilot SDK is bundled into the sandbox** — you don't import or install anything, and `epilot.authorize()` is already called with `input.app_options.token`. Every epilot API is available as `context.epilot.<api>.<operationId>(...)`, fully typed against the platform's OpenAPI specs.
 
-`console.log()` output is captured per run and available for debugging.
+`console.log()` output is captured per run; for scheduled functions the last ~20 lines are attached to the run's event in your app's **Insights**, so a summary log at the end of your handler doubles as run diagnostics.
 
 ## Return values
 
