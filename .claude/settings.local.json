@@ -1,0 +1,9 @@
+{
+  "includeCoAuthoredBy": false,
+  "env": {
+    "GIT_AUTHOR_NAME": "Adeola Adeyemo",
+    "GIT_AUTHOR_EMAIL": "adeola.adeyemo@epilot.cloud",
+    "GIT_COMMITTER_NAME": "Adeola Adeyemo",
+    "GIT_COMMITTER_EMAIL": "adeola.adeyemo@epilot.cloud"
+  }
+}
