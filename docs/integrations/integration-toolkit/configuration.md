@@ -122,6 +122,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 | `configuration` | object | Yes | Type-specific configuration (see sections below) |
 
 :::info
+- `inbound` — Mapped by default; set `"direct": true` in the configuration to skip mapping and send entity-shaped payloads directly. See [Direct Mode](./inbound/direct-mode.md).
 - `file_proxy` — On-demand file serving from external systems or outbound delivery of epilot files. See the [File Proxy](./file-proxy.md) and [Outbound File Delivery](./outbound-file-delivery.md) guides.
 - `managed_call` — Synchronous external API calls with JSONata mapping. See [Managed Call Use Cases](#managed-call-use-cases).
 - `secure_proxy` — Route requests through epilot's secure proxy for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).

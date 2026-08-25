@@ -8,6 +8,10 @@ description: Configure how ERP data transforms into epilot entities
 
 Mapping defines how ERP data transforms into epilot entities. This page covers the configuration structure and available options.
 
+:::tip
+If your middleware already produces entity-shaped payloads, you can skip mapping entirely — see [Direct Mode](./direct-mode.md).
+:::
+
 ## Mapping Configuration
 
 A mapping configuration consists of one or more entity definitions:

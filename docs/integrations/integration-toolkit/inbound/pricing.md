@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 title: Pricing
 description: Map ERP line items and calculate prices during inbound synchronization
 ---
