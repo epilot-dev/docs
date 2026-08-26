@@ -22,22 +22,15 @@ What you give up is the mapping engine itself: field mappings, JSONata and JSONP
 
 ## How It Works
 
-```
-Middleware sends POST /v3/erp/updates/events (payload = direct payload)
-    |
-epilot resolves the use case configuration (direct: true)
-    |
-The payload is validated — schema, version, entity allowlist
-    |          (invalid events are rejected per-event, never processed)
-    |
-The event is queued — deduplication, ordering, fairness unchanged
-    |
-The operations are translated to internal entity / meter-reading updates
-    |          (no mapping engine involved)
-    |
-Create-vs-update, relations, and meter readings resolve as in mapped mode
-    |
-Monitoring events are emitted (ENTITY_CREATED, ENTITY_UPDATED, ...)
+```mermaid
+flowchart TD
+    A["Middleware sends POST /v3/erp/updates/events<br/>(payload = direct payload)"] --> B["epilot resolves the use case configuration<br/>(direct: true)"]
+    B --> C{"Payload valid?<br/>schema · version · entity allowlist"}
+    C -- no --> X["Rejected per-event, never processed<br/>HTTP 422 + DIRECT_* monitoring event"]
+    C -- yes --> D["Event queued<br/>deduplication · ordering · fairness unchanged"]
+    D --> E["Operations translated to internal<br/>entity / meter-reading updates<br/>(no mapping engine involved)"]
+    E --> F["Create-vs-update, relations, and meter readings<br/>resolve as in mapped mode"]
+    F --> G["Monitoring events emitted<br/>(ENTITY_CREATED, ENTITY_UPDATED, …)"]
 ```
 
 ## Enabling Direct Mode
