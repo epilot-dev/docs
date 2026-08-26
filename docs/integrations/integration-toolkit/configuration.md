@@ -139,6 +139,12 @@ curl -X PUT 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationI
   }'
 ```
 
+:::note Configuration propagation
+Use case configurations are cached by the event-processing pipeline: any configuration change —
+mapping edits, enabling/disabling, mode switches — can take up to **5 minutes** to take effect for
+incoming events. Plan cutovers accordingly.
+:::
+
 ### Use Case History
 
 View the change history for a use case:

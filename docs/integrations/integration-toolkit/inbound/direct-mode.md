@@ -84,10 +84,6 @@ If `entities` is **non-empty**, it acts as an allowlist for entity operations:
 
 Meter-reading operations are **not** allowlist-gated — the allowlist applies to entity operations only.
 
-### Configuration Propagation
-
-Use case configurations are cached in the pipeline for up to **5 minutes**. Plan cutovers accordingly: do not start sending direct payloads to a freshly flipped use case until the window has passed (or accept that a few events may be rejected and need to be resent).
-
 ## Payload Contract (Version "1")
 
 The direct payload travels inside the existing `ErpEventV3.payload` — either as a JSON object or as a serialized JSON string (with `format: "json"`). XML is rejected for direct use cases.
@@ -383,7 +379,7 @@ Direct payloads are validated **fully on arrival** — schema, version, and allo
 - Error messages are actionable: they name the operation index and the field path, e.g. `operations[3].unique_ids: at least one unique identifier is required`.
 - Each rejection also emits a monitoring event with the matching `DIRECT_*` code (see [Monitoring](#monitoring)).
 
-An event accepted at ingest can still fail inside the pipeline in one scenario: the use case configuration changed between acceptance and processing (within the [5-minute cache window](#configuration-propagation)). Such failures do not retry — the event is dropped and reported via a monitoring event with the matching `DIRECT_*` code.
+An event accepted at ingest can still fail inside the pipeline in one scenario: the use case configuration changed between acceptance and processing (configurations are cached — see [configuration propagation](../configuration.md#use-case-configuration)). Such failures do not retry — the event is dropped and reported via a monitoring event with the matching `DIRECT_*` code.
 
 ## Dry Run: simulateDirect
 
@@ -491,6 +487,5 @@ The following are intentionally **not supported** in direct mode. In each case, 
 
 - **Size budget.** Each event is processed as a single message with a 256 KiB limit (1 MiB for meter-reading batches). A payload holds at most **100 operations**; split larger batches across multiple events. The operation limit is additive to raise in a future revision if needed.
 - **No entity-attribute validation — by design.** Attributes are written verbatim; attributes not defined in the schema are stored but not indexed. This is intentional and common integration practice (mapped mode behaves the same way). The design-time guards are [simulateDirect](#dry-run-simulatedirect) and the unique-identifier schema warnings.
-- **Configuration propagation.** The `direct` flag takes up to 5 minutes to reach the pipeline after a configuration change.
 - **Content-based deduplication.** Byte-identical events within 5 minutes collapse silently — set `deduplication_id` deliberately (see [Deduplication](#deduplication)).
 - **Sync activities.** A sync activity is attached to every write automatically. Direct writes do **not** echo back out through outbound delivery — the same echo prevention as mapped mode.
