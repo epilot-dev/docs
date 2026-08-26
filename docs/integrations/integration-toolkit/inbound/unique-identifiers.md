@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 title: Unique Identifiers
 description: Configure how entities are matched and looked up
 ---
