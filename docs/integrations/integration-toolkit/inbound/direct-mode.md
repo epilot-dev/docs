@@ -227,7 +227,7 @@ Relations use the same envelope concepts as mapped mode, written directly as att
 
 ### Relation Operations
 
-On any attribute inside `attributes`, a relation value is either a bare array (shorthand for `_set`, i.e. replace) or an object with **exactly one** operation key:
+On any attribute inside `attributes`, a relation value is either a bare array (shorthand for `_set`) or an object with **exactly one** operation key — `_set`, `_append`, or `_append_all`, with the same semantics as in mapped mode (see [Relation Operations](./relations.md#relation-operations)):
 
 ```json
 "contacts": { "$relation": [ { "schema": "contact", "unique_ids": { "customer_number": "42" } } ] }
@@ -237,13 +237,7 @@ On any attribute inside `attributes`, a relation value is either a bare array (s
 "contacts": { "$relation": { "_append": [ { "schema": "contact", "unique_ids": { "customer_number": "43" } } ] } }
 ```
 
-| Operation | Behavior |
-|-----------|----------|
-| `_set` (or bare array) | Replace the relation list. |
-| `_append` | Merge into the existing list, deduplicated by entity ID. |
-| `_append_all` | Merge into the existing list without deduplication. |
-
-**Only** `_set`, `_append`, and `_append_all` are accepted — any other key is rejected at validation time, so a typo like `_apend` fails fast with an actionable error instead of producing an unresolved relation downstream.
+**Only** those three operation keys are accepted — any other key is rejected at validation time, so a typo like `_apend` fails fast with an actionable error instead of producing an unresolved relation downstream.
 
 ### Relation Items
 
@@ -327,7 +321,7 @@ A relation reference points at an **item inside a repeatable attribute** of anot
 | `path` | **Yes** | Attribute on the **target** entity holding the repeatable array (e.g. `"address"`). |
 | `value` | **Yes** | The item to match (or create) at that path. |
 
-The operation envelope follows the same rules as `$relation`: a bare array is shorthand for `_set`, and only `_set` / `_append` / `_append_all` are accepted.
+The operation envelope follows the same rules as [`$relation`](#relation-operations).
 
 ## Sending Direct Events
 
