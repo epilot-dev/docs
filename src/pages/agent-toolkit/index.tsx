@@ -372,8 +372,8 @@ export default function AgentToolkitPage(): JSX.Element {
                 <span className={styles.kicker}>Get started</span>
                 <h2>Install once. Use it in every epilot project.</h2>
                 <p>
-                  Install the <code>epilot-core</code> plugin in your preferred agent. The agent activates the
-                  right skill for each request and connects to epilot only when current documentation, API contracts, or
+                  Install the <code>epilot-core</code> plugin in your preferred agent. The agent activates the right
+                  skill for each request and connects to epilot only when current documentation, API contracts, or
                   organization context are required.
                 </p>
                 <ul className={styles.checkList}>

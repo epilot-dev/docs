@@ -74,27 +74,27 @@ export default function HeroSection(): JSX.Element {
         </div>
 
         {showAgentToolkit && (
-        <Link className={styles.toolkitCard} to="/agent-toolkit">
-          <div className={styles.toolkitMeta}>
-            <span className={styles.featured}>Featured</span>
-            <span className={styles.preview}>Developer preview</span>
-          </div>
-          <h2>Build with an agent that understands epilot.</h2>
-          <p>
-            Give Codex, ChatGPT, or Claude focused platform knowledge plus live access to current docs, APIs, and
-            organization context.
-          </p>
-          <div className={styles.toolkitFlow} aria-hidden="true">
-            <span>Skills</span>
-            <i />
-            <span>epilot MCP</span>
-            <i />
-            <span>Your project</span>
-          </div>
-          <div className={styles.toolkitAction}>
-            Explore the Agent Toolkit <span aria-hidden="true">→</span>
-          </div>
-        </Link>
+          <Link className={styles.toolkitCard} to="/agent-toolkit">
+            <div className={styles.toolkitMeta}>
+              <span className={styles.featured}>Featured</span>
+              <span className={styles.preview}>Developer preview</span>
+            </div>
+            <h2>Build with an agent that understands epilot.</h2>
+            <p>
+              Give Codex, ChatGPT, or Claude focused platform knowledge plus live access to current docs, APIs, and
+              organization context.
+            </p>
+            <div className={styles.toolkitFlow} aria-hidden="true">
+              <span>Skills</span>
+              <i />
+              <span>epilot MCP</span>
+              <i />
+              <span>Your project</span>
+            </div>
+            <div className={styles.toolkitAction}>
+              Explore the Agent Toolkit <span aria-hidden="true">→</span>
+            </div>
+          </Link>
         )}
       </div>
     </header>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const fs = require('fs-extra');
 const path = require('path');
+
+const fs = require('fs-extra');
 const matter = require('gray-matter');
 
 const PLUGIN_NAME = 'docusaurus-plugin-llms-txt';
@@ -32,13 +33,11 @@ function cleanMarkdownForLlm(content) {
   cleaned = cleaned.replace(/\{[^}]+\}/g, '');
 
   // Clean up Docusaurus admonitions - convert to blockquotes
-  cleaned = cleaned.replace(
-    /^:::\s*(note|tip|info|warning|danger|caution)(?:\s+(.+?))?$/gm,
-    (_, type, title) => {
-      const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
-      return title ? `> **${capitalizedType}: ${title}**` : `> **${capitalizedType}**`;
-    },
-  );
+  cleaned = cleaned.replace(/^:::\s*(note|tip|info|warning|danger|caution)(?:\s+(.+?))?$/gm, (_, type, title) => {
+    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+
+    return title ? `> **${capitalizedType}: ${title}**` : `> **${capitalizedType}**`;
+  });
   cleaned = cleaned.replace(/^:::$/gm, '');
 
   // Remove HTML comments
@@ -99,6 +98,7 @@ function resolveDocRoute(relativePath, frontMatter) {
     if (slug.startsWith('/')) {
       return `/docs${slug === '/' ? '' : slug}`.replace(/\/$/, '') || '/docs';
     }
+
     return ['/docs', ...dirSegments, slug].join('/');
   }
 
@@ -143,11 +143,11 @@ async function collectDocs(siteDir) {
       console.error(`[${PLUGIN_NAME}] Failed to parse ${relativePath}:`, err.message);
     }
   }
+
   return docs;
 }
 
-const docTitle = (doc) =>
-  doc.frontMatter.title || doc.frontMatter.sidebar_label || doc.route.split('/').pop();
+const docTitle = (doc) => doc.frontMatter.title || doc.frontMatter.sidebar_label || doc.route.split('/').pop();
 
 /**
  * Loads the OpenAPI spec list from redoc.config.js for the llms.txt APIs section.
@@ -156,6 +156,7 @@ function loadApiSpecs(siteDir) {
   try {
     // eslint-disable-next-line import/no-dynamic-require
     const { specs } = require(path.join(siteDir, 'redoc.config.js'));
+
     return specs.map((spec) => ({
       title: spec.layout.title,
       routePath: spec.routePath,
@@ -163,6 +164,7 @@ function loadApiSpecs(siteDir) {
     }));
   } catch (err) {
     console.warn(`[${PLUGIN_NAME}] Could not load redoc.config.js:`, err.message);
+
     return [];
   }
 }
@@ -251,7 +253,7 @@ function generateRootLlmsTxt(siteConfig, items, siteDescription, apiSpecs) {
  * @param {import('@docusaurus/types').LoadContext} context
  * @param {object} options
  */
-module.exports = function pluginLlmsTxt(context, options = {}) {
+module.exports = function pluginLlmsTxt(_context, options = {}) {
   const { siteDescription } = options;
 
   return {
@@ -279,6 +281,7 @@ module.exports = function pluginLlmsTxt(context, options = {}) {
             if (!(await fs.pathExists(path.join(routeDir, 'index.html')))) {
               unresolvedCount++;
               console.warn(`[${PLUGIN_NAME}] No built page for ${doc.relativePath} at ${doc.route}, skipping.`);
+
               return;
             }
 

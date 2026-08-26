@@ -85,8 +85,7 @@ function ApiIntro(): JSX.Element {
 
                   <h2 id="sdk">SDK</h2>
                   <p>
-                    The <Link to="/docs/sdk/overview">epilot SDK</Link> provides typed TypeScript clients for every
-                    API.
+                    The <Link to="/docs/sdk/overview">epilot SDK</Link> provides typed TypeScript clients for every API.
                   </p>
                   <pre>
                     <code>{`npm i --save @epilot/entity-client
@@ -115,9 +114,7 @@ yarn add @epilot/entity-client`}</code>
                   </p>
 
                   <h2 id="versioning">Versioning</h2>
-                  <p>
-                    epilot maintains strong backwards compatibility commitments for all public APIs.
-                  </p>
+                  <p>epilot maintains strong backwards compatibility commitments for all public APIs.</p>
                   <h3>Compatibility Guarantees</h3>
                   <ul>
                     <li>
