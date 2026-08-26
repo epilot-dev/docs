@@ -70,6 +70,8 @@ With an optional entity allowlist:
 Notes:
 
 - Allowlist entries need no `fields` array — there is nothing to map.
+- Every allowlist entry must declare **at least one** unique id — saving a configuration with an
+  empty `unique_ids` array is rejected (the UI enforces the same rule inline).
 - Declared `unique_ids` are checked against your real entity schemas when the use case is saved, so typos surface at design time.
 - Direct mode requires the **v3 events endpoint** (`POST /v3/erp/updates/events` with `integration_id`). The deprecated v1/v2 endpoints do not support it.
 
@@ -158,6 +160,21 @@ Delete example — `attributes` may be omitted:
   "mode": "delete"
 }
 ```
+
+Behavior notes:
+
+- **Restore on upsert.** An upsert whose unique ids match a **soft-deleted** entity restores it
+  before applying the attributes (reported as `ENTITY_UPDATED`, alongside a
+  `SOFT_DELETED_ENTITY_MATCHED` warning).
+- **Purge.** `purge` deletes irrecoverably and is reported as `ENTITY_DELETED` with mode `purge` in
+  the monitoring detail — there is no separate purge code.
+- **Unique id not in the schema.** A unique-id attribute that does not exist in the entity schema
+  never matches anything — every event then **creates a new entity**, and each write also emits an
+  error-level `UNIQUE_ID_NOT_IN_SCHEMA` monitoring event. Catch this before go-live with
+  [simulateDirect](#dry-run-simulatedirect)'s schema warnings.
+- **`_id` references never create.** `unique_ids: {"_id": …}` pointing at a nonexistent (or purged)
+  entity fails the event after retries — the `_id` form is strictly a reference to an entity that
+  exists.
 
 ### Meter Reading Operations
 
@@ -385,6 +402,15 @@ An event accepted at ingest can still fail inside the pipeline in one scenario: 
 
 `POST /v1/erp/updates/direct_simulation` (operation ID `simulateDirect`) validates a direct payload against a configuration **without persisting anything** — the direct-mode counterpart of `simulateMappingV2`. Use it while developing your middleware, and in CI against your fixture payloads. (The use case **Test** tab in the epilot 360 UI applies to mapped use cases; for direct use cases, this endpoint is the dry run.)
 
+:::note
+Request-level validation intercepts some contract violations **before** the dry run executes — an
+unsupported `version`, more than 100 operations, or a structurally malformed envelope return
+HTTP `400` with schema errors instead of a `200` verdict. The collected-errors behavior below
+applies to the checks the dry run itself performs (allowlist, relation envelopes, meter-reading
+rules, unique-id values, …). On the live events endpoint the same defects surface as per-event
+errors with `DIRECT_*` codes.
+:::
+
 Request:
 
 ```json
@@ -466,6 +492,15 @@ Direct mode adds three monitoring codes. All three are **error**-level:
 | `DIRECT_ENTITY_NOT_ALLOWED` | error | configuration | `entity_slug` or `unique_ids` keys not permitted by the use case's entity allowlist. |
 
 Success paths reuse the existing codes — direct operations are indistinguishable from mapped ones once translated: `ENTITY_CREATED`, `ENTITY_UPDATED`, `ENTITY_DELETED`, `ENTITY_NO_OP`, `METER_READING_UPSERTED`, `METER_READING_DELETED`.
+
+The existing pipeline warning codes also apply unchanged; the ones you are most likely to meet in
+direct mode: `SOFT_DELETED_ENTITY_MATCHED` (upsert matched a soft-deleted entity — it is restored),
+`UNIQUE_ID_MULTIPLE_MATCHES`, `RELATION_REF_VALUE_UNDEFINED` / `RELATION_REF_ITEM_NOT_FOUND`, and
+the error-level `UNIQUE_ID_NOT_IN_SCHEMA`.
+
+Batch shape: several readings for the **same meter/counter in one event** are written as one batch
+and produce **one** `METER_READING_UPSERTED` event whose detail carries the reading count and
+external ids — not one event per reading.
 
 ## Unsupported in Direct Mode
 
