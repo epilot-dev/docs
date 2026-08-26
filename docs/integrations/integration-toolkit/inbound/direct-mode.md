@@ -18,7 +18,7 @@ Direct mode removes only the transformation step. Everything else in the inbound
 - Sync activity attachment and echo prevention
 - Monitoring events
 
-What you give up is the mapping engine itself: field mappings, JSONata and JSONPath expressions, constants, and the mapping-only field types (see [Unsupported in Version 1](#unsupported-in-version-1)). If your source system emits raw ERP payloads that need transformation, use [Mapping](./mapping.md) instead. A single integration can freely mix direct and mapped use cases.
+What you give up is the mapping engine itself: field mappings, JSONata and JSONPath expressions, constants, and the mapping-only field types (see [Unsupported in Direct Mode](#unsupported-in-direct-mode)). If your source system emits raw ERP payloads that need transformation, use [Mapping](./mapping.md) instead. A single integration can freely mix direct and mapped use cases.
 
 ## How It Works
 
@@ -72,7 +72,7 @@ If `entities` is **non-empty**, it acts as an allowlist for entity operations:
 1. The operation's `entity_slug` must equal the `entity_schema` of some allowlist entry, otherwise the operation is rejected with `DIRECT_ENTITY_NOT_ALLOWED`.
 2. The operation's `unique_ids` keys must be **exactly the declared set** (order-insensitive), **or** exactly `["_id"]` — referencing an entity directly by its epilot ID is always allowed. Any other key set is rejected with `DIRECT_ENTITY_NOT_ALLOWED`, and the error message names the expected keys.
 
-Meter-reading operations are **not** allowlist-gated in version 1 — the allowlist applies to entity operations only.
+Meter-reading operations are **not** allowlist-gated — the allowlist applies to entity operations only.
 
 ### Configuration Propagation
 
@@ -89,7 +89,7 @@ The schema is snake_case throughout. All object schemas are **strict**: unknown 
 The `version` field pins the payload schema:
 
 - Changes within a version are **additive-only** — existing payloads never break within version `"1"`.
-- A future breaking revision arrives as version `"2"`, with both versions accepted in parallel.
+- If a breaking revision is ever needed, it arrives as version `"2"` with both versions accepted in parallel — none is currently planned.
 - An unknown version is rejected with `DIRECT_VERSION_UNSUPPORTED`.
 
 ### Envelope
@@ -461,9 +461,9 @@ Direct mode adds three monitoring codes. All three are **error**-level:
 
 Success paths reuse the existing codes — direct operations are indistinguishable from mapped ones once translated: `ENTITY_CREATED`, `ENTITY_UPDATED`, `ENTITY_DELETED`, `ENTITY_NO_OP`, `METER_READING_UPSERTED`, `METER_READING_DELETED`.
 
-## Unsupported in Version 1
+## Unsupported in Direct Mode
 
-The following are intentionally **out of scope** for direct mode version 1. In each case, mapped mode remains fully available — a single integration can mix direct and mapped use cases freely.
+The following are intentionally **not supported** in direct mode. In each case, mapped mode remains fully available — a single integration can mix direct and mapped use cases freely.
 
 | Not supported | Why | What to use instead |
 |---------------|-----|---------------------|
@@ -475,7 +475,7 @@ The following are intentionally **out of scope** for direct mode version 1. In e
 | XML payloads | The direct contract is JSON-only by design. | Send JSON; for XML-emitting sources use mapped mode. |
 | CSV imports against direct use cases | CSV imports emit mapping-shaped events; routed to a direct use case they fail with `DIRECT_PAYLOAD_INVALID`. | Route CSV imports to mapped use cases. |
 | v1/v2 events endpoints | The legacy configuration paths do not carry the `direct` flag. | `POST /v3/erp/updates/events` with `integration_id`. |
-| Meter-reading allowlist gating | The entity allowlist covers entity operations only in version 1. | Open by design; gate entity operations if needed. |
+| Meter-reading allowlist gating | The entity allowlist covers entity operations only. | Open by design; gate entity operations if needed. |
 
 ## Operational Notes
 
