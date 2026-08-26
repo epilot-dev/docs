@@ -4,6 +4,8 @@ hide_title: true
 sidebar_position: 1
 ---
 
+import AgentToolkitPromo from '@site/src/components/AgentToolkitPromo';
+
 <p>&nbsp;</p>
 
 <p align="center"><a href="/"><img src="/img/logo.png" width="150" /></a></p>
@@ -47,6 +49,8 @@ Call any epilot API from the command line. Built for quick lookups, automation s
 Build and publish extensions for the epilot platform.
 
 <a className="button button--secondary" href="/docs/apps">Build an App</a>
+
+<AgentToolkitPromo />
 
 ## Contact
 

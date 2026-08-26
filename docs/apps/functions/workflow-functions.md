@@ -6,7 +6,7 @@ sidebar_position: 3
 
 # Workflow Functions
 
-A function with `type: "workflow"` provides the **code behind a flow action**. The pairing works like this: a `CUSTOM_FLOW_ACTION` component is the org-facing contract — its name appears in the flow builder's action picker, it carries the [installation options](/docs/apps/components/configure-options) and the optional per-flow config UI — and its configuration **references the function that runs**:
+A function with `type: "workflow"` provides the **code behind a flow action**. The pairing works like this: a `CUSTOM_FLOW_ACTION` component is the org-facing contract — its name appears in the flow builder's action picker, it carries the optional per-flow config UI — and its configuration **references the function that runs**:
 
 ```json title="manifest.json"
 {
@@ -32,7 +32,7 @@ A function with `type: "workflow"` provides the **code behind a flow action**. T
 }
 ```
 
-Why the split? The component reuses everything components already have — display name and description in the picker, installation options (including secrets), the config surface — while the function stays a pure unit of code. Deploy-time validation checks the reference: the named function must exist in the same version with `type: "workflow"`.
+Why the split? The component reuses everything components already have — display name and description in the picker, the config surface — while the function stays a pure unit of code and reads the installation's [app options](/docs/apps/app-options) from `input.app_options`. Deploy-time validation checks the reference: the named function must exist in the same version with `type: "workflow"`.
 
 When the org admin adds the action to a flow and the flow reaches that step, epilot runs your handler with the triggering entity.
 

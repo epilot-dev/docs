@@ -1,4 +1,5 @@
 import Link from '@docusaurus/Link';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React from 'react';
 
 import styles from './HeroSection.module.css';
@@ -45,20 +46,56 @@ function EpilotLogo() {
 }
 
 export default function HeroSection(): JSX.Element {
+  const { siteConfig } = useDocusaurusContext();
+  const showAgentToolkit = Boolean(siteConfig.customFields?.showAgentToolkit);
+
   return (
     <header className={styles.hero}>
       <div className={styles.heroInner}>
-        <EpilotLogo />
-        <h1 className={styles.title}>epilot dev center</h1>
-        <p className={styles.subtitle}>Build on the Energy XRM. Explore our APIs, SDKs, and platform docs.</p>
-        <div className={styles.actions}>
-          <Link className="button button--primary button--lg" to="/docs/intro">
-            Read the Docs
-          </Link>
-          <Link className="button button--secondary button--lg" to="/api">
-            Browse APIs
-          </Link>
+        <div className={styles.intro}>
+          <div className={styles.brand}>
+            <EpilotLogo />
+            <span>epilot developer platform</span>
+          </div>
+          <h1 className={styles.title}>Build what energy businesses need next.</h1>
+          <p className={styles.subtitle}>
+            {showAgentToolkit
+              ? 'Everything you need to extend the Energy XRM—from APIs and SDKs to Apps, integrations, and agent-powered development.'
+              : 'Everything you need to extend the Energy XRM—from APIs and SDKs to Apps and integrations.'}
+          </p>
+          <div className={styles.actions}>
+            <Link className="button button--primary button--lg" to="/docs/intro">
+              Read the docs
+            </Link>
+            <Link className="button button--secondary button--lg" to="/api">
+              Browse APIs
+            </Link>
+          </div>
         </div>
+
+        {showAgentToolkit && (
+        <Link className={styles.toolkitCard} to="/agent-toolkit">
+          <div className={styles.toolkitMeta}>
+            <span className={styles.featured}>Featured</span>
+            <span className={styles.preview}>Developer preview</span>
+          </div>
+          <h2>Build with an agent that understands epilot.</h2>
+          <p>
+            Give Codex, ChatGPT, or Claude focused platform knowledge plus live access to current docs, APIs, and
+            organization context.
+          </p>
+          <div className={styles.toolkitFlow} aria-hidden="true">
+            <span>Skills</span>
+            <i />
+            <span>epilot MCP</span>
+            <i />
+            <span>Your project</span>
+          </div>
+          <div className={styles.toolkitAction}>
+            Explore the Agent Toolkit <span aria-hidden="true">→</span>
+          </div>
+        </Link>
+        )}
       </div>
     </header>
   );

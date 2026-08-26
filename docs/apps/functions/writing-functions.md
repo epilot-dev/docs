@@ -33,8 +33,9 @@ What your handler receives depends on the trigger:
   app_options: {
     token: "<epilot app token>",   // see "Calling epilot APIs" below
     stage: "prod",                 // deployment stage, for deriving API base URLs
-    ...optionValues                // plain (non-secret) option values of the installation
-    // + secret option values you explicitly declared in the function's `secrets` list
+    ...optionValues                // ALL app option values of the installation,
+                                   // including sensitive and secret ones —
+                                   // functions always run server-side
   },
 
   // Workflow runs
@@ -104,7 +105,7 @@ The bundled SDK targets epilot's production APIs. When testing an app against a 
 
 ## Calling external APIs
 
-Route external calls through your app's [API Proxy](/docs/apps/components/api-proxy) component. Credentials (API keys, OAuth secrets) are configured per installation as secret options and injected server-side by the proxy — your function never sees them.
+Route external calls through your app's [API Proxy](/docs/apps/components/api-proxy) component. Credentials (API keys, OAuth secrets) are configured per installation as secret [app options](/docs/apps/app-options) and injected server-side by the proxy — your function never sees them.
 
 The nicest way is the proxy wrapper from **`@epilot/app-sdk`** — the same one your frontend components use. Since function code ships as a single file, bundle your handler (e.g. with esbuild) so the import is inlined:
 
@@ -139,13 +140,7 @@ const res = await context.fetch(
 
 Both forms hit `POST/GET …/v1/public/app/{appId}/proxy/{proxyName}/{path}` with the app token as Bearer — the proxy injects the real credentials server-side. (The wrapper also takes `baseUrl` if you target a non-production stage.)
 
-If a function genuinely needs a raw secret (rare — prefer the proxy), declare it explicitly:
-
-```json
-{ "name": "my-function", "type": "workflow", "handler": "...", "secrets": ["api_signing_key"] }
-```
-
-Only the listed keys are decrypted into `input.app_options`; everything else stays sealed.
+If a function genuinely needs a raw secret (rare — prefer the proxy), just read it from `input.app_options` — functions receive **all** [app option](/docs/apps/app-options) values, including sensitive and secret ones, since they always run server-side. (The per-function `secrets` allowlist that older manifests declared is deprecated and ignored.)
 
 ## Limitations
 

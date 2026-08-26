@@ -1,0 +1,654 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 2rem;
+  background: radial-gradient(
+      circle at 12% 15%,
+      rgba(0, 215, 255, 0.22),
+      transparent 28%
+    ),
+    radial-gradient(circle at 86% 72%, rgba(76, 76, 255, 0.18), transparent 30%),
+    linear-gradient(160deg, #f8fcff 0%, #f4f4ff 50%, #fff 100%);
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.06fr) minmax(360px, 0.94fr);
+  align-items: center;
+  gap: 5rem;
+  max-width: 1160px;
+}
+
+.kicker {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: var(--ifm-color-primary);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.heroCopy h1 {
+  max-width: 760px;
+  margin-bottom: 1.4rem;
+  color: var(--epilot-dark);
+  font-size: clamp(2.7rem, 5vw, 4.6rem);
+  font-weight: 730;
+  letter-spacing: -0.045em;
+  line-height: 1.03;
+}
+
+.heroCopy > p {
+  max-width: 720px;
+  margin-bottom: 2rem;
+  color: #4f5463;
+  font-size: 1.15rem;
+  line-height: 1.65;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.compatibility {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  color: #666c7a;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.architectureCard {
+  padding: 1.6rem;
+  border: 1px solid rgba(76, 76, 255, 0.18);
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 28px 70px rgba(33, 33, 96, 0.13);
+  backdrop-filter: blur(14px);
+}
+
+.agentRow,
+.sourceGrid {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.agentRow {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.agentRow span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.7rem 0.4rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.6rem;
+  background: var(--ifm-background-color);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.agentIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.agentIcon svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.connector {
+  width: 1px;
+  height: 24px;
+  margin: 0 auto;
+  background: linear-gradient(var(--ifm-color-primary), var(--epilot-cyan));
+}
+
+.toolkitCore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 0.8rem;
+  color: #fff;
+  background: linear-gradient(130deg, #3232db, #4c4cff 50%, #008edb);
+  text-align: center;
+}
+
+.coreLabel {
+  margin-bottom: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0.75;
+  text-transform: uppercase;
+}
+
+.toolkitCore strong {
+  font-size: 1.05rem;
+}
+
+.toolkitCore small {
+  margin-top: 0.2rem;
+  opacity: 0.78;
+}
+
+.sourceGrid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.sourceGrid > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.65rem;
+  background: var(--ifm-background-color);
+}
+
+.sourceGrid strong {
+  font-size: 0.82rem;
+}
+
+.sourceGrid span {
+  margin-top: 0.15rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.7rem;
+}
+
+.section {
+  padding: 5.5rem 2rem;
+}
+
+.sectionHeading {
+  max-width: 760px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.sectionHeading h2,
+.splitHeading h2,
+.installCopy h2 {
+  margin-bottom: 1rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.sectionHeading p,
+.splitHeading > p,
+.installCopy > p {
+  color: var(--ifm-font-color-secondary);
+  font-size: 1.03rem;
+  line-height: 1.7;
+}
+
+.benefitGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.benefitCard {
+  padding: 1.7rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.9rem;
+  background: var(--ifm-background-color);
+}
+
+.benefitIcon,
+.ctaIcon {
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  border-radius: 0.7rem;
+  color: var(--ifm-color-primary);
+  background: rgba(76, 76, 255, 0.09);
+}
+
+.benefitIcon svg,
+.ctaIcon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.benefitCard h3,
+.workflowCard h3 {
+  margin-bottom: 0.65rem;
+  font-size: 1.08rem;
+}
+
+.benefitCard p,
+.workflowCard p {
+  margin: 0;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.91rem;
+  line-height: 1.6;
+}
+
+.surfaceSection {
+  background: var(--ifm-background-surface-color);
+}
+
+.useCaseGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+  margin-top: 2.6rem;
+}
+
+.useCaseCard {
+  padding: 1.7rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.9rem;
+  background: var(--ifm-background-color);
+}
+
+.useCaseCard h3 {
+  margin-bottom: 0.9rem;
+  font-size: 1.08rem;
+}
+
+.promptList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.promptList li {
+  padding: 0.15rem 0 0.15rem 0.85rem;
+  border-left: 2px solid var(--ifm-color-primary);
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.91rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 996px) {
+  .useCaseGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.splitHeading {
+  display: grid;
+  grid-template-columns: 1fr 0.85fr;
+  align-items: end;
+  gap: 4rem;
+  max-width: 1100px;
+  margin: 0 auto 3rem;
+}
+
+.splitHeading h2,
+.splitHeading > p {
+  margin-bottom: 0;
+}
+
+.workflowGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.workflowCard {
+  position: relative;
+  padding: 1.5rem 1.5rem 1.5rem 4.7rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.8rem;
+  background: var(--ifm-background-color);
+}
+
+.workflowNumber {
+  position: absolute;
+  top: 1.45rem;
+  left: 1.4rem;
+  color: var(--ifm-color-primary);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.installSection {
+  scroll-margin-top: 4rem;
+}
+
+.installGrid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: start;
+  gap: 5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.checkList {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checkList li {
+  position: relative;
+  padding-left: 1.65rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.91rem;
+}
+
+.checkList li::before {
+  position: absolute;
+  left: 0;
+  color: var(--ifm-color-primary);
+  content: '✓';
+  font-weight: 800;
+}
+
+.installPanel {
+  overflow: hidden;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 1rem;
+  background: var(--ifm-background-color);
+  box-shadow: 0 18px 52px rgba(33, 33, 96, 0.09);
+}
+
+.tabs {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  background: var(--ifm-background-surface-color);
+}
+
+.tab,
+.activeTab {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.65rem;
+  border: 0;
+  border-radius: 0.55rem;
+  color: var(--ifm-font-color-secondary);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.tabIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.tabIcon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.activeTab {
+  color: var(--ifm-color-primary);
+  background: var(--ifm-background-color);
+  box-shadow: 0 1px 4px rgba(20, 20, 70, 0.08);
+}
+
+.installBody {
+  min-height: 262px;
+  padding: 1.4rem;
+}
+
+.commandHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.55rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.copyButton {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.4rem;
+  color: var(--ifm-font-color-base);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+}
+
+.command {
+  min-height: 112px;
+  margin: 0;
+  padding: 1rem;
+  border-radius: 0.65rem;
+  background: #161622;
+  color: #f3f3ff;
+  font-size: 0.79rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.directoryInstructions {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  min-height: 124px;
+  padding: 1rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.65rem;
+}
+
+.directoryInstructions h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.directoryInstructions p {
+  margin: 0;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.stepNumber {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--epilot-gradient);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.previewNote {
+  margin: 1.1rem 0 0;
+  padding: 0.8rem;
+  border-radius: 0.55rem;
+  color: var(--ifm-font-color-secondary);
+  background: rgba(76, 76, 255, 0.06);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.ctaSection {
+  padding: 0 2rem 5rem;
+}
+
+.ctaInner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.3rem;
+  max-width: 1100px;
+  padding: 1.6rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 1rem;
+}
+
+.ctaIcon {
+  margin: 0;
+}
+
+.ctaInner h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.3rem;
+}
+
+.ctaInner p {
+  margin: 0;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.9rem;
+}
+
+html[data-theme='dark'] .hero {
+  background: radial-gradient(
+      circle at 12% 15%,
+      rgba(0, 215, 255, 0.11),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 86% 72%,
+      rgba(76, 140, 255, 0.15),
+      transparent 30%
+    ),
+    linear-gradient(160deg, #151524 0%, #1a1a31 54%, #15151f 100%);
+}
+
+html[data-theme='dark'] .heroCopy h1 {
+  color: #fff;
+}
+
+html[data-theme='dark'] .heroCopy > p,
+html[data-theme='dark'] .compatibility {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme='dark'] .architectureCard {
+  border-color: rgba(76, 140, 255, 0.25);
+  background: rgba(24, 24, 40, 0.8);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme='dark'] .benefitIcon,
+html[data-theme='dark'] .ctaIcon {
+  background: rgba(76, 140, 255, 0.14);
+}
+
+html[data-theme='dark'] .previewNote {
+  background: rgba(76, 140, 255, 0.1);
+}
+
+@media (max-width: 996px) {
+  .hero {
+    padding: 4.5rem 1.5rem;
+  }
+
+  .heroGrid,
+  .installGrid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .architectureCard {
+    max-width: 620px;
+  }
+
+  .splitHeading {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 4rem 1rem;
+  }
+
+  .benefitGrid,
+  .workflowGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaSection {
+    padding: 0 1rem 4rem;
+  }
+
+  .ctaInner {
+    grid-template-columns: auto 1fr;
+  }
+
+  .ctaInner > a {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    padding: 3.5rem 1rem;
+  }
+
+  .heroGrid {
+    gap: 2.5rem;
+  }
+
+  .heroCopy h1 {
+    font-size: 2.55rem;
+  }
+
+  .heroActions > * {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .architectureCard {
+    padding: 1rem;
+  }
+
+  .agentRow {
+    grid-template-columns: 1fr;
+  }
+
+  .sourceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .workflowCard {
+    padding-left: 1.5rem;
+  }
+
+  .workflowNumber {
+    position: static;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+}

@@ -8,6 +8,10 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 const { specs } = require('./redoc.config');
 const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
 
+// Internal flag: the Agent Toolkit is hidden from the public site until launch.
+// Build with SHOW_AGENT_TOOLKIT=true to include the page, nav links, and promos.
+const showAgentToolkit = process.env.SHOW_AGENT_TOOLKIT === 'true';
+
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 (module.exports = {
@@ -21,6 +25,9 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
 
   organizationName: 'epilot-dev',
   projectName: 'docs',
+  customFields: {
+    showAgentToolkit,
+  },
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -31,6 +38,16 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/epilot-dev/docs/edit/main/',
           remarkPlugins: [require('mdx-mermaid')],
+        },
+        pages: {
+          exclude: [
+            // plugin-content-pages defaults (replaced when `exclude` is set)
+            '**/_*.{js,jsx,ts,tsx,md,mdx}',
+            '**/_*/**',
+            '**/*.test.{js,jsx,ts,tsx}',
+            '**/__tests__/**',
+            ...(showAgentToolkit ? [] : ['agent-toolkit/**']),
+          ],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -79,6 +96,14 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
           {
             from: '/docs/entities/schemas-list',
             to: '/docs/entities/core-entities',
+          },
+          {
+            // Component options were replaced by app-level options
+            from: [
+              '/docs/apps/components/configure-options',
+              '/apps/components/configure-options',
+            ],
+            to: '/docs/apps/app-options',
           },
         ],
         createRedirects(existingPath) {
@@ -173,11 +198,15 @@ This documentation covers all aspects of the epilot platform for developers, adm
             label: 'SDK',
             position: 'left',
           },
-          {
-            to: '/docs/apps',
-            label: 'Apps',
-            position: 'left',
-          },
+          ...(showAgentToolkit
+            ? [
+                {
+                  to: '/agent-toolkit',
+                  label: 'Agent Toolkit',
+                  position: 'left',
+                },
+              ]
+            : []),
           {
             href: 'https://marketplace.epilot.cloud/en',
             label: 'Marketplace',
@@ -207,6 +236,14 @@ This documentation covers all aspects of the epilot platform for developers, adm
             label: 'SDK',
             to: '/docs/sdk/overview',
           },
+          ...(showAgentToolkit
+            ? [
+                {
+                  label: 'Agent Toolkit',
+                  to: '/agent-toolkit',
+                },
+              ]
+            : []),
           {
             label: 'GitHub',
             href: 'https://github.com/epilot-dev',

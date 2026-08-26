@@ -37,7 +37,7 @@ Functions are the unit for all custom server-side logic in an app. Where they ru
 
 Components are the **surfaces** of your app — journey blocks, custom pages, portal blocks, API proxies. Functions are its **behavior**. They complement each other:
 
-- A `workflow` function is wired into the flow builder through a `CUSTOM_FLOW_ACTION` component that references it — the component carries the org-facing name, options and config UI; the function carries the code. (`external_integration` components remain for [webhook calls](/docs/apps/components/custom-action) to *your* servers.)
+- A `workflow` function is wired into the flow builder through a `CUSTOM_FLOW_ACTION` component that references it — the component carries the org-facing name and config UI; the function carries the code. (`external_integration` components remain for [webhook calls](/docs/apps/components/custom-action) to *your* servers.)
 - A `scheduled` function runs without any user interaction at all.
 - Functions can call external APIs through your app's **API Proxy** component, so external credentials stay on the installation and never appear in function code.
 

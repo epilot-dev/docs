@@ -24,6 +24,10 @@ sidebar_position: 5
   "permissions": [
     { "action": "entity:view", "resource": "opportunity" }
   ],
+  "options": [
+    { "key": "api_base_url", "label": "API Base URL", "type": "text", "required": true },
+    { "key": "api_key", "label": "API Key", "type": "secret", "required": true }
+  ],
   "assets": { "logo": "./assets/logo.png" },
   "functions": [
     {
@@ -61,6 +65,7 @@ The `$schema` reference gives you validation and autocompletion in editors like 
 | `pricing` | — | `FREE`, `SUBSCRIPTION`, `USAGE_BASED`, `ONE_TIME`, `CUSTOM` |
 | `notifications` | — | Email + events (`app.installed`, `app.uninstalled`) you want to be notified about |
 | `permissions` | — | The grants your app's server-side code needs — shown to the installing org for consent, see [Permissions](/docs/apps/configure-permissions) |
+| `options` | — | Settings the installing org fills in — shared by all components and functions, see [App Options](/docs/apps/app-options) |
 | `blueprint` | — | `manifest_id` of a blueprint to install alongside the app |
 | `assets.logo` | — | Local path to the app logo, uploaded on deploy |
 | `functions` | — | Server-side [functions](/docs/apps/functions/overview) (workflow actions and cron), see below |
@@ -77,7 +82,7 @@ The `$schema` reference gives you validation and autocompletion in editors like 
 | `description` | — | TranslatedString |
 | `schedule` | scheduled | 5-field cron or `rate(...)` — see [Scheduled Functions](/docs/apps/functions/scheduled-functions) |
 | `schedule_timezone` | — | IANA timezone for cron evaluation (default `Europe/Berlin`) |
-| `secrets` | — | Keys of secret options to decrypt into `input.app_options` — prefer the [API Proxy](/docs/apps/components/api-proxy) instead |
+| `secrets` | — | **Deprecated and ignored** — functions now receive all [app option](/docs/apps/app-options) values in `input.app_options` automatically |
 
 A `workflow` function is wired into the flow builder by a `CUSTOM_FLOW_ACTION` component whose configuration references it — the component carries the org-facing name, options, config surface and `wait_for_callback`:
 
@@ -97,7 +102,7 @@ Some fields exist only for the CLI and are never sent to the platform:
 
 - `_dir` on components — maps a component to its directory under `components/`
 - `handler` and `assets` paths — resolved and uploaded/inlined at deploy time
-- Secret **option values** are never in the manifest; installing orgs enter them per installation
+- **Option values** are never in the manifest — the manifest declares the [options](/docs/apps/app-options); installing orgs enter the values per installation
 
 ## Golden rules
 

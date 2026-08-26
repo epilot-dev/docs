@@ -37,9 +37,9 @@ In the App Builder, add a new **API Proxy** component and configure:
 - **Target URL** — the base URL of the external API (must be HTTPS)
 - **Auth Type** — how to authenticate with the target API
 
-### 2. Add secret options to your component
+### 2. Add secret options to your app
 
-If your proxy uses authentication, add a **secret** type option to your component under **Configuration Options**. The installer provides the actual API key or credentials when installing your app.
+If your proxy uses authentication, declare a **secret** type [app option](/docs/apps/app-options) at the top level of your manifest. The installer provides the actual API key or credentials when installing your app; the proxy resolves the value server-side and injects it into the forwarded request — it never reaches the browser.
 
 ### 3. Call the proxy from your app
 
@@ -90,16 +90,16 @@ Authorization: Bearer <resolved-secret-value>
 
 The proxy handles the full OAuth 2.0 client credentials flow:
 
-1. Resolves `client_id` and `client_secret` from your component's options
+1. Resolves `client_id` and `client_secret` from your app's options
 2. Exchanges them at the token endpoint for an access token
 3. Caches the token until it expires
 4. Injects it as a Bearer header
 
 Configure:
 - **Token URL** — the OAuth token endpoint (e.g. `https://auth.example.com/oauth/token`)
-- **Client ID** — reference to a component option
-- **Client Secret** — reference to a secret-type component option
-- **Scope** — optional, reference to a component option
+- **Client ID** — reference to an app option
+- **Client Secret** — reference to a secret-type app option
+- **Scope** — optional, reference to an app option
 
 ## Request signing
 
