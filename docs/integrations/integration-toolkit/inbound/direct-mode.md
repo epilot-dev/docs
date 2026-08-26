@@ -35,7 +35,17 @@ flowchart TD
 
 ## Enabling Direct Mode
 
-Direct mode is enabled per **inbound use case** by setting `direct: true` on the use case's `configuration`. All events routed to that use case are then interpreted as direct payloads — a use case is either fully direct or fully mapped, never both.
+Direct mode is enabled per **inbound use case**. All events routed to that use case are then interpreted as direct payloads — a use case is either fully direct or fully mapped, never both.
+
+**In the epilot 360 UI** — the usual way to enable it: open your integration's inbound use case and
+flip the **Direct mode** toggle. The JSON configuration editor disappears (direct use cases are
+configured visually), and a **Write access** choice appears: **Open** (any entity may be written) or
+**Restricted** (an entity allowlist built with schema and unique-id attribute pickers). Flipping the
+toggle on an existing mapped use case pre-fills the allowlist from the mapped entities' schemas and
+unique ids, and direct use cases are marked with a "Direct" badge in the use case overview.
+
+**Via the API**, the same switch is `direct: true` on the use case's `configuration` — the JSON
+below is exactly what the toggle produces.
 
 The minimal configuration:
 
@@ -377,7 +387,7 @@ An event accepted at ingest can still fail inside the pipeline in one scenario: 
 
 ## Dry Run: simulateDirect
 
-`POST /v1/erp/updates/direct_simulation` (operation ID `simulateDirect`) validates a direct payload against a configuration **without persisting anything** — the direct-mode counterpart of `simulateMappingV2`. Use it while developing your middleware, and in CI against your fixture payloads.
+`POST /v1/erp/updates/direct_simulation` (operation ID `simulateDirect`) validates a direct payload against a configuration **without persisting anything** — the direct-mode counterpart of `simulateMappingV2`. Use it while developing your middleware, and in CI against your fixture payloads. (The use case **Test** tab in the epilot 360 UI applies to mapped use cases; for direct use cases, this endpoint is the dry run.)
 
 Request:
 
