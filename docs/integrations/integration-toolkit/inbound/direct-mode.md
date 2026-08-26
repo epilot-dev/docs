@@ -15,7 +15,7 @@ Direct mode removes only the transformation step. Everything else in the inbound
 - Create-vs-update resolution against existing entities
 - Relation and relation-reference resolution, including automatic stub creation
 - Meter-reading matching
-- Sync activity attachment and echo prevention
+- Echo prevention — inbound writes do not trigger automations by default and never flow back out
 - Monitoring events
 
 What you give up is the mapping engine itself: field mappings, JSONata and JSONPath expressions, constants, and the mapping-only field types (see [Unsupported in Direct Mode](#unsupported-in-direct-mode)). If your source system emits raw ERP payloads that need transformation, use [Mapping](./mapping.md) instead. A single integration can freely mix direct and mapped use cases.
@@ -521,4 +521,4 @@ The following are intentionally **not supported** in direct mode. In each case, 
 - **Size budget.** Each event is processed as a single message with a 256 KiB limit (1 MiB for meter-reading batches). A payload holds at most **100 operations**; split larger batches across multiple events. The operation limit is additive to raise in a future revision if needed.
 - **No entity-attribute validation — by design.** Attributes are written verbatim; attributes not defined in the schema are stored but not indexed. This is intentional and common integration practice (mapped mode behaves the same way). The design-time guards are [simulateDirect](#dry-run-simulatedirect) and the unique-identifier schema warnings.
 - **Content-based deduplication.** Byte-identical events within 5 minutes collapse silently — set `deduplication_id` deliberately (see [Deduplication](#deduplication)).
-- **Sync activities.** A sync activity is attached to every write automatically. Direct writes do **not** echo back out through outbound delivery — the same echo prevention as mapped mode.
+- **Automations and echo.** Inbound sync writes do **not** trigger entity automations by default — an automation can opt in via its trigger's "Ignore system activities?" setting — and they never echo back out through outbound delivery. Same behavior as mapped mode.
