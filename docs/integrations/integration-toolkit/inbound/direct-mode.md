@@ -394,7 +394,11 @@ An event accepted at ingest can still fail inside the pipeline in one scenario: 
 
 ## Dry Run: simulateDirect
 
-`POST /v1/erp/updates/direct_simulation` (operation ID `simulateDirect`) validates a direct payload against a configuration **without persisting anything** — the direct-mode counterpart of `simulateMappingV2`. Use it while developing your middleware, and in CI against your fixture payloads. (The use case **Test** tab in the epilot 360 UI applies to mapped use cases; for direct use cases, this endpoint is the dry run.)
+`POST /v1/erp/updates/direct_simulation` (operation ID `simulateDirect`) validates a direct payload against a configuration **without persisting anything** — the direct-mode counterpart of `simulateMappingV2`. Use it while developing your middleware, and in CI against your fixture payloads.
+
+The same dry run is available in the epilot 360 UI: the use case's **Test** tab works for direct
+use cases as it does for mapped ones — paste a payload and review the verdict, collected errors,
+and translated preview without writing anything.
 
 :::note
 Request-level validation intercepts some contract violations **before** the dry run executes — an
