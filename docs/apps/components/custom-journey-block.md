@@ -72,8 +72,6 @@ React offers several key advantages:
 
 Using React with a web component wrapper gives you the best of both worlds: modern development experience and seamless integration with the Journey Builder.
 
-For detailed examples and implementation guidelines, check our [Custom Block Examples](https://github.com/epilot-dev/epilot-journey-sdk/blob/main/custom-block.md).
-
 ### Component Mapping
 
 A powerful feature of Journey Blocks is entity mapping, which lets you:

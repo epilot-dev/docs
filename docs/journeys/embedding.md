@@ -38,7 +38,7 @@ The embed script can modify the initial state of a journey. You can:
 2. **Start from a specific step** — skip earlier steps (e.g., when product selection happens on an external website).
 3. **Control field display** — disable specific fields.
 
-The `DataInjectionOptions` type below defines all available options. See the [Embed Script examples](https://github.com/epilot-dev/epilot-journey-sdk/tree/main/examples/embed-script) for working code.
+The `DataInjectionOptions` type below defines all available options.
 
 **Type Definition**
 
