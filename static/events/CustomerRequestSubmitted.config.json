@@ -2,7 +2,7 @@
   "event_name": "CustomerRequestSubmitted",
   "event_title": "Customer Request Submitted",
   "event_description": "Explicitly triggered by Automation after a customer request ticket and its file attachments are ready",
-  "event_version": "1.0",
+  "event_version": "1.1",
   "event_tags": [
     "builtin",
     "erp",
@@ -135,6 +135,16 @@
         "cardinality": "one"
       },
       {
+        "id": "meter",
+        "schema": "meter",
+        "cardinality": "one"
+      },
+      {
+        "id": "meter_counters",
+        "schema": "meter_counter",
+        "cardinality": "many"
+      },
+      {
         "id": "ticket_files",
         "schema": "file",
         "cardinality": "many"
@@ -156,6 +166,14 @@
       {
         "from": "ticket",
         "to": "billing_account"
+      },
+      {
+        "from": "ticket",
+        "to": "meter"
+      },
+      {
+        "from": "ticket",
+        "to": "meter_counters"
       },
       {
         "from": "ticket",
