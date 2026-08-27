@@ -518,7 +518,7 @@ The following are intentionally **not supported** in direct mode. In each case, 
 
 ## Operational Notes
 
-- **Size budget.** Each event is processed as a single message with a 256 KiB limit (1 MiB for meter-reading batches). A payload holds at most **100 operations**; split larger batches across multiple events. The operation limit is additive to raise in a future revision if needed.
+- **Size budget.** Each event is processed as a single message with a **1 MiB limit** for both entity and meter-reading operations. The limit includes the internal message envelope around your payload. A payload holds at most **100 operations**; split larger batches across multiple events. The operation limit is additive to raise in a future revision if needed.
 - **No entity-attribute validation — by design.** Attributes are written verbatim; attributes not defined in the schema are stored but not indexed. This is intentional and common integration practice (mapped mode behaves the same way). The design-time guards are [simulateDirect](#dry-run-simulatedirect) and the unique-identifier schema warnings.
 - **Content-based deduplication.** Byte-identical events within 5 minutes collapse silently — set `deduplication_id` deliberately (see [Deduplication](#deduplication)).
 - **Automations and echo.** Inbound sync writes do **not** trigger entity automations by default — an automation can opt in via its trigger's "Ignore system activities?" setting — and they never echo back out through outbound delivery. Same behavior as mapped mode.
