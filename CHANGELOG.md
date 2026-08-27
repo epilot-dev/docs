@@ -2,6 +2,278 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-08-27 Event: Customer Request Submitted
+
+- The event now also carries the meter of a ticket and its counters — new optional `meter` and `meter_counters` nodes, so consumers can resolve counter identifiers such as `external_id` from the event itself; both are absent for customer requests created from a journey
+
+## 2026-08-26 App API
+
+- App event search (`POST /v1/app-configurations/{appId}/events`) now accepts an optional `filters.search` term for searching events and an optional `pagination.before` cursor for paging backwards; both are echoed back in the `query` of the response
+- Apps can now be configured through options: a new optional `options` list accepted on `PATCH /v1/app-configurations/{appId}/versions/{version}` and returned wherever apps and app configurations are read, where every returned option reports whether it is `configured`, `lifted`, `sensitive`, and when its value was last changed (`value_updated_at`); components declare through a new optional `uses_options` flag that they read those options, and accept `options.sensitive` on `POST`/`PATCH /v1/app-configurations/{appId}/versions/{version}/components`
+- New `POST /v1/app/{appId}/options/resolve` endpoint added for resolving the configured option values of an app
+- The `secrets` field of app functions is deprecated and will be removed in a future version
+
+## 2026-08-26 Calendar API
+
+- Calendar event responses no longer contain `_tags`, `busy`, `is_recurring`, `source.etag`, and `source.provider_event_url` — affecting `GET /v1/calendar/events`, `POST /v1/calendar/events`, and `GET`/`PATCH /v1/calendar/events/{event_id}` (breaking)
+
+## 2026-08-26 Configuration Hub API
+
+- New endpoints added for the health of an organization's configuration: `GET /v1/configs/health` for reading the current health, `POST /v1/configs/health:scan` for starting a new scan, `POST /v1/configs/health:cleanup` for cleaning up what a scan reported, and `POST /v1/configs/health:coverage-request` for requesting coverage of a configuration that is not checked yet
+
+## 2026-08-26 Customer Portal API
+
+- Portals can now report whether the engagement center is switched on through a new optional `engagement_center_enabled` setting — accepted on `POST /v2/portal/portal` and returned wherever the portal configuration is read (`GET /v2/portal/config`, `GET /v2/portal/configs`, `GET /v2/portal/public/config`, and the org and public portal config endpoints in v2 and v3)
+
+## 2026-08-26 Entity API
+
+- Widget sizing moved to new fields: entity schemas accept a new optional `ui_config.widget_widths` and capability UI hooks a new optional `default_width`, while `ui_config.grid_layout` is deprecated and will be removed in a future version — affecting `PUT /v1/entity/schemas/{slug}`, `POST`/`PUT /v1/entity/schemas/capabilities/{composite_id}`, and everywhere schemas and capabilities are read
+- `POST /v1/entity:graph` now accepts an optional `filter` per graph node, for narrowing which entities that node matches
+
+## 2026-08-26 Integration Toolkit API
+
+- New `GET /v1/entities/{entityId}/sync-status` endpoint added for reading how an entity is synced with the connected external system — each reported sync state carries an optional `last_operation` and `last_synced_at`, plus optional `readings_last_event_id`, `readings_last_operation`, and `readings_last_synced_at` for meter readings
+- New `POST /v1/erp/updates/direct_simulation` endpoint added for simulating a direct update payload
+- Use cases can now be configured for direct updates through a new optional `configuration.direct` field, and `configuration.entities[].fields` is no longer required — accepted when creating or updating a use case or an integration, returned wherever use cases are read, and also accepted by `POST /v1/erp/updates/mapping_simulation` and `POST /v2/erp/updates/mapping_simulation`
+- `POST /v3/erp/updates/events` now accepts an optional `correlation_id` per event
+
+## 2026-08-26 Journey Config API
+
+- New optional `settings.authGate` field added to journey configurations, controlling the authentication a journey requires — accepted when creating and updating a journey configuration in v1 and v2, and returned wherever the journey configuration is read
+- The values of `validationRules` may now also be arrays where only single values were returned before, so consumers reading a journey configuration must be prepared for both shapes
+
+## 2026-08-26 Notification API
+
+- `POST /v1/notification/notifications` now accepts an optional `template_id` for creating a notification from a notification template, and an optional `skip_user_resolution` for delivering to the given recipients without resolving them to users first
+
+## 2026-08-26 Workflows Execution API
+
+- `agent_execution` and `agent_execution_id` on a workflow task may now be `null` where an object and a string were previously returned — affecting all flow execution and task responses (breaking)
+- New optional `loop_iterations` field added to workflow tasks, reporting how often a looping task ran; tasks and phases additionally report an optional `analytics.skipped_at` when they were skipped, and executions an optional `analytics.started_by_org_id`
+
+## 2026-08-25 Blueprint API
+
+- New `POST /v2/blueprint-manifest/jobs/{job_id}:retry` endpoint added for retrying a blueprint job that did not finish
+- Job progress now reports why an individual resource failed through new optional `error_code` and `error_data` fields on `resource_progress` — returned by `GET /v2/blueprint-manifest/jobs`, `GET /v2/blueprint-manifest/jobs/{job_id}`, the job cancel and continue endpoints, and the bulk-install target endpoints in v3
+
+## 2026-08-25 Customer Portal API
+
+- Templates can now be passed by reference instead of inline: a new optional `templates_ref` request field is accepted by `POST /v2/portal/contract/{id}/resolve-templates`, `POST /v2/portal/entity:get`, `POST /v2/portal/entity:search` (also per slug as `slug.templates_ref`), and `POST /v2/portal/metering/readings`, while the inline `templates`, `counter_templates`, `slug.templates`, and `group_title` request fields are deprecated and will be removed in a future version
+
+## 2026-08-25 Design Builder API
+
+- `PUT /v1/designs/addConsumer/{application}/{designId}` and `PUT /v1/designs/removeConsumer/{application}/{designId}` no longer accept the `should_delete` request field (breaking)
+
+## 2026-08-25 Validation Rules API
+
+- Rule conditions can now be limited to certain situations through a new optional `applies_when` field, accepted on `POST /v1/validation-rules` and `PATCH /v1/validation-rules/{ruleId}` and returned wherever rules are read
+- Value adjustments of a condition (`adjust` on the value itself and on its `min` and `max`) now also accept a context value instead of only a fixed number, and gained a new optional `rounding` setting — so consumers must be prepared for `adjust.value` no longer always being a number
+- Rule conditions gained two new operators, `maxDigits` and `maxDecimals`, for limiting how many digits and decimal places a value may have — accepted on `POST /v1/validation-rules` and `PATCH /v1/validation-rules/{ruleId}` and returned wherever rules are read
+
+## 2026-08-24 Message API
+
+- Message and thread searches can now be narrowed to a view or to user groups through new optional `view` and `user_groups` fields on `POST /v1/message/messages:search`, `POST /v1/message/threads:searchIds`, `POST /v2/message/threads:search`, and `POST /v1/message/unread:counts` (which takes the view per scope as `scopes.view_id`); the search term `q` is no longer required on the message and thread search endpoints
+
+## 2026-08-21 Integration Toolkit API
+
+- Use case configuration no longer supports `constants`, `lookups`, `params_mapping`, `required_params`, `file_source`, `fan_out.split_expression`, `upload.external_id`, and `upload.success_when` — these fields are no longer accepted when creating or updating a use case or an integration, and are no longer returned by the use case, integration, and use case history endpoints (breaking)
+- Request steps of a use case gained two new optional fields: `body_jsonata` for building the request body with a JSONata expression, and `enabled` for switching a single step off; file uploads additionally accept an optional `upload.max_total_bytes` limit
+- `POST /v2/erp/imports` now accepts an optional `import_id` to continue working on an existing import, answers with `200` in that case, and can answer with `404` or `409` when the referenced import cannot be used
+
+## 2026-08-21 Message API
+
+- New `POST /v1/message/unread:counts` endpoint added for retrieving the number of unread messages
+
+## 2026-08-21 Workflows Definition API
+
+- Journey tasks can now pass parameters into the journey they open through a new optional `context_parameters` field — available on the regular, ECP, and installer journey configuration of a task, accepted on `POST`/`PUT /v1/workflows/definitions` and `POST`/`PUT /v2/flows/templates`, and returned wherever workflow definitions, flow templates, and running workflow executions and tasks are read; `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` also accepts it for the ECP and installer journey of a running task
+
+## 2026-08-20 Access Token API
+
+- Access tokens now report when they expire through a new optional `expires_at` field, returned by `GET /v1/access-tokens`, `POST /v1/access-tokens`, and `DELETE /v1/access-tokens/{id}`
+- The maximum `expires_in` accepted by `POST /v1/access-tokens` was raised from 7 days (`604800` seconds) to 1 year (`31536000` seconds)
+
+## 2026-08-20 Billing API
+
+- Configuration history entries are now one of several typed rows distinguished by `change_type` — an installment amount change or a contract pricing change — instead of a single flat shape; the fields that were previously always present (`changed_at`, `created_at`, `entity_id`, `entity_type`, `event_id`, `new_value`, `org_id`, `schema_version`, `source`) and the optional `context`, `effective_at`, `previous_value`, `source_label`, `source_reference`, and `source_system` fields are no longer part of the common row, so consumers must read them from the specific row type — affecting `GET /v1/billing/billing_accounts/{id}/configuration_history`, `GET /v1/billing/contracts/{id}/configuration_history`, and the pricing information endpoints (breaking)
+- Contract pricing changes are now tracked in the configuration history: `change_type` accepts and returns the new `contract_pricing_changed` value, and a new optional `history_change_types` query parameter lets several change types be requested at once on all four configuration history and pricing information endpoints
+- Pricing information (`GET /v1/billing/contracts/{id}/pricing_information` and `GET /v1/billing/billing_accounts/{id}/pricing_information`) now returns the full `base_prices` and `working_prices` lists of a contract, reports a `tariff_type` for each base and working price, and accepts a new optional `include_history` query parameter for returning the configuration history along with it
+
+## 2026-08-20 Calendar API
+
+- Calendars now always report an `is_epilot_default` flag indicating whether a calendar is the organization's default calendar — returned by `GET /v1/calendar`, `POST /v1/calendar`, `POST /v1/calendar/sources/outlook`, and `GET`/`PATCH /v1/calendar/{calendar_id}`
+- `calendar_id` is no longer required when creating an event through `POST /v1/calendar/events` — the event is placed in the default calendar when it is omitted
+- `DELETE /v1/calendar/{calendar_id}` can now answer with `409` when the calendar cannot be deleted
+
+## 2026-08-20 Event Catalog API
+
+- `POST /v1/events/{event_name}:trigger` can now answer with `409`, `425`, and `503` when an event cannot be triggered
+- New optional `automation_trigger_only` and `automation_trigger_seed_node` fields added to catalog events, marking events that are only triggered from an automation and naming the node that seeds them — returned by `GET /v1/events`, `GET /v1/events/{event_name}`, and `PATCH /v1/events/{event_name}`
+
+## 2026-08-20 Journey Config API
+
+- New optional `stepperType` field added to journey steps, controlling how a step is presented in the journey stepper — accepted when creating and updating a journey configuration in v1 and v2, and returned wherever the journey configuration is read
+
+## 2026-08-20 Event: Customer Request Submitted
+
+- The event is now triggered from an automation instead of an entity operation — the `operation`, `activity_id`, `activity_type`, and `trigger_entity` fields were removed, and `_event_source` and `_trigger_source_type` are now always `automation` (breaking)
+- `ticket`, `event_attachments`, `_trigger_source_type`, and `_trigger_source` are now always present; `event_attachments` is always sent but may be empty when the request carries no files, and `_trigger_source` identifies the automation execution and action that triggered the request
+
+## 2026-08-19 App API
+
+- Apps can now declare `functions` — a new optional list accepted on `PATCH /v1/app-configurations/{appId}/versions/{version}` and returned wherever apps and app configurations are read, together with a new `function` custom action type that lets a component reference one of those functions; `APP_FUNCTION` is accepted as a `componentType` filter on `GET /v1/app` and as an event `source` on `POST /v1/app-events` and `POST /v1/app-configurations/{appId}/events`
+- The `sandbox` custom action type was removed — `configuration.type` no longer accepts `sandbox` on `POST`/`PATCH /v1/app-configurations/{appId}/versions/{version}/components` and it is no longer returned on the app, app-configuration, and public component read endpoints (breaking)
+- App components can now authenticate with basic auth — `configuration.auth_type` accepts and returns the new `basic` value, so consumers must be prepared for this additional value
+- New optional `query` request parameter added to the app proxy endpoints (`GET`/`POST`/`PUT`/`PATCH`/`DELETE /v1/public/app/{appId}/proxy/{proxyName}/{path}`) for passing a query string on to the proxied request
+
+## 2026-08-19 Calendar API
+
+- New optional `metadata` field added to calendar events for storing custom data alongside an event — accepted on `POST /v1/calendar/events` and returned by `GET /v1/calendar/events`, `GET /v1/calendar/events/{event_id}`, and the create and patch endpoints
+
+## 2026-08-19 Integration Toolkit API
+
+- New endpoints added for managing the documentation of an integration: `GET /v1/integrations/{integrationId}/documentation` for listing documents, and `GET`/`PUT`/`DELETE /v1/integrations/{integrationId}/documentation/{docId}` for reading, storing, and removing a single document
+- New `DELETE /v2/erp/imports/{importId}` endpoint added for deleting an import
+
+## 2026-08-19 Meter Counter Entity
+
+- The megawatt units of the `meter_counter` unit attribute were corrected from `mw` and `mWh` to `MW` and `MWh` — the old lowercase values are no longer accepted (breaking)
+
+## 2026-08-18 Configuration Hub API
+
+- New `POST /v1/configs/sync-jobs/{id}/cancel` endpoint added for cancelling a running configuration sync job
+
+## 2026-08-18 Customer Portal API
+
+- `POST /v3/portal/partner/invite` no longer accepts the `represents_contact_list` request field (breaking)
+
+## 2026-08-18 Workflows Execution API
+
+- New optional `match_normalizations` field added to workflow task conditions, reporting the normalizations applied when a condition value is matched — returned by all flow execution and task endpoints
+
+## 2026-08-18 Meter Counter Entity
+
+- New `digits` and `decimals` attributes added to the `meter_counter` entity, describing the register size of a meter counter
+
+## 2026-08-17 Dashboard API
+
+- New optional `version` field added to dashboards, reporting which dashboard format a dashboard uses — accepted on `POST /v1/dashboard/dashboards` and `PUT /v1/dashboard/dashboards/{id}`, and returned by the dashboard list, read, create, update, patch, and delete endpoints
+
+## 2026-08-15 Entity API
+
+- Schema capabilities can now be configured further: a new optional `variant_overridable` flag controls whether a capability may be overridden per variant, and capability UI hooks accept new optional `default_visible` and `pricing_tier_setting` settings — accepted on `POST /v1/entity/schemas/capabilities`, `PUT /v1/entity/schemas/capabilities/{composite_id}`, and `PUT /v1/entity/schemas/{slug}`, and returned wherever schemas and capabilities are read
+- New optional `ui_config.widget_visibility` setting added to entity schemas for controlling which widgets are shown — accepted on `PUT /v1/entity/schemas/{slug}` and returned by the schema read, list, versions, freeze, and unfreeze endpoints
+
+## 2026-08-14 AI Agents API
+
+- New `GET /v1/executions/{execution_id}/feedback` endpoint added for reading the feedback recorded for an agent execution, and `PUT /v1/executions/{execution_id}/feedback` for submitting it
+
+## 2026-08-14 Blueprint API
+
+- New optional `active_restore_job_id` and `active_restore_started_at` fields added to blueprints, reporting a restore that is currently running — accepted on `POST /v2/blueprint-manifest/blueprints` and `PUT /v2/blueprint-manifest/blueprints/{blueprint_id}`, and returned by the blueprint list, read, create, update, and delete endpoints
+- Restore results can now report that a resource was kept because another resource depends on it: a new `dependency_protected` value for `reason` together with a new optional `protected_by` field, returned by `GET /v2/blueprint-manifest/jobs`, `GET /v2/blueprint-manifest/jobs/{job_id}`, `POST /v2/blueprint-manifest/jobs/{job_id}:cancel`, and `GET /v3/blueprint-manifest/blueprints/{blueprint_id}/deployments/{job_id}/restore-preview`
+
+## 2026-08-14 Design Builder API
+
+- `DELETE /v1/designs/{designId}` can now answer with `409` when the design cannot be deleted
+
+## 2026-08-14 File API
+
+- New `GET /v1/files/{id}/summary/feedback` endpoint added for reading the feedback given on a file summary, and `PUT /v1/files/{id}/summary/feedback` for submitting it; `GET /v1/files/{id}/summary` now reports an optional `feedback_available` flag
+- New optional `file_summary_execution_id` field added to file responses, identifying the summary generation run of a file — returned by `POST /v1/files`, `POST /v2/files`, `GET`/`DELETE /v2/files/{id}`, and `GET /v1/entity/{id}/collections/{collectionSlug}/files`
+
+## 2026-08-14 Integration Toolkit API
+
+- `POST /v2/erp/imports` no longer accepts `integration_id` and `use_case_slug` — the import determines its use case itself (breaking)
+- New `POST /v2/erp/imports/{importId}:validate` endpoint added for validating an import before executing it, and `POST /v2/erp/imports/{importId}:suggest-use-cases` for suggesting matching use cases — the suggestion response reports `file_columns` once for the whole import rather than per suggestion, and every suggestion carries the `entity_types` it would create
+- `POST /v2/erp/imports/{importId}:execute` now accepts an optional request body and answers with `202` instead of `200`, or with `422` when the import cannot be executed; `POST /v2/erp/imports` answers with `201` instead of `202` and accepts a new optional `include_preview` field for returning a preview of the import along with it (breaking)
+- Import error reporting changed: `error.type` was replaced by a required `error.code`, `integration_id` is no longer guaranteed, and a new optional `validation.issues` list reports individual validation problems — each issue names the affected `columns` as objects with a required `name` and an optional `entity`, may point at a specific `row`, and no longer always carries a `message` — affecting `GET /v2/erp/imports`, `GET /v2/erp/imports/{importId}`, and the validate, execute, and abort endpoints (breaking)
+- Use case configuration gained a set of new optional fields — `direction`, `constants`, `lookups`, `fan_out`, `file_source`, `upload`, `params_mapping`, `required_params`, `ack_tracking`, and `event_filter` — `response` is no longer required, request steps now also allow the `PUT` and `PATCH` methods, and a new `file_proxy` delivery type was added for forwarding files to an external system; use cases additionally report an optional `changed_by`, and `GET /v1/integrations/{integrationId}/outbound-status` reports an optional `file_proxy` status
+- Mapping simulation (`POST /v1/erp/updates/mapping_simulation` and `POST /v2/erp/updates/mapping_simulation`) now always reports a `mode` for each entity update and meter reading update, and adds optional `pricing`, `prune_scope_updates`, and `meter_readings_prune_scope_updates` details
+
+## 2026-08-14 Query API
+
+- New `POST /v2/query/autocomplete:search` endpoint added for autocompleting values while composing a query
+- New `GET /v2/query/chart-templates` endpoint added for listing the available chart templates, and `POST /v2/query/chart-templates/{template_id}:resolve` for resolving a template into a runnable query
+
+## 2026-08-13 Automation API
+
+- New `AssignEntityAction` automation action added for assigning an entity from a flow — it can be configured on `POST /v1/automation/flows` and `PUT /v1/automation/flows/{flow_id}`, and is returned wherever actions are read (the flow read, list, search, and batch-get endpoints, the execution endpoints, and `POST /v1/automation/public/executions:resume`)
+
+## 2026-08-12 Blueprint API
+
+- Blueprints now support a new `insight` resource type — it is accepted in `type` and `hard_dependencies` when creating or updating blueprint resources (`POST`/`PUT /v2/blueprint-manifest/blueprints`, the resource create, update, and bulk endpoints, and `POST /v1/blueprint-manifest/jobs:createExport`) and is returned wherever resource and job types are reported, so consumers must be prepared for this additional value
+
+## 2026-08-12 Calendar API
+
+- Calendar events now always return an `is_draft` flag indicating whether the event is still a draft — added to `GET /v1/calendar/events`, `POST /v1/calendar/events`, and `GET`/`PATCH /v1/calendar/events/{event_id}`
+- An event can now be cancelled through the new optional `is_cancelled` field on `PATCH /v1/calendar/events/{event_id}`
+
+## 2026-08-12 Deduplication API
+
+- `POST /v1/deduplicate` now returns an object with a `deduplicatedEntities` list instead of a bare array (breaking)
+- New `POST /v1/detect-duplicates` endpoint added for finding duplicates of an entity, and `POST /v1/duplicates/dismiss` for dismissing a reported duplicate
+- New endpoints added for managing the uniqueness criteria that decide when two entities count as duplicates: `GET`/`POST /v1/uniqueness-criteria` for listing and creating them, and `GET`/`PUT`/`DELETE /v1/uniqueness-criteria/{schema}` for reading, replacing, and removing the criteria of a single schema
+
+## 2026-08-12 Email Settings API
+
+- `smtp_port` is now a string instead of an integer in all SMTP connection responses (`GET`/`POST /v2/smtp/connections` and `GET`/`PUT /v2/smtp/connections/{connectionId}`); requests accept both a string and an integer (breaking)
+- New optional `skip_test` query parameter added to `POST /v2/smtp/connections` and `PUT /v2/smtp/connections/{connectionId}` for saving a connection without testing it first
+
+## 2026-08-12 Journey Config API
+
+- Journeys read from the API now always carry an explicit `settings.isActive` flag, indicating whether the journey is accessible to end customers — returned by `GET /v1/journey/configuration/{id}` and `GET /v2/journey/configuration/{id}`; the flag stays optional in request bodies
+
+## 2026-08-11 Automation API
+
+- New optional `workflow_context._automation_chain` field added to automation executions, recording the chain of automations an execution was started from — accepted on `POST /v1/automation/executions` and returned by the execution list, read, search, delete, and `POST /v1/automation/public/executions:resume` endpoints
+
+## 2026-08-11 Design Builder API
+
+- New `POST /v1/designs/{designId}/duplicate` endpoint added for creating a copy of an existing design
+
+## 2026-08-11 Workflows Execution API
+
+- New optional `_automation_chain` field added to flow executions, recording the chain of automations an execution was started from — returned by `POST /v2/flows/executions`, `GET`/`PATCH /v2/flows/executions/{execution_id}`, `POST /v2/flows/executions:search`, and the reconcile-automation endpoint
+
+## 2026-08-10 Blueprint API
+
+- New optional `performed_by` field added to blueprint deployments, identifying who performed a deployment — accepted on `POST /v2/blueprint-manifest/blueprints` and `PUT /v2/blueprint-manifest/blueprints/{blueprint_id}`, and returned by the blueprint list, read, create, update, and delete endpoints
+
+## 2026-08-10 Customer Portal API
+
+- New `GET /v2/portal/user/file/{id}/preview` endpoint added for retrieving a preview of a file in the portal
+
+## 2026-08-10 Query API
+
+- The semantic model (`GET /v2/query/semantic-model`) now reports `version` `3`; the value `2` is no longer returned (breaking)
+- The `tables.entity_relationships` table was removed from the semantic model and replaced by a new `tables.entity_edges` table (breaking)
+- Relationship mechanism values were renamed — `entity_relationships` is now `entity_relation` and `workflow_contexts` is now `workflow_context` (breaking)
+- New required `capabilities` and `conventions.workflow_org_id_padding` fields added to the semantic model response
+- `columns` on the entity, purpose, and taxonomy tables is now optional and may be absent (breaking)
+
+## 2026-08-10 Targeting API
+
+- New `POST /v1/campaign/{campaign_id}/recipient/{recipient_id}/entity_ui:restore` endpoint added for restoring a dismissed entity UI, together with a new optional `entity_ui_status_before_dismiss` field on recipient responses recording the status a recipient had before being dismissed
+- Campaign discovery (`POST /v1/campaign:discover`) now always returns a `dismissed` flag, along with an optional `status_updated_at` timestamp
+
+## 2026-08-10 Workflows Execution API
+
+- New optional `heal_attempts` and `last_heal_attempted_at` fields added to workflow tasks, reporting how often a task was auto-healed and when it was last attempted — returned by all flow execution and task endpoints
+- New optional `next_condition_ids` request field accepted on `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}`, for setting which conditions a task continues to
+
+## 2026-08-10 Event: File Updated
+
+- New `FileUpdated` event added, fired whenever an existing file entity is updated — like `FileCreated` it carries the file attachment reference (entity ID, S3 reference, and file metadata such as filename, MIME type, size, and version index) together with the hydrated file entity, so webhooks can react to changes on a file and receive its content
+
+## 2026-08-09 Query API
+
+- Query results now include an optional `columns` field describing the columns of the returned data, added to the `200` response of `POST /v1/query:execute`, `POST /v2/query:execute`, and `POST /v2/query/domain/entities:execute`
+
+## 2026-08-07 Automation API
+
+- New optional `use_uniqueness_criteria` field added to automation action configuration, accepted on `POST`/`PUT /v1/automation/flows/{flow_id}` and returned wherever actions are read (the flow read, list, search, and batch-get endpoints, the execution endpoints, and `POST /v1/automation/public/executions:resume`)
+
 ## 2026-08-06 Blueprint API
 
 - Adding resources to a blueprint (`POST /v2/blueprint-manifest/blueprints/{blueprint_id}/resources` and `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/resources/bulk`) now reports partial failures — new optional `errors`, `total_errors`, `errors_truncated`, and `skipped` fields were added to the response, so a `200` no longer means every requested resource was added
@@ -64,10 +336,6 @@ This changelog covers breaking changes, new features, and significant updates to
 - New `GET /v1/conditional-pricing/{slug}/condition-sets` endpoint added, returning the condition sets defined for a conditional pricing
 - The `tax` field on line item taxes now also accepts and returns the `Tax` and `TaxItem` object shapes, in addition to the previously supported ones — affecting `POST /v1/order`, `PUT /v1/order/{id}`, `POST /v1/pricing:compute`, `POST /v1/public/cart:checkout`, and the public external-catalog and product-recommendation endpoints (breaking for consumers that assume a fixed shape for `tax`)
 
-## 2026-08-04 Targeting API
-
-- The optional `resolution` field was removed from all campaign recipient responses (`POST /v1/campaign/{campaign_id}/recipient`, `PATCH /v1/campaign/{campaign_id}/recipient/{recipient_id}` and its `entity_ui:status` and `portal:status` variants, and `GET /v1/campaign/{campaign_id}/recipients`), and the `Resolution` schema is no longer part of the API (breaking)
-
 ## 2026-08-03 User API
 
 - New optional `passkeys_registered` field added to `LoginParameters` responses, indicating whether the user already has a passkey registered — returned by `GET /v1/users/username/{username}:getLoginParameters`, `GET /v2/users/public/username/{username}:getLoginParameters`, and `POST /v2/users/public/passkeys:resolveCredential`
@@ -75,6 +343,11 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-08-01 Integration Toolkit API
 
 - New endpoints added for importing data from an ERP system: `GET`/`POST /v2/erp/imports` for listing and creating an import, `GET /v2/erp/imports/{importId}` for reading a single import, `POST /v2/erp/imports/{importId}:execute` for starting it, and `POST /v2/erp/imports/{importId}:abort` for stopping one that is still running
+
+## 2026-07-31 Customer Portal API
+
+- New `GET /v2/portal/entity/{slug}/{id}/workflows/linearized` endpoint added, returning the workflows of a portal entity as a flat list of steps
+- New `POST /v2/portal/entities/workflows/linearized/batch` endpoint added for requesting those linearized workflows for several entities at once
 
 ## 2026-07-31 Entity API
 
