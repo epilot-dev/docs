@@ -523,6 +523,5 @@ Currency attributes are stored as two suffix fields (`price_decimal`, `price_cur
 
 ## Reference
 
-- **RFC** — _Changesets + Entity Attribute Edit Modes_ (Viljami Kuosmanen, 2026-02-18). Source of truth for design intent.
-- **Implementation** — [`entity-api`](https://github.com/epilot-dev/entity-api): `lambda/ApiHandlerFunction/src/entity/changeset-service.ts` (interception and hydration), `changeset-matching.ts` (match strategies), `changeset-handlers.ts` (`:apply`, `:dismiss`, list endpoints).
+- **API docs** — [Changesets endpoints](/api/entity/#tag/Changesets) in the Entity API reference.
 - **API schemas** — `Changeset`, `ChangesetMap`, `ChangesetCreator`, `MatchStrategy`, `FuzzyConfig`, `EditModeConfig` in the Entity API OpenAPI spec.
