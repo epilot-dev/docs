@@ -112,6 +112,10 @@
       "type": "string",
       "description": "Decimals"
     },
+    "ma_lo_id": {
+      "type": "string",
+      "description": "MaLo-ID"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
