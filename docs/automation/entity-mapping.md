@@ -287,9 +287,15 @@ Define a filter to select the related entities. For example, to relate a Contact
 
 ## Multi-Hop Relations (Graph Context)
 
-`_copy` and `_template` can read directly related entities out of the box (e.g. `contact.first_name`). But sometimes the entity you need data from isn't directly related to the trigger entity — it's only reachable by following a chain of relations. **Graph Context** lets you define that chain once, and every entity along the way becomes available for mapping, the same way a direct relation would.
+`_copy` and `_template` can read directly related entities out of the box (e.g. `contact.first_name`). But sometimes the entity you need data from isn't directly related to the trigger entity — it's only reachable by following a chain of relations. **Graph Context** lets you define that chain once, and every entity along the way becomes available for mapping, the same way a direct relation would. Under the hood, it's powered by the Entity API's [Graph Query](/api/entity#tag/Entities/operation/queryEntityGraph) endpoint.
 
 For example, a Contract might not have a direct relation to an Order, but both are linked to the same Contact. To pull data from that Order, define a graph query that starts at the Contract, hops to the Contact, and from there to the Order:
+
+```mermaid
+flowchart LR
+    Contract["Contract\n(seed)"] --> Contact["Contact"]
+    Contact --> Order["Order\n(cardinality: one)"]
+```
 
 ```json
 {
