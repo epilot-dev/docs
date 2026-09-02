@@ -293,8 +293,8 @@ For example, a Contract might not have a direct relation to an Order, but both a
 
 ```mermaid
 flowchart LR
-    Contract["Contract\n(seed)"] --> Contact["Contact"]
-    Contact --> Order["Order\n(cardinality: one)\nfilter: status = active"]
+    Contract["Contract (seed)"] --> Contact["Contact"]
+    Contact --> Order["Order (filter: status = active)"]
 ```
 
 ```json
@@ -348,8 +348,3 @@ Once resolved, the `order` node is merged into the mapping context under its own
 
 - **`cardinality`** — set to `"one"` when a node should resolve to exactly one entity (fails the mapping if zero or more than one match). Omit it, or set `"many"`, when a node can resolve to multiple entities — it's then made available as an array.
 - **`filter`** — narrows a node down to entities matching specific attribute values, as shown on the `order` node above. Filter values also support `{{handlebars}}` placeholders, e.g. `{ "attribute": "order_number", "value": "{{contract.order_number}}" }`.
-
-:::tip
-Only one Graph Context entry is supported per Create/Edit Entity action. If you need data from more than one unrelated path, resolve the most specific one and reference simpler attributes directly.
-:::
-
