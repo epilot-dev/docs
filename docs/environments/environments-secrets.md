@@ -28,6 +28,7 @@ Environment variables solve all three. Store your credentials and URLs as variab
 |------|-------------|-----------|
 | **String** | Plain text value. Use for URLs, IDs, feature flags, and other non-sensitive config. | Yes -- value is visible in the UI and returned by the API. |
 | **SecretString** | Encrypted value. Use for API keys, OAuth secrets, passwords, and tokens. | No -- value is write-only. Once saved, it cannot be read back through the UI or API. |
+| **JSON** | A JSON object (up to 32 KB). Used for [Key/Value Maps](/docs/integrations/integration-toolkit/key-value-maps) — lookup tables read in JSONata via `$env.<key>` with `$mapValue` / `$mapKey`. Not available in `{{ env.* }}` templates. | Yes -- value is visible in the UI and returned by the API. |
 
 ## Naming your variables
 

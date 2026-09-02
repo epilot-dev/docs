@@ -63,6 +63,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
 | `integration_type` | string | No | `erp` (default) or `connector` |
 | `connector_config` | object | No | Shared config for connector-type integrations (base URL, auth) |
 | `protected` | boolean | No | When `true`, prevents deletion and restricts modifications to admin users |
+| `maps` | array | No | [Key/Value Maps](./key-value-maps.md) declared on this integration (`key`, `label`, `description`, `value`). Saving the integration writes each map to the organization's environment as a `JSON` variable. |
 
 ### Listing Integrations
 

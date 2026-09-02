@@ -318,6 +318,22 @@ All three are visible via the standard ERP monitoring stream alongside extractio
 - Resolved values are cached for **60 seconds per `(org, key)`** by the `@epilot/environments` package.
 - Adding or removing an env var becomes visible to `env_var_ref` within 5 minutes; changing the value of an existing non-secret var becomes visible within 60 seconds.
 
+### Key/Value Maps in JSONata {#kv-maps}
+
+For enum-like translations (salutation codes, status codes, country codes) use a [Key/Value Map](../key-value-maps.md) instead of hand-written `? :` chains. Maps are `JSON` environment variables declared on the integration and are available inside every `jsonataExpression` as `$env.<key>`, together with two helpers:
+
+```json
+{
+  "attribute": "salutation",
+  "jsonataExpression": "$mapKey($env.salutation, $string(Person1Anredekennzeichen))"
+}
+```
+
+- `$mapValue(map, key, default?)` — forward lookup (epilot value → external code)
+- `$mapKey(map, value, default?)` — reverse lookup, first matching key wins (external code → epilot value)
+
+`$env` only contains non-secret variables. If the referenced map does not exist the expression fails with `first argument must be an object`, which is reported through the standard mapping monitoring. See [Key/Value Maps](../key-value-maps.md) for the recommended table shape and the full rule set.
+
 ## Repeatable Fields
 
 Email and phone fields in epilot are stored as arrays. Use `_type` to specify the field type:
@@ -798,3 +814,4 @@ Transform and validate in one expression:
 - [Relations](./relations.md) - Link entities together
 - [Pricing](./pricing.md) - Map ERP line items and calculate prices
 - [Meter Readings](./meter-readings.md) - Handle meter reading data
+- [Key/Value Maps](../key-value-maps.md) - Re-usable lookup tables for enum-like values

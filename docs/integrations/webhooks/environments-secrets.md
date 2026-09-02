@@ -37,6 +37,22 @@ You can use environment variable references in:
 
 When the webhook fires, all `{{ env.* }}` references are resolved server-side to the organization's actual values before the HTTP request is sent. SecretString values are decrypted only at this point and never logged.
 
+## JSON maps in payload transformations
+
+Environment variables are also available inside the JSONata **payload transformation** (and multipart form-field expressions) as `$env.<key>`. This is most useful with variables of type `JSON`, which hold [Key/Value Maps](/docs/integrations/integration-toolkit/key-value-maps) — lookup tables for translating epilot values into the codes your endpoint expects:
+
+```jsonata title="Payload transformation"
+{
+  "kundennummer": entity.customer_number,
+  "anredekennzeichen": $mapValue($env.salutation, entity.salutation, "!")
+}
+```
+
+- `$mapValue(map, key, default?)` — forward lookup (epilot value → external code)
+- `$mapKey(map, value, default?)` — reverse lookup, first matching key wins
+
+`$env` exposes non-secret variables only; SecretString values are never available to JSONata. If a referenced map does not exist, the transformation fails and the delivery is reported as failed, like any other JSONata error.
+
 ## Autocomplete
 
 The webhook configuration UI provides autocomplete when you type `{{ env.`. It suggests matching variable keys from your organization and auto-completes the closing braces.
