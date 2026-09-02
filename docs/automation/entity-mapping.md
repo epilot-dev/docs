@@ -285,4 +285,66 @@ When choosing a relation attribute for mapping, you define which entities from t
 
 Define a filter to select the related entities. For example, to relate a Contact created earlier in the automation with a "primary" label, filter by `Schema: contact` and `Relation Label: primary`.
 
+## Multi-Hop Relations (Graph Context)
 
+`_copy` and `_template` can read directly related entities out of the box (e.g. `contact.first_name`). But sometimes the entity you need data from isn't directly related to the trigger entity — it's only reachable by following a chain of relations. **Graph Context** lets you define that chain once, and every entity along the way becomes available for mapping, the same way a direct relation would. Under the hood, it's powered by the Entity API's [Graph Query](/api/entity#tag/Entities/operation/queryEntityGraph) endpoint.
+
+For example, a Contract might not have a direct relation to an Order, but both are linked to the same Contact. To pull data from that Order, define a graph query that starts at the Contract, hops to the Contact, and from there to the Order:
+
+```mermaid
+flowchart LR
+    Contract["Contract (seed)"] --> Contact["Contact"]
+    Contact --> Order["Order (filter: status = active)"]
+```
+
+```json
+{
+  "seed": {
+    "entity_id": "{{_id}}",
+    "node_id": "contract"
+  },
+  "graph": {
+    "nodes": [
+      { "id": "contract", "schema": "contract" },
+      { "id": "contact", "schema": "contact" },
+      {
+        "id": "order",
+        "schema": "order",
+        "cardinality": "one",
+        "filter": [
+          { "attribute": "status", "value": "active" }
+        ]
+      }
+    ],
+    "edges": [
+      { "from": "contract", "to": "contact" },
+      { "from": "contact", "to": "order" }
+    ]
+  }
+}
+```
+
+The `filter` narrows the `order` node down to entities matching specific attribute values — here, only an Order with `status: "active"` is considered. Combined with `cardinality: "one"`, the mapping fails loudly if zero or more than one active order is found, instead of resolving an arbitrary one.
+
+Once resolved, the `order` node is merged into the mapping context under its own id, so you can reference it just like a direct relation:
+
+```json
+{
+  "target": "line_items",
+  "operation": {
+    "_copy": "order.line_items"
+  }
+}
+```
+
+### Structure
+
+| Key | Description |
+|-----|-------------|
+| `seed.entity_id` | The entity to start traversing from. Supports `{{handlebars}}` placeholders resolved against the mapping context — `{{_id}}` refers to the trigger entity. |
+| `seed.node_id` | Which node in `graph.nodes` the seed corresponds to. |
+| `graph.nodes` | The entities to resolve along the path, each with an `id` (how you'll reference it in `_copy`/`_template`), a `schema`, and optionally `cardinality` and `filter`. |
+| `graph.edges` | The relation hops between nodes, as `{ "from": "<node id>", "to": "<node id>" }` pairs. |
+
+- **`cardinality`** — set to `"one"` when a node should resolve to exactly one entity (fails the mapping if zero or more than one match). Omit it, or set `"many"`, when a node can resolve to multiple entities — it's then made available as an array.
+- **`filter`** — narrows a node down to entities matching specific attribute values, as shown on the `order` node above. Filter values also support `{{handlebars}}` placeholders, e.g. `{ "attribute": "order_number", "value": "{{contract.order_number}}" }`.
