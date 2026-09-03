@@ -44,6 +44,14 @@
       "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
       "example": "api_123456"
     },
+    "_automation_chain": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 100,
+      "description": "Ordered automation flow ids that caused this event; propagated verbatim for automation loop prevention"
+    },
     "_has_pending_changesets": {
       "type": "boolean",
       "description": "True when the triggering entity (or meter counter) has at least one pending changeset"

@@ -8,6 +8,9 @@
   "_ack_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_trigger_source_type": "api",
   "_trigger_source": "api_123456",
+  "_automation_chain": [
+    "string"
+  ],
   "_has_pending_changesets": true,
   "_changeset_edit_modes": [
     "string"
