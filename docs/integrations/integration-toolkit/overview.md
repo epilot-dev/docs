@@ -155,7 +155,7 @@ Push epilot events to your ERP via webhooks. Typical flows:
 - Self-service requests (IBAN changes, installment adjustments)
 - Meter reading submissions
 
-Outbound events use [Core Events](/docs/integrations/core-events). They can be delivered through [Webhooks](/docs/integrations/webhooks), made available through [Pollable Outbound](./pollable-outbound.md), or used to [deliver referenced files](./outbound-file-delivery.md) to an external API. JSONata transforms simplify event and file payloads before delivery.
+Outbound events use [Core Events](/docs/integrations/core-events). They can be delivered through [Webhooks](/docs/integrations/webhooks), made available through [Pollable Outbound](./pollable-outbound.md), or used to [deliver referenced files](./outbound-file-delivery.md) to an external API. JSONata transforms simplify event and file payloads before delivery. The same events can also start [Automation Flows](/docs/automation/event-catalog-trigger) inside epilot, for example to notify a service team or update related entities alongside the ERP delivery.
 
 For ERPs that cannot receive webhooks (firewalled, on-prem, or batch-oriented systems), [Pollable Outbound](./pollable-outbound.md) offers a pull-based alternative: your middleware polls a queue inside the ERP Integration API on its own schedule and acknowledges items once consumed.
 
