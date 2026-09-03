@@ -26,6 +26,22 @@ All events include these fields:
 - `_event_version`: Schema version number
 - `_event_source`: Source that triggered the event
 
+### Event Consumers
+
+Published events can be consumed in several ways:
+
+- **[Webhooks](/docs/integrations/webhooks)** -- deliver the event payload to an external system over HTTP
+- **[Automations](/docs/automation/event-catalog-trigger)** -- start an Automation Flow inside epilot with the event payload as context
+- **[Integration Toolkit](/docs/integrations/integration-toolkit/overview)** -- deliver events to ERPs through [Pollable Outbound](/docs/integrations/integration-toolkit/pollable-outbound) or [Outbound File Delivery](/docs/integrations/integration-toolkit/outbound-file-delivery)
+
+## Starting Automations from Events
+
+Any enabled event can start an [Automation Flow](/docs/automation/automation-flows) through the **Event Catalog event** trigger. The flow runs in the context of one entity from the event's entity graph (for example the `ticket` of a `CustomerRequestSubmitted` event), and the complete event payload is available to trigger conditions, action conditions, email and document templates, and webhook payloads as the `event` variable.
+
+The trigger is pinned to an event version, so newer published versions are downgraded before the flow sees them, and loops are prevented by an automation chain carried on every event an automation causes, plus a default switch that ignores events published by the **Trigger Event** action of other automations.
+
+See [Event Catalog Trigger](/docs/automation/event-catalog-trigger) for configuration, variables, and loop prevention.
+
 ## Built-in Event Schemas
 
 ### Metering

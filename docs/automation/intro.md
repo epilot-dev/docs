@@ -17,6 +17,7 @@ Common use cases:
 - Triggering webhooks on entity updates
 - Generating documents from templates
 - Starting workflows as part of a business process
+- Reacting to [Core Events](/docs/integrations/core-events) such as a submitted customer request or a new meter reading
 
 ```mermaid
 flowchart LR
