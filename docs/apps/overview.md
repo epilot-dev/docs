@@ -2,78 +2,197 @@
 title: Overview
 hide_title: true
 slug: /apps
-sidebar_position: 1
-description: "Welcome to the epilot Developer Platform documentation!"
+sidebar_label: Overview
+description: 'Build Apps that extend epilot — custom UI in entity pages, journeys and portals, plus server-side functions for flows.'
 ---
 
-<p>&nbsp;</p>
+import DocCards from '@site/src/components/DocCards';
 
-<p align="center"><a href="/"><img src="/img/logo.png" width="150" /></a></p>
+# Build Apps for epilot
 
-<h1 align="center">Building Apps for epilot</h1>
+epilot is the Energy XRM that Apps extend. Add custom UI to entity pages, journeys, and portals, run your own code inside flows, and connect external systems — then install your App privately or publish it to the epilot Marketplace.
 
-<p align="center">Build, publish, and monetize integrations that extend the epilot platform — the operating system for energy and utility companies across Europe.</p>
+## Get started
 
-## What Are Apps?
+<DocCards
+  columns={2}
+  variant="feature"
+  items={[
+    {
+      title: 'Quick start',
+      art: 'quickstart',
+      description: 'Scaffold an App with the epilot CLI, add a component, and deploy it to your organization in minutes.',
+      href: '/docs/apps/getting-started/quick-start',
+    },
+    {
+      title: 'Developer sandbox',
+      art: 'sandbox',
+      description: 'Request an isolated sandbox organization to build and test without touching production data.',
+      href: '/docs/apps/getting-started/developer-sandbox',
+    },
+  ]}
+/>
 
-Apps are modular extensions that enhance the epilot platform's core functionality. Developers build apps to add custom journey blocks, portal extensions, automation actions, and third-party integrations — then publish them to the epilot Marketplace where energy and utility companies can discover and install them.
+```bash
+npx epilot app init my-app
+cd my-app
+epilot app add-component my-block --type CUSTOM_JOURNEY_BLOCK
+epilot app deploy
+```
 
-Each app is a self-contained package that can be versioned, configured, and updated independently. Apps follow a standardized development and publication workflow, making it straightforward for external partners and developers to extend the platform in consistent, maintainable ways.
+## Set up your development environment
 
-## App Components on epilot
+<DocCards
+  items={[
+    {
+      title: 'App CLI',
+      icon: 'terminal',
+      description: 'Scaffold components and functions, validate the manifest, and deploy — all from the command line.',
+      href: '/docs/apps/cli',
+    },
+    {
+      title: 'Development mode',
+      icon: 'dev',
+      description: 'Point epilot at your local dev server and see component changes live without redeploying.',
+      href: '/docs/apps/development-mode',
+    },
+    {
+      title: 'Agent Toolkit',
+      icon: 'agent',
+      description: 'Give Claude, Codex, or ChatGPT epilot skills and MCP access so they can build Apps with you.',
+      href: '/agent-toolkit',
+      badge: 'Preview',
+    },
+  ]}
+/>
 
-Apps on epilot consist of modular components that extend platform functionality in specific ways. Each component type addresses different integration needs and can be combined within a single app to create comprehensive solutions.
+## Build across every surface
 
-See the [App Components](/docs/apps/components/overview) section for detailed information on each component type, and [App Surfaces](/docs/apps/app-surfaces) to learn how your app communicates with the epilot platform using the `@epilot/app-bridge` library.
+Components are the building blocks of an App. Each type plugs into a specific part of the platform.
 
-### Current Component Types
+<DocCards
+  items={[
+    {
+      title: 'Journey blocks',
+      icon: 'journey',
+      description: 'Web components that appear in the Journey Builder palette to collect data, calculate, or visualize.',
+      href: '/docs/apps/components/custom-journey-block',
+    },
+    {
+      title: 'Custom pages',
+      icon: 'page',
+      description: 'Full pages inside epilot 360 with their own navigation, powered by your frontend.',
+      href: '/docs/apps/components/custom-page',
+    },
+    {
+      title: 'Entity capabilities & tabs',
+      icon: 'entity',
+      description: 'Embed your UI into contact, contract, or opportunity pages and react to entity context.',
+      href: '/docs/apps/app-surfaces',
+    },
+    {
+      title: 'Portal extensions',
+      icon: 'portal',
+      description: 'Add widgets and sections to customer and installer portals.',
+      href: '/docs/apps/components/portal-extension',
+    },
+    {
+      title: 'Flow actions',
+      icon: 'flow',
+      description: 'Add your own task type to flows — call an external endpoint or run a workflow function.',
+      href: '/docs/apps/components/custom-action',
+    },
+    {
+      title: 'External product catalog',
+      icon: 'catalog',
+      description: 'Serve products and prices from a third-party system directly into epilot.',
+      href: '/docs/apps/components/external-product-catalog',
+    },
+  ]}
+/>
 
-**Custom Journey Blocks**: Web components that integrate into Journey Builder to collect data, perform calculations, or display interactive elements.
+## Connect data and customize backend logic
 
-**Portal Extensions**: Components that enhance epilot's customer and installer portals with additional functionality and visualizations.
+<DocCards
+  items={[
+    {
+      title: 'App manifest',
+      icon: 'manifest',
+      description: 'The declarative source of truth for metadata, components, functions, permissions, and options.',
+      href: '/docs/apps/app-manifest',
+    },
+    {
+      title: 'Functions',
+      icon: 'fn',
+      description: 'Server-side TypeScript that runs inside flows or on a schedule, deployed with your App.',
+      href: '/docs/apps/functions/overview',
+    },
+    {
+      title: 'API proxy',
+      icon: 'proxy',
+      description: 'Call external APIs server-side with bearer tokens or OAuth 2.0 without exposing credentials.',
+      href: '/docs/apps/components/api-proxy',
+    },
+    {
+      title: 'App Bridge',
+      icon: 'bridge',
+      description: 'Read entity context, resize your iframe, navigate, and authorize API clients from inside a surface.',
+      href: '/docs/apps/app-surfaces#getting-started-with-app-bridge',
+    },
+    {
+      title: 'Permissions',
+      icon: 'shield',
+      description: 'Declare the roles your App needs and check them at runtime.',
+      href: '/docs/apps/configure-permissions',
+    },
+    {
+      title: 'App options',
+      icon: 'settings',
+      description: 'Let installing organizations configure your App with sensitive and non-sensitive settings.',
+      href: '/docs/apps/app-options',
+    },
+  ]}
+/>
 
-**External Product Catalog**: Components that integrate third-party product catalogs into epilot.
+## Ship with quality
 
-**Custom Workflow Task**: Either call an external endpoint or run your own TypeScript code in a sandboxed workflow task.
-
-**API Proxy**: Call external APIs server-side without exposing credentials to the browser. Supports custom headers, bearer tokens, and OAuth 2.0.
-
-### Coming Soon
-
-:::note
-These component types are planned for future releases and are not yet available.
-:::
-
-- **Custom Journey Design**: Create custom designs for customer journeys, including layouts, styles, and interactive elements.
-- **Email Plugins**: Extend and customize email templates and functionality.
-
-## Why Build on epilot?
-
-### Industry-Specific Platform
-Build solutions for the energy and utility industry with access to domain-specific data models, entity schemas, and workflows purpose-built for this sector.
-
-### API-First Architecture
-A comprehensive [API suite](https://docs.epilot.io/api) gives you access to the full capabilities of the epilot platform, so you can build deeply integrated solutions with minimal friction.
-
-### Growing Marketplace
-Reach hundreds of energy companies across Europe through the epilot Marketplace:
-
-- Distribute your integrations to epilot's customer base
-- Monetize through our partner program
-- Collaborate with industry experts building for the energy transition
-
-### Enterprise-Ready Infrastructure
-Your apps run on the same robust infrastructure that powers epilot:
-
-- Secure OAuth-based authentication and authorization
-- Scalable cloud architecture on AWS
-- Compliant with European data regulations (GDPR)
-
-### Join the Team
-Passionate about building developer platforms for the energy transition? [We're hiring](https://www.epilot.cloud/en/company/careers).
-
-## Get Started
-
-Ready to build your first app?
-
-<a className="button button--secondary" href="/docs/apps/getting-started/quick-start">Quick Start Guide</a>&nbsp;&nbsp;<a className="button button--secondary" href="/docs/apps/getting-started/developer-sandbox">Get a Developer Sandbox</a>
+<DocCards
+  items={[
+    {
+      title: 'Private vs. public Apps',
+      icon: 'lock',
+      description: 'Decide whether your App stays in your organizations or goes to the Marketplace.',
+      href: '/docs/apps/getting-started/private-vs-public',
+    },
+    {
+      title: 'Versioning',
+      icon: 'version',
+      description: 'Published versions are immutable. Learn how new versions are created and cloned.',
+      href: '/docs/apps/versioning',
+    },
+    {
+      title: 'Verification process',
+      icon: 'check',
+      description: 'What the epilot review checks before your App is listed on the Marketplace.',
+      href: '/docs/apps/publishing/verification-process',
+    },
+    {
+      title: 'Publishing requirements',
+      icon: 'list',
+      description: 'The checklist your App must meet to be published.',
+      href: '/docs/apps/publishing/requirements',
+    },
+    {
+      title: 'Build a custom journey block',
+      icon: 'guide',
+      description: 'A hands-on guide from empty folder to a journey block running in a live journey.',
+      href: '/docs/apps/how-to-guides/build-a-custom-jb',
+    },
+    {
+      title: 'REST API reference',
+      icon: 'api',
+      description: 'OpenAPI specs for every epilot service your App can call.',
+      href: '/api',
+    },
+  ]}
+/>

@@ -13,7 +13,7 @@ Development mode lets you see changes in real-time without creating new versions
 
 Development mode is a feature that allows you to run your app in a local development environment. This mode enables you to see changes in real-time without having to update the app every time you make a change. It is particularly useful for testing and debugging your app during the development process.
 
-# How to Run in Development Mode
+## How to Run in Development Mode
 
 Head over to the components section and you will find a button to run the app in development mode.
 
@@ -22,7 +22,7 @@ It enables development mode for the ***latest private version*** of your App. On
 
 ![Development Mode Overview](/img/apps/dev-mode-overview.png) ![Development Mode Versions](/img/apps/development-mode-enable.png)
 
-# Custom Journey Block Overrides
+## Custom Journey Block Overrides
 
 With development mode enabled, you can override the component URL of your Custom Journey Block. This allows you to point the component to a local development server or any other URL where your component is hosted. This way, you can test changes in real-time without having to publish a new version of your app.
 

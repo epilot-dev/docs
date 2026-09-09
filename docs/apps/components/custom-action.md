@@ -1,5 +1,5 @@
 ---
-title: Custom Workflow Task
+title: Custom Workflow Action
 hide_title: true
 sidebar_position: 5
 ---
