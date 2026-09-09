@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 import styles from './styles.module.css';
 
-type InstallTarget = 'customers' | 'admins' | 'developers';
+type InstallTarget = 'claude' | 'openai' | 'other';
 
 const CodexIcon = () => (
   <svg
@@ -33,17 +33,110 @@ const ClaudeIcon = () => (
   </svg>
 );
 
+const PlugTabIcon = () => (
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 22v-5" />
+    <path d="M9 8V2" />
+    <path d="M15 8V2" />
+    <path d="M18 8v3a6 6 0 0 1-12 0V8Z" />
+  </svg>
+);
+
 const installTargets: Array<{ id: InstallTarget; label: string; icon: JSX.Element }> = [
-  { id: 'customers', label: 'Customers', icon: <ChatGPTIcon /> },
-  { id: 'admins', label: 'Administrators', icon: <ChatGPTIcon /> },
-  { id: 'developers', label: 'Developers', icon: <CodexIcon /> },
+  { id: 'claude', label: 'Claude', icon: <ClaudeIcon /> },
+  { id: 'openai', label: 'ChatGPT & Codex', icon: <ChatGPTIcon /> },
+  { id: 'other', label: 'Other MCP clients', icon: <PlugTabIcon /> },
 ];
 
+const mcpUrl = 'https://mcp.epilot.io/mcp';
 const marketplaceUrl = 'https://github.com/epilot-dev/agent-toolkit-for-epilot';
-const developerCommands = {
+const commands = {
   codex: `codex plugin marketplace add epilot-dev/agent-toolkit-for-epilot\n# Then open /plugins and install epilot-core`,
-  claude: `/plugin marketplace add epilot-dev/agent-toolkit-for-epilot\n/plugin install epilot-core@agent-toolkit-for-epilot\n/reload-plugins`,
+  claudeCode: `/plugin marketplace add epilot-dev/agent-toolkit-for-epilot\n/plugin install epilot-core@agent-toolkit-for-epilot\n/reload-plugins`,
+  claudeMcpOnly: `claude mcp add --transport http epilot ${mcpUrl}`,
 };
+
+const comparison = [
+  {
+    name: 'epilot plugin',
+    tag: 'epilot-core',
+    summary:
+      'Skills that teach the agent how to work with epilot: which architecture to choose, how to build Apps and integrations, how to configure the platform, and how to design native UI. Includes the MCP configuration.',
+    useWhen: [
+      'The agent will build or configure something',
+      'You want epilot\u2019s proven patterns, not improvisation',
+      'You work in Claude Code, Codex, or ChatGPT',
+    ],
+    footer: 'Needs a client that supports Agent Plugins. Installing it also connects the MCP server.',
+  },
+  {
+    name: 'epilot MCP server',
+    tag: 'mcp.epilot.io',
+    summary:
+      'Hosted tools that return what is true right now: how an organization is configured, what depends on what, the current entity schemas, every published API operation, and the documentation.',
+    useWhen: [
+      'Your client supports MCP but not plugins (Claude.ai, Claude Cowork, Cursor, VS Code)',
+      'You ask questions about a live organization',
+      'You build your own agent and need tools, not prompts',
+    ],
+    footer: 'Works in any MCP client. Connect with ?access=read for an enforced read-only connection.',
+  },
+];
+
+const capabilities: Array<{ title: string; description: string; tools: Array<{ name: string; write?: boolean }> }> = [
+  {
+    title: 'Configuration graph',
+    description:
+      'How an organization is set up, what is connected to what, and what breaks if something changes. Also the way to list journeys, webhooks, portals, designs, and schemas.',
+    tools: [{ name: 'search_configuration' }, { name: 'get_config_dependencies' }, { name: 'get_config_impact' }],
+  },
+  {
+    title: 'Journeys',
+    description:
+      'Read a journey as summary or editable definition, validate step wiring offline, then create or update it with its entity mapping in one call.',
+    tools: [
+      { name: 'get_journey' },
+      { name: 'validate_journey_definition' },
+      { name: 'create_journey', write: true },
+      { name: 'update_journey', write: true },
+      { name: 'get_journey_mapping' },
+      { name: 'update_journey_mapping', write: true },
+    ],
+  },
+  {
+    title: 'Designs and entity model',
+    description:
+      'Create and update the designs that brand journeys and portals, and read compact tenant schemas that would not fit raw.',
+    tools: [
+      { name: 'create_design', write: true },
+      { name: 'update_design', write: true },
+      { name: 'get_entity_schema' },
+    ],
+  },
+  {
+    title: 'Any epilot API',
+    description:
+      'Discover, describe, and execute every published OpenAPI operation, entity search included. Secrets are redacted; writes need mcp:write.',
+    tools: [
+      { name: 'search_api_operations' },
+      { name: 'describe_api_operation' },
+      { name: 'call_api_operation', write: true },
+    ],
+  },
+  {
+    title: 'Documentation and connection',
+    description: 'Search and read docs.epilot.io, and check who you are connected as.',
+    tools: [{ name: 'search_docs' }, { name: 'fetch_doc' }, { name: 'whoami' }],
+  },
+];
 
 const CodeIcon = () => (
   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -158,7 +251,7 @@ const workflows = [
 ];
 
 function InstallPanel(): JSX.Element {
-  const [target, setTarget] = useState<InstallTarget>('customers');
+  const [target, setTarget] = useState<InstallTarget>('claude');
 
   return (
     <div className={styles.installPanel}>
@@ -200,98 +293,75 @@ function InstallPanel(): JSX.Element {
         aria-labelledby={`install-tab-${target}`}
         tabIndex={0}
       >
-        {target === 'customers' && (
+        {target === 'claude' && (
           <>
-            <h3>Use epilot in ChatGPT</h3>
-            <p>
-              Start with your ChatGPT workspace administrator. The current setup uses the ChatGPT desktop app; you do
-              not need to run a terminal command yourself.
-            </p>
+            <h3>Claude.ai, Claude Desktop, and Claude Cowork</h3>
+            <p>Connect the MCP server as a custom connector. Every tool is available; the plugin skills are not.</p>
             <ol className={styles.setupSteps}>
+              <li>Open Settings → Connectors → Add custom connector.</li>
               <li>
-                Ask your administrator to make the epilot plugin available to your team and prepare the desktop setup.
+                Name it <code>epilot</code>, enter the URL below, and click Connect.
               </li>
-              <li>
-                Open Plugins in the ChatGPT desktop app, choose your workspace, and install epilot if it is not already
-                installed.
-              </li>
-              <li>
-                Connect your epilot account when prompted, then start a new chat and describe what you want to do.
-              </li>
+              <li>Sign in to epilot, choose the organization, and choose read-only or read-and-write access.</li>
             </ol>
-            <p className={styles.previewNote}>
-              A public ChatGPT directory installation link is not yet provided for this toolkit. For now, use the
-              administrator-assisted desktop route. Your epilot permissions still determine which data and actions are
-              available.
-            </p>
+            <pre className={styles.command}>
+              <code>{mcpUrl}</code>
+            </pre>
+            <h4>Claude Code · full plugin with skills</h4>
+            <pre className={styles.command}>
+              <code>{commands.claudeCode}</code>
+            </pre>
+            <details className={styles.setupDetails}>
+              <summary>Claude Code · MCP server only</summary>
+              <pre className={styles.command}>
+                <code>{commands.claudeMcpOnly}</code>
+              </pre>
+              <p>
+                For CI or headless use, reference an epilot API token from <code>.mcp.json</code> instead of OAuth. See
+                the <Link to="/docs/agent-toolkit/setup">setup guide</Link>.
+              </p>
+            </details>
           </>
         )}
-        {target === 'admins' && (
+        {target === 'openai' && (
           <>
-            <h3>Set up your workspace</h3>
-            <p>This route requires ChatGPT workspace admin access and GitHub authorization for the import.</p>
-            <ol className={styles.setupSteps}>
-              <li>Open Admin → Plugins → Add → Import marketplace.</li>
-              <li>
-                Enter the repository URL below as Source. Leave Path empty; leave the revision empty to follow the
-                default branch.
-              </li>
-              <li>
-                Authorize GitHub access, review Import results, and make epilot available or installed for the
-                appropriate roles.
-              </li>
-              <li>Enable any required integrations and have each user connect their own epilot account.</li>
-            </ol>
+            <h3>Codex</h3>
+            <pre className={styles.command}>
+              <code>{commands.codex}</code>
+            </pre>
+            <h4>ChatGPT · workspace import</h4>
+            <p>
+              A workspace administrator imports the repository once under Admin → Plugins → Add → Import marketplace.
+              Users then install epilot from the Plugins menu in the desktop app and connect their own epilot account.
+            </p>
             <pre className={styles.command}>
               <code>{marketplaceUrl}</code>
             </pre>
             <p className={styles.previewNote}>
-              <strong>Desktop only:</strong> ChatGPT marks imported plugins that declare MCP servers in
-              <code> mcp.json</code> or <code>.mcp.json</code> as Desktop only, even for HTTPS servers. This package
-              also includes the local Volt UI server; prepare Node.js 22+ on users&apos; machines for those tools.
-              Importing the repository does not deploy them.
-            </p>
-            <details className={styles.setupDetails}>
-              <summary>Planning a browser-based rollout?</summary>
-              <p>
-                The current repository import does not enable browser use. A private browser setup needs a registered
-                ChatGPT integration referenced by the plugin, rather than bundled MCP server declarations. A public
-                customer listing requires epilot to submit its hosted MCP endpoint and skills for review. Local
-                development tools need a separate execution environment.
-              </p>
-            </details>
-            <p className={styles.sourceLink}>
-              <a
-                href="https://learn.chatgpt.com/docs/enterprise/plugin-management"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                OpenAI workspace setup and desktop restrictions
-              </a>
+              ChatGPT marks plugins that declare MCP servers as Desktop only. The local Volt UI server needs Node.js
+              22+. A public ChatGPT directory listing is not yet available; to use only the MCP server, add a custom
+              connector with the MCP URL.
             </p>
           </>
         )}
-        {target === 'developers' && (
+        {target === 'other' && (
           <>
-            <h3>Install in a development environment</h3>
+            <h3>Cursor, VS Code, and custom agents</h3>
             <p>
-              Use these commands for Codex or Claude Code. The package identifier is <code>epilot-core</code>. Adding a
-              marketplace locally does not publish it to a ChatGPT workspace or the public directory.
+              Add a remote HTTP MCP server. Clients with OAuth 2.1 support authenticate in the browser automatically;
+              others can send an epilot API token as the Bearer token.
             </p>
-            <h4>Codex · run in a terminal</h4>
             <pre className={styles.command}>
-              <code>{developerCommands.codex}</code>
+              <code>{mcpUrl}</code>
             </pre>
-            <h4>Claude Code · run inside Claude Code</h4>
-            <pre className={styles.command}>
-              <code>{developerCommands.claude}</code>
-            </pre>
+            <p className={styles.commandNote}>
+              Enforced read-only, regardless of consent: <code>{mcpUrl}?access=read</code>
+            </p>
             <details className={styles.setupDetails}>
-              <summary>Connect only the epilot MCP server</summary>
+              <summary>Agent Plugins clients</summary>
               <p>
-                For a custom integration or another MCP client, use <code>https://mcp.epilot.io/mcp</code> and
-                authenticate with epilot. This supplies remote tools; it does not install the toolkit&apos;s skills or
-                the local Volt UI server.
+                Any client implementing the Agent Plugins standard can install <code>epilot-core</code> from the
+                repository <code>epilot-dev/agent-toolkit-for-epilot</code>.
               </p>
             </details>
           </>
@@ -315,7 +385,7 @@ export default function AgentToolkitPage(): JSX.Element {
               <h1>Give your AI assistant the context to work with epilot</h1>
               <p>
                 Focused workflows and live platform tools for configuring epilot, creating customer journeys, and
-                building integrations. Choose the customer, administrator, or developer setup below.
+                building Apps and integrations. Works in Claude, ChatGPT, Codex, and any MCP client.
               </p>
               <div className={styles.heroActions}>
                 <a className="button button--primary button--lg" href="#install">
@@ -409,6 +479,42 @@ export default function AgentToolkitPage(): JSX.Element {
         <section className={`${styles.section} ${styles.surfaceSection}`}>
           <div className="container">
             <div className={styles.sectionHeading}>
+              <span className={styles.kicker}>Two parts</span>
+              <h2>Plugin or MCP server? Usually both.</h2>
+              <p>
+                The plugin carries the know-how. The MCP server carries the live facts. Install the plugin where your
+                client supports it; connect the MCP server everywhere else.
+              </p>
+            </div>
+            <div className={styles.compareGrid}>
+              {comparison.map((part) => (
+                <article key={part.name} className={styles.compareCard}>
+                  <div className={styles.compareHead}>
+                    <h3>{part.name}</h3>
+                    <span className={styles.compareTag}>{part.tag}</span>
+                  </div>
+                  <p>{part.summary}</p>
+                  <p className={styles.compareLabel}>Use it when</p>
+                  <ul className={styles.compareList}>
+                    {part.useWhen.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                  <div className={styles.compareFoot}>{part.footer}</div>
+                </article>
+              ))}
+            </div>
+            <p className={styles.compareNote}>
+              Plain code against the public APIs needs neither. Use the <Link to="/docs/sdk/overview">SDK</Link> or{' '}
+              <Link to="/docs/cli/overview">CLI</Link>, and point any model at <code>docs.epilot.io/llms.txt</code>.{' '}
+              <Link to="/docs/agent-toolkit">Read the full comparison</Link>.
+            </p>
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className="container">
+            <div className={styles.sectionHeading}>
               <span className={styles.kicker}>Why it matters</span>
               <h2>Platform expertise without a giant static prompt</h2>
               <p>
@@ -452,21 +558,62 @@ export default function AgentToolkitPage(): JSX.Element {
           </div>
         </section>
 
+        <section className={`${styles.section} ${styles.surfaceSection}`}>
+          <div className="container">
+            <div className={styles.sectionHeading}>
+              <span className={styles.kicker}>MCP capabilities</span>
+              <h2>What the epilot MCP server can do</h2>
+              <p>
+                18 tools, built for the person configuring epilot. Curated tools only where a workflow spans several
+                APIs or needs validation first; one generic route for every other published operation.
+              </p>
+            </div>
+            <div className={styles.capGrid}>
+              {capabilities.map((cap) => (
+                <article key={cap.title} className={styles.capCard}>
+                  <h3>{cap.title}</h3>
+                  <p>{cap.description}</p>
+                  <ul className={styles.capTools}>
+                    {cap.tools.map((tool) => (
+                      <li key={tool.name} data-write={tool.write ? 'true' : undefined}>
+                        {tool.name}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+            <div className={styles.capLegend}>
+              <span>Plain: works with mcp:read</span>
+              <span>Highlighted: requires mcp:write</span>
+              <span>Runs as you, in your organization, PII-masked by default</span>
+            </div>
+            <div className={styles.capActions}>
+              <Link className="button button--secondary" to="/docs/agent-toolkit/mcp-server">
+                Open the MCP server reference
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section id="install" className={`${styles.section} ${styles.installSection}`}>
           <div className="container">
             <div className={styles.installGrid}>
               <div className={styles.installCopy}>
                 <span className={styles.kicker}>Get started</span>
-                <h2>Choose the setup for your team.</h2>
+                <h2>Choose the setup for your client.</h2>
                 <p>
-                  For everyday work, ask your administrator to enable epilot in ChatGPT. Administrators can import the
-                  toolkit for a desktop rollout. Developers can install it directly in Codex or Claude Code.
+                  Claude Code, Codex, and ChatGPT install the full plugin with skills. Claude.ai, Claude Cowork, and
+                  every other MCP client connect the hosted MCP server directly.
                 </p>
                 <ul className={styles.checkList}>
-                  <li>Customer setup starts in the ChatGPT interface</li>
                   <li>Each user connects their own epilot account</li>
+                  <li>Read-only is preselected; write access is an explicit choice</li>
                   <li>Available actions follow your epilot permissions</li>
                 </ul>
+                <p>
+                  <Link to="/docs/agent-toolkit/setup">Full setup guide</Link>
+                </p>
               </div>
               <InstallPanel />
             </div>

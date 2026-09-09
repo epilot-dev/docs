@@ -693,3 +693,196 @@ html[data-theme='dark'] .previewNote {
   margin: 1rem 0 0;
   font-size: 0.8rem;
 }
+
+/* Plugin vs MCP comparison */
+.compareGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.compareCard {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 1.1rem;
+  background: var(--ifm-background-surface-color);
+}
+
+html[data-theme='dark'] .compareCard {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.compareHead {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.compareHead h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+}
+
+.compareTag {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  color: var(--ifm-color-primary);
+  background: rgba(76, 76, 255, 0.1);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.compareCard > p {
+  margin: 0 0 1.2rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.compareLabel {
+  margin: 0 0 0.5rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.compareList {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+.compareList li {
+  position: relative;
+  padding: 0.3rem 0 0.3rem 1.4rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.compareList li::before {
+  position: absolute;
+  top: 0.35rem;
+  left: 0;
+  color: var(--ifm-color-primary);
+  font-weight: 700;
+  content: '✓';
+}
+
+.compareFoot {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.compareNote {
+  max-width: 760px;
+  margin: 1.75rem auto 0;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* MCP capabilities */
+.capGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.capCard {
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 1rem;
+  background: var(--ifm-background-surface-color);
+}
+
+html[data-theme='dark'] .capCard {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.capCard h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+  letter-spacing: -0.015em;
+}
+
+.capCard p {
+  margin: 0 0 0.9rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.capTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capTools li {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.4rem;
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-background-color);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.72rem;
+}
+
+.capTools li[data-write='true'] {
+  border-color: rgba(76, 76, 255, 0.35);
+  color: var(--ifm-color-primary);
+}
+
+.capLegend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1.5rem auto 0;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.85rem;
+}
+
+.capLegend code {
+  margin-right: 0.35rem;
+}
+
+.capActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.commandNote {
+  margin: 0.5rem 0 0;
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 996px) {
+  .compareGrid,
+  .capGrid {
+    grid-template-columns: 1fr;
+  }
+}

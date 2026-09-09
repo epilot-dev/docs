@@ -18,6 +18,17 @@ module.exports = {
     'intro',
     {
       type: 'category',
+      label: 'Agent Toolkit',
+      collapsible: true,
+      collapsed: true,
+      items: [
+        'agent-toolkit/overview',
+        'agent-toolkit/setup',
+        'agent-toolkit/mcp-server',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Architecture',
       collapsible: true,
       collapsed: true,

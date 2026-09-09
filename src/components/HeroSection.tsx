@@ -88,7 +88,7 @@ export default function HeroSection(): JSX.Element {
             <div className={styles.sessionUser}>Add a “Meter readings” tab to the contract page</div>
             <ul className={styles.sessionSteps}>
               <li>
-                <b>get_schema</b> contract
+                <b>get_entity_schema</b> contract
               </li>
               <li>
                 <b>run</b> epilot app add-component meter-readings --type CUSTOM_CAPABILITY
