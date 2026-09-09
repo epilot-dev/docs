@@ -10,7 +10,6 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io';
 
 // Internal flag: the Agent Toolkit is hidden from the public site until launch.
 // Build with SHOW_AGENT_TOOLKIT=true to include the page, nav links, and promos.
-const showAgentToolkit = process.env.SHOW_AGENT_TOOLKIT === 'true';
 
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
@@ -25,9 +24,6 @@ const showAgentToolkit = process.env.SHOW_AGENT_TOOLKIT === 'true';
 
   organizationName: 'epilot-dev',
   projectName: 'docs',
-  customFields: {
-    showAgentToolkit,
-  },
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -45,8 +41,7 @@ const showAgentToolkit = process.env.SHOW_AGENT_TOOLKIT === 'true';
             '**/_*.{js,jsx,ts,tsx,md,mdx}',
             '**/_*/**',
             '**/*.test.{js,jsx,ts,tsx}',
-            '**/__tests__/**',
-            ...(showAgentToolkit ? [] : ['agent-toolkit/**']),
+            '**/__tests__/**'
           ],
         },
         theme: {
@@ -198,15 +193,6 @@ This documentation covers all aspects of the epilot platform for developers, adm
             label: 'SDK',
             position: 'left',
           },
-          ...(showAgentToolkit
-            ? [
-                {
-                  to: '/agent-toolkit',
-                  label: 'Agent Toolkit',
-                  position: 'left',
-                },
-              ]
-            : []),
           {
             href: 'https://marketplace.epilot.cloud/en',
             label: 'Marketplace',
@@ -236,14 +222,12 @@ This documentation covers all aspects of the epilot platform for developers, adm
             label: 'SDK',
             to: '/docs/sdk/overview',
           },
-          ...(showAgentToolkit
-            ? [
-                {
-                  label: 'Agent Toolkit',
-                  to: '/agent-toolkit',
-                },
-              ]
-            : []),
+
+          {
+            label: 'Agent Toolkit',
+            to: '/agent-toolkit',
+          },
+
           {
             label: 'GitHub',
             href: 'https://github.com/epilot-dev',

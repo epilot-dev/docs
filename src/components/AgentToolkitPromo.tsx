@@ -7,12 +7,6 @@ import React from 'react';
  * everywhere at once — the rendered page, the search index, and llms.txt.
  */
 export default function AgentToolkitPromo(): JSX.Element | null {
-  const { siteConfig } = useDocusaurusContext();
-
-  if (!siteConfig.customFields?.showAgentToolkit) {
-    return null;
-  }
-
   return (
     <>
       <h2>Agent Toolkit</h2>
