@@ -33,6 +33,8 @@ Create a new Automation Flow under [Configuration > Advanced Configuration > Aut
 
 The Core Event that starts the flow. Only events enabled for your organization are listed. One trigger subscribes to exactly one event; add further triggers to the same flow to react to several events.
 
+Custom events you define in the Event Catalog can start automations as well, once they are **published**. Draft and deprecated custom events cannot be used as a trigger.
+
 ### Version
 
 Every Core Event is versioned (`MAJOR.MINOR`). The trigger is **pinned** to the version you select -- by default the latest published version. Pinning guarantees that the field paths you use in conditions and templates keep working even after the event schema evolves. See [Version pinning](#version-pinning) for the runtime behaviour.
