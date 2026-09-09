@@ -1,0 +1,216 @@
+.section {
+  padding: 4.5rem 2rem 5rem;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--ifm-color-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  font-weight: 730;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+.lead {
+  margin: 0 0 1.75rem;
+  color: var(--ifm-font-color-secondary);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.features li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-left: 1.1rem;
+  border-left: 2px solid var(--ifm-color-primary);
+}
+
+.features strong {
+  font-size: 0.95rem;
+}
+
+.features span {
+  color: var(--ifm-font-color-secondary);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.terminal {
+  overflow: hidden;
+  border: 1px solid rgba(76, 76, 255, 0.22);
+  border-radius: 1rem;
+  color: #e6e8f2;
+  background: #12142a;
+  box-shadow: 0 30px 70px rgba(43, 43, 151, 0.2);
+}
+
+html[data-theme='dark'] .terminal {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: #0e1020;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.6rem 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  overflow-x: auto;
+}
+
+.tab,
+.tabActive {
+  padding: 0.6rem 0.9rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.6);
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+  color: #fff;
+}
+
+.tabActive {
+  color: #fff;
+  border-bottom-color: #00d7ff;
+}
+
+.terminalBody {
+  padding: 1.35rem 1.5rem 1rem;
+}
+
+.terminalTitle {
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+}
+
+.pre {
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.pre code {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+}
+
+.comment {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.prompt {
+  color: #00d7ff;
+  user-select: none;
+}
+
+.cmd {
+  color: #fff;
+}
+
+.install {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.8rem;
+}
+
+.installLabel {
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.install code {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.35rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 996px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .section {
+    padding: 3.5rem 1.5rem 4rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .section {
+    padding: 3rem 1rem;
+  }
+
+  .terminalBody {
+    padding: 1.1rem 1rem 0.75rem;
+  }
+
+  .install {
+    flex-wrap: wrap;
+    padding: 0.85rem 1rem;
+  }
+
+  .actions > * {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

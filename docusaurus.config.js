@@ -197,7 +197,7 @@ This documentation covers all aspects of the epilot platform for developers, adm
             href: 'https://marketplace.epilot.cloud/en',
             label: 'Marketplace',
             position: 'right',
-            className: 'navbar-button navbar-button--secondary',
+            className: 'navbar-link--external',
           },
           {
             href: 'https://portal.epilot.cloud',

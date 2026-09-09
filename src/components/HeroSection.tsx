@@ -1,5 +1,4 @@
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React from 'react';
 
 import styles from './HeroSection.module.css';
@@ -46,8 +45,6 @@ function EpilotLogo() {
 }
 
 export default function HeroSection(): JSX.Element {
-  const { siteConfig } = useDocusaurusContext();
-
   return (
     <header className={styles.hero}>
       <div className={styles.heroInner}>
@@ -58,7 +55,8 @@ export default function HeroSection(): JSX.Element {
           </div>
           <h1 className={styles.title}>Build what energy businesses need next.</h1>
           <p className={styles.subtitle}>
-            Everything you need to extend the Energy XRM—from APIs and SDKs to Apps, integrations, and agent-powered development.
+            Everything you need to extend the Energy XRM—from APIs and SDKs to Apps, integrations, and agent-powered
+            development.
           </p>
           <div className={styles.actions}>
             <Link className="button button--primary button--lg" to="/docs/intro">
@@ -70,29 +68,44 @@ export default function HeroSection(): JSX.Element {
           </div>
         </div>
 
-
         <Link className={styles.toolkitCard} to="/agent-toolkit">
-          <div className={styles.toolkitMeta}>
-            <span className={styles.featured}>Featured</span>
-            <span className={styles.preview}>Developer preview</span>
+          <div className={styles.toolkitHead}>
+            <div className={styles.toolkitMeta}>
+              <span className={styles.featured}>Featured</span>
+              <span className={styles.preview}>Developer preview</span>
+            </div>
+            <h2>Build with an agent that understands epilot.</h2>
+            <p>Skills and an MCP server for Claude, Codex, and ChatGPT with live access to docs, APIs, and your org.</p>
           </div>
-          <h2>Build with an agent that understands epilot.</h2>
-          <p>
-            Give Codex, ChatGPT, or Claude focused platform knowledge plus live access to current docs, APIs, and
-            organization context.
-          </p>
-          <div className={styles.toolkitFlow} aria-hidden="true">
-            <span>Skills</span>
-            <i />
-            <span>epilot MCP</span>
-            <i />
-            <span>Your project</span>
+
+          <div className={styles.session} aria-hidden="true">
+            <div className={styles.sessionBar}>
+              <i />
+              <i />
+              <i />
+              <span>agent · epilot MCP</span>
+            </div>
+            <div className={styles.sessionUser}>Add a “Meter readings” tab to the contract page</div>
+            <ul className={styles.sessionSteps}>
+              <li>
+                <b>get_schema</b> contract
+              </li>
+              <li>
+                <b>run</b> epilot app add-component meter-readings --type CUSTOM_CAPABILITY
+              </li>
+              <li>
+                <b>run</b> epilot app deploy
+              </li>
+            </ul>
+            <div className={styles.sessionResult}>
+              <span>✓</span> Deployed to your sandbox org
+            </div>
           </div>
+
           <div className={styles.toolkitAction}>
             Explore the Agent Toolkit <span aria-hidden="true">→</span>
           </div>
         </Link>
-
       </div>
     </header>
   );

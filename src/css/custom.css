@@ -80,6 +80,61 @@ html[data-theme='dark'] .button.button--primary {
   color: white;
 }
 
+/* Navbar: flat, hairline border instead of drop shadow */
+.navbar {
+  box-shadow: none;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] .navbar {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.navbar__brand {
+  margin-right: 1.5rem;
+}
+
+.navbar__title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.navbar__items--left .navbar__link {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ifm-font-color-secondary);
+}
+
+.navbar__items--left .navbar__link:hover,
+.navbar__items--left .navbar__link--active {
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-color-emphasis-100);
+}
+
+/* Right-hand text link (Marketplace) and hidden external-link icons */
+.navbar__items--right .navbar-link--external,
+.navbar__items--right .navbar-button {
+  font-size: 0.92rem;
+}
+
+.navbar__items--right .navbar-link--external {
+  margin-right: 0.5rem;
+  font-weight: 500;
+  color: var(--ifm-font-color-secondary);
+}
+
+.navbar__items--right .navbar-link--external:hover {
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+}
+
+.navbar__items--right .navbar-link--external svg,
+.navbar__items--right .navbar-button svg {
+  display: none;
+}
+
 /* Navbar layout: center search bar, push buttons right */
 .navbar > .navbar__inner {
   display: flex;
@@ -167,7 +222,8 @@ html[data-theme='dark'] .button.button--primary {
 
 /* Hide navbar buttons and fix search on mobile */
 @media (max-width: 996px) {
-  .navbar-button {
+  .navbar-button,
+  .navbar__items--right .navbar-link--external {
     display: none;
   }
 

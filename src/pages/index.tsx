@@ -1,6 +1,7 @@
 import Layout from '@theme/Layout';
 import React from 'react';
 
+import CliSection from '../components/CliSection';
 import ExplorePlatform from '../components/ExplorePlatform';
 import HeroSection from '../components/HeroSection';
 import QuickStartCards from '../components/QuickStartCards';
@@ -11,6 +12,7 @@ export default function Home(): JSX.Element {
     <Layout>
       <HeroSection />
       <QuickStartCards />
+      <CliSection />
       <ExplorePlatform />
       <ResourcesFooter />
     </Layout>
