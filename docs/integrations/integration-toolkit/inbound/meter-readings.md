@@ -142,6 +142,60 @@ For meters with multiple counters (e.g., day/night tariffs), specify the counter
 }
 ```
 
+### Counter Direction
+
+`direction` (`feed-in` / `feed-out`) is part of how a reading is stored and
+queried — every reading is persisted with one. **Make sure every counter or
+reading you sync ends up with a direction.**
+
+Resolution order at write time:
+
+1. the `direction` on the reading, else
+2. the `direction` on the reading's counter, else
+3. a value derived from the counter's `obis_number` — `2.x.x` on an electricity
+   counter means `feed-in`, everything else (including heat, gas and water)
+   means `feed-out`.
+
+Set it at step 1 or 2. Step 3 is a safety net, not a plan.
+
+**Preferred — on the counter**, where `obis_number` is in scope so the fallback
+can be exact:
+
+```json
+{
+  "attribute": "direction",
+  "jsonataExpression": "direction ? direction : ($contains(obis_number, ':2.8.0') ? 'feed-in' : 'feed-out')"
+}
+```
+
+**On the reading**, as a constant, when the whole use case covers one direction:
+
+```json
+{ "attribute": "direction", "constant": "feed-out" }
+```
+
+A direction on the reading **wins over the counter's**, so only use a constant
+when every reading in that use case really is that direction — otherwise you
+will relabel your feed-in readings.
+
+:::warning Do not map `direction` straight through
+
+`{ "attribute": "direction", "field": "direction" }` assigns whatever the source
+holds, unconditionally. If the ERP sends the key **empty** (`null` or `""`), the
+attribute is written empty and the `meter_counter` schema's `feed-out` default
+**never applies** — defaults only fill attributes that are absent, not ones that
+are present and empty.
+
+This is easy to miss because it looks correct and works for every counter whose
+ERP record happens to be populated. One org accumulated 132,722 direction-less
+counters this way; 621,747 of its water and heat readings were rejected before
+the OBIS fallback existed. Use a JSONata expression with a fallback instead.
+:::
+
+`direction` is an electricity concept — there is no feeding water back into the
+mains — so an ERP legitimately sends nothing for heat, gas and water counters.
+That is fine: leave the fallback to resolve them to `feed-out`.
+
 ## Field Mappings
 
 ### Basic Reading Fields
