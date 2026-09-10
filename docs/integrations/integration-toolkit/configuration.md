@@ -22,7 +22,7 @@ Integrations support two types:
 ### Creating an Integration
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v2/integrations' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -34,7 +34,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
 **Creating a Connector Integration:**
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v2/integrations' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -68,14 +68,14 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v2/integrations' \
 ### Listing Integrations
 
 ```bash
-curl -X GET 'https://erp-integration.sls.epilot.io/v2/integrations' \
+curl -X GET 'https://integration-toolkit.sls.epilot.io/v2/integrations' \
   -H 'Authorization: Bearer <token>'
 ```
 
 ### Updating an Integration
 
 ```bash
-curl -X PUT 'https://erp-integration.sls.epilot.io/v2/integrations/{integrationId}' \
+curl -X PUT 'https://integration-toolkit.sls.epilot.io/v2/integrations/{integrationId}' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -91,7 +91,7 @@ Deleting an integration also removes all associated use cases.
 :::
 
 ```bash
-curl -X DELETE 'https://erp-integration.sls.epilot.io/v2/integrations/{integrationId}' \
+curl -X DELETE 'https://integration-toolkit.sls.epilot.io/v2/integrations/{integrationId}' \
   -H 'Authorization: Bearer <token>'
 ```
 
@@ -100,7 +100,7 @@ curl -X DELETE 'https://erp-integration.sls.epilot.io/v2/integrations/{integrati
 ### Creating a Use Case
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -132,7 +132,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 ### Enabling/Disabling a Use Case
 
 ```bash
-curl -X PUT 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases/{useCaseId}' \
+curl -X PUT 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases/{useCaseId}' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -151,7 +151,7 @@ incoming events. Plan cutovers accordingly.
 View the change history for a use case:
 
 ```bash
-curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases/{useCaseId}/history' \
+curl -X GET 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases/{useCaseId}/history' \
   -H 'Authorization: Bearer <token>'
 ```
 
@@ -160,7 +160,7 @@ curl -X GET 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationI
 Outbound use cases deliver standardized epilot events (event-catalog events) to your external system. The configuration consists of an `event_catalog_event` and one or more `mappings`:
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -350,7 +350,7 @@ Managed call use cases define synchronous API operations against external partne
 ### Creating a Managed Call Use Case
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -377,7 +377,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 Managed calls are executed via the `/v1/managed-call/{slug}/execute` endpoint, where the slug acts as the RPC method name:
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/managed-call/get-customer/execute' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/managed-call/get-customer/execute' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -433,7 +433,7 @@ Secure proxy use cases route HTTP requests through epilot's dedicated proxy infr
 ### Creating a Secure Proxy Use Case
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -458,7 +458,7 @@ curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integration
 ### Sending a Proxy Request
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/secure-proxy' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/secure-proxy' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -602,48 +602,22 @@ Include a correlation ID to track related events:
 - Filter monitoring data by batch
 - Trace event processing through the pipeline
 
-## Monitoring Configuration
+## Monitoring
 
-### Query Events
-
-```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/monitoring/events' \
-  -H 'Authorization: Bearer <token>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "integration_id": "<integration-id>",
-    "from": "2024-01-15T00:00:00Z",
-    "to": "2024-01-15T23:59:59Z",
-    "status": ["error"],
-    "limit": 100
-  }'
-```
-
-### Query Statistics
+Every inbound and outbound event the toolkit processes is recorded as a monitoring
+event, queryable per integration and visible in the Integration Hub's **Monitoring**
+tab. A one-off example — the last day's error events for one integration:
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/monitoring/stats' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v2/integrations/{integrationId}/monitoring/events' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
-  -d '{
-    "integration_id": "<integration-id>",
-    "from": "2024-01-01T00:00:00Z",
-    "to": "2024-01-31T23:59:59Z"
-  }'
+  -d '{ "level": "error", "from_date": "2026-01-15T00:00:00Z", "limit": 50 }'
 ```
 
-### Event Replay
+Querying, stats and time series, event traces, replay, the code reference, and
+alerting are documented in the [Monitoring section](./monitoring/overview.md).
 
-Reprocess failed or specific events:
-
-```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/events/replay' \
-  -H 'Authorization: Bearer <token>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "event_ids": ["evt-001", "evt-002", "evt-003"]
-  }'
-```
 
 ## Rate Limits
 
@@ -668,9 +642,28 @@ Each organization's data is fully isolated. Integration IDs are scoped to organi
 
 ### Permissions
 
-| Action | Permission |
-|--------|------------|
-| Read integrations | `erp:read` |
-| Create/Update integrations | `erp:write` |
-| Send events | `erp:events` |
-| View monitoring | `erp:monitoring` |
+Three actions govern the Integration Toolkit. They are checked against the
+organization the token belongs to, and — where the endpoint names one — against the
+specific integration.
+
+| Permission | Grants |
+|---|---|
+| `integration:view` | Read integrations and use cases; read monitoring events, stats, time series, traces, access logs, notification history and status |
+| `integration:manage` | Create, update and delete integrations and use cases; edit notification configuration; push external monitoring events; send test notifications; replay events |
+| `integration:consume` | Poll and acknowledge the outbound queue. Scoped to [Pollable Outbound](./pollable-outbound.md) only — it grants nothing else |
+
+The `view` / `manage` split is the one that catches people out when minting a scoped
+token for a middleware:
+
+| Endpoint | Needs |
+|---|---|
+| `POST /v2/integrations/{id}/monitoring/events`, `…/stats`, `…/time-series` | `integration:view` |
+| `GET /v2/integrations/{id}/monitoring/traces/{correlationId}` | `integration:view` |
+| `GET /v2/integrations/{id}/notifications/history`, `…/status` | `integration:view` |
+| `POST /v2/integrations/{id}/monitoring/external-events` | `integration:manage` |
+| `POST /v2/integrations/{id}/notifications/test` | `integration:manage` |
+| `POST /v1/integrations/{id}/events/replay` | `integration:manage` |
+| `POST /v1/integrations/{id}/outbound/messages/poll`, `…/ack` | `integration:consume` |
+
+Inbound event submission authenticates as the integration's own API token rather
+than through these actions — see [Inbound Getting Started](./inbound/getting-started.md).

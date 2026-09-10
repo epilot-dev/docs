@@ -24,7 +24,7 @@ The Integration Toolkit is composed of the following components. Each plays a sp
 
 | Component | Description | Status |
 |-----------|-------------|--------|
-| **[Integration Hub](#integration-hub)** | Admin UI in epilot 360 to configure and monitor integrations | In progress |
+| **[Integration Hub](#integration-hub)** | Admin UI in epilot 360 to configure and monitor integrations | Stable |
 | **[ERP Integration API](#erp-integration-api)** | CRUD API to manage integrations, use cases, and mappings | Stable |
 | **[ERP Inbound API](#inbound-api)** | Dedicated API to receive and simulate inbound ERP events | Stable |
 | **[Use Cases](./use-cases.md)** | Documented integration flows with testing support | Stable |
@@ -32,13 +32,15 @@ The Integration Toolkit is composed of the following components. Each plays a sp
 | **[Changesets](/docs/entities/changesets)** | Pending attribute updates that wait for ERP confirmation or human approval | Stable |
 | **[Core Events](/docs/integrations/core-events)** | Standardized event payloads for outbound notifications | Stable |
 | **[Webhooks](/docs/integrations/webhooks)** | Push events from epilot to ERPs via core events | Stable |
-| **[Pollable Outbound](./pollable-outbound.md)** | Pull-based outbound delivery — ERPs poll a queue instead of receiving webhooks | In progress |
+| **[Pollable Outbound](./pollable-outbound.md)** | Pull-based outbound delivery — ERPs poll a queue instead of receiving webhooks | Stable |
 | **[JSONata Mapping](#jsonata-mapping)** | Transformation language for inbound and outbound data | Stable |
 | **[File Proxy](./file-proxy.md)** | Serve files from external archives on demand without migrating them into epilot | Stable |
 | **[Outbound File Delivery](./outbound-file-delivery.md)** | Deliver files referenced by epilot events to external document APIs | Stable |
 | **[Managed Calls](#managed-calls)** | Synchronous external API calls with JSONata mapping via connector integrations | Stable |
 | **[Secure Proxy](#secure-proxy)** | Route HTTP requests through epilot's secure proxy for static IP egress or VPN access | Stable |
-| **[Monitoring and ACKs](#monitoring-and-acks)** | Central logging, error tracking, and event replay | In progress |
+| **[Monitoring](./monitoring/overview.md)** | Central event logging, stats, cross-system traces, replay, and the code reference | Stable |
+| **[Alerting & Notifications](./monitoring/alerting.md)** | Per-integration alert rules, anomaly baselines, digests, and delivery to email/in-app | Stable |
+| **[ACK Tracking](./monitoring/acks.md)** | ERPs acknowledge processed events, closing end-to-end delivery visibility | Stable |
 | **[Blueprints](https://marketplace.epilot.cloud/en/blueprints)** | Packaged, installable integration setups | Stable |
 | **[Apps](https://marketplace.epilot.cloud/en/apps)** | Custom automation actions and portal extensions for ERP logic | In progress |
 
@@ -120,14 +122,25 @@ See the [Configuration Guide](./configuration.md#secure-proxy-use-cases) for set
 - Outbound webhook payloads (epilot event to ERP format)
 - The Map Data flow building block
 
-### Monitoring and ACKs
+### Monitoring and Alerting
 
-All inbound and outbound events are centrally logged and surfaced in the Integration Hub. Key capabilities:
+Every event the toolkit processes — inbound, outbound, file proxy, managed call and
+secure proxy alike — is recorded as a monitoring event and surfaced in the Integration
+Hub's **Monitoring** tab, with a matching API for automation.
 
-- **Event replay** -- reprocess failed events
-- **ACK tracking** -- ERPs acknowledge processed events via `v1/erp/tracking/acknowledgement`, enabling end-to-end visibility
-- **Error alerting** -- per-use-case status indicators with actionable error details
-- **Partner log shipping** -- middleware partners can send logs to epilot for centralized monitoring
+- **[Event stream and stats](./monitoring/overview.md)** — filter by level, code, use
+  case or correlation id; success rates and time series per lane
+- **[Code reference](./monitoring/codes.md)** — every monitoring code, what it means
+  and what to do about it
+- **[Traces and replay](./monitoring/investigating.md)** — follow one business
+  operation across systems, inspect the captured request and response, and reprocess
+  events
+- **[Alerting](./monitoring/alerting.md)** — per-integration rules with anomaly
+  baselines, plus scheduled digests, delivered to email and in-app
+- **[ACK tracking](./monitoring/acks.md)** — ERPs confirm they processed an event,
+  closing end-to-end visibility
+- **[External monitoring events](./monitoring/external-events.md)** — push your
+  middleware's own processing steps in, so one trace spans both systems
 
 ## Architecture
 

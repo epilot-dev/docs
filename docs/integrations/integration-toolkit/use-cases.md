@@ -364,7 +364,7 @@ flowchart LR
 **What happens in the ERP:**
 - Middle layer receives the webhook and extracts meter reading data
 - Middle layer calls the ERP API to submit the reading (e.g., meter reading endpoint)
-- Middle layer sends an [ACK](/docs/integrations/integration-toolkit/overview#monitoring-and-acks) back to epilot to confirm processing
+- Middle layer sends an [ACK](./monitoring/acks.md) back to epilot to confirm processing
 
 **Core Event:** [`MeterReadingAdded`](/docs/integrations/core-events#MeterReadingAdded)
 
@@ -768,18 +768,22 @@ flowchart LR
 
 ## ACK Tracking
 
-All outbound use cases support [ACK tracking](/docs/integrations/integration-toolkit/overview#monitoring-and-acks). After processing a webhook, your middle layer should send an acknowledgment back to epilot:
+All outbound use cases support [ACK tracking](./monitoring/acks.md). After processing a webhook, your middle layer should send an acknowledgment back to epilot:
 
 ```bash title="Send ACK"
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/erp/tracking/acknowledgement' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/erp/tracking/acknowledgement' \
   -H 'Content-Type: application/json' \
-  -d '{
-    "ack_id": "<ack-id-from-webhook-header>",
-    "status": "processed"
-  }'
+  -d '{ "ack_id": "<the _ack_id field from the event payload>" }'
 ```
 
-This enables end-to-end monitoring in the Integration Hub: per-use-case status indicators show whether the ERP successfully processed each event.
+`ack_id` is the only field. Acknowledging is the whole signal — there is no status to
+report, because an ACK means "processed"; a failure is simply an ACK that never
+arrives, and the event times out.
+
+This enables end-to-end monitoring in the Integration Hub: per-use-case status
+indicators show whether the ERP processed each event. The full lifecycle, the timeout
+behaviour and how to turn tracking off per use case are covered in
+[ACK Tracking](./monitoring/acks.md).
 
 ## Next Steps
 

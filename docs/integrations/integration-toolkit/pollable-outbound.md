@@ -52,7 +52,7 @@ Key properties:
 A poll mapping is configured on a regular outbound use case — same endpoint, same envelope as webhook mappings, only the `delivery` object differs. See [Outbound Use Case Configuration](./configuration.md#outbound-use-case-configuration) for the full use-case contract.
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integrationId}/use-cases' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{

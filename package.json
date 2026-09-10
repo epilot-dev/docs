@@ -23,6 +23,7 @@
     "update-events": "cp ../event-catalog-api/packages/core/src/builtin-events/__snapshots__/* static/events",
     "update-sdk": "./scripts/update-sdk-docs.sh",
     "update-cli": "./scripts/update-cli-docs.sh",
+    "update-monitoring-codes": "node scripts/update-monitoring-codes.js",
     "update-pricing-playground": "./scripts/update-pricing-playground.sh"
   },
   "dependencies": {

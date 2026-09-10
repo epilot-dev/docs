@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 6
 title: External Monitoring Events
 description: Push monitoring events from an external system (e.g. an integration middleware) into epilot so the Integration Hub is your central monitoring point, with a cross-system event trace
 slug: /integrations/integration-toolkit/external-monitoring-events
@@ -12,7 +12,7 @@ When part of your integration pipeline runs **outside epilot** — typically an 
 :::info Topology
 This is for the case where epilot still does the bulk of the work (mapping, entity/metering updates). The middleware does two independent things:
 
-1. **forwards the inbound data event** to the standard [inbound endpoint](./inbound/getting-started.md), and
+1. **forwards the inbound data event** to the standard [inbound endpoint](../inbound/getting-started.md), and
 2. **separately pushes its own monitoring events** (its processing steps) to the endpoint below.
 
 The two halves are linked into one trace by a shared `correlation_id`.

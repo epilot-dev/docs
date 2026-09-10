@@ -93,7 +93,7 @@ Synchronize customer data from an ERP system into epilot contacts.
 ### API Request
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v3/erp/updates/events' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -480,7 +480,7 @@ Handle different entity types based on payload conditions.
 Before deploying your mapping, test it using the simulation endpoint:
 
 ```bash
-curl -X POST 'https://erp-integration.sls.epilot.io/v2/erp/updates/mapping_simulation' \
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v2/erp/updates/mapping_simulation' \
   -H 'Authorization: Bearer <token>' \
   -H 'Content-Type: application/json' \
   -d '{
