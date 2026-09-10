@@ -280,5 +280,5 @@ Open an entry to see the use case, delivery, attachment, attempt, and available 
 - [Core Events](/docs/integrations/core-events)
 - [Configuration](./configuration.md)
 - [File Proxy downloads](./file-proxy.md)
-- [External Monitoring Events](./external-monitoring-events.md)
+- [External Monitoring Events](./monitoring/external-events.md)
 - [Pollable Outbound](./pollable-outbound.md)
