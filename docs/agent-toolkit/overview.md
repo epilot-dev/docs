@@ -5,15 +5,80 @@ slug: /agent-toolkit
 description: 'The Agent Toolkit for epilot: the epilot plugin (skills) and the epilot MCP server, and when to use which.'
 ---
 
+import LottieAnimation from '@site/src/components/LottieAnimation';
+
 # Agent Toolkit for epilot
 
-The Agent Toolkit gives AI assistants the context they need to work with epilot. It has two parts that you can use together or separately:
+epilot offers the **[Agent Toolkit](https://github.com/epilot-dev/agent-toolkit-for-epilot)** so that third-party AI assistants — Claude, Codex, ChatGPT, and others — can work with epilot for you. Connect it once, and your AI assistant can answer questions about how your organization is set up ("Which journeys feed into this workflow?") and build or change configuration on your behalf ("Create a workflow for new solar orders") — in plain language, no API knowledge required.
+
+The toolkit is packaged as a **plugin** following the open [Agent Plugins specification](https://agent-plugins.org/), a vendor-neutral standard for extending AI assistants. A plugin bundles two kinds of things:
+
+- **Skills** — written know-how the assistant reads before it acts: epilot's concepts, decision rules, and proven step-by-step workflows. Skills make the assistant work *the epilot way* instead of guessing.
+- **MCP servers** — live tools (via the [Model Context Protocol](https://modelcontextprotocol.io/)) the assistant calls to look up your organization's real configuration and to create or update things — always with your explicit approval, and read-only unless you opt into write access.
+
+![The epilot plugin page in the marketplace, with starter prompts and its two MCP servers](/img/agent-toolkit/plugin-marketplace.png)
+
+The first time you install the plugin — or call an epilot MCP tool — you are redirected to the epilot login: sign in, pick the organization the assistant should work with, and choose the access level. **Read-only is preselected**; read & write is an explicit choice.
+
+## Where can you use it?
+
+The full plugin — skills included — works in AI clients that support Agent Plugins, such as **Claude Code**, **Codex**, and the **ChatGPT desktop app** (imported by a workspace admin). Clients that don't support plugins yet, like **Claude Cowork** or the regular ChatGPT web app, can't run the skills for now — that may change as those products add plugin support. They can still connect the **epilot MCP server** directly as a connector, which gives the assistant the live tools without the packaged know-how.
+
+:::info Plugins and connectors may be disabled in your company
+Many companies block MCP connectors and plugins by default for security reasons. If you don't see a way to add the epilot plugin or connector in your AI client, ask your workspace or IT administrator to enable it — admins can typically allow a specific connector (like `https://mcp.epilot.io/mcp`) for all users, or grant it to selected roles. The [setup guide](/docs/agent-toolkit/setup) has the admin steps per client.
+:::
+
+## What do you do with it?
+
+Nothing about how you chat changes. You describe the outcome you want in everyday language, and the assistant uses the toolkit behind the scenes. In some clients you address it explicitly — in ChatGPT, for example, you type `@epilot` followed by your request. In others, like Claude, the assistant automatically reads the plugin's skills and calls the MCP server when it needs live information.
+
+Typical things to ask:
+
+- *"How is my organization set up? What depends on this journey?"* — the assistant reads your live configuration and explains it.
+- *"Create a workflow for new orders with a review step."* — the assistant drafts it, shows you the result, and only writes after you approve.
+- *"What would break if I renamed this attribute?"* — the assistant walks the dependency graph before you touch anything.
+
+Under the hood, this is the toolkit's biggest convenience: instead of you (or the AI) stitching together many raw API requests, the assistant makes **one tool call** — such as `create_workflow` or `create_journey` — and the epilot MCP server acts as a **facade** that validates the input and performs the underlying API calls in the right order:
+
+<LottieAnimation
+  src="/animations/agent-toolkit-facade.json"
+  ariaLabel="Animation contrasting calling the epilot APIs one by one yourself with the Agent Toolkit, where the AI assistant makes a single create_workflow tool call and the epilot MCP server performs the API calls for you"
+/>
+
+## The typical workflow: sandbox first
+
+Letting an AI assistant change a live organization is powerful — so don't point it at production. The workflow we recommend:
+
+1. **Connect the plugin or MCP server to a [sandbox organization](/docs/blueprints/sandboxes)** and grant read-and-write access there. A sandbox is a full epilot organization with isolated test data, linked to your production organization.
+2. **Let the assistant build and change configuration in the sandbox** — journeys, workflows, schemas, automations — and review the result in the epilot UI, at no risk to live customers.
+3. **Synchronize to production through the Configuration Hub**: package the changes as a Blueprint and [synchronize the Blueprint](/docs/blueprints/editing-and-synchronizing#synchronizing-your-blueprint-with-another-org) to your production organization once you are happy with the setup.
+
+<LottieAnimation
+  src="/animations/agent-toolkit-sandbox-workflow.json"
+  ariaLabel="Animation of the recommended workflow: the AI assistant makes changes in a read-and-write sandbox organization, and a Blueprint synchronizes the reviewed configuration to the read-only production organization"
+/>
+
+**Switching between organizations** (for example from the sandbox to production, or between two sandboxes) is easiest by simply reinstalling the plugin — the fastest way to trigger the login again and pick a different organization:
+
+<video controls muted playsInline style={{width: '100%', maxWidth: 960, borderRadius: 14, border: '1px solid var(--ifm-color-emphasis-200)', margin: '1rem auto', display: 'block'}}>
+  <source src="/video/agent-toolkit/reinstall-switch-org.mp4" type="video/mp4" />
+</video>
+
+:::caution Keep production read-only
+Granting the assistant write access to your production organization is possible, but not recommended — you do so at your own risk. Connect production with the read-only URL (`https://mcp.epilot.io/mcp?access=read`) so the assistant can answer questions about your live setup but can never change it, and keep write access confined to the sandbox.
+
+To take the choice away entirely: in enterprise editions of ChatGPT and other major AI providers, administrators can allow only `https://mcp.epilot.io/mcp?access=read` in the MCP configuration for the production organization — the read/write selection then never appears on the login screen.
+:::
+
+## The two parts of the toolkit
+
+You can use the two parts together or separately:
 
 |                         | **epilot plugin**                                                                                                        | **epilot MCP server**                                                                                          |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | What it is              | A package of skills (guidance, decision rules, workflows) plus MCP configuration                                         | A hosted server at `https://mcp.epilot.io/mcp` that exposes tools                                              |
 | What it gives the agent | _How_ to work with epilot: architecture choices, App and integration patterns, configuration workflows, native UI design | _What is true right now_: your organization's configuration, entity schemas, published APIs, and documentation |
-| Runs where              | Inside the agent client (Claude Code, Codex, ChatGPT, and other Agent Plugins clients)                                   | On epilot infrastructure; any MCP client can connect                                                           |
+| Runs where              | Inside the agent client (Claude Code, Codex, the ChatGPT desktop app, and other Agent Plugins clients)                                   | On epilot infrastructure; any MCP client can connect                                                           |
 | Needs                   | A client that supports Agent Plugins                                                                                     | A client that supports remote MCP over HTTP with OAuth                                                         |
 | Identifier              | `epilot-core` from the `agent-toolkit-for-epilot` marketplace                                                            | `https://mcp.epilot.io/mcp`                                                                                    |
 
@@ -38,6 +103,17 @@ The plugin's skills route the task to the right workflow and load only the relev
 - Compliance requires a read-only connection. Connect `https://mcp.epilot.io/mcp?access=read` and writes are impossible regardless of consent.
 
 **Use neither** when the task is plain code against the public APIs. The [SDK](/docs/sdk/overview) and [CLI](/docs/cli/overview) are lighter, and `llms.txt` at `https://docs.epilot.io/llms.txt` gives any model the documentation index.
+
+## MCP server or CLI?
+
+There is a third way for agents to reach epilot: the [epilot CLI](/docs/cli/overview) (`npx epilot`). Many platforms pair their agent tooling with a CLI — Datadog's `pup` CLI is a well-known example — because agents that already live in a terminal, like Claude Code and Codex, can drive a CLI without any connector setup: they discover operations through `--help`, call any API operation directly, and get `--json` output that is easy to parse.
+
+The rule of thumb:
+
+- **Use the MCP server** when the agent runs in a chat client without a terminal (Claude.ai, Claude Cowork, ChatGPT), when you want the OAuth consent flow with enforceable read-only access, or when you want the curated facade tools (`create_workflow`, `create_journey`, configuration graph, journey validation) instead of raw endpoints.
+- **Use the CLI** when the agent has shell access and the task maps to plain API operations — quick lookups, scripting, CI pipelines, or piping results through `jq`. It is the leanest option: one command per API call, no server in between.
+
+They complement each other rather than compete: the plugin's skills reach for the MCP server's tools for live configuration work, and a terminal agent can mix in CLI calls whenever a raw operation is all that is needed.
 
 ## What is inside the plugin
 
