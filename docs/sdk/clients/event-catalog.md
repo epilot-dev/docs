@@ -1,5 +1,5 @@
 ---
-title: "Event Catalog API"
+title: " Event Catalog API"
 ---
 
 # Event Catalog API
@@ -30,31 +30,56 @@ const { data } = await eventCatalogClient.listEvents(...)
 
 **Event Catalog**
 - [`listEvents`](#listevents)
+- [`createCustomEvent`](#createcustomevent)
 - [`getEvent`](#getevent)
 - [`patchEvent`](#patchevent)
+- [`replaceCustomEventDraft`](#replacecustomeventdraft)
+- [`deprecateCustomEvent`](#deprecatecustomevent)
+- [`previewCustomEvent`](#previewcustomevent)
+- [`publishCustomEventDefinition`](#publishcustomeventdefinition)
 - [`getEventJSONSchema`](#geteventjsonschema)
 - [`getEventExample`](#geteventexample)
+- [`listEventVersions`](#listeventversions)
 - [`searchEventHistory`](#searcheventhistory)
+- [`searchEventHistoryV2`](#searcheventhistoryv2)
+- [`getHistoricalEvent`](#gethistoricalevent)
 - [`triggerEvent`](#triggerevent)
 
 **Schemas**
 - [`EventConfigBase`](#eventconfigbase)
 - [`EventConfig`](#eventconfig)
+- [`CreateCustomEventPayload`](#createcustomeventpayload)
+- [`EventMapping`](#eventmapping)
+- [`CustomEventLineage`](#customeventlineage)
+- [`PurposeFilterSnapshot`](#purposefiltersnapshot)
+- [`PublishCustomEventPayload`](#publishcustomeventpayload)
+- [`ValidationIssue`](#validationissue)
+- [`PreviewEventResponse`](#previeweventresponse)
 - [`UpdateEventPayload`](#updateeventpayload)
 - [`PrimitiveField`](#primitivefield)
 - [`ContextEntity`](#contextentity)
+- [`AttachmentField`](#attachmentfield)
+- [`CustomSchemaField`](#customschemafield)
 - [`SchemaField`](#schemafield)
+- [`SuccessCriterion`](#successcriterion)
 - [`CommonEventMetadata`](#commoneventmetadata)
 - [`EventJsonSchema`](#eventjsonschema)
+- [`InlineDowngradeStep`](#inlinedowngradestep)
 - [`Event`](#event)
+- [`EventSummary`](#eventsummary)
 - [`GraphDefinition`](#graphdefinition)
 - [`GraphNode`](#graphnode)
 - [`GraphEdge`](#graphedge)
 - [`EntityOperationTrigger`](#entityoperationtrigger)
 - [`SearchOptions`](#searchoptions)
+- [`SearchOptionsV2`](#searchoptionsv2)
 - [`FieldsParam`](#fieldsparam)
 - [`TriggerEventPayload`](#triggereventpayload)
 - [`TriggerEventResponse`](#triggereventresponse)
+- [`EventAttachment`](#eventattachment)
+- [`FieldChange`](#fieldchange)
+- [`VersionMeta`](#versionmeta)
+- [`EventVersionRegistrySummary`](#eventversionregistrysummary)
 
 ### `listEvents`
 
@@ -76,7 +101,7 @@ const { data } = await client.listEvents()
       "event_name": "AddMeterReading",
       "event_title": "Add Meter Reading",
       "event_description": "Triggered when a new meter reading is added",
-      "event_version": "1.0.0",
+      "event_version": "1.0",
       "event_status": "active",
       "event_tags": ["builtin", "metering", "erp"],
       "schema_fields": {},
@@ -100,11 +125,171 @@ const { data } = await client.listEvents()
         "operation": ["createEntity", "updateEntity"],
         "schema": ["contact", "contract", "order"],
         "attribute": ["email", "phone", "status"],
-        "purpose": ["Kündigung", "Umzug/Auszug"]
+        "purpose": ["Kündigung", "Umzug/Auszug"],
+        "purpose_filters": [
+          {
+            "id": "string",
+            "display_name": "string"
+          }
+        ]
       },
       "enabled": true,
       "auto_trigger": true,
-      "automation_trigger": true
+      "automation_trigger": true,
+      "api_trigger": true,
+      "automation_trigger_only": true,
+      "automation_trigger_seed_node": "ticket",
+      "event_origin": "builtin",
+      "mapping": {
+        "mode": "guided",
+        "jsonata": "string"
+      },
+      "lineage": {
+        "base_event_name": "string",
+        "base_event_version": "string"
+      },
+      "success_criteria": [
+        {
+          "entity_schema": "contract",
+          "attribute": "installment_amount"
+        },
+        {
+          "entity_schema": "billing_account",
+          "attribute": "due_date"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `createCustomEvent`
+
+Reserve an org-scoped custom event name and persist its immutable v1.0 draft definition. Custom events are always projected from an entity graph: entity_graph is required and, in guided mapping mode, 
+
+`POST /v1/events`
+
+```ts
+const { data } = await client.createCustomEvent(
+  null,
+  {
+    event_name: 'string',
+    event_title: 'string',
+    event_description: 'string',
+    event_tags: ['string'],
+    schema_fields: {},
+    entity_graph: {
+      nodes: [
+        {
+          id: 'contact',
+          schema: 'contact',
+          cardinality: 'one',
+          fields: ['_id', '_title', 'first_name', 'account', '!account.*._files', '**._product']
+        }
+      ],
+      edges: [
+        {
+          from: 'contact',
+          to: 'billing_account'
+        }
+      ]
+    },
+    entity_operation: {
+      operation: ['createEntity', 'updateEntity'],
+      schema: ['contact', 'contract', 'order'],
+      attribute: ['email', 'phone', 'status'],
+      purpose: ['Kündigung', 'Umzug/Auszug'],
+      purpose_filters: [
+        {
+          id: 'string',
+          display_name: 'string'
+        }
+      ]
+    },
+    automation_trigger: true,
+    api_trigger: true,
+    automation_trigger_only: false,
+    automation_trigger_seed_node: 'string',
+    mapping: {
+      mode: 'guided',
+      jsonata: 'string'
+    },
+    lineage: {
+      base_event_name: 'string',
+      base_event_version: 'string'
+    },
+    example: {}
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "event_name": "AddMeterReading",
+  "event_title": "Add Meter Reading",
+  "event_description": "Triggered when a new meter reading is added",
+  "event_version": "1.0",
+  "event_status": "active",
+  "event_tags": ["builtin", "metering", "erp"],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one",
+        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+      }
+    ],
+    "edges": [
+      {
+        "from": "contact",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": ["createEntity", "updateEntity"],
+    "schema": ["contact", "contract", "order"],
+    "attribute": ["email", "phone", "status"],
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
+  },
+  "enabled": true,
+  "auto_trigger": true,
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
     }
   ]
 }
@@ -134,7 +319,7 @@ const { data } = await client.getEvent({
   "event_name": "AddMeterReading",
   "event_title": "Add Meter Reading",
   "event_description": "Triggered when a new meter reading is added",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_status": "active",
   "event_tags": ["builtin", "metering", "erp"],
   "schema_fields": {},
@@ -158,11 +343,39 @@ const { data } = await client.getEvent({
     "operation": ["createEntity", "updateEntity"],
     "schema": ["contact", "contract", "order"],
     "attribute": ["email", "phone", "status"],
-    "purpose": ["Kündigung", "Umzug/Auszug"]
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
   },
   "enabled": true,
   "auto_trigger": true,
-  "automation_trigger": true
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
+    }
+  ]
 }
 ```
 
@@ -182,12 +395,108 @@ const { data } = await client.patchEvent(
     event_name: 'example',
   },
   {
-    event_name: 'AddMeterReading',
-    event_title: 'Add Meter Reading',
-    event_description: 'Triggered when a new meter reading is added',
-    event_version: '1.0.0',
-    event_status: 'active',
-    event_tags: ['builtin', 'metering', 'erp'],
+    enabled: true,
+    auto_trigger: true,
+    success_criteria: [
+      {
+        entity_schema: 'contract',
+        attribute: 'installment_amount'
+      }
+    ]
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "event_name": "AddMeterReading",
+  "event_title": "Add Meter Reading",
+  "event_description": "Triggered when a new meter reading is added",
+  "event_version": "1.0",
+  "event_status": "active",
+  "event_tags": ["builtin", "metering", "erp"],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one",
+        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+      }
+    ],
+    "edges": [
+      {
+        "from": "contact",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": ["createEntity", "updateEntity"],
+    "schema": ["contact", "contract", "order"],
+    "attribute": ["email", "phone", "status"],
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
+  },
+  "enabled": true,
+  "auto_trigger": true,
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `replaceCustomEventDraft`
+
+Replace the complete v1.0 definition of an org-scoped custom event while it is still an
+unpublished draft. Drafts have no consumers, so their definition is not yet immutable;
+the event name is the ide
+
+`PUT /v1/events/{event_name}`
+
+```ts
+const { data } = await client.replaceCustomEventDraft(
+  {
+    event_name: 'example',
+  },
+  {
+    event_name: 'string',
+    event_title: 'string',
+    event_description: 'string',
+    event_tags: ['string'],
     schema_fields: {},
     entity_graph: {
       nodes: [
@@ -209,11 +518,27 @@ const { data } = await client.patchEvent(
       operation: ['createEntity', 'updateEntity'],
       schema: ['contact', 'contract', 'order'],
       attribute: ['email', 'phone', 'status'],
-      purpose: ['Kündigung', 'Umzug/Auszug']
+      purpose: ['Kündigung', 'Umzug/Auszug'],
+      purpose_filters: [
+        {
+          id: 'string',
+          display_name: 'string'
+        }
+      ]
     },
-    enabled: true,
-    auto_trigger: true,
-    automation_trigger: true
+    automation_trigger: true,
+    api_trigger: true,
+    automation_trigger_only: false,
+    automation_trigger_seed_node: 'string',
+    mapping: {
+      mode: 'guided',
+      jsonata: 'string'
+    },
+    lineage: {
+      base_event_name: 'string',
+      base_event_version: 'string'
+    },
+    example: {}
   },
 )
 ```
@@ -226,7 +551,7 @@ const { data } = await client.patchEvent(
   "event_name": "AddMeterReading",
   "event_title": "Add Meter Reading",
   "event_description": "Triggered when a new meter reading is added",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_status": "active",
   "event_tags": ["builtin", "metering", "erp"],
   "schema_fields": {},
@@ -250,11 +575,185 @@ const { data } = await client.patchEvent(
     "operation": ["createEntity", "updateEntity"],
     "schema": ["contact", "contract", "order"],
     "attribute": ["email", "phone", "status"],
-    "purpose": ["Kündigung", "Umzug/Auszug"]
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
   },
   "enabled": true,
   "auto_trigger": true,
-  "automation_trigger": true
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `deprecateCustomEvent`
+
+Soft-deprecate an org-scoped custom event. Definitions and v1.0 history remain readable.
+
+`DELETE /v1/events/{event_name}`
+
+```ts
+const { data } = await client.deprecateCustomEvent({
+  event_name: 'example',
+})
+```
+
+---
+
+### `previewCustomEvent`
+
+Assemble and fully validate a persisted custom-event draft without publishing it.
+
+`POST /v1/events/{event_name}:preview`
+
+```ts
+const { data } = await client.previewCustomEvent(
+  {
+    event_name: 'example',
+  },
+  {
+    seed: {
+      entity_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      node_id: 'ticket'
+    },
+    _trigger_source_type: 'automation',
+    _trigger_source: 'execution-id/action-id'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "payload": {},
+  "errors": [
+    {
+      "path": "string",
+      "message": "string"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `publishCustomEventDefinition`
+
+Conditionally activate an immutable custom-event v1.0 definition.
+
+`POST /v1/events/{event_name}:publish`
+
+```ts
+const { data } = await client.publishCustomEventDefinition(
+  {
+    event_name: 'example',
+  },
+  {
+    enabled: true,
+    auto_trigger: true,
+    base_auto_trigger_enabled: true
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "event_name": "AddMeterReading",
+  "event_title": "Add Meter Reading",
+  "event_description": "Triggered when a new meter reading is added",
+  "event_version": "1.0",
+  "event_status": "active",
+  "event_tags": ["builtin", "metering", "erp"],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one",
+        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+      }
+    ],
+    "edges": [
+      {
+        "from": "contact",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": ["createEntity", "updateEntity"],
+    "schema": ["contact", "contract", "order"],
+    "attribute": ["email", "phone", "status"],
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
+  },
+  "enabled": true,
+  "auto_trigger": true,
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
+    }
+  ]
 }
 ```
 
@@ -264,13 +763,16 @@ const { data } = await client.patchEvent(
 
 ### `getEventJSONSchema`
 
-Retrieve the JSON Schema of a specific business event
+Retrieve the JSON Schema of a specific business event. Pass an optional
+`Epilot-Event-Version` header to retrieve a specific version's schema;
+when omitted, the event's latest version is returned.
 
 `GET /v1/events/{event_name}/json_schema`
 
 ```ts
 const { data } = await client.getEventJSONSchema({
   event_name: 'example',
+  Epilot-Event-Version: 'example',
 })
 ```
 
@@ -300,7 +802,7 @@ const { data } = await client.getEventJSONSchema({
     },
     "_event_version": {
       "type": "string",
-      "description": "Event version (semver)"
+      "description": "Event payload version (MAJOR.MINOR)"
     },
     "_event_source": {
       "type": "string",
@@ -386,13 +888,16 @@ const { data } = await client.getEventJSONSchema({
 
 ### `getEventExample`
 
-Generate a sample event payload based on the event's JSON Schema
+Generate a sample event payload based on the event's JSON Schema. Pass an
+optional `Epilot-Event-Version` header to generate the example for a
+specific version; when omitted, the event's latest versio
 
 `GET /v1/events/{event_name}/example`
 
 ```ts
 const { data } = await client.getEventExample({
   event_name: 'example',
+  Epilot-Event-Version: 'example',
 })
 ```
 
@@ -401,6 +906,50 @@ const { data } = await client.getEventExample({
 
 ```json
 {}
+```
+
+</details>
+
+---
+
+### `listEventVersions`
+
+List every known version of an event, along with the `latest`
+and the set of currently `active` versions. See §3.2 of the
+Event Payload Versioning RFC.
+
+`GET /v1/events/{event_name}/versions`
+
+```ts
+const { data } = await client.listEventVersions({
+  event_name: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "event_name": "MeterReadingAdded",
+  "latest": "1.0",
+  "versions": [
+    {
+      "version": "1.0",
+      "released_at": "2025-11-15",
+      "change_summary": "string",
+      "change_notes": "string",
+      "changes": [
+        {
+          "field": "reading",
+          "op": "added",
+          "type_old": "string",
+          "type_new": "string"
+        }
+      ]
+    }
+  ]
+}
 ```
 
 </details>
@@ -444,7 +993,7 @@ const { data } = await client.searchEventHistory(
       "_event_time": "2024-01-01T12:00:00Z",
       "_event_id": "01FZ4Z5FZ5FZ5FZ5FZ5FZ5FZ5F",
       "_event_name": "MeterReading",
-      "_event_version": "1.0.0",
+      "_event_version": "1.0",
       "_event_source": "api",
       "_trigger_source_type": "api",
       "_trigger_source": "user_123456",
@@ -474,6 +1023,108 @@ const { data } = await client.searchEventHistory(
 
 ---
 
+### `searchEventHistoryV2`
+
+Paginated history of events with projected/lightweight payload (v2).
+
+`POST /v2/events/{event_name}:history`
+
+```ts
+const { data } = await client.searchEventHistoryV2(
+  {
+    event_name: 'example',
+  },
+  {
+    limit: 10,
+    cursor: {
+      event_time: '2025-10-31 12:34:56',
+      event_id: 'evt_1234567890abcdef'
+    },
+    timestamp: {
+      from: '2025-10-01T00:00:00Z',
+      to: '2025-10-31T23:59:59Z'
+    },
+    event_id: 'evt_1234567890abcdef',
+    fields: ['_id', '_title', 'first_name', 'account', '!account.*._files', '**._product']
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "_org_id": "string",
+      "_event_time": "1970-01-01T00:00:00.000Z",
+      "_event_id": "string",
+      "_event_name": "string",
+      "_event_version": "1.0",
+      "_event_source": "string",
+      "_trigger_source_type": "api",
+      "_trigger_source": "string",
+      "_ack_id": "string"
+    }
+  ],
+  "next_cursor": {
+    "event_time": "2025-10-31T12:34:56Z",
+    "event_id": "evt_1234567890abcdef"
+  }
+}
+```
+
+</details>
+
+---
+
+### `getHistoricalEvent`
+
+Fetch a single historical event by id with full hydration
+
+`GET /v2/events/{event_name}/history/{event_id}`
+
+```ts
+const { data } = await client.getHistoricalEvent({
+  event_name: 'example',
+  event_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "_org_id": "org_123456",
+  "_event_time": "2024-01-01T12:00:00Z",
+  "_event_id": "01FZ4Z5FZ5FZ5FZ5FZ5FZ5FZ5F",
+  "_event_name": "MeterReading",
+  "_event_version": "1.0",
+  "_event_source": "api",
+  "_trigger_source_type": "api",
+  "_trigger_source": "user_123456",
+  "reading_value": 123.45,
+  "reading_date": "2024-01-01T11:59:00Z",
+  "read_by": "John Doe",
+  "reason": "regular",
+  "direction": "feed-out",
+  "source": "portal",
+  "meter_id": "550e8400-e29b-41d4-a716-446655440000",
+  "counter_id": "660e8400-e29b-41d4-a716-446655440000",
+  "meter_number": "MT123456789",
+  "obis_number": "1-0:1.8.0",
+  "unit": "kWh",
+  "customer_id": "770e8400-e29b-41d4-a716-446655440000",
+  "contract_id": "880e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+</details>
+
+---
+
 ### `triggerEvent`
 
 Explicitly trigger an event by providing input field values and an optional entity seed
@@ -489,12 +1140,10 @@ const { data } = await client.triggerEvent(
   {
     seed: {
       entity_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      node_id: 'string'
+      node_id: 'ticket'
     },
-    fields: {},
-    skip_hydration: ['string'],
-    _trigger_source_type: 'string',
-    _trigger_source: 'string'
+    _trigger_source_type: 'automation',
+    _trigger_source: 'execution-id/action-id'
   },
 )
 ```
@@ -535,6 +1184,17 @@ type EventConfigBase = {
   } | {
     entity_schema: string
     required?: boolean
+  } | {
+    items: {
+      entity_id: { ... }
+      filename?: { ... }
+      mime_type?: { ... }
+      size_bytes?: { ... }
+      s3ref?: { ... }
+      version_index: { ... }
+      readable_size?: { ... }
+    }
+    required?: boolean
   }>
   entity_graph?: {
     nodes: Array<{
@@ -553,10 +1213,30 @@ type EventConfigBase = {
     schema: string[]
     attribute?: string[]
     purpose?: string[]
+    purpose_filters?: Array<{
+      id: { ... }
+      display_name: { ... }
+    }>
   }
   enabled?: boolean
   auto_trigger?: boolean
   automation_trigger?: boolean
+  api_trigger?: boolean
+  automation_trigger_only?: boolean
+  automation_trigger_seed_node?: string
+  event_origin?: "builtin" | "custom"
+  mapping?: {
+    mode: "guided" | "jsonata"
+    jsonata?: string
+  }
+  lineage?: {
+    base_event_name: string
+    base_event_version: string
+  }
+  success_criteria?: Array<{
+    entity_schema: string
+    attribute: string
+  }>
 }
 ```
 
@@ -579,6 +1259,17 @@ type EventConfig = {
   } | {
     entity_schema: string
     required?: boolean
+  } | {
+    items: {
+      entity_id: { ... }
+      filename?: { ... }
+      mime_type?: { ... }
+      size_bytes?: { ... }
+      s3ref?: { ... }
+      version_index: { ... }
+      readable_size?: { ... }
+    }
+    required?: boolean
   }>
   entity_graph?: {
     nodes: Array<{
@@ -597,29 +1288,44 @@ type EventConfig = {
     schema: string[]
     attribute?: string[]
     purpose?: string[]
+    purpose_filters?: Array<{
+      id: { ... }
+      display_name: { ... }
+    }>
   }
   enabled?: boolean
   auto_trigger?: boolean
   automation_trigger?: boolean
+  api_trigger?: boolean
+  automation_trigger_only?: boolean
+  automation_trigger_seed_node?: string
+  event_origin?: "builtin" | "custom"
+  mapping?: {
+    mode: "guided" | "jsonata"
+    jsonata?: string
+  }
+  lineage?: {
+    base_event_name: string
+    base_event_version: string
+  }
+  success_criteria?: Array<{
+    entity_schema: string
+    attribute: string
+  }>
 }
 ```
 
-### `UpdateEventPayload`
+### `CreateCustomEventPayload`
 
-Payload for updating an event configuration.
-Accepts the same fields as EventConfig (all optional for PATCH).
-Currently only `enabled` and `auto_trigger` fields are processed, other fields are ignored.
-
+Complete immutable custom-event v1.0 definition projected from a required entity graph. Publication is a separate conditional action.
 
 ```ts
-type UpdateEventPayload = {
-  event_name?: string
-  event_title?: string
+type CreateCustomEventPayload = {
+  event_name: string
+  event_title: string
   event_description?: string
-  event_version?: string
-  event_status?: "active" | "deprecated" | "draft" | "disabled"
   event_tags?: string[]
-  schema_fields?: Record<string, {
+  schema_fields: Record<string, {
     json_schema: object
     required?: boolean
     graph_source?: string
@@ -627,7 +1333,7 @@ type UpdateEventPayload = {
     entity_schema: string
     required?: boolean
   }>
-  entity_graph?: {
+  entity_graph: {
     nodes: Array<{
       id: { ... }
       schema: { ... }
@@ -644,10 +1350,101 @@ type UpdateEventPayload = {
     schema: string[]
     attribute?: string[]
     purpose?: string[]
+    purpose_filters?: Array<{
+      id: { ... }
+      display_name: { ... }
+    }>
   }
+  automation_trigger?: boolean
+  api_trigger?: boolean
+  automation_trigger_only?: boolean
+  automation_trigger_seed_node?: string
+  mapping?: {
+    mode: "guided" | "jsonata"
+    jsonata?: string
+  }
+  lineage?: {
+    base_event_name: string
+    base_event_version: string
+  }
+  example?: Record<string, unknown>
+}
+```
+
+### `EventMapping`
+
+Guided mappings use schema_fields graph_source expressions; raw mode evaluates one JSONata object transform.
+
+```ts
+type EventMapping = {
+  mode: "guided" | "jsonata"
+  jsonata?: string
+}
+```
+
+### `CustomEventLineage`
+
+Optional catalog lineage to a separately named base event. Built-in inheritance is validated against this exact registered version; its trigger restrictions cannot be removed or replaced. It does not replace the base event.
+
+```ts
+type CustomEventLineage = {
+  base_event_name: string
+  base_event_version: string
+}
+```
+
+### `PurposeFilterSnapshot`
+
+```ts
+type PurposeFilterSnapshot = {
+  id: string
+  display_name: string
+}
+```
+
+### `PublishCustomEventPayload`
+
+```ts
+type PublishCustomEventPayload = {
   enabled?: boolean
   auto_trigger?: boolean
-  automation_trigger?: boolean
+  base_auto_trigger_enabled?: boolean
+}
+```
+
+### `ValidationIssue`
+
+```ts
+type ValidationIssue = {
+  path: string
+  message: string
+}
+```
+
+### `PreviewEventResponse`
+
+```ts
+type PreviewEventResponse = {
+  payload: Record<string, unknown>
+  errors: Array<{
+    path: string
+    message: string
+  }>
+}
+```
+
+### `UpdateEventPayload`
+
+Mutable org activation overlay. Immutable event definition fields are not accepted.
+
+```ts
+type UpdateEventPayload = {
+  enabled?: boolean
+  auto_trigger?: boolean
+  success_criteria?: Array<{
+    entity_schema: string
+    attribute: string
+  }>
 }
 ```
 
@@ -672,6 +1469,45 @@ type ContextEntity = {
 }
 ```
 
+### `AttachmentField`
+
+A schema field representing file attachments associated with the event.
+Present in schema_fields for events tagged with "attachment".
+
+
+```ts
+type AttachmentField = {
+  items: {
+    entity_id: string // uuid
+    filename?: string
+    mime_type?: string
+    size_bytes?: number
+    s3ref?: {
+      bucket: { ... }
+      key: { ... }
+    }
+    version_index: number
+    readable_size?: string
+  }
+  required?: boolean
+}
+```
+
+### `CustomSchemaField`
+
+Custom v1 fields support graph-projected JSON Schema values and context entities; attachment semantics are built-in-only.
+
+```ts
+type CustomSchemaField = {
+  json_schema: object
+  required?: boolean
+  graph_source?: string
+} | {
+  entity_schema: string
+  required?: boolean
+}
+```
+
 ### `SchemaField`
 
 ```ts
@@ -682,6 +1518,36 @@ type SchemaField = {
 } | {
   entity_schema: string
   required?: boolean
+} | {
+  items: {
+    entity_id: string // uuid
+    filename?: string
+    mime_type?: string
+    size_bytes?: number
+    s3ref?: {
+      bucket: { ... }
+      key: { ... }
+    }
+    version_index: number
+    readable_size?: string
+  }
+  required?: boolean
+}
+```
+
+### `SuccessCriterion`
+
+A single org-defined success criterion: an entity attribute that must be captured
+for this event's change request to be considered complete.
+
+Identity is the entity schema plus the attribute name — mirroring the
+EntityOperationTrigger `schema`/`attribute` vocabulary. On write (PATCH), both
+`attribut
+
+```ts
+type SuccessCriterion = {
+  entity_schema: string
+  attribute: string
 }
 ```
 
@@ -701,12 +1567,51 @@ JSON Schema declaring the event payload structure
 type EventJsonSchema = object
 ```
 
+### `InlineDowngradeStep`
+
+One step of an event's inline `_downgrades` chain. Maps the current-version payload to the previous version via a JSONata expression. Stamped by Event Catalog at publish time; executed by consumers during walk-back, never by EC itself.
+
+```ts
+type InlineDowngradeStep = {
+  to: string
+  jsonata: string
+}
+```
+
 ### `Event`
 
 An event instance in the event history
 
 ```ts
 type Event = {
+  _org_id: string
+  _event_time: string // date-time
+  _event_id: string
+  _event_name: string
+  _event_version: string
+  _event_source: string
+  _trigger_source_type?: string
+  _trigger_source?: string
+  _ack_id?: string
+  _downgrades?: Array<{
+    to: string
+    jsonata: string
+  }>
+  _automation_chain?: string[]
+}
+```
+
+### `EventSummary`
+
+A lightweight event summary returned by the v2 history endpoint.
+
+Includes the standard `_*` metadata fields plus a projected subset of the
+event payload. Hydrated entity objects (values carrying `_schema` or `_id`)
+— and arrays of such objects — are reduced to reference stubs
+`{_schema, _id, _title
+
+```ts
+type EventSummary = {
   _org_id: string
   _event_time: string // date-time
   _event_id: string
@@ -776,6 +1681,10 @@ type EntityOperationTrigger = {
   schema: string[]
   attribute?: string[]
   purpose?: string[]
+  purpose_filters?: Array<{
+    id: string
+    display_name: string
+  }>
 }
 ```
 
@@ -793,6 +1702,31 @@ type SearchOptions = {
     to?: string // date-time
   }
   event_id?: string
+}
+```
+
+### `SearchOptionsV2`
+
+Search options for the v2 history endpoint.
+
+Extends `SearchOptions` with an optional `fields` projection. When `fields`
+is omitted, the response includes all `_*` metadata plus all scalar payload
+fields (and primitive arrays / empty objects/arrays) after entity stripping.
+When `fields` is provided,
+
+```ts
+type SearchOptionsV2 = {
+  limit?: number
+  cursor?: {
+    event_time?: string
+    event_id?: string
+  }
+  timestamp?: {
+    from?: string // date-time
+    to?: string // date-time
+  }
+  event_id?: string
+  fields?: string[]
 }
 ```
 
@@ -823,6 +1757,7 @@ type TriggerEventPayload = {
   skip_hydration?: string[]
   _trigger_source_type?: string
   _trigger_source?: string
+  _automation_chain?: string[]
 }
 ```
 
@@ -835,5 +1770,83 @@ type TriggerEventResponse = {
   success: boolean
   event_id: string
   event_bridge_event_id?: string
+}
+```
+
+### `EventAttachment`
+
+A file attachment associated with an event
+
+```ts
+type EventAttachment = {
+  entity_id: string // uuid
+  filename?: string
+  mime_type?: string
+  size_bytes?: number
+  s3ref?: {
+    bucket: string
+    key: string
+  }
+  version_index: number
+  readable_size?: string
+}
+```
+
+### `FieldChange`
+
+A field-level change descriptor. Powers the declarative half of the
+version DSL.
+
+
+```ts
+type FieldChange = {
+  field: string
+  op: "added" | "removed" | "type-changed"
+  type_old?: string
+  type_new?: string
+}
+```
+
+### `VersionMeta`
+
+One entry of an event's version timeline.
+
+```ts
+type VersionMeta = {
+  version: string
+  released_at: string
+  change_summary: string
+  change_notes?: string
+  changes: Array<{
+    field: string
+    op: "added" | "removed" | "type-changed"
+    type_old?: string
+    type_new?: string
+  }>
+}
+```
+
+### `EventVersionRegistrySummary`
+
+Summary of an event's version timeline returned by
+`GET /v1/events/{event_name}/versions`.
+
+
+```ts
+type EventVersionRegistrySummary = {
+  event_name: string
+  latest: string
+  versions: Array<{
+    version: string
+    released_at: string
+    change_summary: string
+    change_notes?: string
+    changes: Array<{
+      field: { ... }
+      op: { ... }
+      type_old?: { ... }
+      type_new?: { ... }
+    }>
+  }>
 }
 ```

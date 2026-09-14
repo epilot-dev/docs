@@ -9,6 +9,8 @@ import EventSchemaViewer from '@site/src/components/EventSchemaViewer';
 
 epilot's core event catalog with built-in event schemas, examples, and schema definitions.
 
+These events ship with epilot and are identical in every organization. To define an event on your own entity attributes, see [Custom Events](./custom-events.md).
+
 See the [API Changelog](/api/changelog) for the full history of additions and changes to core events and APIs.
 
 ## Event Architecture
