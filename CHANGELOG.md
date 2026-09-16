@@ -2,6 +2,13 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-09-02 Automation API
+
+- New `EventCatalogTrigger` trigger type (`event_catalog`) added for starting flows from Event Catalog events — configured with `event_name`, a pinned `event_version`, the `entity_node_id` and `entity_schema` of the entity the execution runs on, and an optional `ignore_automation_triggered` flag (default `true`); accepted on `POST /v1/automation/flows` and `PUT /v1/automation/flows/{flow_id}` and returned wherever triggers are read
+- Executions started by an Event Catalog event carry a new `trigger_event` variant of type `event_catalog` with `event_id`, `event_name`, `event_version`, `published_version`, `entity_node_id`, and a `payload_ref` to the stored event payload — returned by the execution list, read, search, and `POST /v1/automation/public/executions:resume` endpoints
+- Action conditions accept a new `source.originType` value `event` for reading the condition operand from the trigger's event payload (`attribute` is then a dot path into the payload)
+- New optional `trigger_event_name` query parameter added to `GET /v1/automation/flows` for listing flows that have an `event_catalog` trigger for a given event
+
 ## 2026-08-27 Event: Customer Request Submitted
 
 - The event now also carries the meter of a ticket and its counters — new optional `meter` and `meter_counters` nodes, so consumers can resolve counter identifiers such as `external_id` from the event itself; both are absent for customer requests created from a journey
