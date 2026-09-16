@@ -14,7 +14,7 @@ epilot offers the **[Agent Toolkit](https://github.com/epilot-dev/agent-toolkit-
 The toolkit is packaged as a **plugin** following the open [Agent Plugins specification](https://agent-plugins.org/), a vendor-neutral standard for extending AI assistants. A plugin bundles two kinds of things:
 
 - **Skills** — written know-how the assistant reads before it acts: epilot's concepts, decision rules, and proven step-by-step workflows. Skills make the assistant work *the epilot way* instead of guessing.
-- **MCP servers** — live tools (via the [Model Context Protocol](https://modelcontextprotocol.io/)) the assistant calls to look up your organization's real configuration and to create or update things — always with your explicit approval, and read-only unless you opt into write access.
+- **MCP servers** — live tools (via the [Model Context Protocol](https://modelcontextprotocol.io/)) the assistant calls to look up your organization's real configuration and to create or update things — always with your explicit approval, and read-only unless you opt into write access. Entity data the assistant reads is [PII-anonymized by default](/docs/agent-toolkit/setup#pii-anonymization).
 
 ![The epilot plugin page in the marketplace, with starter prompts and its two MCP servers](/img/agent-toolkit/plugin-marketplace.png)
 
@@ -58,11 +58,9 @@ Letting an AI assistant change a live organization is powerful — so don't poin
   ariaLabel="Animation of the recommended workflow: the AI assistant makes changes in a read-and-write sandbox organization, and a Blueprint synchronizes the reviewed configuration to the read-only production organization"
 />
 
-**Switching between organizations** (for example from the sandbox to production, or between two sandboxes) is easiest by simply reinstalling the plugin — the fastest way to trigger the login again and pick a different organization:
+**Switching between organizations** (for example from the sandbox to production, or between two sandboxes) does not require reinstalling anything: disconnect the epilot MCP connector and connect it again. Reconnecting triggers the epilot login, where you pick a different organization and access level. In Claude, open **Customize → Plugins → epilot → Connectors**, select **Epilot 360 MCP**, and click **Disconnect**:
 
-<video controls muted playsInline style={{width: '100%', maxWidth: 960, borderRadius: 14, border: '1px solid var(--ifm-color-emphasis-200)', margin: '1rem auto', display: 'block'}}>
-  <source src="/video/agent-toolkit/reinstall-switch-org.mp4" type="video/mp4" />
-</video>
+![Disconnecting the Epilot 360 MCP connector in the plugin settings of Claude Desktop to switch organizations](/img/agent-toolkit/switch-org-disconnect.gif)
 
 :::caution Keep production read-only
 Granting the assistant write access to your production organization is possible, but not recommended — you do so at your own risk. Connect production with the read-only URL (`https://mcp.epilot.io/mcp?access=read`) so the assistant can answer questions about your live setup but can never change it, and keep write access confined to the sandbox.

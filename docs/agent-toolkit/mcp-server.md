@@ -20,7 +20,7 @@ For everything else it exposes the full published OpenAPI catalog, so any epilot
 - **Read by default.** The OAuth scopes are `mcp:read` and `mcp:write`. Read-only is preselected on the approval screen. A connection over `/mcp?access=read` is enforced read-only.
 - **Credentials never leave the server.** Responses from webhook, journey, and portal configuration endpoints have `auth` blocks, signed journey tokens, and Cognito wiring stripped. The removed paths are listed in `redacted_fields`, so a missing value is reported as redacted, not unset.
 - **Your permissions, always.** Tools run as the signed-in user. The server never trusts a caller-supplied organization, and every upstream API applies its own permission checks.
-- **PII masked.** Entity data on OAuth connections is anonymized server-side. `whoami` reports this as `entity_pii`.
+- **PII masked.** Entity data on OAuth connections is anonymized server-side by an access token minted with the `anonymize` flag, using the open-source [@epilot/anonymization](https://github.com/epilot-dev/anonymization) library. Detection is best effort by default; set `data_classification: "pii"` on a schema attribute to guarantee it is masked. `whoami` reports the state as `entity_pii`. See [PII anonymization](/docs/agent-toolkit/setup#pii-anonymization).
 
 ## Tools
 
