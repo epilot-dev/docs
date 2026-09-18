@@ -15,6 +15,10 @@ This guide walks you through connecting your AI assistant to epilot. Every route
 Most AI tools, including **ChatGPT** and **Claude**, are rolled out to companies as managed workspaces. In these workspaces, plugins and custom MCP connectors are disabled by default, and a workspace or IT administrator has to enable them manually before you can add the epilot plugin or connector. If you don't see the options described below in your client, ask your administrator to follow the **Administrator** steps in your client's tab.
 :::
 
+:::info The MCP Server feature must be enabled in epilot
+The epilot MCP server is switched off for every organization by default. An epilot administrator enables it once under **Settings → Features → MCP Server** in epilot 360. Until then, every connection attempt fails with `mcp_server_disabled`, whichever AI client you use. Enable it separately for each organization the assistant should work with, including sandboxes.
+:::
+
 :::warning Use the MCP server only with enterprise editions or EU-regulated models
 The epilot MCP server sends your organization's configuration, and depending on the tools you use, entity data, to the AI provider that runs your assistant. We recommend using it only with **enterprise editions** of AI tools, which come with a data processing agreement and exclude your data from model training, or with **models hosted and regulated within the EU**. Do not connect the epilot MCP server from consumer or free plans of AI tools that may use your conversations for training or store them outside the EU. Check with your data protection officer if you are unsure which plan your company uses. Entity data is [PII-anonymized by default](#pii-anonymization) on every OAuth connection, but configuration data such as journey texts and workflow names is sent as is.
 :::
@@ -23,7 +27,8 @@ The epilot MCP server sends your organization's configuration, and depending on 
 
 Make sure you have:
 
-- An **epilot user account** in the organization the assistant should work with. Every tool runs with your permissions, so the assistant can only see and change what you can.
+- The **MCP Server feature enabled** for your epilot organization by an epilot administrator (see the note above).
+- An **epilot user account** in the organization the assistant should work with, with permission to create access tokens. Every tool runs with your permissions, so the assistant can only see and change what you can.
 - A **[sandbox organization](/docs/blueprints/sandboxes)** if the assistant should build or change configuration. Keep production connections read-only; see [The typical workflow: sandbox first](/docs/agent-toolkit#the-typical-workflow-sandbox-first).
 - An AI client on an **enterprise plan** or an **EU-regulated model** (see the warning above).
 - **Plugins or custom connectors enabled** in your AI client by your administrator (see the note above).
@@ -161,9 +166,19 @@ The epilot login asks for two things: the **organization** the assistant should 
 
 Grant write access to a **sandbox organization** and keep production read-only. To make read-only technically enforceable, connect with `https://mcp.epilot.io/mcp?access=read`. Writes are then impossible regardless of what is approved on the login screen.
 
+Approving a connection creates a dedicated integration token in your name, so your epilot user needs permission to create [access tokens](/docs/auth/access-tokens). The token inherits your roles. Beyond the MCP scope, every tool call is checked against your normal epilot permissions, so the assistant can never do more than you could in epilot 360.
+
 ## Verify the connection
 
-Ask the agent to run `whoami`. The answer names the organization, the user, the authentication mode, the granted scopes (`mcp:read` or `mcp:write`), and whether entity data is PII-anonymized. If a task needs a write and the connection is read-only, the server returns a reauthorization challenge; reconnect and approve write access.
+Ask the agent which epilot organization it is connected to. It answers with the `whoami` tool, which names the organization, the user, the authentication mode, the granted scopes (`mcp:read` or `mcp:write`), and whether entity data is PII-anonymized. If a task needs a write and the connection is read-only, the server returns a reauthorization challenge; reconnect and approve write access.
+
+To test the server outside an AI client, for example before rolling it out to a team, use the MCP Inspector. It opens a browser UI in which you connect to the server, sign in to epilot, and list and call the tools by hand:
+
+```bash
+npx @modelcontextprotocol/inspector
+```
+
+Choose the **Streamable HTTP** transport and enter `https://mcp.epilot.io/mcp` as the URL. The epilot login opens in the same way as from an AI client.
 
 ## Switch organizations or change the access level
 
@@ -180,6 +195,9 @@ Disconnecting also revokes the integration token that the connection created in 
 
 | Symptom                                                              | What to do                                                                                                                                                      |
 | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The connection fails with `mcp_server_disabled` or a 403 error       | The MCP Server feature is not enabled for this epilot organization. Ask an epilot administrator to enable it under **Settings → Features**.                   |
+| The epilot login succeeds but the connection is not created          | Your epilot user cannot create access tokens. Ask an epilot administrator for the permission, or connect with a user who has it.                              |
+| The assistant asks you to sign in again after a few days             | Connections expire after seven days. Reconnect and sign in again; the previous integration token is replaced.                                                 |
 | No option to add a plugin or custom connector in your client         | Plugins and connectors are disabled in your workspace. Ask your administrator to follow the **Administrator** steps for your client above.                       |
 | The epilot plugin is not listed under Plugins                        | The administrator has not imported the marketplace yet, or has not made it available to your role.                                                             |
 | The assistant says a tool needs write access                         | The connection is read-only. Disconnect and reconnect, and choose **Read & write** on the epilot login. Use a sandbox organization for this.                    |
@@ -229,8 +247,15 @@ Update the attribute in the [entity schema](/docs/entities/attributes) of your o
 Before connecting an AI assistant, walk through the custom attributes of your contact, account, and order schemas and set `data_classification: "pii"` on every field that can contain personal data. The built-in defaults cover standard fields; your custom fields are where personal data slips through.
 :::
 
+## Monitor usage
+
+- **Who is connected.** Every OAuth connection appears in epilot 360 under **Settings → Access Tokens** as an integration token named after the AI client and the approving user, for example `MCP: Claude (Erika)`. Deleting the token disconnects the assistant immediately.
+- **What changed.** Changes made through the MCP server are recorded in the [audit log](/docs/audit-logs) with the integration token as the acting user, so an administrator can review what an assistant changed and when. Audit logs are an enterprise-tier feature.
+- **Which connection is in use.** Ask the assistant which organization it is connected to. The `whoami` tool reports organization, scopes, and anonymization state.
+
 ## Permissions and data protection
 
+- The MCP server never sees your prompts and sends nothing to a third-party AI provider. It receives individual tool calls from your AI client and returns the results to it. See [How it works](/docs/agent-toolkit/mcp-server#how-it-works).
 - Every tool runs as the signed-in epilot user in the chosen organization. Upstream APIs enforce their normal permissions on every call.
 - OAuth connections create a dedicated integration token that is visible and revocable under epilot 360 token settings. Revoking the connection deletes it.
 - Entity data returned to OAuth connections is PII-anonymized server-side by default. The client cannot disable this. See [PII anonymization](#pii-anonymization) for what is masked and how to classify your own attributes.

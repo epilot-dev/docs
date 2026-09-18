@@ -101,10 +101,9 @@ const capabilities: Array<{ title: string; description: string; tools: Array<{ n
   {
     title: 'Journeys',
     description:
-      'Read a journey as summary or editable definition, validate step wiring offline, then create or update it with its entity mapping in one call.',
+      'Read a journey as summary or editable definition, then create or update it with its entity mapping in one call. Step wiring is validated before anything reaches the API.',
     tools: [
       { name: 'get_journey' },
-      { name: 'validate_journey_definition' },
       { name: 'create_journey', write: true },
       { name: 'update_journey', write: true },
       { name: 'get_journey_mapping' },
@@ -112,12 +111,12 @@ const capabilities: Array<{ title: string; description: string; tools: Array<{ n
     ],
   },
   {
-    title: 'Designs and entity model',
+    title: 'Workflows and entity model',
     description:
-      'Create and update the designs that brand journeys and portals, and read compact tenant schemas that would not fit raw.',
+      'Compile a compact graph of tasks, branches, and loops into a valid workflow with linked automations, with dry runs before writing. Read compact tenant schemas that would not fit raw.',
     tools: [
-      { name: 'create_design', write: true },
-      { name: 'update_design', write: true },
+      { name: 'create_workflow', write: true },
+      { name: 'update_workflow', write: true },
       { name: 'get_entity_schema' },
     ],
   },

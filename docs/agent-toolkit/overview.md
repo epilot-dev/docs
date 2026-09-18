@@ -23,7 +23,7 @@ The first time you install the plugin — or call an epilot MCP tool — you are
 The full plugin — skills included — works in all major AI clients: **Claude** (Claude.ai, Claude Desktop, Claude Cowork, and Claude Code), **ChatGPT** and **Codex**, and any other client that implements the [Agent Plugins](https://agent-plugins.org/) standard. In managed workspaces, an administrator imports the plugin once and users install it from the plugin menu of their client. If you only need the live tools, or your client offers connectors but no plugins (for example Cursor or a custom agent), connect the **epilot MCP server** directly as a connector instead — that gives the assistant the live tools without the packaged know-how.
 
 :::info Plugins and connectors may be disabled in your company
-Many companies block MCP connectors and plugins by default for security reasons. If you don't see a way to add the epilot plugin or connector in your AI client, ask your workspace or IT administrator to enable it — admins can typically allow a specific connector (like `https://mcp.epilot.io/mcp`) for all users, or grant it to selected roles. The [setup guide](/docs/agent-toolkit/setup) has the admin steps per client.
+Many companies block MCP connectors and plugins by default for security reasons. If you don't see a way to add the epilot plugin or connector in your AI client, ask your workspace or IT administrator to enable it — admins can typically allow a specific connector (like `https://mcp.epilot.io/mcp`) for all users, or grant it to selected roles. On the epilot side, an administrator has to enable the **MCP Server** feature for your organization under **Settings → Features** in epilot 360. The [setup guide](/docs/agent-toolkit/setup) has the admin steps per client.
 :::
 
 ## What do you do with it?
@@ -66,6 +66,10 @@ Granting the assistant write access to your production organization is possible,
 To take the choice away entirely: in enterprise editions of ChatGPT and other major AI providers, administrators can allow only `https://mcp.epilot.io/mcp?access=read` in the MCP configuration for the production organization — the read/write selection then never appears on the login screen.
 :::
 
+## How your data is handled
+
+The epilot MCP server never sees your prompts and sends nothing to a third-party AI provider. Your AI client sends it **individual tool calls**, the server runs each one against the epilot APIs as the signed-in user, and returns the result to your client. What your AI provider learns about your organization, it learns from those results inside your client. Three protections apply on the server before a result leaves epilot: your **epilot permissions** on every call, **PII anonymization** of entity data, and **credential redaction** for webhook, journey, and portal configuration. Every connection shows up as an integration token in epilot 360, and changes made by the assistant appear in the audit log under that token. Details are in the [MCP server reference](/docs/agent-toolkit/mcp-server#how-it-works) and the [setup guide](/docs/agent-toolkit/setup#permissions-and-data-protection).
+
 ## The two parts of the toolkit
 
 You can use the two parts together or separately:
@@ -75,7 +79,7 @@ You can use the two parts together or separately:
 | What it is              | A package of skills (guidance, decision rules, workflows) plus MCP configuration                                         | A hosted server at `https://mcp.epilot.io/mcp` that exposes tools                                              |
 | What it gives the agent | _How_ to work with epilot: architecture choices, App and integration patterns, configuration workflows, native UI design | _What is true right now_: your organization's configuration, entity schemas, published APIs, and documentation |
 | Runs where              | Inside the agent client (Claude, ChatGPT, Codex, and other Agent Plugins clients)                                       | On epilot infrastructure; any MCP client can connect                                                           |
-| Needs                   | A client that supports Agent Plugins                                                                                     | A client that supports remote MCP over HTTP with OAuth                                                         |
+| Needs                   | A client that supports Agent Plugins                                                                                     | A client that supports remote MCP over HTTP with OAuth, and the MCP Server feature enabled in the organization |
 | Identifier              | `epilot-core` from the `agent-toolkit-for-epilot` marketplace                                                            | `https://mcp.epilot.io/mcp`                                                                                    |
 
 The plugin **includes** the MCP server configuration. Installing the plugin connects the MCP server for you. Connecting the MCP server alone does not install the skills.
@@ -106,7 +110,7 @@ There is a third way for agents to reach epilot: the [epilot CLI](/docs/cli/over
 
 The rule of thumb:
 
-- **Use the MCP server** when the agent runs in a chat client without a terminal (Claude.ai, Claude Cowork, ChatGPT), when you want the OAuth consent flow with enforceable read-only access, or when you want the curated facade tools (`create_workflow`, `create_journey`, configuration graph, journey validation) instead of raw endpoints.
+- **Use the MCP server** when the agent runs in a chat client without a terminal (Claude.ai, Claude Cowork, ChatGPT), when you want the OAuth consent flow with enforceable read-only access, or when you want the curated facade tools (`create_workflow`, `create_journey`, configuration graph, dry runs before writing) instead of raw endpoints.
 - **Use the CLI** when the agent has shell access and the task maps to plain API operations — quick lookups, scripting, CI pipelines, or piping results through `jq`. It is the leanest option: one command per API call, no server in between.
 
 They complement each other rather than compete: the plugin's skills reach for the MCP server's tools for live configuration work, and a terminal agent can mix in CLI calls whenever a raw operation is all that is needed.
