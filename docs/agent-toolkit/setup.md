@@ -4,8 +4,8 @@ sidebar_position: 2
 description: 'Install the epilot plugin or connect the epilot MCP server in Claude, ChatGPT, Codex, and other MCP clients, including the administrator steps.'
 ---
 
-import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import ClientTabs from '@site/src/components/ClientTabs';
 
 # Set up the Agent Toolkit
 
@@ -48,7 +48,7 @@ Install the plugin when you can. It includes the MCP server configuration, so th
 
 ## Set up your client
 
-<Tabs>
+<ClientTabs>
 <TabItem value="claude" label="Claude" default>
 
 ### Claude.ai, Claude Desktop, and Claude Cowork
@@ -155,7 +155,7 @@ Add a remote HTTP server with the URL `https://mcp.epilot.io/mcp`. Clients that 
 Any client that implements the [Agent Plugins](https://agent-plugins.org) standard can install `epilot-core` from the repository `epilot-dev/agent-toolkit-for-epilot`. The portable manifest is `plugins/epilot-core/plugin.json`.
 
 </TabItem>
-</Tabs>
+</ClientTabs>
 
 ## Choose the access level
 
