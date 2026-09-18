@@ -18,7 +18,7 @@ module.exports = {
     'intro',
     {
       type: 'category',
-      label: 'Agent Toolkit',
+      label: 'Agent Toolkit & MCP',
       collapsible: true,
       collapsed: true,
       items: [

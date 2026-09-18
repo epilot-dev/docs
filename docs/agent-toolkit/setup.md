@@ -27,7 +27,8 @@ Make sure you have:
 - A **[sandbox organization](/docs/blueprints/sandboxes)** if the assistant should build or change configuration. Keep production connections read-only; see [The typical workflow: sandbox first](/docs/agent-toolkit#the-typical-workflow-sandbox-first).
 - An AI client on an **enterprise plan** or an **EU-regulated model** (see the warning above).
 - **Plugins or custom connectors enabled** in your AI client by your administrator (see the note above).
-- **Node.js 22 or newer** on your machine if you install the full plugin. The plugin's Volt UI server runs locally through `npx`.
+
+Both MCP servers of the toolkit, epilot and Volt UI, are hosted by epilot. Nothing needs to be installed on your machine.
 
 ## Choose your route
 
@@ -35,10 +36,10 @@ The toolkit has two parts. Which one you can use depends on your client:
 
 | Route              | You get                                                            | Works in                                                                          |
 | ------------------ | ------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| **epilot plugin**  | Skills (epilot know-how) **and** the MCP server, connected for you | Clients that support [Agent Plugins](https://agent-plugins.org): Claude Code, Codex, the ChatGPT desktop app, and Claude workspaces where an admin has imported the plugin |
-| **MCP server only** | The live tools, without the packaged know-how                      | Any client that supports remote MCP over HTTP with OAuth: Claude.ai, Claude Desktop, Claude Cowork, ChatGPT, Cursor, VS Code, custom agents |
+| **epilot plugin**  | Skills (epilot know-how) **and** the MCP servers, connected for you | Claude (Claude.ai, Claude Desktop, Claude Cowork, Claude Code), ChatGPT, Codex, and any other [Agent Plugins](https://agent-plugins.org) client. In managed workspaces an administrator imports the plugin first. |
+| **MCP server only** | The live tools, without the packaged know-how                      | Any client that supports remote MCP over HTTP with OAuth, for example Cursor, VS Code, or custom agents |
 
-Install the plugin when you can. It includes the MCP server configuration, so there is nothing extra to connect. If your client does not support plugins, connect the MCP server directly as a connector.
+Install the plugin when you can. It includes the MCP server configuration, so there is nothing extra to connect. If your client only offers connectors, or you only need the live tools, connect the MCP server directly as a connector.
 
 ## Set up your client
 
@@ -57,7 +58,7 @@ Install the plugin when you can. It includes the MCP server configuration, so th
 **Users.** If your administrator has made the plugin available:
 
 1. Open **Customize → Plugins** and search for **epilot**.
-2. Add the plugin. It contains the epilot skills and two connectors, **Epilot 360 MCP** and **Volt UI**.
+2. Add the plugin. It contains the epilot skills and two connectors, **Epilot 360 MCP** and **Volt UI**. Both are hosted servers.
 3. Open the plugin's **Connectors** tab and connect **Epilot 360 MCP**. The epilot login opens; sign in, pick the organization, and approve the access level.
 
 If only the connector is available, or you added it yourself:
@@ -77,7 +78,7 @@ Install the full plugin, skills included, from inside Claude Code:
 /reload-plugins
 ```
 
-The first time a skill uses the epilot MCP, Claude Code asks you to authenticate. The Volt UI server starts locally through `npx` and needs Node.js 22+.
+The first time a skill uses the epilot MCP, Claude Code asks you to authenticate. Both MCP servers are hosted, so nothing runs on your machine.
 
 To connect only the MCP server without the skills:
 
@@ -117,7 +118,7 @@ For CI or headless use, an epilot API token can replace OAuth. Reference it from
 2. Connect your own epilot account when prompted: sign in, pick the organization, and approve the access level.
 3. In a chat, type `@epilot` followed by your request.
 
-ChatGPT marks plugins that declare MCP servers as **Desktop only**. The Volt UI server runs locally and needs Node.js 22+ on each machine. A public ChatGPT directory listing is not yet available.
+ChatGPT marks plugins that declare MCP servers as **Desktop only**. A public ChatGPT directory listing is not yet available.
 
 To use only the MCP server in ChatGPT, create a custom connector with `https://mcp.epilot.io/mcp`. OAuth discovery and client registration are automatic. In managed workspaces, custom connectors also have to be enabled by an administrator first.
 
@@ -142,6 +143,7 @@ Add a remote HTTP server with the URL `https://mcp.epilot.io/mcp`. Clients that 
 | --------------------------------------------------- | --------------------------------------- |
 | Default, access level chosen on the approval screen | `https://mcp.epilot.io/mcp`             |
 | Enforced read-only, regardless of consent           | `https://mcp.epilot.io/mcp?access=read` |
+| Volt UI components and design tokens                | `https://volt-ui.epilot.io/api/mcp`     |
 
 ### Agent Plugins clients
 
@@ -182,7 +184,7 @@ Disconnecting also revokes the integration token that the connection created in 
 | The epilot plugin is not listed under Plugins                        | The administrator has not imported the marketplace yet, or has not made it available to your role.                                                             |
 | The assistant says a tool needs write access                         | The connection is read-only. Disconnect and reconnect, and choose **Read & write** on the epilot login. Use a sandbox organization for this.                    |
 | The assistant works with the wrong organization                      | Disconnect and reconnect the epilot MCP connector and pick the right organization on the login screen. Run `whoami` to confirm.                                |
-| The Volt UI connector does not start                                 | It runs locally through `npx` and needs Node.js 22 or newer on your machine.                                                                                     |
+| The Volt UI connector is not connected                               | Open the plugin's **Connectors** tab and click **Connect** next to Volt UI. It is a hosted server at `https://volt-ui.epilot.io/api/mcp`; nothing is installed locally. |
 | Entity fields show placeholder values instead of real names          | This is expected. Entity data on OAuth connections is [PII-anonymized](#pii-anonymization) server-side and cannot be disabled by the client.                    |
 
 ## PII anonymization

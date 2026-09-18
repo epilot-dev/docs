@@ -83,7 +83,7 @@ const comparison = [
     summary:
       'Hosted tools that return what is true right now: how an organization is configured, what depends on what, the current entity schemas, every published API operation, and the documentation.',
     useWhen: [
-      'Your client supports MCP but not plugins (Claude.ai, Claude Cowork, Cursor, VS Code)',
+      'You only need the live tools, or your client offers connectors but no plugins (Cursor, VS Code, custom agents)',
       'You ask questions about a live organization',
       'You build your own agent and need tools, not prompts',
     ],
@@ -244,10 +244,6 @@ const workflows = [
     name: 'Build a Journey',
     description: 'Creates and updates customer-facing forms and funnels, including steps, logic, copy, and design.',
   },
-  {
-    name: 'Design an Interface',
-    description: 'Uses live Volt UI component and token guidance to make custom surfaces feel native to epilot.',
-  },
 ];
 
 function InstallPanel(): JSX.Element {
@@ -296,7 +292,10 @@ function InstallPanel(): JSX.Element {
         {target === 'claude' && (
           <>
             <h3>Claude.ai, Claude Desktop, and Claude Cowork</h3>
-            <p>Connect the MCP server as a custom connector. Every tool is available; the plugin skills are not.</p>
+            <p>
+              Install the full plugin under Customize → Plugins once your workspace admin has made it available. Or
+              connect the MCP server as a custom connector:
+            </p>
             <ol className={styles.setupSteps}>
               <li>Open Settings → Connectors → Add custom connector.</li>
               <li>
@@ -338,9 +337,8 @@ function InstallPanel(): JSX.Element {
               <code>{marketplaceUrl}</code>
             </pre>
             <p className={styles.previewNote}>
-              ChatGPT marks plugins that declare MCP servers as Desktop only. The local Volt UI server needs Node.js
-              22+. A public ChatGPT directory listing is not yet available; to use only the MCP server, add a custom
-              connector with the MCP URL.
+              ChatGPT marks plugins that declare MCP servers as Desktop only. A public ChatGPT directory listing is not
+              yet available; to use only the MCP server, add a custom connector with the MCP URL.
             </p>
           </>
         )}
@@ -539,7 +537,7 @@ export default function AgentToolkitPage(): JSX.Element {
             <div className={styles.splitHeading}>
               <div>
                 <span className={styles.kicker}>Included workflows</span>
-                <h2>One toolkit, six focused skills</h2>
+                <h2>One toolkit, five focused skills</h2>
               </div>
               <p>
                 Each skill stays focused on one workflow, so the agent loads only the epilot guidance that is relevant
@@ -603,8 +601,8 @@ export default function AgentToolkitPage(): JSX.Element {
                 <span className={styles.kicker}>Get started</span>
                 <h2>Choose the setup for your client.</h2>
                 <p>
-                  Claude Code, Codex, and ChatGPT install the full plugin with skills. Claude.ai, Claude Cowork, and
-                  every other MCP client connect the hosted MCP server directly.
+                  Claude, ChatGPT, Codex, and every other Agent Plugins client install the full plugin with skills. Any
+                  MCP client can also connect the hosted MCP server directly.
                 </p>
                 <ul className={styles.checkList}>
                   <li>Each user connects their own epilot account</li>

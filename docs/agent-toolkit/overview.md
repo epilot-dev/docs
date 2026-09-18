@@ -16,13 +16,11 @@ The toolkit is packaged as a **plugin** following the open [Agent Plugins specif
 - **Skills** — written know-how the assistant reads before it acts: epilot's concepts, decision rules, and proven step-by-step workflows. Skills make the assistant work *the epilot way* instead of guessing.
 - **MCP servers** — live tools (via the [Model Context Protocol](https://modelcontextprotocol.io/)) the assistant calls to look up your organization's real configuration and to create or update things — always with your explicit approval, and read-only unless you opt into write access. Entity data the assistant reads is [PII-anonymized by default](/docs/agent-toolkit/setup#pii-anonymization).
 
-![The epilot plugin page in the marketplace, with starter prompts and its two MCP servers](/img/agent-toolkit/plugin-marketplace.png)
-
 The first time you install the plugin — or call an epilot MCP tool — you are redirected to the epilot login: sign in, pick the organization the assistant should work with, and choose the access level. **Read-only is preselected**; read & write is an explicit choice.
 
 ## Where can you use it?
 
-The full plugin — skills included — works in AI clients that support Agent Plugins, such as **Claude Code**, **Codex**, and the **ChatGPT desktop app** (imported by a workspace admin). Clients that don't support plugins yet, like **Claude Cowork** or the regular ChatGPT web app, can't run the skills for now — that may change as those products add plugin support. They can still connect the **epilot MCP server** directly as a connector, which gives the assistant the live tools without the packaged know-how.
+The full plugin — skills included — works in all major AI clients: **Claude** (Claude.ai, Claude Desktop, Claude Cowork, and Claude Code), **ChatGPT** and **Codex**, and any other client that implements the [Agent Plugins](https://agent-plugins.org/) standard. In managed workspaces, an administrator imports the plugin once and users install it from the plugin menu of their client. If you only need the live tools, or your client offers connectors but no plugins (for example Cursor or a custom agent), connect the **epilot MCP server** directly as a connector instead — that gives the assistant the live tools without the packaged know-how.
 
 :::info Plugins and connectors may be disabled in your company
 Many companies block MCP connectors and plugins by default for security reasons. If you don't see a way to add the epilot plugin or connector in your AI client, ask your workspace or IT administrator to enable it — admins can typically allow a specific connector (like `https://mcp.epilot.io/mcp`) for all users, or grant it to selected roles. The [setup guide](/docs/agent-toolkit/setup) has the admin steps per client.
@@ -76,7 +74,7 @@ You can use the two parts together or separately:
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | What it is              | A package of skills (guidance, decision rules, workflows) plus MCP configuration                                         | A hosted server at `https://mcp.epilot.io/mcp` that exposes tools                                              |
 | What it gives the agent | _How_ to work with epilot: architecture choices, App and integration patterns, configuration workflows, native UI design | _What is true right now_: your organization's configuration, entity schemas, published APIs, and documentation |
-| Runs where              | Inside the agent client (Claude Code, Codex, the ChatGPT desktop app, and other Agent Plugins clients)                                   | On epilot infrastructure; any MCP client can connect                                                           |
+| Runs where              | Inside the agent client (Claude, ChatGPT, Codex, and other Agent Plugins clients)                                       | On epilot infrastructure; any MCP client can connect                                                           |
 | Needs                   | A client that supports Agent Plugins                                                                                     | A client that supports remote MCP over HTTP with OAuth                                                         |
 | Identifier              | `epilot-core` from the `agent-toolkit-for-epilot` marketplace                                                            | `https://mcp.epilot.io/mcp`                                                                                    |
 
@@ -95,7 +93,7 @@ The plugin's skills route the task to the right workflow and load only the relev
 
 **Use the MCP server alone** when you only need live access to an organization or the platform contracts:
 
-- Your client does not support Agent Plugins but does support MCP (Claude.ai, Claude Cowork, Cursor, VS Code, custom agents).
+- Your client offers MCP connectors but no plugins (Cursor, VS Code, custom agents), or you only need the live tools.
 - You are asking questions about an organization: how it is set up, what depends on what, what would break if something changed.
 - You are building your own agent and want tools rather than prompts.
 - Compliance requires a read-only connection. Connect `https://mcp.epilot.io/mcp?access=read` and writes are impossible regardless of consent.
@@ -115,7 +113,7 @@ They complement each other rather than compete: the plugin's skills reach for th
 
 ## What is inside the plugin
 
-The `epilot-core` plugin ships six skills and two MCP servers.
+The `epilot-core` plugin ships five skills and two MCP servers.
 
 | Skill                     | Use it for                                                                                                              |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -124,12 +122,11 @@ The `epilot-core` plugin ships six skills and two MCP servers.
 | Integrate with epilot     | Designs inbound, outbound, batch, webhook, and bidirectional connections without an App                                 |
 | Configure epilot          | Sets up schemas, journeys, products, pricing, workflows, automations, portals, and permissions                          |
 | Build an epilot journey   | Creates and updates customer-facing forms and funnels, including logic, copy, and design                                |
-| epilot interface designer | Uses live Volt UI component and token guidance to make custom surfaces feel native                                      |
 
 | MCP server | Transport                                | Purpose                                                                                                                                                      |
 | ---------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `epilot`   | Remote HTTP, `https://mcp.epilot.io/mcp` | Configuration graph, schemas, journeys, portals, API discovery and execution, documentation. See the [MCP server reference](/docs/agent-toolkit/mcp-server). |
-| `volt-ui`  | Local, `npx -y @epilot/volt-ui-mcp`      | Volt UI components, props, and design tokens for App interfaces. Needs Node.js 22+.                                                                          |
+| `volt-ui`  | Remote HTTP, `https://volt-ui.epilot.io/api/mcp` | Volt UI components, props, and design tokens for App interfaces.                                                                                     |
 
 ## Next steps
 
