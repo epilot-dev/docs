@@ -17,6 +17,10 @@ epilot provides multiple integration paths depending on your use case -- from hi
 | **[Webhooks](/docs/integrations/webhooks)** | Receive real-time event notifications | Best for event-driven architectures |
 | **[Public APIs](/api)** | Direct API access to all platform capabilities | Best for custom integrations with full control |
 
+## Business Events
+
+epilot emits business events for the things that happen in your organization. [Core Events](/docs/integrations/core-events) ship with the platform; [Custom Events](/docs/integrations/custom-events) are authored by your organization and projected from your own entity attributes. Both are consumed the same way — through [webhooks](/docs/integrations/webhooks), automations, or the [Event Catalog API](/api/event-catalog).
+
 ## Rate Limits
 
 All epilot APIs enforce [rate limits](/docs/integrations/rate-limits) to ensure fair usage. Use the Batch API or Integration Toolkit for high-volume operations.
