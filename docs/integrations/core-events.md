@@ -64,6 +64,10 @@ All events include these fields:
 
 <EventSchemaViewer event="TariffChange" />
 
+### Grid
+
+<EventSchemaViewer event="GridConnectionRequested" />
+
 ### ERP Sync
 
 <EventSchemaViewer event="OnDemandSyncContractRequested" />
