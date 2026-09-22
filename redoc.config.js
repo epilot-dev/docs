@@ -162,6 +162,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/blueprint-manifest.yaml',
   },
   {
+    layout: { title: 'Snapshot API' },
+    routePath: '/api/snapshot',
+    specUrl: 'https://docs.api.epilot.io/snapshot-api.yaml',
+  },
+  {
     layout: { title: 'Design API' },
     routePath: '/api/design',
     specUrl: 'https://docs.api.epilot.io/design-builder-api.yaml',

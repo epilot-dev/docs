@@ -324,6 +324,16 @@
       ]
     },
     {
+      "name": "Snapshot API",
+      "baseURL": "https://snapshot.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/snapshot-api.yaml"
+        }
+      ]
+    },
+    {
       "name": "Design API",
       "baseURL": "https://design-builder-api.sls.epilot.io",
       "properties": [
