@@ -14,14 +14,15 @@ description: 'Every tool exposed by the epilot MCP server at mcp.epilot.io, with
 
 For everything else it exposes the full published OpenAPI catalog, so any epilot API operation can be discovered, described, and executed through one generic route.
 
-:::note The tool surface is still evolving
-The epilot MCP server is under active development and its tools are subject to change. The [changelog](#changelog) at the end of this page lists every change to the tool surface. Share feedback and requests in the [agent-toolkit-for-epilot repository](https://github.com/epilot-dev/agent-toolkit-for-epilot/issues).
+:::info Beta
+The epilot MCP server is available in **Beta** on all epilot plans. Your use is subject to your epilot agreement and to epilot's terms for beta features: the server is provided without a service level commitment, it is under active development, and its tools are subject to change. The [changelog](#changelog) at the end of this page lists every change to the tool surface. Share feedback and requests in the [agent-toolkit-for-epilot repository](https://github.com/epilot-dev/agent-toolkit-for-epilot/issues).
 :::
 
 ## Before you start
 
 - The **MCP Server** feature has to be enabled for your epilot organization by an administrator under **Settings → Features** in epilot 360. Until then, every connection is refused with `mcp_server_disabled`.
-- Follow the [setup guide](/docs/agent-toolkit/setup) for your AI client. Read the [data protection recommendations](/docs/agent-toolkit/setup#permissions-and-data-protection) first if you work with a production organization.
+- Follow the [setup guide](/docs/agent-toolkit/setup) for your AI client. Read the [data protection recommendations](/docs/agent-toolkit/setup#permissions-and-data-protection) and the [security best practices](/docs/agent-toolkit/setup#security-best-practices) first if you work with a production organization.
+- Only connect to the official endpoint `https://mcp.epilot.io/mcp`. epilot does not operate the MCP server under any other host, and a one-click installer or marketplace listing that points elsewhere is not from epilot.
 
 ## How it works
 
@@ -300,7 +301,7 @@ OAuth connections create a dedicated integration token named after the client an
 
 ## Protocol
 
-The server speaks the current MCP specification over stateless streamable HTTP and remains compatible with 2025-era streamable HTTP clients. Every request creates a fresh server; no session IDs are issued. Only tools are exposed. There are no resources or prompts. The server is listed in the official MCP Registry as `io.epilot/mcp`.
+The server implements the current MCP specification over stateless [streamable HTTP](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#streamable-http) with the standard [MCP authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) flow (OAuth 2.1 with authorization server discovery and dynamic client registration), and remains compatible with 2025-era streamable HTTP clients. Every request creates a fresh server; no session IDs are issued. Only tools are exposed. There are no resources or prompts. The server is listed in the official MCP Registry as `io.epilot/mcp`.
 
 ## Limits
 

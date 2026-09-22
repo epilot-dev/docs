@@ -243,6 +243,7 @@ This documentation covers all aspects of the epilot platform for developers, adm
             {
               label: 'Agent Toolkit & MCP',
               to: '/agent-toolkit',
+              className: 'navbar__item--beta',
             },
 
             {

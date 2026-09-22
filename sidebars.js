@@ -19,6 +19,7 @@ module.exports = {
     {
       type: 'category',
       label: 'Agent Toolkit & MCP',
+      className: 'sidebar-item--beta',
       collapsible: true,
       collapsed: true,
       items: [

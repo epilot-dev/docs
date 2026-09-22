@@ -18,9 +18,15 @@ The toolkit is packaged as a **plugin** following the open [Agent Plugins specif
 
 The first time you install the plugin — or call an epilot MCP tool — you are redirected to the epilot login: sign in, pick the organization the assistant should work with, and choose the access level. **Read-only is preselected**; read & write is an explicit choice.
 
+:::info Beta
+The Agent Toolkit and the epilot MCP server are available in **Beta** on all epilot plans. Your use is subject to your epilot agreement and to epilot's terms for beta features: beta features are provided without a service level commitment, and their scope and behavior can change or be withdrawn. Changes to the tool surface are listed in the [MCP server changelog](/docs/agent-toolkit/mcp-server#changelog). Share feedback and requests in the [agent-toolkit-for-epilot repository](https://github.com/epilot-dev/agent-toolkit-for-epilot/issues).
+:::
+
 ## Where can you use it?
 
 The full plugin — skills included — works in all major AI clients: **Claude** (Claude.ai, Claude Desktop, Claude Cowork, and Claude Code), **ChatGPT** and **Codex**, and any other client that implements the [Agent Plugins](https://agent-plugins.org/) standard. In managed workspaces, an administrator imports the plugin once and users install it from the plugin menu of their client. If you only need the live tools, or your client offers connectors but no plugins (for example Cursor or a custom agent), connect the **epilot MCP server** directly as a connector instead — that gives the assistant the live tools without the packaged know-how.
+
+The MCP server speaks standard remote MCP over HTTP with OAuth, so it works in every current MCP client. The [setup guide](/docs/agent-toolkit/setup#set-up-your-client) has step-by-step instructions for Claude, ChatGPT, Codex, Cursor, VS Code, Windsurf, Gemini CLI, and custom agents, plus a one-line quick setup for terminal users.
 
 :::info Plugins and connectors may be disabled in your company
 Many companies block MCP connectors and plugins by default for security reasons. If you don't see a way to add the epilot plugin or connector in your AI client, ask your workspace or IT administrator to enable it — admins can typically allow a specific connector (like `https://mcp.epilot.io/mcp`) for all users, or grant it to selected roles. On the epilot side, an administrator has to enable the **MCP Server** feature for your organization under **Settings → Features** in epilot 360. The [setup guide](/docs/agent-toolkit/setup) has the admin steps per client.
@@ -68,7 +74,7 @@ To take the choice away entirely: in enterprise editions of ChatGPT and other ma
 
 ## How your data is handled
 
-The epilot MCP server never sees your prompts and sends nothing to a third-party AI provider. Your AI client sends it **individual tool calls**, the server runs each one against the epilot APIs as the signed-in user, and returns the result to your client. What your AI provider learns about your organization, it learns from those results inside your client. Three protections apply on the server before a result leaves epilot: your **epilot permissions** on every call, **PII anonymization** of entity data, and **credential redaction** for webhook, journey, and portal configuration. Every connection shows up as an integration token in epilot 360, and changes made by the assistant appear in the audit log under that token. Details are in the [MCP server reference](/docs/agent-toolkit/mcp-server#how-it-works) and the [setup guide](/docs/agent-toolkit/setup#permissions-and-data-protection).
+The epilot MCP server never sees your prompts and sends nothing to a third-party AI provider. Your AI client sends it **individual tool calls**, the server runs each one against the epilot APIs as the signed-in user, and returns the result to your client. What your AI provider learns about your organization, it learns from those results inside your client. Three protections apply on the server before a result leaves epilot: your **epilot permissions** on every call, **PII anonymization** of entity data, and **credential redaction** for webhook, journey, and portal configuration. Every connection shows up as an integration token in epilot 360, and changes made by the assistant appear in the audit log under that token. Details are in the [MCP server reference](/docs/agent-toolkit/mcp-server#how-it-works) and the [setup guide](/docs/agent-toolkit/setup#permissions-and-data-protection). Before you connect an assistant to a live organization, read the [security best practices](/docs/agent-toolkit/setup#security-best-practices).
 
 ## The two parts of the toolkit
 

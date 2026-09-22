@@ -29,6 +29,28 @@
   text-transform: uppercase;
 }
 
+.betaPill {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--ifm-color-primary);
+  border-radius: 999px;
+  color: var(--ifm-color-primary);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.betaNotice {
+  max-width: 720px;
+  margin: 1rem 0 0;
+  color: #666c7a;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
 .heroCopy h1 {
   max-width: 760px;
   margin-bottom: 1.4rem;
@@ -544,7 +566,8 @@ html[data-theme='dark'] .heroCopy h1 {
 }
 
 html[data-theme='dark'] .heroCopy > p,
-html[data-theme='dark'] .compatibility {
+html[data-theme='dark'] .compatibility,
+html[data-theme='dark'] .betaNotice {
   color: rgba(255, 255, 255, 0.7);
 }
 

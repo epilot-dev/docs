@@ -19,6 +19,7 @@ const commands = {
   codex: `codex plugin marketplace add epilot-dev/agent-toolkit-for-epilot\n# Then open /plugins and install epilot-core`,
   claudeCode: `/plugin marketplace add epilot-dev/agent-toolkit-for-epilot\n/plugin install epilot-core@agent-toolkit-for-epilot\n/reload-plugins`,
   claudeMcpOnly: `claude mcp add --transport http epilot ${mcpUrl}`,
+  addMcp: `npx -y add-mcp ${mcpUrl}`,
 };
 
 const comparison = [
@@ -300,16 +301,25 @@ function InstallPanel(): JSX.Element {
         )}
         {target === 'other' && (
           <>
-            <h3>Cursor, VS Code, and custom agents</h3>
+            <h3>Cursor, VS Code, Windsurf, Gemini, and custom agents</h3>
             <p>
               Add a remote HTTP MCP server. Clients with OAuth 2.1 support authenticate in the browser automatically;
-              others can send an epilot API token as the Bearer token.
+              others can send an epilot API token as the Bearer token. Terminal users can add it to every installed
+              client at once:
             </p>
+            <pre className={styles.command}>
+              <code>{commands.addMcp}</code>
+            </pre>
+            <p className={styles.commandNote}>Server URL for manual configuration:</p>
             <pre className={styles.command}>
               <code>{mcpUrl}</code>
             </pre>
             <p className={styles.commandNote}>
               Enforced read-only, regardless of consent: <code>{mcpUrl}?access=read</code>
+            </p>
+            <p className={styles.commandNote}>
+              Per-client steps for Cursor, VS Code, Windsurf, and Gemini are in the{' '}
+              <Link to="/docs/agent-toolkit/setup#set-up-your-client">setup guide</Link>.
             </p>
             <details className={styles.setupDetails}>
               <summary>Agent Plugins clients</summary>
@@ -335,7 +345,9 @@ export default function AgentToolkitPage(): JSX.Element {
         <header className={styles.hero}>
           <div className={`container ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>
-              <span className={styles.kicker}>Agent Toolkit for epilot</span>
+              <span className={styles.kicker}>
+                Agent Toolkit for epilot <span className={styles.betaPill}>Beta</span>
+              </span>
               <h1>Give your AI assistant the context to work with epilot</h1>
               <p>
                 Focused workflows and live platform tools for configuring epilot, creating customer journeys, and
@@ -361,6 +373,11 @@ export default function AgentToolkitPage(): JSX.Element {
                 <span aria-hidden="true">•</span>
                 <span>Open source ready</span>
               </div>
+              <p className={styles.betaNotice}>
+                The Agent Toolkit and the epilot MCP server are available in Beta on all plans. Your use is subject to
+                your epilot agreement and epilot&apos;s terms for beta features; tools can change, see the{' '}
+                <Link to="/docs/agent-toolkit/mcp-server#changelog">changelog</Link>.
+              </p>
             </div>
 
             <div className={styles.architectureCard} aria-label="Toolkit architecture">
@@ -518,7 +535,7 @@ export default function AgentToolkitPage(): JSX.Element {
               <span className={styles.kicker}>MCP capabilities</span>
               <h2>What the epilot MCP server can do</h2>
               <p>
-                18 tools, built for the person configuring epilot. Curated tools only where a workflow spans several
+                17 tools, built for the person configuring epilot. Curated tools only where a workflow spans several
                 APIs or needs validation first; one generic route for every other published operation.
               </p>
             </div>
@@ -564,9 +581,13 @@ export default function AgentToolkitPage(): JSX.Element {
                   <li>Each user connects their own epilot account</li>
                   <li>Read-only is preselected; write access is an explicit choice</li>
                   <li>Available actions follow your epilot permissions</li>
+                  <li>
+                    Only connect to the official endpoint <code>mcp.epilot.io</code>
+                  </li>
                 </ul>
                 <p>
-                  <Link to="/docs/agent-toolkit/setup">Full setup guide</Link>
+                  <Link to="/docs/agent-toolkit/setup">Full setup guide</Link> ·{' '}
+                  <Link to="/docs/agent-toolkit/setup#security-best-practices">Security best practices</Link>
                 </p>
               </div>
               <InstallPanel />

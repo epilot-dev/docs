@@ -292,3 +292,35 @@ html[data-theme='dark'] .button.button--primary {
   opacity: 0.6;
   margin-top: 0.25rem;
 }
+/* Beta tag on the Agent Toolkit & MCP entries in the navbar and the docs sidebar */
+.navbar__item--beta::after,
+.sidebar-item--beta > .menu__list-item-collapsible > .menu__link::before {
+  content: 'Beta';
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--ifm-color-primary);
+  border-radius: 999px;
+  color: var(--ifm-color-primary);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+/* In the sidebar the caret already uses ::after, so the tag goes into ::before and is
+   ordered between the label text and the caret. */
+.sidebar-item--beta > .menu__list-item-collapsible > .menu__link {
+  justify-content: flex-start;
+}
+
+.sidebar-item--beta > .menu__list-item-collapsible > .menu__link::before {
+  order: 1;
+}
+
+.sidebar-item--beta > .menu__list-item-collapsible > .menu__link--sublist::after {
+  order: 2;
+  margin-left: auto;
+}
