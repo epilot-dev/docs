@@ -45,8 +45,19 @@
     "_tags": [
       "family:label"
     ],
-    "_purpose": {},
-    "_thumbnail": {},
+    "_purpose": [
+      "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+    ],
+    "_thumbnail": {
+      "$relation": [
+        {
+          "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+          "_tags": [
+            "example"
+          ]
+        }
+      ]
+    },
     "filename": "string",
     "mime_type": "string",
     "type": "document",
@@ -57,7 +68,16 @@
     "public_url": "string",
     "shared_with_end_customer": true,
     "category": "address-suggestions",
-    "_files": {},
+    "_files": {
+      "$relation": [
+        {
+          "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+          "_tags": [
+            "example"
+          ]
+        }
+      ]
+    },
     "_created_at": "1970-01-01T00:00:00.000Z",
     "_updated_at": "1970-01-01T00:00:00.000Z"
   }
