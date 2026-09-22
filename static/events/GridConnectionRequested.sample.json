@@ -1,0 +1,326 @@
+{
+  "_org_id": "123",
+  "_event_time": "1970-01-01T00:00:00.000Z",
+  "_event_id": "string",
+  "_event_name": "GridConnectionRequested",
+  "_event_version": "1.0",
+  "_event_source": "automation",
+  "_ack_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_trigger_source_type": "automation",
+  "_trigger_source": "execution-id/action-id",
+  "_automation_chain": [
+    "string"
+  ],
+  "_has_pending_changesets": true,
+  "_changeset_edit_modes": [
+    "string"
+  ],
+  "_changeset_attributes": [
+    "string"
+  ],
+  "_changeset_edit_modes_by_attribute": {},
+  "event_attachments": [
+    {
+      "entity_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "filename": "string",
+      "mime_type": "string",
+      "size_bytes": 0,
+      "s3ref": {
+        "bucket": "string",
+        "key": "string"
+      },
+      "version_index": 0,
+      "readable_size": "string",
+      "_tags": [
+        "string"
+      ],
+      "relation_tags": [
+        "string"
+      ],
+      "category": "string",
+      "file_date": "string",
+      "_created_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "opportunity": {
+    "_schema": "opportunity",
+    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "_purpose": {},
+    "opportunity_title": "string",
+    "opportunity_number": "string",
+    "status": "open",
+    "due_date": "1970-01-01T00:00:00.000Z",
+    "description": "string",
+    "assignee": {},
+    "source": {},
+    "customer": {},
+    "billing_address": {},
+    "delivery_address": {},
+    "address": {},
+    "payment": {},
+    "dates": [
+      {
+        "_tags": [
+          "string"
+        ],
+        "value": "1970-01-01T00:00:00.000Z"
+      }
+    ],
+    "items": {},
+    "products": {},
+    "workflows": {},
+    "consents": {},
+    "_files": {},
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
+  },
+  "submission": {
+    "_schema": "submission",
+    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "_purpose": {},
+    "source": {},
+    "mapped_entities": {},
+    "workflows": {},
+    "_files": {},
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
+  },
+  "contacts": [
+    {
+      "_schema": "contact",
+      "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "_org": "123",
+      "_title": "John Doe",
+      "_tags": [
+        "family:label"
+      ],
+      "_purpose": {},
+      "salutation": "null",
+      "title": "null",
+      "first_name": "string",
+      "last_name": "string",
+      "customer_number": "string",
+      "birthdate": "2025-01-01",
+      "email": [
+        {
+          "_tags": [
+            "string"
+          ],
+          "email": "user@example.com"
+        }
+      ],
+      "phone": [
+        {
+          "_tags": [
+            "string"
+          ],
+          "phone": "+491234567890"
+        }
+      ],
+      "communication_preference": "postal",
+      "address": [
+        {
+          "_tags": [
+            "billing"
+          ],
+          "street": "Hauptstraße",
+          "street_number": "123",
+          "postal_code": "50668",
+          "city": "Cologne",
+          "country": "DE",
+          "additional_info": "string",
+          "company_name": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "salutation": "string",
+          "title": "string",
+          "coordinates": "50.948484, 6.943147",
+          "plot_of_land": "string",
+          "plot_area": "string",
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01"
+        }
+      ],
+      "payment": [
+        {
+          "type": "payment_sepa",
+          "data": {
+            "bank_name": "Deutsche Bank",
+            "iban": "DE89370400440532013000",
+            "bic_number": "DEUTDEFF",
+            "fullname": "John Doe"
+          }
+        }
+      ],
+      "account": {},
+      "marketing_permission": true,
+      "contact_owner": {},
+      "consent_email_marketing": {},
+      "consent_sms_marketing": {},
+      "consent_phone_call": {},
+      "consent_print_marketing": {},
+      "portal_users": {},
+      "opportunities": {},
+      "orders": {},
+      "contracts": {},
+      "external_id": "string",
+      "workflows": {},
+      "_files": {},
+      "_created_at": "1970-01-01T00:00:00.000Z",
+      "_updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "orders": [
+    {
+      "_schema": "order",
+      "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "_org": "123",
+      "_title": "John Doe",
+      "_tags": [
+        "family:label"
+      ],
+      "_purpose": {},
+      "order_number": "string",
+      "status": "draft",
+      "expires_at": "2025-01-01",
+      "source": {},
+      "payment_method": {},
+      "customer": {},
+      "billing_contact": {},
+      "billing_first_name": "string",
+      "billing_last_name": "string",
+      "billing_email": "string",
+      "billing_phone": "string",
+      "billing_company_name": "string",
+      "billing_vat": "string",
+      "billing_address": [
+        {
+          "_tags": [
+            "billing"
+          ],
+          "street": "Hauptstraße",
+          "street_number": "123",
+          "postal_code": "50668",
+          "city": "Cologne",
+          "country": "DE",
+          "additional_info": "string",
+          "company_name": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "salutation": "string",
+          "title": "string",
+          "coordinates": "50.948484, 6.943147",
+          "plot_of_land": "string",
+          "plot_area": "string",
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01"
+        }
+      ],
+      "delivery_address": [
+        {
+          "_tags": [
+            "billing"
+          ],
+          "street": "Hauptstraße",
+          "street_number": "123",
+          "postal_code": "50668",
+          "city": "Cologne",
+          "country": "DE",
+          "additional_info": "string",
+          "company_name": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "salutation": "string",
+          "title": "string",
+          "coordinates": "50.948484, 6.943147",
+          "plot_of_land": "string",
+          "plot_area": "string",
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01"
+        }
+      ],
+      "additional_addresses": [
+        {
+          "_tags": [
+            "billing"
+          ],
+          "street": "Hauptstraße",
+          "street_number": "123",
+          "postal_code": "50668",
+          "city": "Cologne",
+          "country": "DE",
+          "additional_info": "string",
+          "company_name": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "salutation": "string",
+          "title": "string",
+          "coordinates": "50.948484, 6.943147",
+          "plot_of_land": "string",
+          "plot_area": "string",
+          "start_date": "1970-01-01",
+          "end_date": "1970-01-01"
+        }
+      ],
+      "dates": [
+        {
+          "_tags": [
+            "string"
+          ],
+          "value": "1970-01-01T00:00:00.000Z"
+        }
+      ],
+      "memo": "string",
+      "footer_notes": "string",
+      "currency": "string",
+      "amount_total": 0,
+      "amount_subtotal": 0,
+      "amount_tax": 0,
+      "products": {},
+      "prices": {},
+      "workflows": {},
+      "consents": {},
+      "line_items": {},
+      "total_details": {},
+      "_files": {},
+      "_created_at": "1970-01-01T00:00:00.000Z",
+      "_updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "opportunity_files": [
+    {
+      "_schema": "file",
+      "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "_org": "123",
+      "_title": "John Doe",
+      "_tags": [
+        "family:label"
+      ],
+      "_purpose": {},
+      "_thumbnail": {},
+      "filename": "string",
+      "mime_type": "string",
+      "type": "document",
+      "readable_size": "string",
+      "language": "de",
+      "alt_text": "string",
+      "access_control": "private",
+      "public_url": "string",
+      "shared_with_end_customer": true,
+      "category": "address-suggestions",
+      "_files": {},
+      "_created_at": "1970-01-01T00:00:00.000Z",
+      "_updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ]
+}
