@@ -178,12 +178,36 @@ Use `items_jsonata` for full control over the Pricing API input. The expression 
 
 This mode is useful when:
 - Line items need complex transformations that don't fit the template pattern
-- Product/price IDs are already resolved in the payload (no entity lookup needed)
+- You need Pricing API fields that template mode doesn't expose (e.g. `price_mappings`, `item_components`, `selected_price_component_ids`)
 - You need conditional logic per item (e.g., different handling based on item type)
 
-:::note
-In JSONata mode, product/price entity resolution by unique keys is **not** performed automatically. If you need entity lookup, use template mode instead.
-:::
+#### Referencing Products and Prices by Unique Keys
+
+Instead of epilot entity IDs, the expression can output `product_ref` / `price_ref` objects. They are resolved by unique keys after the expression is evaluated and replaced with `product_id` / `price_id` before the Pricing API is called:
+
+```json
+{ "unique_ids": { "<attribute>": "<value>" }, "entity_schema": "product" }
+```
+
+| Property | Required | Description |
+|----------|----------|-------------|
+| `unique_ids` | Yes | Map of attribute → **literal value** computed by the expression (not a `field` pointer as in template mode). All entries must match. |
+| `entity_schema` | No | Defaults to `product` for `product_ref` and `price` for `price_ref`. |
+
+Refs are resolved in these places:
+- on each line item (`product_ref`, `price_ref`)
+- on each entry of `item_components` (`product_ref`, `price_ref`)
+- on each entry of `price_mappings` (`price_ref`)
+
+Items that already carry `product_id` / `price_id` pass through unchanged, so both styles can be mixed.
+
+Resolution works as in template mode:
+- Identical refs are looked up once.
+- Unresolved refs are retried and deferred, e.g. when the product was created in the same event and isn't indexed yet.
+- A price that exists only as an empty placeholder counts as unresolved.
+- If a ref is still unresolved at the end, `on_error` applies.
+
+A malformed ref (e.g. missing `unique_ids`) fails immediately. See [Composite Tariff via Refs](#composite-tariff-via-refs) for a full example.
 
 ## Value Extraction Pattern
 
@@ -446,6 +470,42 @@ Use `items_jsonata` when you need full control over the Pricing API input.
 ```
 
 The JSONata expression maps each position to the Pricing API format, handling both product-referenced and custom items with full flexibility.
+
+### Composite Tariff via Refs
+
+Reference a composite energy price by the ERP's tariff code, without knowing epilot entity IDs. The Arbeitspreis component's quantity (consumption) is set via `price_mappings`. Because the line item stays linked to the product and price, attributes such as the initial term (Erstlaufzeit) and price guarantee (Preisbindung) are kept.
+
+**Configuration:**
+
+```json
+{
+  "entities": [
+    {
+      "entity_schema": "contract",
+      "unique_ids": ["contract_number"],
+      "fields": [
+        { "attribute": "contract_number", "field": "contractId" }
+      ],
+      "pricing": {
+        "items_jsonata": "positions.{ 'product_ref': { 'unique_ids': { 'external_id': tariffCode } }, 'price_ref': { 'unique_ids': { 'external_id': tariffCode & '_PRICE' } }, 'quantity': 1, 'price_mappings': [{ 'price_ref': { 'unique_ids': { 'external_id': tariffCode & '_AP' } }, 'value': $number(consumptionKwh) }] }"
+      }
+    }
+  ]
+}
+```
+
+**Input:**
+
+```json
+{
+  "contractId": "V-2026-001",
+  "positions": [
+    { "tariffCode": "STROM_BASIS", "consumptionKwh": "2500" }
+  ]
+}
+```
+
+**Result:** `STROM_BASIS` (product), `STROM_BASIS_PRICE` (composite price) and `STROM_BASIS_AP` (Arbeitspreis component) are looked up by `external_id`. The Pricing API receives their entity IDs and prices the Arbeitspreis for 2,500 kWh.
 
 ## Validation
 
