@@ -22,6 +22,14 @@ The first time you install the plugin — or call an epilot MCP tool — you are
 The Agent Toolkit and the epilot MCP server are available in **Beta** on all epilot plans. Your use is subject to your epilot agreement and to epilot's terms for beta features: beta features are provided without a service level commitment, and their scope and behavior can change or be withdrawn. Changes to the tool surface are listed in the [MCP server changelog](/docs/agent-toolkit/mcp-server#changelog). Share feedback and requests in the [agent-toolkit-for-epilot repository](https://github.com/epilot-dev/agent-toolkit-for-epilot/issues).
 :::
 
+This demo shows the epilot MCP Server being used in ChatGPT and Claude (unmute for audio):
+
+<figure className="text-center">
+  <video width="100%" height="auto" muted playsInline autoPlay loop controls>
+    <source src="/videos/mcp_demo.mp4" type="video/mp4" />
+  </video>
+</figure>
+
 ## Where can you use it?
 
 The full plugin — skills included — works in all major AI clients: **Claude** (Claude.ai, Claude Desktop, Claude Cowork, and Claude Code), **ChatGPT** and **Codex**, and any other client that implements the [Agent Plugins](https://agent-plugins.org/) standard. In managed workspaces, an administrator imports the plugin once and users install it from the plugin menu of their client. If you only need the live tools, or your client offers connectors but no plugins (for example Cursor or a custom agent), connect the **epilot MCP server** directly as a connector instead — that gives the assistant the live tools without the packaged know-how.
