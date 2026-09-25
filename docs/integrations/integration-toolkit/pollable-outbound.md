@@ -278,7 +278,9 @@ A poll mapping can carry an optional `jsonata_expression` that reshapes each eve
 - **Output:** must be a **JSON object**. An array, a scalar, `null`, or an undefined result is a mapping failure (`invalid_output`).
 - **Empty means raw.** An absent, empty, or whitespace-only `jsonata_expression` applies no transform, and the raw standardized event is delivered — the behavior of every poll use case that has no expression.
 
-The expression is validated on save: JSONata syntax, a maximum of 10,000 characters, and no bindings outside `$env`, `$mapValue` and `$mapKey`.
+The expression is validated on save: JSONata syntax, a maximum of 10,000 characters, and no bindings outside `$env`, `$mapValue` and `$mapKey`. The same checks run again at enqueue time, so an expression stored before these checks existed that does not pass them produces [failed items](#mapping-failures) rather than being silently skipped.
+
+Each evaluation is guarded by a 500&nbsp;ms time limit and an evaluation depth limit. Exceeding either is a mapping failure with the code `timeout`.
 
 ### Mapping version
 
@@ -290,14 +292,20 @@ Because the transform runs at enqueue time, **changing the expression affects ne
 
 A failure to evaluate — a runtime error, a timeout, or an output that is not an object — does not drop the event. The item is still enqueued at its normal position in the stream, marked as failed, with the raw payload kept alongside it. At enqueue time epilot emits the `MAPPING_EXPRESSION_FAILED` monitoring error, with the use case, event id, event name, `mapping_version` and the error message in its context.
 
+The error is recorded as `mapping_error` in the form `<code>: <message>` — for example `evaluation_error: $mapValue: first argument must be an object` — using the same codes as the [preview endpoint](#preview-a-transform), truncated to 1,024 characters.
+
 A failed item is **never delivered to the consumer**. When it reaches the head of the stream it is handled immediately — without waiting for `max_delivery_attempts`, because evaluating the same expression against the same event would fail the same way every time. What happens next follows the use case's `poison_policy`:
 
 | Policy | What happens to a failed item at the head |
 |--------|-------------------------------------------|
-| `dead_letter` (default) | It moves straight to the [dead-letter queue](#dead-letter-queue-and-operator-actions) with `reason: "mapping_failed"`, and the stream moves on. `MSG_DEAD_LETTERED` is emitted with `reason`, `mapping_error` and `mapping_version` in its detail |
-| `block` | The stream halts on it. `MSG_HEAD_BLOCKED` is emitted with `reason: "mapping_failed"` in its detail. Release it with [`unblock`](#unblock--skip-a-blocked-head), as for any other blocked head |
+| `dead_letter` (default) | It moves straight to the [dead-letter queue](#dead-letter-queue-and-operator-actions) with `reason: "mapping_failed"` and `delivery_attempts: 0` (it was never leased), and the stream moves on. `MSG_DEAD_LETTERED` is emitted with `reason`, `mapping_error` and `mapping_version` in its detail |
+| `block` | The stream halts on it. `MSG_HEAD_BLOCKED` is emitted with `reason: "mapping_failed"` in its detail. Release it with [`unblock`](#unblock--skip-a-blocked-head), which dead-letters it with `reason: "mapping_failed"`. A consumer acknowledgement cannot release it, because it is never delivered |
 
-To recover, fix the expression (or the missing environment variable), then [redrive](#redrive--re-enqueue-dead-lettered-messages) the affected DLQ entries. A redrive always re-applies the **current** mapping to entries that failed mapping.
+To recover:
+
+1. Fix the expression, or create the missing environment variable. Check the fix with the [preview endpoint](#preview-a-transform) against the failed `event_id`.
+2. Under `block`, [unblock](#unblock--skip-a-blocked-head) the stream. The failed head moves to the DLQ.
+3. [Redrive](#redrive--re-enqueue-dead-lettered-messages) the affected DLQ entries. A redrive always re-applies the **current** mapping to entries that failed mapping, so `reapply_mapping` is not needed for them.
 
 :::tip A missing map is a mapping failure
 `$mapValue` and `$mapKey` fail when their first argument is not an object — for example when `$env.reading_reason` has not been created yet in an organization. Create the environment variables before enabling the use case, and use the [preview endpoint](#preview-a-transform) with a real `event_id` to confirm.
@@ -309,7 +317,7 @@ To recover, fix the expression (or the missing environment variable), then [redr
 POST /v1/integrations/{integrationId}/outbound/mapping-simulation
 ```
 
-Evaluates an expression exactly as enqueue would, without enqueuing anything. Requires the `integration:view` grant on the integration.
+Evaluates an expression exactly as enqueue would, without enqueuing anything. Requires the `integration:view` grant, scoped to the integration. An unknown integration, or one belonging to another organization, returns `404`.
 
 ```json
 {
@@ -321,10 +329,10 @@ Evaluates an expression exactly as enqueue would, without enqueuing anything. Re
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `jsonata_expression` | string | Yes | The expression to evaluate |
+| `jsonata_expression` | string | Yes | The expression to evaluate. A blank expression returns `400` |
 | `payload` | object | One of `payload` / `event_id` | An event to evaluate against, supplied inline |
 | `event_id` | string | One of `payload` / `event_id` | A historical event. epilot loads it from the event catalog and hydrates it exactly as enqueue does, so the preview matches what the queue would store |
-| `event_catalog_event` | string | No | The event-catalog event the `event_id` belongs to |
+| `event_catalog_event` | string | With `event_id` | The event-catalog event type used to load and hydrate the historical event, for example `MeterReadingAdded`. Required when `event_id` is given |
 
 Supply exactly one of `payload` or `event_id`. `$env`, `$mapValue` and `$mapKey` resolve on the server from the organization's non-secret environment variables and key/value maps, the same way as at enqueue.
 
@@ -343,18 +351,23 @@ Supply exactly one of `payload` or `event_id`. `$env`, `$mapValue` and `$mapKey`
 | `output` | The mapped output — present when `valid` is `true` |
 | `error` | Present when `valid` is `false`: a `code`, a `message`, and for syntax errors the `position` in the expression |
 | `mapping_version` | The version this expression would stamp on messages |
-| `input` | The hydrated event the expression ran against — returned when the request used `event_id` |
+| `input` | The hydrated event the expression ran against — returned when the request used `event_id`, on failures as well as successes |
 
 | Error `code` | Meaning |
 |--------------|---------|
 | `syntax_error` | The expression is not valid JSONata |
 | `unknown_binding` | The expression uses a `$`-binding other than `$env`, `$mapValue` or `$mapKey` |
 | `evaluation_error` | The expression failed while running (for example, a missing key/value map) |
-| `timeout` | The evaluation took too long |
+| `timeout` | The evaluation exceeded the 500&nbsp;ms time limit or the evaluation depth limit |
 | `invalid_output` | The result is not a JSON object |
 | `expression_too_long` | The expression exceeds 10,000 characters |
 
-A mapping error is a normal `200` response with `valid: false`. A `4xx` status means the request itself was malformed — for example, both or neither of `payload` and `event_id`.
+A mapping error is a normal `200` response with `valid: false`. A `4xx` status means the request itself could not be served:
+
+| Status | When |
+|--------|------|
+| `400` | The expression is blank, both or neither of `payload` and `event_id` are given, or `event_id` is given without `event_catalog_event` |
+| `404` | The integration is unknown or belongs to another organization, or the event catalog does not know the requested event |
 
 ### Webhook and poll mode are not interchangeable
 
@@ -472,7 +485,7 @@ Returns dead-lettered messages oldest first, paginated via an opaque `next_token
       "dead_lettered_at": "2026-06-09T02:41:00Z",
       "delivery_attempts": 0,
       "reason": "mapping_failed",
-      "mapping_error": "$mapValue: first argument must be an object",
+      "mapping_error": "evaluation_error: $mapValue: first argument must be an object",
       "mapping_version": "3f9a1c0b7d2e4a65",
       "expires_at": "2026-07-09T02:41:00Z"
     }
@@ -483,8 +496,8 @@ Returns dead-lettered messages oldest first, paginated via an opaque `next_token
 
 | Field | Description |
 |-------|-------------|
-| `reason` | Why the message was dead-lettered: the policy (`max_delivery_attempts` exhausted), the operator's `unblock` reason, or `mapping_failed` for a [payload mapping failure](#mapping-failures) |
-| `mapping_error` | The mapping error message (truncated to 1,024 characters) — present when the payload mapping failed |
+| `reason` | Why the message was dead-lettered: the policy (`max_delivery_attempts` exhausted), the operator's `unblock` reason, or `mapping_failed` for a [payload mapping failure](#mapping-failures) — whether it was dead-lettered by policy or by `unblock` |
+| `mapping_error` | The mapping error as `<code>: <message>` (truncated to 1,024 characters) — present when the payload mapping failed |
 | `mapping_version` | Version of the expression that produced the stored payload, or that failed on it |
 
 ### Redrive — re-enqueue dead-lettered messages
@@ -511,7 +524,7 @@ The response reports a per-id outcome:
 {
   "results": [
     { "id": "msg_5d2e…", "status": "redriven" },
-    { "id": "msg_7a41…", "status": "mapping_failed", "mapping_error": "$mapValue: first argument must be an object" }
+    { "id": "msg_7a41…", "status": "mapping_failed", "mapping_error": "evaluation_error: $mapValue: first argument must be an object" }
   ]
 }
 ```
@@ -548,6 +561,8 @@ POST /v1/integrations/{integrationId}/outbound/messages/unblock
 ```
 
 For streams halted under `poison_policy: "block"`. **Skip equals dead-letter:** unblocking dead-letters the blocked head (recording the optional `reason`, max 500 characters) and emits `MSG_DEAD_LETTERED` — the message then becomes redrivable from the DLQ like any other dead-lettered item. The next message becomes the head and the stream resumes.
+
+When the blocked head is a [failed-mapping item](#mapping-failures), it is dead-lettered with `reason: "mapping_failed"` instead, so a later redrive re-applies the current mapping to it.
 
 The response reports `unblocked: true` with the `dead_lettered_id` of the skipped head, or `unblocked: false` as a safe no-op when the stream is not currently blocked. A late acknowledgement from the consumer also unblocks the stream naturally — no operator action needed.
 
