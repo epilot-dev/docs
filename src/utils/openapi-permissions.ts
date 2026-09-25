@@ -13,6 +13,8 @@
  *         - action: workflow:execution:task:update_assigned
  *
  * An empty list means no specific grant is needed (any authenticated caller).
+ *
+ * A grant with `filter: true` is not required: list/search operations use it to filter results.
  */
 
 export const PERMISSIONS_EXTENSION = 'x-epilot-permissions';
@@ -24,6 +26,7 @@ const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'
 export interface Grant {
   action: string;
   resource?: string;
+  filter?: boolean;
 }
 
 export type PermissionRequirement = Grant | { anyOf: Grant[] };
@@ -64,17 +67,21 @@ export const formatPermissions = (permissions: unknown): string | null => {
 
   const label = `**[Required permissions](${PERMISSIONS_REFERENCE_URL}):**`;
 
-  if (permissions.length === 0) {
-    return `> ${label} none – any authenticated caller`;
-  }
+  const isFilter = (permission: unknown) => isGrant(permission) && permission.filter === true;
+  const requirements = permissions
+    .filter((permission) => !isFilter(permission))
+    .map(formatRequirement)
+    .filter(Boolean);
+  const filters = permissions.filter(isFilter).map(formatGrant);
 
-  const requirements = permissions.map(formatRequirement).filter(Boolean);
-
-  if (!requirements.length) {
+  if (permissions.length > 0 && !requirements.length && !filters.length) {
     return null;
   }
 
-  return `> ${label} ${requirements.join(' and ')}`;
+  const required = requirements.length ? requirements.join(' and ') : 'none – any authenticated caller';
+  const filtered = filters.length ? ` · results filtered by ${filters.join(' and ')}` : '';
+
+  return `> ${label} ${required}${filtered}`;
 };
 
 /**
