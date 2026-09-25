@@ -275,7 +275,7 @@ A poll mapping can carry an optional `jsonata_expression` that reshapes each eve
 - **When:** once, at **enqueue time**, right after the use case's `event_filter` has accepted the event. The mapped output is stored on the queue item, so every poll of that item returns the same payload — a lease lapse or a redelivery never re-evaluates the expression.
 - **Input:** the standardized event-catalog event, hydrated in full — the same root that `event_filter` sees, minus the internal `_downgrades` and `_automation_chain` keys. Field paths start at the top level of the [Core Event](/docs/integrations/core-events) (`_event_id`, `_event_time`, `meter_number`, …).
 - **Bindings:** `$env` (the organization's non-secret environment variables, including [Key/Value Maps](./key-value-maps.md)), `$mapValue` and `$mapKey`. No other bindings are available — in particular there is no `$now`, because the output must depend only on the event and the configuration. An expression that references any other `$`-binding is rejected on save.
-- **Output:** must be a **JSON object**. An array, a scalar, `null`, or an undefined result is a mapping failure (`invalid_output`).
+- **Output:** must be a **JSON object**. An array, a scalar, `null`, or an undefined result is a mapping failure (`invalid_output`). The mapped output is also capped at **5&nbsp;MiB**; a larger result is a mapping failure with the same code (`mapped output exceeds 5 MiB`).
 - **Empty means raw.** An absent, empty, or whitespace-only `jsonata_expression` applies no transform, and the raw standardized event is delivered — the behavior of every poll use case that has no expression.
 
 The expression is validated on save: JSONata syntax, a maximum of 10,000 characters, and no bindings outside `$env`, `$mapValue` and `$mapKey`. The same checks run again at enqueue time, so an expression stored before these checks existed that does not pass them produces [failed items](#mapping-failures) rather than being silently skipped.
@@ -359,7 +359,7 @@ Supply exactly one of `payload` or `event_id`. `$env`, `$mapValue` and `$mapKey`
 | `unknown_binding` | The expression uses a `$`-binding other than `$env`, `$mapValue` or `$mapKey` |
 | `evaluation_error` | The expression failed while running (for example, a missing key/value map) |
 | `timeout` | The evaluation exceeded the 500&nbsp;ms time limit or the evaluation depth limit |
-| `invalid_output` | The result is not a JSON object |
+| `invalid_output` | The result is not a JSON object, or the mapped output exceeds 5&nbsp;MiB |
 | `expression_too_long` | The expression exceeds 10,000 characters |
 
 A mapping error is a normal `200` response with `valid: false`. A `4xx` status means the request itself could not be served:
