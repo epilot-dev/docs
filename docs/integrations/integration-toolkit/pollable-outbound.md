@@ -243,7 +243,7 @@ Without a transform, poll messages carry the **raw standardized event-catalog pa
 
 The internal keys `_downgrades` and `_automation_chain` are removed from poll payloads. They are bookkeeping for epilot's own event pipeline and carry no business data.
 
-Webhook condition filtering (`filterConditions`) is not available for poll mode. To limit which events a poll use case enqueues, use the use case's `event_filter` — a JSONata predicate evaluated against the same standardized event before anything is enqueued. Events the filter rejects never reach the queue.
+Webhook condition filtering (`filterConditions`) is not available for poll mode. To limit which events a poll use case enqueues, use the use case's [`event_filter`](./configuration.md#event-filter) — a JSONata predicate evaluated against the same standardized event before anything is enqueued. Events the filter rejects never reach the queue.
 
 :::caution Switching delivery types changes the payload shape
 A mapping switched from `webhook` to `poll` (or vice versa) changes what the consumer receives, even with the same `jsonata_expression`. See [Webhook and poll mode are not interchangeable](#webhook-and-poll-mode-are-not-interchangeable).
