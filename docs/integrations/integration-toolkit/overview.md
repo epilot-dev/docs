@@ -120,6 +120,7 @@ See the [Configuration Guide](./configuration.md#secure-proxy-use-cases) for set
 
 - Inbound event processing (ERP to epilot entity mapping)
 - Outbound webhook payloads (epilot event to ERP format)
+- Pollable outbound payloads, transformed at enqueue time ([Payload Mapping](./pollable-outbound.md#payload-mapping))
 - The Map Data flow building block
 
 ### Monitoring and Alerting
