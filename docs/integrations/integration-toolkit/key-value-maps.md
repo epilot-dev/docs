@@ -51,13 +51,14 @@ Rules worth knowing:
 - Lookup keys are compared as strings — `$mapValue($env.salutation, 1)` and `$mapValue($env.salutation, "1")` are the same lookup.
 - `$mapKey` compares values with strict equality: a map value `"1"` does not match the number `1`. Coerce with `$string()` when the source field is numeric.
 - When no `default` is given and nothing matches, the result is `undefined` and the mapped attribute is simply omitted — the same behaviour as any other undefined JSONata result.
-- If the first argument is not an object (for example the environment variable does not exist yet), the expression fails with `$mapValue: first argument must be an object` / `$mapKey: …`. In inbound use cases this surfaces as a mapping error in monitoring; in webhooks the delivery fails.
+- If the first argument is not an object (for example the environment variable does not exist yet), the expression fails with `$mapValue: first argument must be an object` / `$mapKey: …`. In inbound use cases this surfaces as a mapping error in monitoring; in webhooks the delivery fails; in pollable outbound the queue item is marked as a [mapping failure](./pollable-outbound.md#mapping-failures).
 - Values are read through the environments cache, so a change to a map becomes visible to running integrations within about 60 seconds.
 
 ### Where `$env`, `$mapValue` and `$mapKey` are available
 
 - Inbound use cases — every `jsonataExpression` field mapping and entity-level `jsonata` expression, including the mapping simulation endpoint.
 - Outbound webhooks — the payload transformation and multipart form-field expressions.
+- Pollable outbound — the poll mapping's [payload transform](./pollable-outbound.md#payload-mapping), evaluated at enqueue time, including its preview endpoint. See the [multi-organization example](./pollable-outbound.md#example-one-shape-for-a-multi-organization-middleware) for maps that give many organizations one payload shape.
 - Outbound file proxy — request body templates and delivery expressions.
 
 ## Recommended shape: one map, both directions

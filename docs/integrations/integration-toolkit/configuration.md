@@ -192,7 +192,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 | `id` | string (UUID) | No | Unique identifier for the mapping; generated when omitted |
 | `name` | string | Yes | Display name for the mapping |
 | `enabled` | boolean | Yes | Whether this mapping is active |
-| `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook`, ignored for `poll`, and rejected for `file_proxy` delivery |
+| `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook` (evaluated by the webhook service). Optional for `poll`: evaluated at enqueue time against the standardized event-catalog event with `$env` / `$mapValue` / `$mapKey`, must return a JSON object, and an empty value delivers the raw event — see [Payload Mapping](./pollable-outbound.md#payload-mapping). Rejected for `file_proxy` delivery |
 | `delivery` | object | Yes | How the event is delivered — discriminated on `type`: `webhook`, `poll`, or `file_proxy` |
 
 #### Delivery Types
@@ -211,7 +211,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 | `webhook_id` | string | Yes | Reference to the webhook configuration in epilot Webhooks |
 | `webhook_name` | string | No | Cached webhook name for display purposes |
 
-**Poll delivery (pull):** for ERPs that cannot expose an inbound HTTP endpoint (firewalled, on-prem, batch systems). Items are placed on a pull-based queue that your system fetches and acknowledges. Poll items carry the **raw standardized event payload** — no JSONata transform is applied. See [Pollable Outbound](./pollable-outbound.md) for the full feature documentation (polling API, ordering guarantees, dead-letter handling, monitoring):
+**Poll delivery (pull):** for ERPs that cannot expose an inbound HTTP endpoint (firewalled, on-prem, batch systems). Items are placed on a pull-based queue that your system fetches and acknowledges. Poll items carry the **raw standardized event payload**, unless the mapping sets a `jsonata_expression` — then they carry its output, evaluated once at enqueue time (see [Payload Mapping](./pollable-outbound.md#payload-mapping)). See [Pollable Outbound](./pollable-outbound.md) for the full feature documentation (polling API, payload mapping, ordering guarantees, dead-letter handling, monitoring):
 
 ```jsonc
 // DeliveryConfig — poll variant
@@ -234,7 +234,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 - A `poll` delivery must not carry webhook fields (`webhook_id`, `webhook_name`), and a `webhook` delivery must not carry poll fields (`retention_days`, `poison_policy`, `max_delivery_attempts`).
 :::
 
-Everything beyond the configuration contract — the polling and acknowledgement API, lease and ordering semantics, retention and expiry behavior, the dead-letter queue and operator actions, and poll-mode monitoring — is documented on the dedicated [Pollable Outbound](./pollable-outbound.md) page.
+Everything beyond the configuration contract — the polling and acknowledgement API, payload mapping and its preview endpoint, lease and ordering semantics, retention and expiry behavior, the dead-letter queue and operator actions, and poll-mode monitoring — is documented on the dedicated [Pollable Outbound](./pollable-outbound.md) page.
 
 **File proxy delivery (push):** points to an upload-direction `file_proxy` use case in the same integration. The referenced recipe owns fan-out, payload mapping, authentication, and HTTP steps. `jsonata_expression` is rejected on this mapping type, and the use case's `event_catalog_event` must declare `event_attachments`. See [Outbound File Delivery](./outbound-file-delivery.md) for the complete setup and runtime behavior.
 

@@ -344,6 +344,8 @@ This use case is typically combined with [Keep Customer In Sync](#keep-customer-
 
 Outbound use cases push epilot events to your ERP via [Webhooks](/docs/integrations/webhooks). When a user performs a self-service action in a portal, journey, or epilot 360, an automation triggers a [Core Event](/docs/integrations/core-events) which is delivered to your middle layer webhook endpoint. Your middle layer then processes the event and calls the appropriate ERP API.
 
+The same events can also be delivered through [Pollable Outbound](./pollable-outbound.md) when the middle layer cannot receive webhooks. A poll mapping can reshape each event with an optional JSONata transform — see [Payload Mapping](./pollable-outbound.md#payload-mapping).
+
 ### Submit Meter Reading
 
 A portal user or service agent submits a new meter reading.
