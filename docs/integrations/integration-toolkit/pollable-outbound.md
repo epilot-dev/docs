@@ -41,7 +41,7 @@ sequenceDiagram
 
 Key properties:
 
-- **Lease + ack/delete (at-least-once).** A poll leases a batch under a visibility timeout, hiding it from concurrent polls. Items you do not acknowledge in time reappear on a later poll — a consumer crash never loses data, but you must handle occasional redelivery (deduplicate by `event_id` — see [A typical polling loop](#a-typical-polling-loop)).
+- **Lease + ack/delete (at-least-once).** A poll leases a batch under a visibility timeout, hiding it from concurrent polls. Items you do not acknowledge in time reappear on a later poll — a consumer crash never loses data, but you must handle occasional redelivery (deduplicate on `use_case_id` + `event_id` — see [A typical polling loop](#a-typical-polling-loop)).
 - **One polling loop per integration.** A single poll returns the merged feed across **all** of the integration's poll-mode use cases. Each message carries `use_case_id` and `event_name` for routing on your side.
 - **FIFO ordering, promised per entity.** Updates to the same entity are never delivered out of order — even across lease timeouts and retries. The one exception is an event that reaches the queue late, which goes to the tail and is flagged in monitoring (see [Late arrivals](#late-arrivals)). See [Ordering Guarantees](#ordering-guarantees).
 - **Raw or mapped payloads.** By default poll messages carry the [Core Event](/docs/integrations/core-events) payload **as-is**. An optional JSONata transform reshapes it at enqueue time, so a consumer can receive one consistent shape (see [Payload Mapping](#payload-mapping)).
@@ -207,7 +207,7 @@ loop (every N seconds / on schedule):
   batch = POST …/outbound/messages/poll { limit: 100 }
   if batch.messages is empty: sleep / wait for next run
   for message in batch.messages (in order):
-    persist message durably (dedupe on message.event_id)
+    persist message durably (dedupe on use_case_id + event_id)
   POST …/outbound/messages/ack { acks: all (id, lease_token) pairs }
   if batch.has_more: poll again immediately
 ```
@@ -216,7 +216,7 @@ Practical guidance:
 
 - **Finish well inside the visibility timeout.** If processing a batch can exceed `visibility_timeout_seconds`, lower your `limit` — a lapsed lease means the whole batch is re-delivered and your acks come back `stale_lease`.
 - **Ack in stream order**, ideally the whole batch at once. Partial acks are fine as long as they are contiguous from the head of the batch.
-- **Deduplicate by `event_id`.** At-least-once delivery means an event can arrive twice. A lease redelivery keeps the same `id` (with a fresh `lease_token`), but in a rare race the same event can also be delivered twice under **different** message ids — so `id` alone is not a sufficient deduplication key. If several of your poll use cases subscribe to the same event, each produces its own message for it; scope the `event_id` check per `use_case_id` in that case.
+- **Deduplicate on `use_case_id` + `event_id`.** At-least-once delivery means an event can arrive twice. A lease redelivery keeps the same `id` (with a fresh `lease_token`), but in a rare race the same event can also be delivered twice under **different** message ids — so `id` alone is not a sufficient deduplication key. The same `event_id` legitimately appears once per poll use case it matches, which is why the key includes `use_case_id`.
 - **Do not parallelize polls of one integration.** Only one batch can be in flight per stream; concurrent polls receive empty batches (this is by design, to preserve ordering).
 
 ## Ordering Guarantees
