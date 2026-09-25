@@ -12,9 +12,11 @@
  *         - action: workflow:execution:task:update
  *         - action: workflow:execution:task:update_assigned
  *
- * An empty list means no specific grant is needed (any authenticated caller).
+ * An empty list means no permission check is documented for the operation.
  *
  * A grant with `filter: true` is not required: list/search operations use it to filter results.
+ *
+ * `{ access: org | self | owner | internal | portal }` documents intentional access without a grant.
  */
 
 export const PERMISSIONS_EXTENSION = 'x-epilot-permissions';
@@ -29,7 +31,17 @@ export interface Grant {
   filter?: boolean;
 }
 
-export type PermissionRequirement = Grant | { anyOf: Grant[] };
+export type Access = 'org' | 'self' | 'owner' | 'internal' | 'portal';
+
+export type PermissionRequirement = Grant | { access: Access } | { anyOf: (Grant | { access: Access })[] };
+
+const ACCESS_LABELS: Record<Access, string> = {
+  org: 'any user in the organization',
+  self: 'own user',
+  owner: 'resource owner',
+  internal: 'internal epilot services only',
+  portal: 'portal users',
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type OpenAPIDocument = { paths?: Record<string, any> };
@@ -40,17 +52,36 @@ const isGrant = (value: unknown): value is Grant =>
 const formatGrant = (grant: Grant) =>
   grant.resource ? `\`${grant.action}\` on \`${grant.resource}\`` : `\`${grant.action}\``;
 
+const formatAccess = (requirement: unknown): string | null => {
+  const access = (requirement as { access?: unknown })?.access;
+
+  return typeof access === 'string' && access in ACCESS_LABELS ? ACCESS_LABELS[access as Access] : null;
+};
+
 const formatRequirement = (requirement: unknown): string | null => {
   if (isGrant(requirement)) {
     return formatGrant(requirement);
   }
 
+  const access = formatAccess(requirement);
+
+  if (access) {
+    return access;
+  }
+
   const anyOf = (requirement as { anyOf?: unknown })?.anyOf;
 
   if (Array.isArray(anyOf)) {
-    const grants = anyOf.filter(isGrant).map(formatGrant);
+    const alternatives = anyOf
+      .map((alternative) => (isGrant(alternative) ? formatGrant(alternative) : formatAccess(alternative)))
+      .filter(Boolean);
+    const onlyGrants = anyOf.every(isGrant);
 
-    return grants.length ? `one of ${grants.join(' or ')}` : null;
+    if (!alternatives.length) {
+      return null;
+    }
+
+    return onlyGrants ? `one of ${alternatives.join(' or ')}` : alternatives.join(' or ');
   }
 
   return null;
@@ -78,7 +109,7 @@ export const formatPermissions = (permissions: unknown): string | null => {
     return null;
   }
 
-  const required = requirements.length ? requirements.join(' and ') : 'none – any authenticated caller';
+  const required = requirements.length ? requirements.join(' and ') : 'not documented';
   const filtered = filters.length ? ` · results filtered by ${filters.join(' and ')}` : '';
 
   return `> ${label} ${required}${filtered}`;
