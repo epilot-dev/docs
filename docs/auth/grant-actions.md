@@ -8,6 +8,14 @@ Complete reference of all permission grant actions supported by the epilot permi
 
 Actions follow a `{domain}:{operation}` pattern. Use `{domain}:*` to grant all operations in a domain.
 
+Operations in the [API reference](/api/entity) list the grants they require under **Required permissions**, declared in the OpenAPI spec via the `x-epilot-permissions` extension:
+
+```yaml
+x-epilot-permissions:
+  - action: entity:create
+    resource: '{slug}'
+```
+
 ## Entity
 
 Entity permissions are scoped per schema using the `resource` field (e.g. `contact:*`, `opportunity:*`).
