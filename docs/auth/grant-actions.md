@@ -16,6 +16,8 @@ x-epilot-permissions:
     resource: '{slug}'
 ```
 
+Operations that don't check a specific grant declare the access they allow instead: `access: org` (any user in the organization), `self` (own user only), `owner` (resource owner), `internal` (internal epilot services only) or `portal` (portal users). List and search operations mark grants that filter results with `filter: true`.
+
 ## Entity
 
 Entity permissions are scoped per schema using the `resource` field (e.g. `contact:*`, `opportunity:*`).
