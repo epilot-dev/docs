@@ -203,7 +203,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 - **Errors:** a filter that throws while evaluating is treated as **no match** and logged, so one malformed filter cannot stop the other use cases subscribed to the same event.
 - **Validation on save:** the filter must be a non-empty string, valid JSONata, and use no bindings other than `$env`, `$mapValue` and `$mapKey` (names the expression binds itself with `:=` are allowed).
 
-An event the filter rejects is not processed by the use case at all: no [Pollable Outbound](./pollable-outbound.md) queue item and no [file delivery](./outbound-file-delivery.md). The Integration Toolkit evaluates the filter for poll and file proxy deliveries. Webhook deliveries are sent by epilot Webhooks, which does not evaluate `event_filter`.
+An event the filter rejects is not processed by the use case at all: no [Pollable Outbound](./pollable-outbound.md) queue item and no [file delivery](./outbound-file-delivery.md). `event_filter` currently applies to poll and file proxy deliveries; it is not evaluated for webhook deliveries.
 
 #### Mapping Properties
 
