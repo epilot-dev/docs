@@ -41,9 +41,9 @@ sequenceDiagram
 
 Key properties:
 
-- **Lease + ack/delete (at-least-once).** A poll leases a batch under a visibility timeout, hiding it from concurrent polls. Items you do not acknowledge in time reappear on a later poll — a consumer crash never loses data, but you must handle occasional redelivery (deduplicate by `id` or `event_id`).
+- **Lease + ack/delete (at-least-once).** A poll leases a batch under a visibility timeout, hiding it from concurrent polls. Items you do not acknowledge in time reappear on a later poll — a consumer crash never loses data, but you must handle occasional redelivery (deduplicate on `use_case_id` + `event_id` — see [A typical polling loop](#a-typical-polling-loop)).
 - **One polling loop per integration.** A single poll returns the merged feed across **all** of the integration's poll-mode use cases. Each message carries `use_case_id` and `event_name` for routing on your side.
-- **FIFO ordering, promised per entity.** Updates to the same entity are never delivered out of order — even across lease timeouts and retries. See [Ordering Guarantees](#ordering-guarantees).
+- **FIFO ordering, promised per entity.** Updates to the same entity are never delivered out of order — even across lease timeouts and retries. The one exception is an event that reaches the queue late, which goes to the tail and is flagged in monitoring (see [Late arrivals](#late-arrivals)). See [Ordering Guarantees](#ordering-guarantees).
 - **Raw or mapped payloads.** By default poll messages carry the [Core Event](/docs/integrations/core-events) payload **as-is**. An optional JSONata transform reshapes it at enqueue time, so a consumer can receive one consistent shape (see [Payload Mapping](#payload-mapping)).
 - **Long, configurable retention.** Undelivered items are kept for `retention_days` (default 30, max 90) — designed for consumers that are legitimately offline for days.
 
@@ -207,7 +207,7 @@ loop (every N seconds / on schedule):
   batch = POST …/outbound/messages/poll { limit: 100 }
   if batch.messages is empty: sleep / wait for next run
   for message in batch.messages (in order):
-    persist message durably (dedupe on message.id)
+    persist message durably (dedupe on use_case_id + event_id)
   POST …/outbound/messages/ack { acks: all (id, lease_token) pairs }
   if batch.has_more: poll again immediately
 ```
@@ -216,7 +216,7 @@ Practical guidance:
 
 - **Finish well inside the visibility timeout.** If processing a batch can exceed `visibility_timeout_seconds`, lower your `limit` — a lapsed lease means the whole batch is re-delivered and your acks come back `stale_lease`.
 - **Ack in stream order**, ideally the whole batch at once. Partial acks are fine as long as they are contiguous from the head of the batch.
-- **Deduplicate.** At-least-once delivery means a message can arrive twice (with a fresh `lease_token`). The `id` is stable across redeliveries.
+- **Deduplicate on `use_case_id` + `event_id`.** At-least-once delivery means a message can arrive twice. A lease redelivery keeps the same `id` (with a fresh `lease_token`), but in a rare lease race the same event can also be delivered twice under **different** message ids — so `id` alone is not a sufficient deduplication key. The same `event_id` legitimately appears once per poll use case it matches, which is why the key includes `use_case_id`.
 - **Do not parallelize polls of one integration.** Only one batch can be in flight per stream; concurrent polls receive empty batches (this is by design, to preserve ordering).
 
 ## Ordering Guarantees
@@ -233,9 +233,11 @@ Consequences of FIFO with a single stream:
 
 ### Late arrivals
 
-The stream is ordered by event time. Occasionally an event reaches the queue after the consumer has already moved past the position where it would sort — for example, when the event itself was delayed on the way in. Such an event is never inserted behind the consumer's position, where it would be skipped. Instead it is **re-keyed to the tail** of the stream and delivered after everything already enqueued, and the `MSG_LATE_ARRIVAL` monitoring code is emitted with the original and the re-keyed sequence time in its detail.
+The stream is ordered by event time. Occasionally an event reaches the queue after the stream has already moved past the position where it would sort — for example, when the event itself was delayed on the way in. "Moved past" covers everything already handed out in a lease, acknowledged or not. Such an event is never inserted behind that position, where it would be skipped. Instead it is **re-keyed to the tail** of the stream and delivered after everything already enqueued, and the `MSG_LATE_ARRIVAL` monitoring warning is emitted with `message_id`, `event_name`, `original_sequence_time` and `rekeyed_sequence_time` in its detail.
 
-This keeps the ordering promise unchanged: order is promised **per entity** only. A late arrival can be delivered after a newer event for a different entity. If your consumer needs the time the business event actually happened, read the event's `_event_time` field rather than relying on delivery order.
+Only the queue position changes. The payload is untouched — its `_event_time` still carries the original event time — and the poll message envelope has no late-arrival marker: `MSG_LATE_ARRIVAL` in monitoring is the only signal.
+
+Order is promised **per entity** only. Because a late arrival goes to the tail, it is delivered after messages that were already in the stream — including, in the rare case, a newer event for the same entity. If your consumer applies state changes, compare the event's `_event_time` with the last one you applied for that entity rather than relying on delivery order alone.
 
 ## Payload Contract
 
