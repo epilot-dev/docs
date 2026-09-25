@@ -327,6 +327,28 @@ if (__epilot.isInitialized('123') === true) {
 }
 ```
 
+## Context Data
+
+Pass `contextData` in `__epilot.init()` to attach additional key-value pairs to the Journey. The data is included with the submission's `journey_context` and can be used for tracking, attribution, or pre-configuring behavior.
+
+```typescript title="Passing context data"
+__epilot.init([
+  {
+    journeyId: '123',
+    mode: 'inline',
+    contextData: { source: 'landing-page', campaign: 'summer-2025' }
+  }
+])
+```
+
+The Journey also automatically picks up the **URL search query parameters** of the embedding page and includes them as context data. For example, on `https://example.com/energy?utm_source=google`, `utm_source` ends up in `journey_context` without any extra configuration. Values passed explicitly via `contextData` take precedence over query parameters when keys overlap.
+
+Query parameters do **not** need to be declared as context parameters in the Journey Builder to be picked up. The exception are parameters reserved by the Journey app itself, which are consumed instead of being forwarded: `journeyId`, `journeyToken`, `previewId`, `nonce`, `asOrganizationId`, `embedSource`, `dataInjectionOptions`, `mode`, `lang`, `topBar`, `isEmbedded`, `debug` and `preview`. Pick a distinct name for tracking parameters to avoid the collision.
+
+:::tip
+Open the browser console to verify what the Journey received. On initialization it logs `Initialized or updated Journey with id: <journey-id> with following parameters`, including the resolved context data and query parameters.
+:::
+
 ## Scenarios
 
 ### Full-Screen
@@ -423,6 +445,11 @@ For new integrations, use the [Journey Embed SDK](/docs/journeys/sdk). It replac
 See the [SDK documentation](/docs/journeys/sdk) for setup, the full API reference, and a migration guide from `__epilot.init()`.
 
 ## Changelog
+
+### 2026-07-31
+
+- Fixed: passing `contextData` no longer discards the embedding page's URL query parameters. Both are now merged into `journey_context`, with `contextData` taking precedence only on overlapping keys. Previously any `contextData` value replaced the query parameters that were not declared as context parameters in the Journey Builder.
+- Added a new [Context Data](#context-data) section documenting how `contextData` and the page's query parameters reach the submission, and which parameter names the Journey app reserves for itself.
 
 ### 2026-06-11
 
