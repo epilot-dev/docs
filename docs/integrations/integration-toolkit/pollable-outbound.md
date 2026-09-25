@@ -41,7 +41,7 @@ sequenceDiagram
 
 Key properties:
 
-- **Lease + ack/delete (at-least-once).** A poll leases a batch under a visibility timeout, hiding it from concurrent polls. Items you do not acknowledge in time reappear on a later poll — a consumer crash never loses data, but you must handle occasional redelivery (deduplicate on `use_case_id` + `event_id` — see [A typical polling loop](#a-typical-polling-loop)).
+- **Lease + ack/delete (at-least-once).** A poll leases a batch under a visibility timeout, hiding it from concurrent polls. Items you do not acknowledge in time reappear on a later poll — a consumer crash never loses data, but you must handle occasional redelivery (deduplicate by `event_id` — see [A typical polling loop](#a-typical-polling-loop)).
 - **One polling loop per integration.** A single poll returns the merged feed across **all** of the integration's poll-mode use cases. Each message carries `use_case_id` and `event_name` for routing on your side.
 - **FIFO ordering, promised per entity.** Updates to the same entity are never delivered out of order — even across lease timeouts and retries. The one exception is an event that reaches the queue late, which goes to the tail and is flagged in monitoring (see [Late arrivals](#late-arrivals)). See [Ordering Guarantees](#ordering-guarantees).
 - **Raw or mapped payloads.** By default poll messages carry the [Core Event](/docs/integrations/core-events) payload **as-is**. An optional JSONata transform reshapes it at enqueue time, so a consumer can receive one consistent shape (see [Payload Mapping](#payload-mapping)).
@@ -207,7 +207,7 @@ loop (every N seconds / on schedule):
   batch = POST …/outbound/messages/poll { limit: 100 }
   if batch.messages is empty: sleep / wait for next run
   for message in batch.messages (in order):
-    persist message durably (dedupe on use_case_id + event_id)
+    persist message durably (dedupe on message.event_id)
   POST …/outbound/messages/ack { acks: all (id, lease_token) pairs }
   if batch.has_more: poll again immediately
 ```
@@ -216,7 +216,7 @@ Practical guidance:
 
 - **Finish well inside the visibility timeout.** If processing a batch can exceed `visibility_timeout_seconds`, lower your `limit` — a lapsed lease means the whole batch is re-delivered and your acks come back `stale_lease`.
 - **Ack in stream order**, ideally the whole batch at once. Partial acks are fine as long as they are contiguous from the head of the batch.
-- **Deduplicate on `use_case_id` + `event_id`.** At-least-once delivery means a message can arrive twice. A lease redelivery keeps the same `id` (with a fresh `lease_token`), but in a rare lease race the same event can also be delivered twice under **different** message ids — so `id` alone is not a sufficient deduplication key. The same `event_id` legitimately appears once per poll use case it matches, which is why the key includes `use_case_id`.
+- **Deduplicate by `event_id`.** At-least-once delivery means an event can arrive twice. A lease redelivery keeps the same `id` (with a fresh `lease_token`), but in a rare race the same event can also be delivered twice under **different** message ids — so `id` alone is not a sufficient deduplication key. If several of your poll use cases subscribe to the same event, each produces its own message for it; scope the `event_id` check per `use_case_id` in that case.
 - **Do not parallelize polls of one integration.** Only one batch can be in flight per stream; concurrent polls receive empty batches (this is by design, to preserve ordering).
 
 ## Ordering Guarantees
@@ -233,7 +233,7 @@ Consequences of FIFO with a single stream:
 
 ### Late arrivals
 
-The stream is ordered by event time. Occasionally an event reaches the queue after the stream has already moved past the position where it would sort — for example, when the event itself was delayed on the way in. "Moved past" covers everything already handed out in a lease, acknowledged or not. Such an event is never inserted behind that position, where it would be skipped. Instead it is **re-keyed to the tail** of the stream and delivered after everything already enqueued, and the `MSG_LATE_ARRIVAL` monitoring warning is emitted with `message_id`, `event_name`, `original_sequence_time` and `rekeyed_sequence_time` in its detail.
+The stream is ordered by event time. Occasionally an event reaches the queue after the stream has already moved past the position where it would sort — for example, when the event itself was delayed on the way in. "Moved past" covers everything already acknowledged and everything ever handed out in a lease — including leases that expired without an acknowledgement. Such an event is never inserted behind that position, where it would be skipped. Instead it is **re-keyed to the tail** of the stream and delivered after everything already enqueued, and the `MSG_LATE_ARRIVAL` monitoring warning is emitted with `message_id`, `event_name`, `original_sequence_time` and `rekeyed_sequence_time` in its detail.
 
 Only the queue position changes. The payload is untouched — its `_event_time` still carries the original event time — and the poll message envelope has no late-arrival marker: `MSG_LATE_ARRIVAL` in monitoring is the only signal.
 
@@ -243,7 +243,7 @@ Order is promised **per entity** only. Because a late arrival goes to the tail, 
 
 Without a transform, poll messages carry the **raw standardized event-catalog payload**, exactly as the event catalog emitted it. With a `jsonata_expression` on the poll mapping, they carry the **mapped output** instead — see [Payload Mapping](#payload-mapping). The `mapping_version` envelope field tells the two apart: it is present on mapped payloads and absent on raw ones.
 
-The internal keys `_downgrades` and `_automation_chain` are removed from poll payloads. They are bookkeeping for epilot's own event pipeline and carry no business data.
+The internal keys `_downgrades` and `_automation_chain` are removed from poll payloads before the item is stored, and again on delivery. They are bookkeeping for epilot's own event pipeline and carry no business data. A [payload mapping](#payload-mapping) is evaluated against the stripped event, so expressions never see these keys either.
 
 Webhook condition filtering (`filterConditions`) is not available for poll mode. To limit which events a poll use case enqueues, use the use case's [`event_filter`](./configuration.md#event-filter) — a JSONata predicate evaluated against the same standardized event before anything is enqueued. Events the filter rejects never reach the queue.
 
@@ -273,7 +273,7 @@ A poll mapping can carry an optional `jsonata_expression` that reshapes each eve
 ### How the transform is evaluated
 
 - **When:** once, at **enqueue time**, right after the use case's `event_filter` has accepted the event. The mapped output is stored on the queue item, so every poll of that item returns the same payload — a lease lapse or a redelivery never re-evaluates the expression.
-- **Input:** the standardized event-catalog event, hydrated in full — the same root that `event_filter` sees. Field paths start at the top level of the [Core Event](/docs/integrations/core-events) (`_event_id`, `_event_time`, `meter_number`, …).
+- **Input:** the standardized event-catalog event, hydrated in full — the same root that `event_filter` sees, minus the internal `_downgrades` and `_automation_chain` keys. Field paths start at the top level of the [Core Event](/docs/integrations/core-events) (`_event_id`, `_event_time`, `meter_number`, …).
 - **Bindings:** `$env` (the organization's non-secret environment variables, including [Key/Value Maps](./key-value-maps.md)), `$mapValue` and `$mapKey`. No other bindings are available — in particular there is no `$now`, because the output must depend only on the event and the configuration. An expression that references any other `$`-binding is rejected on save.
 - **Output:** must be a **JSON object**. An array, a scalar, `null`, or an undefined result is a mapping failure (`invalid_output`).
 - **Empty means raw.** An absent, empty, or whitespace-only `jsonata_expression` applies no transform, and the raw standardized event is delivered — the behavior of every poll use case that has no expression.
