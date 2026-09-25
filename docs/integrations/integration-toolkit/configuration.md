@@ -185,6 +185,26 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
   }'
 ```
 
+#### Event Filter
+
+`event_filter` is an optional JSONata predicate on the use case configuration, next to `event_catalog_event`. It narrows which events of that name the use case handles — for example, only tickets with a certain purpose, or only certain contract types:
+
+```json
+{
+  "event_catalog_event": "CustomerRequestSubmitted",
+  "event_filter": "$count(ticket._purpose[$ = $env.move_request_purpose]) > 0",
+  "mappings": [ … ]
+}
+```
+
+- **Input:** the full hydrated event-catalog event, so relation nodes such as `ticket` and `contact` are populated.
+- **Bindings:** `$env` (the organization's non-secret environment variables, including [Key/Value Maps](./key-value-maps.md)), `$mapValue` and `$mapKey`. Referencing `$env` instead of hard-coding organization-specific values such as entity IDs keeps the filter portable between organizations, for example in a blueprint.
+- **Result:** the use case handles the event only when the filter evaluates truthy. When `event_filter` is absent, every event of the configured name is handled.
+- **Errors:** a filter that throws while evaluating is treated as **no match** and logged, so one malformed filter cannot stop the other use cases subscribed to the same event.
+- **Validation on save:** the filter must be a non-empty string, valid JSONata, and use no bindings other than `$env`, `$mapValue` and `$mapKey` (names the expression binds itself with `:=` are allowed).
+
+An event the filter rejects is not processed by the use case at all: no [Pollable Outbound](./pollable-outbound.md) queue item and no [file delivery](./outbound-file-delivery.md). The Integration Toolkit evaluates the filter for poll and file proxy deliveries. Webhook deliveries are sent by epilot Webhooks, which does not evaluate `event_filter`.
+
 #### Mapping Properties
 
 | Property | Type | Required | Description |
