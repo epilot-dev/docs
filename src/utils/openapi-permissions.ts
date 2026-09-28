@@ -109,10 +109,16 @@ export const formatPermissions = (permissions: unknown): string | null => {
     return null;
   }
 
-  const required = requirements.length ? requirements.join(' and ') : 'not documented';
-  const filtered = filters.length ? ` · results filtered by ${filters.join(' and ')}` : '';
+  const filtered = filters.length ? `results filtered by ${filters.join(' and ')}` : '';
 
-  return `> ${label} ${required}${filtered}`;
+  if (!requirements.length && filtered) {
+    // Filter grants document the operation on their own: no grant is required, results are filtered
+    return `> ${label} ${filtered}`;
+  }
+
+  const required = requirements.length ? requirements.join(' and ') : 'not documented';
+
+  return `> ${label} ${required}${filtered ? ` · ${filtered}` : ''}`;
 };
 
 /**
