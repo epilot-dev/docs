@@ -2,6 +2,101 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-09-25 Entity API
+
+- New `GET /v1/entity/schemas/{slug}/head` endpoint was added for reading the latest version of an entity schema
+- `PUT /v1/entity/schemas/{slug}` now supports safe concurrent updates: new optional `base_version` and `base_updated_at` query parameters name the schema version the update is based on, and the endpoint can respond with `409` when the schema was changed in the meantime
+
+## 2026-09-25 Integration Toolkit API
+
+- `POST /v1/erp/updates/events`, `POST /v2/erp/updates/events`, and `POST /v3/erp/updates/events` can now respond with `429` when too many requests are made
+
+## 2026-09-25 Metering API
+
+- `POST /v2/metering/readings` can now respond with `429` when too many requests are made
+
+## 2026-09-24 Workflows Execution API
+
+- `loop_config.crt_iterations` and `loop_config.max_iterations` on phases and tasks are now deprecated and will be removed in a future version — affecting everywhere flow executions, phases, and tasks are read
+
+## 2026-09-23 Integration Toolkit API
+
+- Conditional entity mappings no longer take `conditional.folds`; the rows a conditional mapping is built from are now described by a new required `conditional.from_rows` instead — affecting use case and integration create/update endpoints, `POST /v1/erp/updates/direct_simulation`, the mapping simulation endpoints, and everywhere use cases and integrations are read (breaking)
+- Import jobs can now fail with the new `CHUNK_TOO_LARGE` error code, and validation reports the new issue codes `CONDITIONAL_TARGET_MODE_UNSUPPORTED` and `GROUPING_KEY_IS_SORT_COLUMN`, replacing `GROUPING_KEY_IS_FOLD_COLUMN` — returned by all `/v2/erp/imports` endpoints
+
+## 2026-09-23 Journey Config API
+
+- Journey steps can now be shown to guest users through a new optional `steps[].guestVisible` field — accepted when creating or updating a journey configuration or revision and returned wherever journey configurations are read
+
+## 2026-09-22 Workflows Definition API
+
+- `edges[].end_type` was removed from flow templates: it is no longer accepted by `POST /v2/flows/templates` and `PUT /v2/flows/templates/{flowId}` and no longer returned wherever flow templates are read (breaking)
+
+## 2026-09-22 Workflows Execution API
+
+- `edges[].end_type` was removed from flow executions: it is no longer returned wherever flow executions are read (breaking)
+- Workflow stages can now report that they were never reached: `stages[].status` returns the new `NOT_REACHED` value from `POST /v2/flows/executions:portal-search` and `POST /v2/flows/executions:portal-search-batch` — so consumers must be prepared for this additional status
+- Execution contexts now report by which task they were added, and when and by which task they were promoted or demoted, through new optional `contexts[].added_by_task_id`, `contexts[].promoted_at`, `contexts[].promoted_by_task_id`, and `contexts[].demoted_by_task_id` fields — accepted on `POST /v2/flows/executions` and `PATCH /v2/flows/executions/{execution_id}` and returned wherever flow executions are read
+- Automations can now write their result into a context through a new optional `automation_config.output_context` field on a task and on the trigger — accepted on `POST /v2/flows/executions`, `POST /v2/flows/executions/{execution_id}/tasks`, and `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever flow executions are read
+- Task conditions can now be evaluated against the main context: `tasks[].conditions[].statements[].source.origin_type` returns the new `main_context` value — so consumers must be prepared for this additional value
+
+## 2026-09-21 Automation API
+
+- New `POST /v1/automation/journey-context:usages` endpoint was added for reading where a journey context is used
+- Automations can now be executed with inputs for their actions, through a new optional `action_inputs` field — accepted on `POST /v1/automation/executions` and returned wherever executions are read
+- Action attachments can now be narrowed down by file name: new optional `actions[].config.attachments[].source_filter.filename` and `source_filter.filename_pattern` fields — accepted on `POST /v1/automation/flows` and `PUT /v1/automation/flows/{flow_id}` and returned wherever flows and executions are read
+
+## 2026-09-21 Pricing API
+
+- `POST /v1/public/product-recommendations` now reports where a recommendation came from through a new optional `source` field
+
+## 2026-09-21 Workflows Definition API
+
+- New `POST /v1/workflows-definition/journey-context:usages` endpoint was added for reading where a journey context is used
+- Automation tasks in a flow template can now ask for a note when they are executed, restrict which closing reasons may be picked, and have the email they send reviewed before it goes out, through new optional `tasks[].automation_config.allow_execution_note`, `automation_config.eligible_closing_reason_ids`, and `automation_config.email_review` fields — accepted on `POST /v2/flows/templates` and `PUT /v2/flows/templates/{flowId}` and returned wherever flow templates are read
+- `POST /v1/workflows/definitions` can now respond with `409` when the definition conflicts with an existing one
+
+## 2026-09-21 Workflows Execution API
+
+- The email an automation task sends can now be reviewed before it goes out: new `GET /v2/flows/executions/{execution_id}/tasks/{task_id}/email-preview` endpoint for previewing that email, together with a new optional `automation_config.email_review` field — accepted on `POST /v2/flows/executions`, `POST /v2/flows/executions/{execution_id}/tasks`, and `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever flow executions are read
+- Automation tasks can now ask for a note when they are executed and restrict which closing reasons may be picked, through new optional `automation_config.allow_execution_note` and `automation_config.eligible_closing_reason_ids` fields — accepted on `POST /v2/flows/executions`, `POST /v2/flows/executions/{execution_id}/tasks`, and `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever flow executions are read
+- `POST /v2/flows/executions/{execution_id}/tasks/{task_id}/automation:run` now accepts an optional request body, and it and `POST /v2/flows/executions/{execution_id}/tasks/{task_id}/schedule/run-now` can respond with `409` when the run conflicts with the current state
+
+## 2026-09-18 Audit Log API
+
+- Audit log records now carry a visibility: a new optional `visibility` field is accepted on `POST /v1/logs` for narrowing a search and returned on each record, and `GET /v1/logs/{logId}` accepts a matching optional `visibility` query parameter
+
+## 2026-09-18 Journey Config API
+
+- Journey environment variables can now hold a list of links: `type` returns the new `List<Link>` value with a matching `value` shape, and `GET /v1/journey/environment-variables` can additionally return a map value shape — so consumers reading `GET /v1/journey/environment-variables` and `GET /v1/journey/configuration/{id}/environment` must be prepared for these additional value shapes
+
+## 2026-09-17 Blueprint Manifest API
+
+- The blueprint patch endpoints were removed: `GET` and `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches`, `GET /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}`, `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches:detect`, `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}:apply`, and `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}/orgs/{org_id}:retry` (breaking)
+- The v2 blueprint install, export, and publish endpoints were removed: `POST /v2/blueprint-manifest/blueprint:install`, `POST /v2/blueprint-manifest/blueprints/{blueprint_id}:export`, and `POST /v2/blueprint-manifest/blueprints:publish` (breaking)
+- `POST /v3/blueprint-manifest/blueprints/{blueprint_id}:publish` now accepts optional `name`, `slug`, and `version` fields for the blueprint being published
+
+## 2026-09-17 Document API
+
+- New `POST /v2/templates:validate` endpoint was added for validating a document template
+
+## 2026-09-17 Email Template API
+
+- The `variable_parameters.language` request field of `POST /v1/email-template/templates:replace` and `POST /v1/email-template/templates:replaceAsync` is no longer restricted to `de` and `en`
+
+## 2026-09-16 Entity API
+
+- `GET /v1/entity:autocomplete` now accepts an optional `from` query parameter
+
+## 2026-09-16 File API
+
+- `GET /v1/files/public/{id}/preview` now accepts an optional `keep_original` query parameter
+
+## 2026-09-16 Workflows Execution API
+
+- Task conditions can now be evaluated against the trigger that started the workflow: `tasks[].conditions[].statements[].source.origin_type` returns the new `trigger_source` value, and tasks gained a new optional `automation_config.input_context.trigger_id` naming that trigger — accepted on `POST /v2/flows/executions`, `POST /v2/flows/executions/{execution_id}/tasks`, and `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever flow executions are read
+- Flow executions now report the triggers set up for them through a new optional `configured_triggers`, and the trigger that started an execution can be named through a new optional `trigger.trigger_id` — accepted on `POST /v2/flows/executions` and returned wherever flow executions are read
+
 ## 2026-09-15 Automation API
 
 - Automation flows can now be triggered by Event Catalog events: a new event catalog trigger shape is accepted on `POST /v1/automation/flows` and `PUT /v1/automation/flows/{flow_id}` and returned wherever flows are read, `GET /v1/automation/flows` accepts a new optional `trigger_event_name` query parameter for finding the flows a catalog event triggers, and executions report the catalog event as their `trigger_event` — so consumers must be prepared for these additional trigger and trigger event shapes
@@ -48,7 +143,15 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-09-14 Workflows Definition API
 
 - Journey tasks can now have their journey prefilled by AI, through a new optional `journey.ai_prefill` field — available on the regular, ECP, and installer journey configuration of a task, accepted on `POST`/`PUT /v1/workflows/definitions`, `POST /v2/flows/templates`, and `PUT /v2/flows/templates/{flowId}`, and returned wherever workflow definitions and flow templates are read
-- Flow templates gained new optional `stages` for grouping their tasks into stages, `portal_titles` for the titles shown in the customer portal, and `edges[].end_type` — accepted on `POST /v2/flows/templates` and `PUT /v2/flows/templates/{flowId}` and returned wherever flow templates are read
+- Flow templates gained new optional `stages` for grouping their tasks into stages, `portal_titles` for the titles shown in the customer portal, `stages[].portal_descriptions` for the descriptions shown there, and `edges[].end_type` — accepted on `POST /v2/flows/templates` and `PUT /v2/flows/templates/{flowId}` and returned wherever flow templates are read
+- Journey tasks can now set the label shown on their portal button, through a new optional `journey.portal_button_label` field — available on the regular, ECP, and installer journey configuration of a task, accepted on `POST`/`PUT /v1/workflows/definitions`, `POST /v2/flows/templates`, and `PUT /v2/flows/templates/{flowId}`, and returned wherever workflow definitions and flow templates are read
+
+## 2026-09-14 Workflows Execution API
+
+- Journey tasks can now have their journey prefilled by AI, through a new optional `journey.ai_prefill` field — available on the regular, ECP, and installer journey configuration of a task, accepted on `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever workflow and flow executions are read, together with a new optional `journey_prefill` on the task itself
+- Flow executions gained new optional `stages` for grouping their tasks into stages, with each task reporting the stage it belongs to through a new optional `stage_id`, and a new optional `edges[].end_type` — returned wherever flow executions are read
+- Flow executions and their stages now report the titles and descriptions shown in the customer portal through new optional `portal_titles`, `stages[].portal_names`, and `stages[].portal_descriptions` fields — returned wherever flow executions are read, including `POST /v2/flows/executions:portal-search` and `POST /v2/flows/executions:portal-search-batch`
+- Journey tasks now carry the label shown on their portal button, through a new optional `journey.portal_button_label` field — available on the regular, ECP, and installer journey configuration of a task, accepted on `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever workflow and flow executions are read
 
 ## 2026-09-11 Automation API
 
@@ -76,9 +179,6 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - App hooks can now run on a custom interval: the `intervals` of a component's hook configuration accept the new `custom` value, accepted on `POST`/`PATCH /v1/app-configurations/{appId}/versions/{version}/components` and returned wherever apps and app configurations are read
 
-## 2026-09-10 Customer Portal API
-
-- Consumption can now be requested for a custom period: the `interval` query parameter of `GET /v2/portal/consumption` accepts the new `custom` value, which `GET /v2/portal/visualization/metadata` also reports as an available interval, and every returned consumption carries a new optional `period`
 
 ## 2026-09-10 Event Catalog API
 
