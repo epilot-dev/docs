@@ -34,6 +34,29 @@ All attribute types share these base properties:
 | `repeatable` | `boolean` | Allow multiple values (see [Repeatable Attributes](#repeatable-attributes)) |
 | `has_primary` | `boolean` | Support marking one item as primary |
 | `render_condition` | `string` | Conditional visibility expression (see [Conditional Rendering](#conditional-rendering)) |
+| `data_classification` | `"pii"` \| `"public"` | Controls PII anonymization of the value (see [Data Classification](#data-classification)) |
+
+### Data Classification
+
+`data_classification` tells [PII anonymization](/docs/auth/anonymization) whether an attribute contains personal data. It applies to anonymized responses, meaning requests with `?anonymize=true` and tokens created with `anonymize: true`, such as MCP server connections.
+
+| Value | Effect |
+|-------|--------|
+| `pii` | The value is always anonymized. Set it on custom attributes and free-text fields that can contain personal data. |
+| `public` | The value is never anonymized. Set it on fields the built-in defaults mask by mistake. |
+| unset | Best-effort defaults based on the attribute type and a curated list of field names. Custom attributes are usually **not** masked. |
+
+```json
+{
+  "name": "internal_remarks",
+  "label": "Internal remarks",
+  "type": "string",
+  "multiline": true,
+  "data_classification": "pii"
+}
+```
+
+In the Entity Builder, check **Anonymize** on the attribute to set `pii`.
 
 ---
 

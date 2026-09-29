@@ -101,6 +101,9 @@ epilot auth login
 # Browser-based login restricted to a read-only session
 epilot auth login --readonly
 
+# Browser-based login with PII-anonymized entity data
+epilot auth login --readonly --anonymize
+
 # Manual token
 epilot auth login --token <your-token>
 
@@ -145,6 +148,20 @@ vs. a normal read-write token:
 ```
 Access:  read-write
 ```
+
+### Anonymized sessions
+
+Pass `--anonymize` to `epilot auth login` to obtain an [anonymized token](/docs/auth/access-tokens#anonymized-tokens). Personal data in entity responses, such as names, emails, phone numbers, and addresses, is replaced with pseudonyms, and entity exports are blocked. Use it when the output of the CLI goes to an AI assistant or into logs.
+
+```bash
+epilot auth login --readonly --anonymize
+```
+
+As with `--readonly`, the browser authorize page pre-checks and locks the **Anonymize mode** option. You can also check it manually during a normal `epilot auth login`. `epilot auth status` shows `Data: anonymized` for such a session.
+
+:::caution Anonymization is best effort
+Custom attributes are only masked when they are recognized as personal data or marked **Anonymize** in the entity schema, and APIs other than the Entity API and Audit Log API return their data unchanged. See [PII Anonymization](/docs/auth/anonymization) for what is covered. Combine `--anonymize` with `--readonly`, so that pseudonyms can't be written back over real data.
+:::
 
 ## Parameters
 
