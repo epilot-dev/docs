@@ -297,7 +297,7 @@ Disconnecting also revokes the integration token that the connection created in 
 
 ## PII anonymization
 
-Entity data that the epilot MCP server returns to your AI assistant is **anonymized by default**. The OAuth connection mints an epilot access token with the `anonymize` flag set, which forces PII anonymization on all entity data returned to that token. The assistant cannot disable it. `whoami` reports this as `entity_pii: anonymized`.
+Entity data that the epilot MCP server returns to your AI assistant is **anonymized by default**. The OAuth connection mints an epilot access token with the `anonymize` flag set, which forces PII anonymization on all entity data returned to that token. The assistant cannot disable it. `whoami` reports this as `entity_pii: anonymized`. Anonymization is [best effort](/docs/auth/anonymization): custom attributes are only masked when they are recognized as personal data or marked as PII in the schema.
 
 Anonymization is implemented by the open-source [@epilot/anonymization](https://github.com/epilot-dev/anonymization) library, the shared implementation behind epilot's anonymized API responses (`?anonymize=true` on the Entity API, or access tokens created with `anonymize: true`). It replaces personal data with deterministic pseudonyms, so the same person gets the same placeholder within an organization and the assistant can still reason about relations without seeing real values:
 
@@ -331,11 +331,17 @@ If you need certainty for an attribute, classify it explicitly in the entity sch
 }
 ```
 
-Update the attribute in the [entity schema](/docs/entities/attributes) of your organization, for example through the Entity Builder or the Entity API, and the change applies to every anonymized response from then on, including everything the AI assistant reads.
+Update the attribute in the [entity schema](/docs/entities/attributes#data-classification) of your organization, for example with the **Anonymize** checkbox in the Entity Builder or through the Entity API, and the change applies to every anonymized response from then on, including everything the AI assistant reads.
 
 :::tip Review your custom attributes once
 Before connecting an AI assistant, walk through the custom attributes of your contact, account, and order schemas and set `data_classification: "pii"` on every field that can contain personal data. The built-in defaults cover standard fields; your custom fields are where personal data slips through.
 :::
+
+:::caution Prefer read-only connections
+Because the assistant only sees pseudonyms, a change it makes from what it has read can write pseudonyms back over your real data. The MCP server refuses generic API writes that contain masked values, but connect read-only (`?access=read`, or keep the preselected **Read-only** on the approval screen) unless the task needs write access.
+:::
+
+For the full picture, including which APIs anonymize, what is not covered, and the classification rules, see [PII Anonymization](/docs/auth/anonymization).
 
 ## Monitor usage
 

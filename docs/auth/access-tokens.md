@@ -35,6 +35,24 @@ When creating a token, you can optionally set an **expiry**. A token with an exp
 The generated token is shown only once and must be saved by the user.
 :::
 
+## Restricting Access Tokens
+
+Two options restrict what a token can do, independently of its roles. Both are set when the token is created, are enforced server-side, and can't be switched off by the token holder.
+
+### Read-only tokens {#read-only-tokens}
+
+A token created with **Read-only** (`read_only: true`) can perform read actions only. Every write action is denied, regardless of the token's roles.
+
+### Anonymized tokens {#anonymized-tokens}
+
+A token created with **Anonymize** (`anonymize: true`) receives PII-anonymized entity data: names, emails, phone numbers, addresses, IBANs, and other personal data are replaced with pseudonyms in every Entity API response. Entity exports are blocked for anonymized tokens.
+
+:::caution Anonymization is best effort
+Standard fields are masked automatically, but custom attributes are only masked when they are recognized as personal data or marked **Anonymize** in the entity schema. Read [PII Anonymization](/docs/auth/anonymization) to learn what is covered and how to classify your attributes before you hand an anonymized token to an AI assistant or a third party.
+:::
+
+Combine both options for AI assistants and analytics integrations: an anonymized token can't write pseudonyms back over your real data if it is also read-only.
+
 ## Revoking Access Tokens
 
 Delete an Access Token from the management view to revoke it. After revocation, the token is immediately invalidated.
@@ -82,6 +100,19 @@ Set an optional expiry with the `expires_in` parameter — a number of seconds (
 }
 ```
 
+Set `read_only: true` or `anonymize: true` to create a [restricted token](#restricting-access-tokens):
+
+```json title="Request body for a read-only, anonymized token"
+{
+  "name": "AI analytics",
+  "read_only": true,
+  "anonymize": true,
+  "expires_in": "7d"
+}
+```
+
+A token created by an anonymized token is always anonymized too, whatever the request body says.
+
 Tokens created with `expires_in` are stored, listed, and revocable exactly like non-expiring tokens. The response includes an `expires_at` timestamp, and the token stops working — and drops out of the token list — once it expires:
 
 ```json title="201 response for a token with expiry"
@@ -123,5 +154,6 @@ DELETE /v1/access-tokens/api_5ZugdRXasLfWBypHi93Fk
 ## See Also
 
 - [Token Types](/docs/auth/token-types) — comparison of all epilot token types
+- [PII Anonymization](/docs/auth/anonymization) — how anonymized tokens mask personal data
 - [Authentication](/docs/auth/authentication) — OAuth 2.0 login flow
 - [Permissions](/docs/auth/permissions) — role-based access control and grants

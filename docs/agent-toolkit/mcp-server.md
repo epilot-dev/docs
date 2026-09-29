@@ -31,7 +31,7 @@ The MCP server does not receive your prompts and does not send any data to a thi
 Three things are enforced on the server before a result leaves epilot:
 
 - **Permissions.** Every tool runs with your epilot permissions. Upstream APIs apply their normal permission checks on every call, so the assistant can only see and change what you can.
-- **PII anonymization.** Entity data on OAuth connections is anonymized server-side by an access token minted with the `anonymize` flag. The assistant cannot disable it. See [PII anonymization](/docs/agent-toolkit/setup#pii-anonymization).
+- **PII anonymization.** Entity data on OAuth connections is anonymized server-side by an access token minted with the `anonymize` flag. The assistant cannot disable it. Detection is best effort; see [PII Anonymization](/docs/auth/anonymization) for what is covered.
 - **Credential redaction.** `auth` blocks, signed journey tokens, and portal authentication infrastructure are stripped from responses and reported in `redacted_fields`.
 
 ## Permissions
