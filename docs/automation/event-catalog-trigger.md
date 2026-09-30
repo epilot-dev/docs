@@ -43,7 +43,9 @@ Every Core Event is versioned (`MAJOR.MINOR`). The trigger is **pinned** to the 
 
 Every Automation Execution runs in the context of one entity: it is the entity the execution is shown on, the entity actions such as **Start Workflow**, **Send Email**, or **Create/Edit Entity** operate on, and the entity whose attributes and relations are available as `{{entity...}}` template variables.
 
-An Event Catalog event can carry several entities (for example a `CustomerRequestSubmitted` event carries the `ticket` and the `contact`). The **Entity** setting selects which node of the event's entity graph becomes that context entity. Only nodes that hold exactly one entity (cardinality one) are offered; when the event has just one such node it is pre-selected and read-only.
+An Event Catalog event can carry several entities (for example a `CustomerRequestSubmitted` event carries the `ticket` and the `contact`). The **Entity** setting selects which node of the event's entity graph becomes that context entity. Nodes that hold exactly one entity (cardinality one) are listed first; when the event has just one such node it is pre-selected.
+
+Repeatable nodes (cardinality many, for example the `contracts` of a `PaymentMethodUpdated` event) can be chosen too and are marked **First in list** in the editor. The flow then runs on the first entity in the list, in the order the event carries them. When the list is empty, the flow does not start for that event and a warning is logged. Prefer a node the event links exactly once whenever the event offers one.
 
 :::tip
 Pick the node your actions should act on. To start a workflow on the ticket, select the `ticket` node; to send the customer an email, `contact` is usually the better anchor. All other nodes remain available through the `event` variable, for example `{{event.contact.email}}`.
@@ -181,7 +183,7 @@ A flow can therefore end up starting itself, or two flows can keep starting each
 | Guard | Stops | How |
 |---|---|---|
 | **Ignore events emitted by automations** (per trigger, on by default) | Loops through explicitly emitted events | Events with `_trigger_source_type: automation` -- published by a **Trigger Event** action of any flow -- do not start the flow |
-| **Save-time rejection** | Direct self-loops through explicitly emitted events | A flow cannot be saved when an Event Catalog trigger subscribes to the same event that one of the flow's own **Trigger Event** actions emits. The editor shows a validation error; the API rejects the request |
+| **Save-time rejection** | Direct self-loops through explicitly emitted events | A flow cannot be saved when an Event Catalog trigger subscribes to the same event that one of the flow's own **Trigger Event** actions emits. The editor keeps such events in its lists but marks them as not selectable (**Starts this automation** in the Trigger Event action, **Published by this automation** in the trigger); the API rejects the request |
 | **Automation chain guard** | Loops through entity-derived events, and loops spanning several flows | Every execution records the chain of flows that led to it. The chain travels with every event an automation causes -- explicitly emitted or derived from an entity operation -- and is handed to the executions it starts. A flow that is already in the chain is not started again from that chain |
 | **Hot flow detection** | Anything the guards above do not cover | A flow that fires far more often than expected is automatically disabled. See [Hot Flow Detection](/docs/automation/architecture#hot-flow-detection) |
 
