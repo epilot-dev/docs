@@ -425,7 +425,7 @@ While `$relation` links to an entity, `$relation_ref` links to:
 ### Processing Flow
 
 1. **Find or create the related entity**: Uses `unique_ids` to find/create the contact
-2. **Set the attribute value**: Upserts the `address` attribute on the contact with the provided value
+2. **Write the attribute value**: If the contact is created, the `address` attribute is written with the provided value (using `value.operation`). If the contact already exists but has no matching address, the value is **appended** — the contact's other addresses are always kept, whatever `value.operation` is configured
 3. **Preserve `_id` values**: Automatically matches existing address items by their content and preserves their `_id` to avoid regeneration
 4. **Create the reference**: Links the main entity to the specific address item using `$relation_ref`
 
@@ -485,6 +485,16 @@ The system automatically preserves `_id` values when updating repeatable attribu
 - If a match is found, the existing `_id` is preserved
 - This ensures stable references even when data is updated
 
+### When the Referenced Item Doesn't Exist Yet
+
+If the related entity exists but none of its items match the value (for example new bank details from the ERP, or an empty attribute), the relation_ref is deferred like a missing relation: the value is appended to the related entity, then the update is retried and the reference is created.
+
+Only if the item still can't be matched after its value was written — for example because the mapped value is invalid, or the entity API normalized it so it no longer deep-equals — is the relation_ref skipped with the warning `RELATION_REF_ITEM_NOT_FOUND` in the integration monitoring. The rest of the update is still applied.
+
+:::tip
+If the related entity's own mapping writes the same attribute with `_set` (or without an operation), it replaces the items that relation_refs appended on every sync, and they are appended again under a new `_id`. If the related entity should keep every referenced item, map that attribute with `_append` as well.
+:::
+
 ### Relation Reference Operations
 
 Relation references support the same three operations as relations:
@@ -530,9 +540,11 @@ Search for Related Entity
 
 ## Best Practices
 
-### Order Your Entity Processing
+### Don't Rely on Entity Order
 
-Process parent entities before children:
+The order of the `entities` array is **not** a processing order. The entities mapped from one event are processed in parallel, so a contract can be processed before the contact it relates to — even when the contact is listed first.
+
+You don't need to order anything for correctness: relations and relation_refs that point to an entity which isn't there yet are deferred and retried (see [Relation Resolution Strategy](#relation-resolution-strategy)). Listing parent entities first still keeps a configuration easy to read:
 
 ```json
 {
