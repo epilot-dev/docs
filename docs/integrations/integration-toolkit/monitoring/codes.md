@@ -15,7 +15,7 @@ Every monitoring event carries a **code** and a **level**. The code says what
 happened; the level says how much you should care. Both are filterable in the
 Integration Hub's [Monitoring tab](./overview.md) and through the events API.
 
-There are 80 codes. You are most likely here because you saw one in a failed
+There are 85 codes. You are most likely here because you saw one in a failed
 event — find it below.
 
 :::tip
@@ -31,6 +31,7 @@ Something failed and the event did not do what it was meant to do. These are wha
 |---|---|
 | `ATTACHMENT_NOT_FOUND` | The file no longer exists — it was removed between the event and the delivery |
 | `ATTRIBUTE_TYPE_MISMATCH` | An attribute value did not match the type declared in the entity schema |
+| `CONDITIONAL_VARIANT_WRITE_FAILED` | Conditional pricing refused one variant write. The item is dropped and not retried; the rest of the batch and the run continue. details.code names the reason where pricing gave one — UNKNOWN_ERROR means it did not |
 | `DEPRECATED_ENDPOINT` | This endpoint version is deprecated |
 | `DIRECT_ENTITY_NOT_ALLOWED` | The entity is not permitted by the use case entity allowlist |
 | `DIRECT_PAYLOAD_INVALID` | The direct mode payload failed validation against the versioned payload schema |
@@ -53,11 +54,14 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `METER_READING_GROUP_RETRYING` | A batch write of meter readings failed and will be retried automatically — one event per attempt covering the whole group (reading_count and external_ids in details) |
 | `MISSING_REQUIRED_PARAM` | A required parameter is missing from the request |
 | `MISSING_UNIQUE_IDENTIFIERS` | The event is missing the unique identifier field(s) required to match an entity |
+| `MSG_DEAD_LETTERED` | Outbound message moved to the dead-letter queue after exhausting delivery attempts, or via an operator skip |
+| `MSG_EXPIRED_UNPOLLED` | Outbound message expired before being consumed — retention elapsed without a successful poll |
+| `MSG_HEAD_BLOCKED` | Outbound stream halted by a poison head message (block policy) — requires operator unblock or consumer acknowledgement |
 | `OAUTH2_TOKEN_FAILURE` | Failed to obtain an OAuth2 access token |
 | `PAYLOAD_TOO_LARGE` | The payload exceeded the maximum size accepted by the receiving system |
 | `PRUNE_SCOPE_PARTIAL_FAILURE` | Scope pruning completed with some failures |
 | `RECURSION_DEPTH_EXCEEDED` | Maximum recursion depth was exceeded during processing |
-| `RELATION_REF_ITEM_NOT_FOUND` | The relation_ref target entity exists but the referenced item/value could not be matched — skipped as non-retryable. Check the mapping configuration and the entity data. |
+| `RELATION_REF_ITEM_NOT_FOUND` | The relation_ref value could not be matched on the target entity (invalid mapped value, or still no match after writing it to the target) — skipped as non-retryable. Check the mapping configuration and the entity data. |
 | `RELATION_REF_VALUE_UNDEFINED` | A relation_ref mapping value resolved to undefined — check the mapping expression |
 | `REQUIRED_PARAM_MISSING` | A param the use case marks as required resolved to nothing, so the delivery was stopped before anything was sent — see param_name |
 | `SECURE_PROXY_DISABLED` | The secure proxy use case is disabled |
@@ -75,6 +79,7 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `SIGNATURE_VERIFICATION_UNAVAILABLE` | The file service could not be reached to verify the request signature |
 | `STEP_DISABLED` | A request step's "run this step when" expression returned false, so this step and every step after it were skipped. This is the configuration working as written, not a fault. |
 | `TIMEOUT` | The operation timed out |
+| `UNIQUE_ID_LOOKUP_UNRESOLVABLE` | A related entity created for this event still could not be found by its unique ID, so the relation was skipped instead of creating a duplicate. Check that the unique ID value type matches the entity schema. |
 | `UNIQUE_ID_MULTIPLE_MATCHES` | Multiple entities matched the unique ID |
 | `UNIQUE_ID_NOT_IN_SCHEMA` | The unique ID attribute is not defined in the entity schema |
 | `UNKNOWN_ERROR` | An unexpected error occurred during processing |
@@ -90,9 +95,11 @@ Processing continued, but something needs a human eye — often a retry in fligh
 | Code | What it means |
 |---|---|
 | `ACK_TIMEOUT` | Acknowledgement timed out waiting for the ERP system |
+| `CONDITIONAL_VARIANT_WRITE_WARNING` | One variant write succeeded with a warning. The variant is stored and the rest of the batch and the run continue. details.code names the warning |
 | `EXTERNAL_WARNING` | A warning span pushed by an external system via the external monitoring events endpoint. |
 | `FILE_PROXY_UPLOAD_RETRYING` | A file upload failed with a retryable error and will be retried automatically — one event per attempt |
 | `LOOKUP_UNMAPPED` | A value was not listed in a lookup table and its fallback was used — see lookup_name and lookup_key for the gap |
+| `MSG_LATE_ARRIVAL` | An event arrived after the poll consumer had already received later events, so it was placed at the end of the stream instead of at its event time — it is delivered, but out of event-time order |
 | `SOFT_DELETED_ENTITY_MATCHED` | A soft-deleted entity matched the unique ID — it will be resurrected on upsert, or referenced as-is by a relation. Investigate why the ERP source is sending events for a deleted entity. |
 
 ## Success
@@ -101,6 +108,8 @@ The event did what it was meant to do. Useful for confirming a sync actually lan
 
 | Code | What it means |
 |---|---|
+| `ACK_CONFIRMED` | Acknowledgement was confirmed by the ERP system |
+| `CONDITIONAL_VARIANTS_WRITTEN` | Conditional price variants were written for one imported entity: emitted once per chunk, with a per-outcome count and the variant ids in details |
 | `ENTITY_CREATED` | A new entity was created in epilot |
 | `ENTITY_DELETED` | An entity was deleted from epilot |
 | `ENTITY_NO_OP` | No changes were needed for the entity |
@@ -110,6 +119,7 @@ The event did what it was meant to do. Useful for confirming a sync actually lan
 | `FILE_PROXY_UPLOADED` | The external system accepted the file |
 | `METER_READING_DELETED` | One or more meter readings were deleted — emitted once per batch, not per reading (reading_count and external_ids in details) |
 | `METER_READING_UPSERTED` | One or more meter readings were created or updated — emitted once per batch, not per reading (reading_count and external_ids in details) |
+| `MSG_ACKED` | Outbound message delivered: the polling consumer acknowledged it and it was removed from the queue |
 | `PRUNE_SCOPE_COMPLETED` | Scope pruning completed successfully |
 | `WEBHOOK_DELIVERED` | Webhook was delivered successfully |
 
@@ -119,17 +129,12 @@ Lifecycle markers rather than outcomes: a message was queued, a duplicate was ig
 
 | Code | What it means |
 |---|---|
-| `ACK_CONFIRMED` | Acknowledgement was confirmed by the ERP system |
 | `ACK_PENDING` | Acknowledgement is pending from the ERP system |
 | `DUPLICATE_EVENT` | This event was already processed (duplicate) |
 | `EXTERNAL_INFO` | An informational span pushed by an external system via the external monitoring events endpoint. |
 | `FAN_OUT_EMPTY` | The split expression returned an empty list, so nothing was sent — expected for events that carry no relevant items |
 | `FILE_PROXY_UPLOAD_ENQUEUED` | A per-file upload was accepted for delivery during fan-out |
-| `MSG_ACKED` | Outbound message acknowledged by the polling consumer and removed from the queue |
-| `MSG_DEAD_LETTERED` | Outbound message moved to the dead-letter queue after exhausting delivery attempts, or via an operator skip |
 | `MSG_ENQUEUED` | Outbound message enqueued to the poll queue, awaiting consumption by the ERP |
-| `MSG_EXPIRED_UNPOLLED` | Outbound message expired before being consumed — retention elapsed without a successful poll |
-| `MSG_HEAD_BLOCKED` | Outbound stream halted by a poison head message (block policy) — requires operator unblock or consumer acknowledgement |
 ## Status-code families
 
 Some codes are generated from an upstream response rather than drawn from the fixed list above.
