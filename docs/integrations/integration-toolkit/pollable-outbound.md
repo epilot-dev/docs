@@ -275,12 +275,14 @@ A poll mapping can carry an optional `jsonata_expression` that reshapes each eve
 - **When:** once, at **enqueue time**, right after the use case's `event_filter` has accepted the event. The mapped output is stored on the queue item, so every poll of that item returns the same payload — a lease lapse or a redelivery never re-evaluates the expression.
 - **Input:** the standardized event-catalog event, hydrated in full — the same root that `event_filter` sees, minus the internal `_downgrades` and `_automation_chain` keys. Field paths start at the top level of the [Core Event](/docs/integrations/core-events) (`_event_id`, `_event_time`, `meter_number`, …).
 - **Bindings:** `$env` (the organization's non-secret environment variables, including [Key/Value Maps](./key-value-maps.md)), `$mapValue` and `$mapKey`. No other bindings are available — in particular there is no `$now`, because the output must depend only on the event and the configuration. An expression that references any other `$`-binding is rejected on save.
-- **Output:** must be a **JSON object**. An array, a scalar, `null`, or an undefined result is a mapping failure (`invalid_output`). The mapped output is also capped at **5&nbsp;MiB**; a larger result is a mapping failure with the same code (`mapped output exceeds 5 MiB`).
+- **Output:** must be a **JSON object**. An array, a scalar, `null`, or an undefined result is a mapping failure (`invalid_output`). The mapped output is also capped at **5&nbsp;MiB**; a larger result is a mapping failure with the same code (`The mapped output exceeds 5 MiB`). An output that cannot be serialized as JSON — for example one containing a function — is an `invalid_output` failure too.
 - **Empty means raw.** An absent, empty, or whitespace-only `jsonata_expression` applies no transform, and the raw standardized event is delivered — the behavior of every poll use case that has no expression.
 
 The expression is validated on save: JSONata syntax, a maximum of 10,000 characters, and no bindings outside `$env`, `$mapValue` and `$mapKey`. The same checks run again at enqueue time, so an expression stored before these checks existed that does not pass them produces [failed items](#mapping-failures) rather than being silently skipped.
 
-Each evaluation is guarded by a 500&nbsp;ms time limit and an evaluation depth limit. Exceeding either is a mapping failure with the code `timeout`.
+Each evaluation is guarded by a 500&nbsp;ms time limit and an evaluation depth limit of 500. Exceeding either is a mapping failure with the code `timeout`.
+
+Only failures the expression itself causes are mapping failures. If the organization's environment variables cannot be loaded, nothing is recorded on an item: the event is retried and mapped once the environment is reachable.
 
 ### Mapping version
 
@@ -290,16 +292,16 @@ Because the transform runs at enqueue time, **changing the expression affects ne
 
 ### Mapping failures
 
-A failure to evaluate — a runtime error, a timeout, or an output that is not an object — does not drop the event. The item is still enqueued at its normal position in the stream, marked as failed, with the raw payload kept alongside it. At enqueue time epilot emits the `MAPPING_EXPRESSION_FAILED` monitoring error, with the use case, event id, event name, `mapping_version` and the error message in its context.
+A failure to evaluate — a runtime error, a timeout, or an output that is not an object — does not drop the event. The item is still enqueued at its normal position in the stream, marked as failed, with the raw payload kept alongside it. At enqueue time epilot emits the `MAPPING_EXPRESSION_FAILED` monitoring error once, with `use_case_id`, `event_id`, `event_name`, `message_id`, `mapping_version`, `error_code` and the error message in its detail.
 
 The error is recorded as `mapping_error` in the form `<code>: <message>` — for example `evaluation_error: $mapValue: first argument must be an object` — using the same codes as the [preview endpoint](#preview-a-transform), truncated to 1,024 characters.
 
-A failed item is **never delivered to the consumer**. When it reaches the head of the stream it is handled immediately — without waiting for `max_delivery_attempts`, because evaluating the same expression against the same event would fail the same way every time. What happens next follows the use case's `poison_policy`:
+A failed item is **never delivered to the consumer**. When it reaches the head of the stream it is handled immediately — without waiting for `max_delivery_attempts`, because evaluating the same expression against the same event would fail the same way every time. A poll batch never reaches past a failed item: when one sits behind deliverable messages, the batch ends before it (with `has_more: true`), and it is handled once it is the head. What happens next follows the use case's `poison_policy`:
 
 | Policy | What happens to a failed item at the head |
 |--------|-------------------------------------------|
 | `dead_letter` (default) | It moves straight to the [dead-letter queue](#dead-letter-queue-and-operator-actions) with `reason: "mapping_failed"` and `delivery_attempts: 0` (it was never leased), and the stream moves on. `MSG_DEAD_LETTERED` is emitted with `reason`, `mapping_error` and `mapping_version` in its detail |
-| `block` | The stream halts on it. `MSG_HEAD_BLOCKED` is emitted with `reason: "mapping_failed"` in its detail. Release it with [`unblock`](#unblock--skip-a-blocked-head), which dead-letters it with `reason: "mapping_failed"`. A consumer acknowledgement cannot release it, because it is never delivered |
+| `block` | The stream halts on it. `MSG_HEAD_BLOCKED` is emitted with `reason: "mapping_failed"` in its detail. Release it with [`unblock`](#unblock--skip-a-blocked-head), which dead-letters it (with `reason: "mapping_failed"` unless you give your own). A consumer acknowledgement cannot release it, because it is never delivered |
 
 To recover:
 
@@ -351,7 +353,7 @@ Supply exactly one of `payload` or `event_id`. `$env`, `$mapValue` and `$mapKey`
 | `output` | The mapped output — present when `valid` is `true` |
 | `error` | Present when `valid` is `false`: a `code`, a `message`, and for syntax errors the `position` in the expression |
 | `mapping_version` | The version this expression would stamp on messages |
-| `input` | The hydrated event the expression ran against — returned when the request used `event_id`, on failures as well as successes |
+| `input` | The hydrated event the expression ran against, without the internal `_downgrades` and `_automation_chain` keys — returned when the request used `event_id`, on failures as well as successes |
 
 | Error `code` | Meaning |
 |--------------|---------|
@@ -367,6 +369,7 @@ A mapping error is a normal `200` response with `valid: false`. A `4xx` status m
 | Status | When |
 |--------|------|
 | `400` | The expression is blank, both or neither of `payload` and `event_id` are given, or `event_id` is given without `event_catalog_event` |
+| `403` | The token lacks `integration:view` on the integration |
 | `404` | The integration is unknown or belongs to another organization, or the event catalog does not know the requested event |
 
 ### Webhook and poll mode are not interchangeable
@@ -432,7 +435,7 @@ A few details make this robust:
 - Undelivered items expire after the mapping's `retention_days` (default 30, max 90), counted from enqueue time.
 - Changing `retention_days` affects **new items only** — already-enqueued items keep the TTL computed at enqueue time.
 - An expired item is never delivered: the poll API filters expired items even before the storage layer reaps them. Each expiry of an item that was **never consumed** emits an `MSG_EXPIRED_UNPOLLED` monitoring error, so silent data loss is always visible.
-- Dead-lettered items get a **re-armed retention window** at dead-letter time — a full `retention_days` from that moment — giving operators the whole window to redrive instead of whatever sliver remained.
+- Dead-lettered items get a **re-armed retention window** at dead-letter time — a full `retention_days` from that moment when the poison policy dead-letters them, and 30 days when an operator [unblock](#unblock--skip-a-blocked-head) does — giving operators the whole window to redrive instead of whatever sliver remained.
 
 ## Poison Messages: `dead_letter` vs `block`
 
@@ -473,7 +476,7 @@ Returns dead-lettered messages oldest first, paginated via an opaque `next_token
       "enqueued_at": "2026-06-08T22:10:00Z",
       "dead_lettered_at": "2026-06-09T03:00:00Z",
       "delivery_attempts": 5,
-      "reason": "max_delivery_attempts exhausted",
+      "reason": "max_delivery_attempts_exhausted",
       "expires_at": "2026-07-09T03:00:00Z"
     },
     {
@@ -496,9 +499,9 @@ Returns dead-lettered messages oldest first, paginated via an opaque `next_token
 
 | Field | Description |
 |-------|-------------|
-| `reason` | Why the message was dead-lettered: the policy (`max_delivery_attempts` exhausted), the operator's `unblock` reason, or `mapping_failed` for a [payload mapping failure](#mapping-failures) — whether it was dead-lettered by policy or by `unblock` |
+| `reason` | Why the message was dead-lettered: `max_delivery_attempts_exhausted`, `mapping_failed` for a [payload mapping failure](#mapping-failures), or for an [`unblock`](#unblock--skip-a-blocked-head) the operator's reason — `operator_skip` (or `mapping_failed` for a failed-mapping head) when none was given |
 | `mapping_error` | The mapping error as `<code>: <message>` (truncated to 1,024 characters) — present when the payload mapping failed |
-| `mapping_version` | Version of the expression that produced the stored payload, or that failed on it |
+| `mapping_version` | Version of the expression that produced the stored payload, or that failed on it. Absent for raw payloads |
 
 ### Redrive — re-enqueue dead-lettered messages
 
@@ -533,16 +536,16 @@ The response reports a per-id outcome:
 |----------|---------|
 | `redriven` | Re-enqueued at the tail |
 | `not_found` | Unknown id, or the entry was concurrently redriven or expired |
-| `mapping_failed` | Re-applying the mapping failed again. The entry stays in the DLQ with its `mapping_error` and `mapping_version` updated; `mapping_error` is also returned in the result |
+| `mapping_failed` | Re-applying the mapping failed again. The entry stays in the DLQ, now with `reason: "mapping_failed"`, the new `mapping_error` and `mapping_version`, a new `dead_lettered_at`, and a fresh 30-day retention window; `mapping_error` is also returned in the result |
 
-The redriven copy is re-enqueued with **zero delivery attempts and a fresh retention window**; the original DLQ entry is removed.
+The redriven copy is re-enqueued with **zero delivery attempts and a fresh 30-day retention window** (the default, whatever the use case's `retention_days`); the original DLQ entry is removed.
 
 How the payload of the redriven copy is chosen:
 
 - By default (`reapply_mapping: false`) the stored payload is re-sent unchanged — the behavior before payload mapping existed.
 - With `reapply_mapping: true` the current expression is evaluated again against the kept raw payload. Use it after fixing an expression, so already dead-lettered messages go out in the corrected shape.
-- An entry that was dead-lettered **because its mapping failed** (`reason: "mapping_failed"`) is always re-mapped with the current configuration, whatever `reapply_mapping` says — it has no usable mapped payload to re-send.
-- When re-mapping and the use case no longer has an expression, the raw payload is delivered.
+- An entry **whose mapping failed** (it carries a `mapping_error`) is always re-mapped with the current configuration, whatever `reapply_mapping` says — it has no usable mapped payload to re-send.
+- "Current configuration" means the **enabled** poll mapping of the use case, and only while the use case itself is enabled. When re-mapping and there is no such mapping, or it has no expression, the raw payload is delivered.
 
 :::caution Redrive ordering
 A redriven message is re-enqueued at the **tail** with a new id and sequence — it is delivered out of its original per-entity order, because the stream has moved on. This is inherent to redrive and matches SQS DLQ semantics. If your consumer is order-sensitive, reconcile redriven messages explicitly (e.g. compare against current entity state).
@@ -562,7 +565,7 @@ POST /v1/integrations/{integrationId}/outbound/messages/unblock
 
 For streams halted under `poison_policy: "block"`. **Skip equals dead-letter:** unblocking dead-letters the blocked head (recording the optional `reason`, max 500 characters) and emits `MSG_DEAD_LETTERED` — the message then becomes redrivable from the DLQ like any other dead-lettered item. The next message becomes the head and the stream resumes.
 
-When the blocked head is a [failed-mapping item](#mapping-failures), it is dead-lettered with `reason: "mapping_failed"` instead, so a later redrive re-applies the current mapping to it.
+Without a `reason`, the entry records `operator_skip`, or `mapping_failed` when the blocked head is a [failed-mapping item](#mapping-failures). Either way a failed-mapping entry is re-mapped by a later redrive. The DLQ entry from an unblock gets a 30-day retention window.
 
 The response reports `unblocked: true` with the `dead_lettered_id` of the skipped head, or `unblocked: false` as a safe no-op when the stream is not currently blocked. A late acknowledgement from the consumer also unblocks the stream naturally — no operator action needed.
 
@@ -580,7 +583,7 @@ Poll-queue message lifecycle events flow through the standard monitoring pipelin
 | `MSG_DEAD_LETTERED` | error | A message exhausted `max_delivery_attempts` under the `dead_letter` policy, or an operator skipped a blocked head (includes `delivery_attempts` in the event detail) |
 | `MSG_HEAD_BLOCKED` | error | The stream halted on a poisoned head under the `block` policy — emitted **once per blocked episode**, not on every poll (includes `delivery_attempts` in the event detail) |
 | `MSG_LATE_ARRIVAL` | warning | An event arrived after the consumer had moved past its position and was re-keyed to the tail of the stream (includes `original_sequence_time` and `rekeyed_sequence_time` in the event detail) — see [Late arrivals](#late-arrivals) |
-| `MAPPING_EXPRESSION_FAILED` | error | The poll mapping's `jsonata_expression` failed at enqueue time (includes `use_case_id`, `event_id`, `event_name`, `mapping_version` and the error message) — see [Mapping failures](#mapping-failures) |
+| `MAPPING_EXPRESSION_FAILED` | error | The poll mapping's `jsonata_expression` failed at enqueue time (includes `use_case_id`, `event_id`, `event_name`, `message_id`, `mapping_version`, `error_code` and the error message) — see [Mapping failures](#mapping-failures) |
 
 When a failed mapping reaches the head, `MSG_DEAD_LETTERED` or `MSG_HEAD_BLOCKED` carries `reason: "mapping_failed"` in its detail, so the mapping failure and its consequence for the stream can be told apart from ordinary poison messages.
 

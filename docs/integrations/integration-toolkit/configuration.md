@@ -215,6 +215,8 @@ An event the filter rejects is not processed by the use case at all: no [Pollabl
 | `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook` (evaluated by the webhook service). Optional for `poll`: evaluated at enqueue time against the standardized event-catalog event with `$env` / `$mapValue` / `$mapKey`, must return a JSON object, and an empty value delivers the raw event — see [Payload Mapping](./pollable-outbound.md#payload-mapping). Rejected for `file_proxy` delivery |
 | `delivery` | object | Yes | How the event is delivered — discriminated on `type`: `webhook`, `poll`, or `file_proxy` |
 
+Outbound configurations are validated on save. The v1 use case endpoints require a `jsonata_expression` on every `webhook` mapping. The v2 integration upsert (`POST` / `PUT /v2/integrations`) validates an outbound use case only when it is new or its configuration changed, so configurations stored before a rule existed can be re-sent unchanged. It also accepts a `webhook` mapping with **no** `jsonata_expression` at all, for configurations that predate that requirement — such a mapping never enables or updates its webhook. An empty expression and invalid JSONata are rejected on both versions.
+
 #### Delivery Types
 
 **Webhook delivery (push):** the event payload is transformed with the mapping's `jsonata_expression` and pushed to a pre-configured webhook (epilot Webhooks):
