@@ -81,11 +81,12 @@ filterable in the Monitoring tab:
 | Code | Level | When |
 |---|---|---|
 | `ACK_PENDING` | info | The event was delivered and epilot is waiting for the acknowledgement |
-| `ACK_CONFIRMED` | info | Your acknowledgement arrived |
+| `ACK_CONFIRMED` | success | Your acknowledgement arrived |
 | `ACK_TIMEOUT` | warning | No acknowledgement within the timeout window |
 
-`ACK_PENDING` and `ACK_CONFIRMED` are **info**-level: they are lifecycle markers, not
-outcomes, so they are counted in total events but deliberately excluded from the
+`ACK_PENDING` is **info**-level: a lifecycle marker, not an outcome, so it is counted
+in total events but deliberately excluded from the success rate. `ACK_CONFIRMED` is a
+**success** — your system confirmed it processed the event, so it counts towards the
 success rate. `ACK_TIMEOUT` is a **warning** — the delivery itself worked, so it is
 not an error on epilot's side, but something on yours needs attention.
 

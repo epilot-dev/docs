@@ -185,6 +185,26 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
   }'
 ```
 
+#### Event Filter
+
+`event_filter` is an optional JSONata predicate on the use case configuration, next to `event_catalog_event`. It narrows which events of that name the use case handles — for example, only tickets with a certain purpose, or only certain contract types:
+
+```json
+{
+  "event_catalog_event": "CustomerRequestSubmitted",
+  "event_filter": "$count(ticket._purpose[$ = $env.move_request_purpose]) > 0",
+  "mappings": [ … ]
+}
+```
+
+- **Input:** the full hydrated event-catalog event, so relation nodes such as `ticket` and `contact` are populated.
+- **Bindings:** `$env` (the organization's non-secret environment variables, including [Key/Value Maps](./key-value-maps.md)), `$mapValue` and `$mapKey`. Referencing `$env` instead of hard-coding organization-specific values such as entity IDs keeps the filter portable between organizations, for example in a blueprint.
+- **Result:** the use case handles the event only when the filter evaluates truthy. When `event_filter` is absent, every event of the configured name is handled.
+- **Errors:** a filter that throws while evaluating is treated as **no match** and logged, so one malformed filter cannot stop the other use cases subscribed to the same event.
+- **Validation on save:** the filter must be a non-empty string, valid JSONata, and use no bindings other than `$env`, `$mapValue` and `$mapKey` (names the expression binds itself with `:=` are allowed).
+
+An event the filter rejects is not processed by the use case at all: no [Pollable Outbound](./pollable-outbound.md) queue item and no [file delivery](./outbound-file-delivery.md). `event_filter` currently applies to poll and file proxy deliveries; it is not evaluated for webhook deliveries.
+
 #### Mapping Properties
 
 | Property | Type | Required | Description |
@@ -192,8 +212,10 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 | `id` | string (UUID) | No | Unique identifier for the mapping; generated when omitted |
 | `name` | string | Yes | Display name for the mapping |
 | `enabled` | boolean | Yes | Whether this mapping is active |
-| `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook`, ignored for `poll`, and rejected for `file_proxy` delivery |
+| `jsonata_expression` | string | For `webhook` delivery | JSONata expression to transform the event payload. Required for `webhook` (evaluated by the webhook service). Optional for `poll`: evaluated at enqueue time against the standardized event-catalog event with `$env` / `$mapValue` / `$mapKey`, must return a JSON object, and an empty value delivers the raw event — see [Payload Mapping](./pollable-outbound.md#payload-mapping). Rejected for `file_proxy` delivery |
 | `delivery` | object | Yes | How the event is delivered — discriminated on `type`: `webhook`, `poll`, or `file_proxy` |
+
+Outbound configurations are validated on save. The v1 use case endpoints require a `jsonata_expression` on every `webhook` mapping. The v2 integration upsert (`POST` / `PUT /v2/integrations`) validates an outbound use case only when it is new or its configuration changed, so configurations stored before a rule existed can be re-sent unchanged. It also accepts a `webhook` mapping with **no** `jsonata_expression` at all, for configurations that predate that requirement — such a mapping never enables or updates its webhook. An empty expression and invalid JSONata are rejected on both versions.
 
 #### Delivery Types
 
@@ -211,7 +233,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 | `webhook_id` | string | Yes | Reference to the webhook configuration in epilot Webhooks |
 | `webhook_name` | string | No | Cached webhook name for display purposes |
 
-**Poll delivery (pull):** for ERPs that cannot expose an inbound HTTP endpoint (firewalled, on-prem, batch systems). Items are placed on a pull-based queue that your system fetches and acknowledges. Poll items carry the **raw standardized event payload** — no JSONata transform is applied. See [Pollable Outbound](./pollable-outbound.md) for the full feature documentation (polling API, ordering guarantees, dead-letter handling, monitoring):
+**Poll delivery (pull):** for ERPs that cannot expose an inbound HTTP endpoint (firewalled, on-prem, batch systems). Items are placed on a pull-based queue that your system fetches and acknowledges. Poll items carry the **raw standardized event payload**, unless the mapping sets a `jsonata_expression` — then they carry its output, evaluated once at enqueue time (see [Payload Mapping](./pollable-outbound.md#payload-mapping)). See [Pollable Outbound](./pollable-outbound.md) for the full feature documentation (polling API, payload mapping, ordering guarantees, dead-letter handling, monitoring):
 
 ```jsonc
 // DeliveryConfig — poll variant
@@ -234,7 +256,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 - A `poll` delivery must not carry webhook fields (`webhook_id`, `webhook_name`), and a `webhook` delivery must not carry poll fields (`retention_days`, `poison_policy`, `max_delivery_attempts`).
 :::
 
-Everything beyond the configuration contract — the polling and acknowledgement API, lease and ordering semantics, retention and expiry behavior, the dead-letter queue and operator actions, and poll-mode monitoring — is documented on the dedicated [Pollable Outbound](./pollable-outbound.md) page.
+Everything beyond the configuration contract — the polling and acknowledgement API, payload mapping and its preview endpoint, lease and ordering semantics, retention and expiry behavior, the dead-letter queue and operator actions, and poll-mode monitoring — is documented on the dedicated [Pollable Outbound](./pollable-outbound.md) page.
 
 **File proxy delivery (push):** points to an upload-direction `file_proxy` use case in the same integration. The referenced recipe owns fan-out, payload mapping, authentication, and HTTP steps. `jsonata_expression` is rejected on this mapping type, and the use case's `event_catalog_event` must declare `event_attachments`. See [Outbound File Delivery](./outbound-file-delivery.md) for the complete setup and runtime behavior.
 
