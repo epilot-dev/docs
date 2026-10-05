@@ -687,5 +687,10 @@ token for a middleware:
 | `POST /v1/integrations/{id}/events/replay` | `integration:manage` |
 | `POST /v1/integrations/{id}/outbound/messages/poll`, `…/ack` | `integration:consume` |
 
+The monitoring events list (`POST /v2/integrations/{id}/monitoring/events`) returns
+`403` without `integration:view` on that integration. Its event details can carry customer
+data — a mapped [poll message](./pollable-outbound.md#what-a-mapped-message-looks-like-in-monitoring)
+includes its delivered payload.
+
 Inbound event submission authenticates as the integration's own API token rather
 than through these actions — see [Inbound Getting Started](./inbound/getting-started.md).

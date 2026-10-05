@@ -577,7 +577,7 @@ Poll-queue message lifecycle events flow through the standard monitoring pipelin
 
 | Code | Level | Emitted when |
 |------|-------|--------------|
-| `MSG_ENQUEUED` | info | A new queue item is enqueued for a poll-mode use case (duplicates emit nothing) |
+| `MSG_ENQUEUED` | info | A new queue item is enqueued for a poll-mode use case (duplicates emit nothing). For a mapped message the detail also carries the delivered payload — see [What a mapped message looks like in monitoring](#what-a-mapped-message-looks-like-in-monitoring) |
 | `MSG_ACKED` | success | A polled message is acknowledged (one event per accepted message id) |
 | `MSG_EXPIRED_UNPOLLED` | error | An item's retention window elapsed without it ever being consumed — the offline-consumer loss signal |
 | `MSG_DEAD_LETTERED` | error | A message exhausted `max_delivery_attempts` under the `dead_letter` policy, or an operator skipped a blocked head (includes `delivery_attempts` in the event detail) |
@@ -588,6 +588,38 @@ Poll-queue message lifecycle events flow through the standard monitoring pipelin
 When a failed mapping reaches the head, `MSG_DEAD_LETTERED` or `MSG_HEAD_BLOCKED` carries `reason: "mapping_failed"` in its detail, so the mapping failure and its consequence for the stream can be told apart from ordinary poison messages.
 
 Lease lapses (a message reappearing after a visibility timeout) are deliberately **not** a per-occurrence signal — they are normal at-least-once behavior and would be noisy. The attempt count is reported on `MSG_DEAD_LETTERED` / `MSG_HEAD_BLOCKED`, which are the actionable events.
+
+### What a mapped message looks like in monitoring
+
+When a [payload mapping](#payload-mapping) transforms a message, its `MSG_ENQUEUED` event shows what the consumer will receive, so you can inspect a transform's result next to its trigger event in the monitoring trace. The `payload` is exactly what the poll API delivers:
+
+```json
+{
+  "message_id": "msg_9f3c8a1b…",
+  "event_name": "MeterReadingAdded",
+  "mapping_version": "3f9a1c0b7d2e4a65",
+  "payload": { "meter_number": "A-1002", "reason": "PERIODIC" }
+}
+```
+
+Monitoring keeps a payload of up to **48&nbsp;KiB** (serialized JSON). A larger one is left out and described instead, still with its `mapping_version`:
+
+```json
+{
+  "message_id": "msg_9f3c8a1b…",
+  "event_name": "MeterReadingAdded",
+  "mapping_version": "3f9a1c0b7d2e4a65",
+  "payload_omitted": { "reason": "too_large", "size_bytes": 81234, "limit_bytes": 49152 }
+}
+```
+
+The limit exists because a page of monitoring events returns up to 100 events with their details inline, and every page has to fit in one API response. `limit_bytes` carries the limit, so you never need to hard-code it.
+
+Raw and failed messages keep the plain detail, `{ "message_id": "…", "event_name": "…" }`. A raw message's payload is the trigger event, which the trace already shows, so monitoring stores no second copy. A failed message has its own [`MAPPING_EXPRESSION_FAILED`](#mapping-failures) event.
+
+:::caution Mapped payloads are copied into monitoring
+A transformed payload usually contains customer data, and this copy is kept as long as the integration's other monitoring events. Anyone who can read the integration's monitoring events can see it. The monitoring events list and the trace both require the `integration:view` grant on the integration.
+:::
 
 ### Queue health in `outbound-status`
 

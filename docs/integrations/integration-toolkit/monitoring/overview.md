@@ -42,7 +42,7 @@ Each row in the stream is one monitoring event:
 | `level` | How much you should care: `success`, `error`, `warning` or `info` |
 | `code` | What specifically happened — see the [code reference](./codes.md) |
 | `message` | A human-readable line, usually the error text |
-| `detail` | Free-form JSON with context for that code — including the captured request and response where there was one |
+| `detail` | Free-form JSON with context for that code — including the captured request and response where there was one, and for a mapped [poll message](../pollable-outbound.md#what-a-mapped-message-looks-like-in-monitoring) the payload as delivered |
 | `use_case_type` | Which lane produced it |
 | `use_case_id` | Which configured use case, when one owns the event |
 | `event_id` | The triggering event |

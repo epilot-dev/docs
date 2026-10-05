@@ -113,6 +113,12 @@ Things worth knowing before you use it:
 Everything the Monitoring tab shows is available directly. All three endpoints take a
 POST body and are scoped to one integration.
 
+Reading the event stream requires the `integration:view` grant on that integration — a
+wildcard grant or one scoped to the integration; a grant scoped to a different
+integration is not enough. Without it the request returns `403`. Event details can carry
+customer data, such as the delivered payload of a mapped
+[poll message](../pollable-outbound.md#what-a-mapped-message-looks-like-in-monitoring).
+
 **The event stream** — filter by `level`, `code`, `use_case_id`, `use_case_type`,
 `event_id`, `correlation_id` and a time range, with cursor pagination:
 
