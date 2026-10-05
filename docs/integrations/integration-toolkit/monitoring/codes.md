@@ -134,7 +134,7 @@ Lifecycle markers rather than outcomes: a message was queued, a duplicate was ig
 | `EXTERNAL_INFO` | An informational span pushed by an external system via the external monitoring events endpoint. |
 | `FAN_OUT_EMPTY` | The split expression returned an empty list, so nothing was sent — expected for events that carry no relevant items |
 | `FILE_PROXY_UPLOAD_ENQUEUED` | A per-file upload was accepted for delivery during fan-out |
-| `MSG_ENQUEUED` | Outbound message enqueued to the poll queue, awaiting consumption by the ERP |
+| `MSG_ENQUEUED` | Outbound message enqueued to the poll queue, awaiting consumption by the ERP. When the use case maps the payload, the detail carries the mapped payload as delivered and its mapping_version (or payload_omitted when it exceeds 48 KiB) |
 ## Status-code families
 
 Some codes are generated from an upstream response rather than drawn from the fixed list above.
