@@ -134,11 +134,13 @@ For certain functionalities, users can choose which hook is used in the portal s
 
 ![Enable hooks in portal settings](/img/apps/portal-extensions/enabling-hooks-in-portal-settings.png)
 
-There are currently three groups of hooks supported based on their use:
+There are currently five groups of hooks supported based on their use:
 
 - Time Series Data Retrieval
+- Data Export
 - Data Existence Check/Retrieval
 - Data Validation
+- Account Management
 
 ### Time Series Data Retrieval Hooks
 
@@ -519,6 +521,64 @@ The example integration ships further setups you can point the `setup` parameter
 | `partial-history` | `ht`, `nt` | Stacked bar | Last 6 months only (e.g. recently switched provider). |
 | `current-month` | `default` | Bar | Current month only (`PT1H` + `P1D`), e.g. start-of-contract demos. |
 
+### Data Export
+
+Use the data export hook to let your system produce the file when a portal user exports data from a block (e.g. a CSV, Excel or PDF download of a consumption chart or a dynamic tariff chart). When configured, the portal calls your API instead of generating the file itself and downloads the file your API points to.
+
+The optional `block_types` property limits which blocks can use the hook (e.g. `consumption_visualization`, `dynamic_tariff`). If omitted, the hook is available on every block that supports export.
+
+```json title="Data export hook"
+{
+  "id": "consumption-export",
+  "type": "dataExport",
+  "name": {
+    "en": "Export consumption",
+    "de": "Verbrauch exportieren"
+  },
+  "block_types": ["consumption_visualization"],
+  "call": {
+    "method": "GET",
+    "url": "https://your-api.com/consumption/export",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "params": {
+      "meter_number": "{{Meter.meter_number}}",
+      "from": "{{Scope.from}}",
+      "to": "{{Scope.to}}"
+    }
+  },
+  "resolved": {
+    "error_message_path": "error.message"
+  }
+}
+```
+
+Your API must respond with status `200` and a JSON body describing the exported file. `download_url` is required:
+
+```json title="Data export response"
+{
+  "download_url": "https://your-api.com/files/export-123.csv",
+  "filename": "consumption-2026-01.csv",
+  "content_type": "text/csv",
+  "expires_at": "2026-01-20T12:00:00.000Z"
+}
+```
+
+Any other status is treated as an error. If `resolved.error_message_path` is set and resolves to a string in the error response body, that message is shown to the portal user instead of a generic error.
+
+#### Template Variables
+
+Data export hooks support the same variables as the data retrieval hooks:
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+- **`PortalUser.*`**: Access properties from the current portal user
+- **`Meter.*`**: Access properties of the meter, when the export is made in a meter context
+- **`AuthResponse.*`**: Access data from the authentication response
+- **`Entity.*`**: Access data from the context entities like `Contract`
+- **`Scope.from`** / **`Scope.to`**: The time range selected by the portal user (ISO 8601 format)
+
 ### Data Existence Check/Retrieval
 
 Sometimes it is desired to check against a third party system before allowing a user to register or self-assign business objects to their account.
@@ -633,5 +693,133 @@ Meter reading plausibility hooks support the standard template variables plus me
 - **`MeterCounter.*`**: Access properties of the meter register
 - **`Reading.*`**: Access properties of the submitted reading
 - **`CallResponse.*`**: Access data from the call response
+
+### Account Management
+
+Account management hooks replace the portal's own account self-service with a call to your system. This is useful when portal users' accounts are managed in an external system (e.g. an ERP or an identity provider) that must stay in sync.
+
+All account management hooks share the following behavior:
+
+- The default HTTP method is `POST`, and `call.url` and `call.headers` are required.
+- If no `call.body` is specified, a default JSON body with the portal user context is sent (see each hook below).
+- Your API must respond with a `2xx` status if the request was accepted. Any other status is treated as an error. If `resolved.error_message_path` is set and resolves to a string in the error response body, that message is shown to the portal user instead of a generic error.
+- An optional, localized `explanation` is shown to the portal user in the confirmation dialog. `en` is required, other languages are keyed by their ISO 3166-1 alpha-2 code.
+
+#### Change Email Hook
+
+Use the change email hook to hand the change of a portal user's email address over to your system. The `change_mode` controls what the portal does after your API accepted the request:
+
+- **`asynchronous`** (default): Your system takes over the email change entirely, most likely by sending the user instructions to confirm the new email address. The portal does not change the login email itself.
+- **`synchronous`**: Your system applies the email change immediately. After a `2xx` response, the portal also changes the portal user's login email right away, without sending a confirmation email. The user has to sign in again with the new email address afterwards.
+
+With `require_password_confirmation` (default `true`), the portal user must confirm their current password before your API is called. This is skipped for users who sign in through an identity provider (SSO), as they have no password to confirm.
+
+If no body is specified, `{ "portal_user_id": "...", "contact_id": "...", "old_email": "...", "new_email": "..." }` is sent.
+
+```json title="Change email hook"
+{
+  "id": "change-email",
+  "type": "changeEmail",
+  "change_mode": "asynchronous",
+  "require_password_confirmation": true,
+  "call": {
+    "url": "https://your-api.com/accounts/change-email",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "customer_number": "{{Contact.customer_number}}",
+      "old_email": "{{Input.old_email}}",
+      "new_email": "{{Input.new_email}}"
+    }
+  },
+  "resolved": {
+    "error_message_path": "error.message"
+  },
+  "explanation": {
+    "en": "You will receive an email with instructions to confirm your new email address.",
+    "de": "Du erhältst eine E-Mail mit Anweisungen, um deine neue E-Mail-Adresse zu bestätigen."
+  }
+}
+```
+
+#### Change Password Hook
+
+Use the change password hook to hand password changes over to your system. The portal does not change the user's password itself.
+
+- With `require_new_password: false` (default), the portal only asks the user to confirm (showing the configured `explanation`). Your system is expected to handle the rest, e.g. by sending the user a password reset email.
+- With `require_new_password: true`, the portal collects a new password and passes it to your API as `{{Input.new_password}}`.
+
+If no body is specified, `{ "portal_user_id": "...", "contact_id": "...", "email": "..." }` is sent, plus `new_password` when `require_new_password` is `true`.
+
+```json title="Change password hook"
+{
+  "id": "change-password",
+  "type": "changePassword",
+  "require_new_password": false,
+  "call": {
+    "url": "https://your-api.com/accounts/reset-password",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "customer_number": "{{Contact.customer_number}}",
+      "email": "{{PortalUser.email}}"
+    }
+  },
+  "explanation": {
+    "en": "You will receive an email with instructions to reset your password.",
+    "de": "Du erhältst eine E-Mail mit Anweisungen, um dein Passwort zurückzusetzen."
+  }
+}
+```
+
+#### Delete Account Hook
+
+Use the delete account hook to hand account deletion over to your system. The `deletion_mode` controls what the portal does after your API accepted the request:
+
+- **`synchronous`** (default): Your system deletes the user immediately. After a `2xx` response, the portal also deletes the portal user's epilot login.
+- **`asynchronous`**: Your system handles the deletion out-of-band. The portal does not delete anything immediately; cleanup is expected to happen later, e.g. via the user deletion API or webhooks.
+
+With `delete_contact`, the contact related to the portal user can also be deleted once the portal user was deleted. This only applies in `synchronous` mode:
+
+- **`none`** (default): The contact is left untouched.
+- **`soft`**: The contact is moved to the trash and can still be restored.
+- **`hard`**: The contact is permanently deleted.
+
+If no body is specified, `{ "portal_user_id": "...", "contact_id": "...", "email": "..." }` is sent.
+
+```json title="Delete account hook"
+{
+  "id": "delete-account",
+  "type": "deleteAccount",
+  "deletion_mode": "synchronous",
+  "delete_contact": "none",
+  "call": {
+    "url": "https://your-api.com/accounts/delete",
+    "headers": {
+      "Authorization": "Bearer {{Options.api_key}}"
+    },
+    "body": {
+      "customer_number": "{{Contact.customer_number}}",
+      "portal_user_id": "{{PortalUser._id}}"
+    }
+  },
+  "explanation": {
+    "en": "Your account deletion will be processed by our system. This may take a few days.",
+    "de": "Die Löschung deines Kontos wird von unserem System bearbeitet. Das kann einige Tage dauern."
+  }
+}
+```
+
+#### Template Variables
+
+Account management hooks support the standard template variables plus the request input:
+
+- **`Options.*`**: Access values from the app options configured during installation
+- **`Contact.*`**: Access properties from the current portal user's contact entity
+- **`PortalUser.*`**: Access properties from the current portal user
+- **`AuthResponse.*`**: Access data from the authentication response
+- **`Input.*`**: Values entered by the portal user — `Input.new_email` and `Input.old_email` for the change email hook, `Input.new_password` for the change password hook (only with `require_new_password: true`)
 
 For questions about portal extensions, [contact our developer support team](https://developers.epilot.cloud/contact).
