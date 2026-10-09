@@ -219,9 +219,13 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
   }'
 ```
 
-Closing a correlation twice is a no-op. A request with `correlation_complete: true` and no events of
-its own is valid only if the correlation already exists — you can close a correlation you opened
-earlier, but you cannot close one that was never opened.
+Closing a correlation twice is a no-op.
+
+You can also close a correlation you opened earlier with a request that carries **no events at all** —
+useful when the signal that the operation finished arrives on its own, with no data attached. That is
+the one case in which an empty `events` array is accepted: `correlation_complete: true` with an empty
+`events` array closes an existing correlation, while an empty `events` array without the flag is
+still rejected with 400.
 
 An event that arrives **after** the correlation was closed is still processed normally. It is counted
 as a late event and raises a `CORRELATION_LATE_EVENT` warning in monitoring, because by then the
