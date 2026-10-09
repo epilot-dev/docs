@@ -75,6 +75,9 @@
       "phase_progress": 0
     }
   },
+  "consents": {
+    "_isValid": true
+  },
   "_files": {
     "$relation": [
       {

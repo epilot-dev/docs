@@ -117,6 +117,9 @@
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"
     },
+    "consents": {
+      "$ref": "#/definitions/LocalConsents"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
@@ -264,6 +267,47 @@
           }
         }
       }
+    },
+    "LocalConsents": {
+      "type": "object",
+      "description": "Consent management",
+      "properties": {
+        "_isValid": {
+          "type": "boolean",
+          "example": true,
+          "description": "Whether all required consents are valid"
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "agreed": {
+            "type": "boolean",
+            "example": true
+          },
+          "topic": {
+            "type": "string",
+            "example": "privacy_policy"
+          },
+          "text": {
+            "type": "string",
+            "example": "I agree to the privacy policy"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "agreed",
+          "topic",
+          "text",
+          "time"
+        ]
+      },
+      "required": [
+        "_isValid"
+      ]
     },
     "WorkflowStatus": {
       "type": "string",
