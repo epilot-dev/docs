@@ -18,11 +18,11 @@
         "properties": {
           "workflow_definition_id": {
             "type": "string",
-            "description": "ID of the workflow definition running the process"
+            "description": "ID of the primary workflow's definition — the most recently updated running workflow on the opportunity, which need not be the grid process. Use `workflows` to find a specific process"
           },
           "workflow_status": {
             "type": "string",
-            "description": "Status of the workflow, e.g. `STARTED` while running, `DONE` once completed, `CLOSED` once cancelled"
+            "description": "Status of the primary workflow. A finished or cancelled workflow only shows here while no other workflow runs on the opportunity — read completion and cancellation from `workflows`"
           },
           "phase_id": {
             "type": "string",
@@ -42,14 +42,59 @@
           },
           "opportunity_status": {
             "type": "string",
-            "description": "Status of the opportunity, e.g. `open`, `in_progress`, `closed`, `cancelled`"
+            "description": "Status of the opportunity: `open`, `in_progress`, `closed`, `cancelled`, or an organization-specific value its workflow writes (e.g. the current phase name)"
+          },
+          "workflows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "definition_id": {
+                  "type": "string",
+                  "description": "ID of the workflow definition. Stable per blueprint and organization — identify the grid process by this"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the workflow definition"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Status of the workflow, e.g. `STARTED` while running, `DONE` once completed, `CLOSED` once cancelled"
+                },
+                "phase_id": {
+                  "type": "string",
+                  "description": "ID of the current workflow phase. Stable per workflow definition — match on this rather than the name"
+                },
+                "phase_name": {
+                  "type": "string",
+                  "description": "Name of the current workflow phase as configured by the organization"
+                },
+                "task_id": {
+                  "type": "string",
+                  "description": "ID of the current workflow task"
+                },
+                "task_name": {
+                  "type": "string",
+                  "description": "Name of the current workflow task"
+                },
+                "last_update_time": {
+                  "type": "string",
+                  "description": "When the workflow last changed"
+                }
+              },
+              "additionalProperties": false
+            },
+            "description": "Every workflow on the opportunity, running or finished, in no particular order. Identify the grid process by `definition_id`; its `status` turns `DONE` on completion and `CLOSED` on cancellation. Empty when the opportunity has no workflow"
           }
         },
+        "required": [
+          "workflows"
+        ],
         "additionalProperties": false,
-        "description": "Where the process stands when the event fires: the opportunity's primary workflow (status, current phase and task) and the opportunity status. Completion and cancellation show here — `workflow_status` / `opportunity_status`."
+        "description": "Where the process stands when the event fires: every workflow on the opportunity (`workflows`, with status, current phase and task), the primary workflow mirrored at the top level, and the opportunity status. Read completion and cancellation of a specific process from its entry in `workflows`."
       },
       "required": true,
-      "graph_source": "{\"workflow_definition_id\": opportunity.workflows.primary.definition_id, \"workflow_status\": opportunity.workflows.primary.status, \"phase_id\": opportunity.workflows.primary.phase_id, \"phase_name\": opportunity.workflows.primary.phase_name, \"task_id\": opportunity.workflows.primary.task_id, \"task_name\": opportunity.workflows.primary.task_name, \"opportunity_status\": opportunity.status}"
+      "graph_source": "{\n  \"workflow_definition_id\": opportunity.workflows.primary.definition_id,\n  \"workflow_status\": opportunity.workflows.primary.status,\n  \"phase_id\": opportunity.workflows.primary.phase_id,\n  \"phase_name\": opportunity.workflows.primary.phase_name,\n  \"task_id\": opportunity.workflows.primary.task_id,\n  \"task_name\": opportunity.workflows.primary.task_name,\n  \"opportunity_status\": opportunity.status,\n  \"workflows\": [$sift(opportunity.workflows, function($v, $k) { $k != \"primary\" }).*.{\n    \"definition_id\": definition_id,\n    \"name\": name,\n    \"status\": status,\n    \"phase_id\": phase_id,\n    \"phase_name\": phase_name,\n    \"task_id\": task_id,\n    \"task_name\": task_name,\n    \"last_update_time\": last_update_time\n  }]\n}"
     },
     "event_attachments": {
       "json_schema": {

@@ -26,7 +26,19 @@
     "phase_name": "string",
     "task_id": "string",
     "task_name": "string",
-    "opportunity_status": "string"
+    "opportunity_status": "string",
+    "workflows": [
+      {
+        "definition_id": "string",
+        "name": "string",
+        "status": "string",
+        "phase_id": "string",
+        "phase_name": "string",
+        "task_id": "string",
+        "task_name": "string",
+        "last_update_time": "string"
+      }
+    ]
   },
   "event_attachments": [
     {
