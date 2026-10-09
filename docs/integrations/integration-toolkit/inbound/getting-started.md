@@ -121,9 +121,15 @@ Events flow through the following pipeline:
 
 ![Processing Flow](/img/integrations/toolkit-processing.svg)
 
+Ingestion is asynchronous: the response means "accepted and queued", not "written". When an end
+customer is waiting for the push to land — portal self-registration, adding a contract — send the
+portal's correlation id with the request and let the portal wait on it. See
+[Interactive Registration](../interactive-registration.md).
+
 ## Next Steps
 
 - [Entity Mapping](./mapping.md) - Learn about field mappings and transformations
 - [Unique Identifiers](./unique-identifiers.md) - Configure entity lookup strategies
 - [Relations](./relations.md) - Link entities together
+- [Interactive Registration](../interactive-registration.md) - Push data an end customer is waiting for
 - [Examples](./examples.md) - See complete integration examples

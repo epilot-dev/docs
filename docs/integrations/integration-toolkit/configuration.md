@@ -129,6 +129,27 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 - `secure_proxy` — Route requests through epilot's secure proxy for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).
 :::
 
+### Inbound Use Case Options
+
+Beyond the mapping itself, an inbound use case's `configuration` accepts the following options.
+
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `direct` | boolean | `false` | Skip the mapping engine and accept entity-shaped payloads. See [Direct Mode](./inbound/direct-mode.md). |
+| `interactive` | `disabled`, `on_request`, `always` | `disabled` | Whether events of this use case may run on the interactive lane. See [Interactive Registration](./interactive-registration.md#enabling-it-on-the-use-case). |
+
+```json title="Allow the request to decide"
+{
+  "entities": [ "..." ],
+  "interactive": "on_request"
+}
+```
+
+With `on_request` — the normal setting — one mapping serves both the nightly batch and the
+registration push, and the inbound request decides which it is by sending `interactive: true`. With
+`disabled`, a request that asks for interactive is processed as bulk and told so per event; nothing
+is rejected. With `always`, every event of the use case is interactive.
+
 ### Enabling/Disabling a Use Case
 
 ```bash
