@@ -27,6 +27,7 @@ Most integrations start with inbound use cases (syncing master data into epilot)
 | [Sync Billing Events](#sync-billing-events) | [`billing_event`](/docs/entities/core-entities#billing_event), [`billing_account`](/docs/entities/core-entities#billing_account) | Invoices/payments posted in ERP |
 | [Sync Installment Schedule](#sync-installment-schedule) | [`billing_event`](/docs/entities/core-entities#billing_event), [`billing_account`](/docs/entities/core-entities#billing_account) | Installment plan (Abschlagsplan) created/changed in ERP |
 | [Sync Portal User](#sync-portal-user) | [`portal_user`](/docs/entities/core-entities#portal_user), [`contact`](/docs/entities/core-entities#contact) | Portal user registered or mapped |
+| [Interactive Registration](#interactive-registration) | [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account) | Portal self-registration or contract addition, while the end customer waits |
 
 ### Outbound (epilot to ERP)
 
@@ -336,6 +337,40 @@ flowchart LR
 
 :::info
 This use case is typically combined with [Keep Customer In Sync](#keep-customer-in-sync) — that one creates the **business partner** contact, and this one creates the **profile** contact and the `portal_user` that links the two.
+:::
+
+---
+
+### Interactive Registration
+
+Deliver the customer's data while the person is still waiting for it: portal self-registration, adding a contract or a customer account to an existing login, and public journeys that identify a customer. The difference to every other inbound use case is that someone is watching a spinner.
+
+```mermaid
+flowchart LR
+    U[End customer] -->|Identifiers| EP[epilot portal]
+    EP -->|Extension hook + correlation id| MW[Middle Layer]
+    MW -->|Validate| ERP[ERP System]
+    MW -->|POST /v3/erp/updates/events<br/>correlation_id, interactive| API[ERP Integration API]
+    EP -->|Wait on the correlation| API
+    API -->|Upsert| E[contact, billing_account, contract, meter]
+```
+
+**What happens in epilot:**
+- The portal mints a correlation id and passes it to your [extension hook](/docs/apps/components/portal-extension) together with the identifiers the end customer entered
+- Instead of polling entity search for data that may or may not be coming, the portal waits on that correlation id until the entities it needs exist — and the first matching entity is enough, so further data for the same customer may still be arriving
+- On success it links the contact and shows the contracts; on a closed correlation that never produced a contract it says so, instead of timing out silently
+
+**What happens in the ERP:**
+- Middle layer validates the identifiers in the ERP and answers the hook as it does today — or, when the customer cannot be found, with an error, pushing nothing
+- Middle layer pushes the customer's data to `/v3/erp/updates/events` with the portal's `correlation_id` and `interactive: true` — the only two fields required — reusing the existing inbound mappings. The id is the one the hook passed, unique to this identification; a fixed or constant correlation id sent today must be replaced by it
+- Strongly recommended: close the correlation with `correlation_complete: true`, the only way the portal learns that nothing more is coming — including when the ERP has the customer but not the whole bundle. Pushing one request after another, the last request carries it; pushing in parallel, it is a request of its own with no events, sent once every push was accepted
+
+**Core Entities:** [`contact`](/docs/entities/core-entities#contact), [`billing_account`](/docs/entities/core-entities#billing_account), [`contract`](/docs/entities/core-entities#contract), [`meter`](/docs/entities/core-entities#meter)
+
+**Typical unique identifier:** the portal can only select an entity by an attribute that is one of its target's configured `unique_ids` — for example `customer_number` or `contract_number` when the end customer types them. Anything else can never match, and the wait rejects it with 400.
+
+:::tip
+The full recipe, including the request and response contract, the failure cases, the `interactive` use case option, the rate limits and the Kafka variant, is on the [Interactive Registration](./interactive-registration.md) page.
 :::
 
 ---
