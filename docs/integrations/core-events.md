@@ -82,7 +82,19 @@ See [Event Catalog Trigger](/docs/automation/event-catalog-trigger) for configur
 
 ### Grid
 
+:::info Early access
+The grid events are in early access and only listed for organizations that have them enabled. Contact epilot to get access.
+:::
+
+Each grid process runs on one opportunity. The `…Requested` event fires when the request is submitted; the `…Progressed` event fires at any later step the organization's automation chooses (follow-up journeys, completion, cancellation) and carries a full snapshot of the process plus its current `stage` (workflow phase and status, opportunity status). Parties are delivered as `contacts` and `accounts`, with their role on the request in `relation_tags`.
+
 <EventSchemaViewer event="GridConnectionRequested" />
+
+<EventSchemaViewer event="GridConnectionProgressed" />
+
+<EventSchemaViewer event="GridPlantRegistrationRequested" />
+
+<EventSchemaViewer event="GridPlantRegistrationProgressed" />
 
 ### ERP Sync
 
