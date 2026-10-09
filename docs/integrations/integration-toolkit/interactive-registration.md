@@ -104,6 +104,12 @@ bulk pipeline free of the bookkeeping — so a push that carries the correlation
 interactive leaves nothing to wait on, and the portal answers `timeout` exactly as it would have
 before.
 
+**Use the id the hook passed, and only for that customer.** A `correlation_id` is unique per
+identification: one per hook call, never reused across customers or attempts, and never a constant.
+If your middleware sends a fixed or hard-coded correlation id today — some integrations built on
+Talend or similar tools put the same id on every push — replace it with the one the hook passes. See
+[Correlation ids](#correlation-ids) for the format and the limits.
+
 Your hook response does not change. The portal minted the id, so it already knows it, and when your
 response carries no `correlation_id` it waits on its own id.
 
@@ -121,11 +127,19 @@ usually serves both the nightly batch and the registration push, and only the re
 which.
 :::
 
-**Strongly recommended:** send `correlation_complete: true` on your **last** request for the
-customer. It is never required — the wait works without it — but without it the portal can never
-know whether you have finished. With it, a wait whose requirements cannot be met ends at once with the
-gap named ("account data arrived, no contract") instead of running out its budget, and a caller that
-needs everything can wait for the correlation to be complete rather than for the first match.
+**Strongly recommended:** close the correlation with `correlation_complete: true` once everything for
+the customer is sent. It is never required — the wait works without it — but without it the portal
+can never know whether you have finished. With it, a wait whose requirements cannot be met ends at
+once with the gap named ("account data arrived, no contract") instead of running out its budget, and a
+caller that needs everything can wait for the correlation to be complete rather than for the first
+match. Where the close goes depends on how you push:
+
+- **One request after another:** set `correlation_complete: true` on your last request.
+- **Several requests in parallel:** send every event, wait until each request has been accepted, then
+  send the close as its own request with no events.
+
+[Closing a correlation](#closing-a-correlation) has both patterns. If you cannot place the close
+correctly, leave it out: a close that arrives too early does more harm than no close.
 
 A request without `correlation_id` behaves exactly as it does today. Nothing breaks if you never adopt
 any of this; the portal simply keeps polling entity search.
@@ -137,8 +151,10 @@ made of how you handle the two failure cases, so get these right.
 
 ### The customer exists, but the bundle is incomplete
 
-Push what exists and set `correlation_complete: true` **on that same request**. Then answer the hook
-with success as usual, and name what is missing in your response for your own logs and support.
+Push what exists and close the correlation: set `correlation_complete: true` **on that same request**,
+or — if you push in parallel — send the close as its own request once every push was accepted (see
+[Closing a correlation](#closing-a-correlation)). Then answer the hook with success as usual, and name
+what is missing in your response for your own logs and support.
 
 ```bash title="Account found, no contract in the ERP yet — push and close in one request"
 curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
@@ -168,7 +184,8 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
 ```
 
 The portal's wait ends `complete` as soon as that one event is processed, its contract requirement
-unmet, and it can tell the end customer "we found your account, your contract is not in our system
+unmet — monitoring records that as `CORRELATION_CLOSED_INCOMPLETE`, naming the missing contract — and
+it can tell the end customer "we found your account, your contract is not in our system
 yet" — in seconds. The wrong move is to push the partial bundle and leave the correlation open in the
 hope that the rest turns up: the portal then waits out its whole budget and the end customer gets a
 timeout instead of an explanation.
@@ -257,9 +274,9 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
 
 | Field | Type | Meaning |
 |---|---|---|
-| `correlation_id` | string | The id the portal handed to your hook. Already part of the API — what is new is that it is now the key the portal waits on, so it must be the portal's id, or the id you returned from the hook if you use one of your own. |
+| `correlation_id` | string | The id the portal handed to your hook. Already part of the API — what is new is that it is now the key the portal waits on, so it must be the portal's id, or the id you returned from the hook if you use one of your own. Unique per identification, 1 to 255 characters of `[A-Za-z0-9_-]`; see [Correlation ids](#correlation-ids). |
 | `interactive` | boolean | Request the interactive lane for this request's events. |
-| `correlation_complete` | boolean | No further events will follow for this request's `correlation_id`. Send it on your **last** request only. |
+| `correlation_complete` | boolean | No further events will follow for this request's `correlation_id`. Send it once, when you are done: on your last request, or as its own request with no events if you push in parallel. |
 
 The response gains the correlation id and, per result, how the event was processed:
 
@@ -288,9 +305,27 @@ The two result fields answer different questions and are independent of each oth
   `deferred`. Over the rate limit an event is still `"interactive": true` but runs on
   `"lane": "default"` (or the organization's other normal lane); see [Rate limits](#rate-limits).
 
+### Correlation ids
+
+- **Unique per identification.** Use one id per hook call, for that customer only. Never reuse an id
+  across customers or attempts, and never send a constant. A reused id pours every registration into
+  one correlation, and every wait on it degrades.
+- **Format.** 1 to 255 characters of `[A-Za-z0-9_-]`; a UUID fits. The rule applies to every request
+  that can be waited on — `interactive: true` on the request or on an event, or
+  `correlation_complete` — and a request that breaks it is rejected with **400** naming the rule. The
+  wait's `correlation_id` parameter follows the same rule. Plain bulk requests keep accepting the ids
+  they accepted before, because nobody waits on them.
+- **At most 32 events per correlation.** A real registration is far below that. Once a correlation
+  has received 32 events, further events under its id are processed as plain bulk on the
+  organization's normal lane, with no processing record, so the wait cannot see them, and monitoring
+  raises `CORRELATION_EVENT_LIMIT_EXCEEDED` naming the correlation id. If you see that code, you are
+  almost certainly reusing an id.
+
 ### Closing a correlation
 
-Your last request closes the correlation:
+Where the close goes depends on how you push.
+
+**One request after another.** Your last request closes the correlation:
 
 ```bash title="Last push — contract, and close the correlation"
 curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
@@ -318,6 +353,26 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
   }'
 ```
 
+**Several requests in parallel.** If you send a bundle as parallel requests — one event each, within a
+second or two — there is no last request: whichever one carries the close may arrive before the
+others and turn them into late events. Send every event first, wait until each request has been
+accepted, then close the correlation with a request of its own that carries no events:
+
+```bash title="After every parallel push was accepted — close the correlation on its own"
+curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "integration_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "correlation_id": "018f8e9b-5a1b-7c4e-9b2a-4f0f6c1d7a21",
+    "correlation_complete": true,
+    "events": []
+  }'
+```
+
+"Accepted" means the request answered with success for every event. If any push is answered with a
+retry (a 422 with partial results, or a 429), retry it until it is accepted before you send the close.
+
 The rules:
 
 - `correlation_complete` closes the **request-level** `correlation_id`, and only that one. epilot never
@@ -326,8 +381,16 @@ The rules:
   raises `CORRELATION_ID_MISSING` in monitoring. Nothing is closed.
 - The correlation closes after the request's own events are registered, so they count as part of it.
   Closing twice is a no-op.
-- A request may carry **no events at all** when it sets `correlation_complete: true` — useful when the
-  signal that the operation finished arrives on its own, with no data attached. This is the one case
+- The close is applied only when **every** event of the request was accepted. A response that asks you
+  to retry — a 422 with partial results, or a 429 — closes nothing, so a close can never overtake
+  events that are still being retried.
+- A request that carries events of which **none** was processed as interactive — the use case does
+  not allow it, or the request left out `interactive` — neither creates nor closes the correlation.
+  Those events went to bulk, where the wait cannot see them, so the close is ignored and monitoring
+  raises `CORRELATION_CLOSE_IGNORED`.
+- A request may carry **no events at all** when it sets `correlation_complete: true` — the parallel
+  pattern above, or a signal that the operation finished that arrives on its own, with no data
+  attached. This is the one case
   in which an empty `events` array is accepted; without the flag, an empty `events` array is still a
   400.
 - A close for a correlation epilot has never seen **creates it closed** and returns 200. The portal's
@@ -492,11 +555,24 @@ That decides what a selector can name:
 :::caution A selector may only name a member of the target's `unique_ids`
 `slug[key=value]` matches a processed entity of that slug whose `unique_ids` contain the pair. Since
 `unique_ids` contains only the configured unique ids, **a selector on any other attribute can never
-match**. It does not fail loudly: there is no 400 and no error in the response, just a requirement that
-is never satisfied and a wait that runs to its budget and answers `timeout` — which looks exactly like
-a partner that did not deliver. Check the selector against the use case's configured `unique_ids`
-before you rely on it.
+match**, so the wait rejects it up front with **400**. The check is against the union of the
+`unique_ids` configured for that entity slug across all of the organization's inbound use cases, so a
+selector that some use case can satisfy is never rejected, and the check works before the correlation
+exists. A `wait_for_entities` entry whose slug no inbound use case writes is a 400 as well. Treat the
+400 as a configuration error to fix, not as a reason to retry.
 :::
+
+```json title="400 — a selector key that is not a configured unique id"
+{
+  "message": "wait_for_entities selector 'contact[email=anna.schmitz@example.de]' can never match: 'email' is not a unique id of 'contact' in any inbound use case of this organization. A selector can only name one of: customer_number",
+  "slug": "contact",
+  "rejected_key": "email",
+  "allowed_keys": ["customer_number"]
+}
+```
+
+When the slug itself is written by no inbound use case, `rejected_key` is absent and `allowed_keys` is
+empty.
 
 In the example integration, the contact target is keyed on `customer_number`, so the end customer's
 customer number makes an exact selector:
@@ -618,8 +694,8 @@ the kind of data that never came. Neither set can say that you have finished; on
 | Value | Meaning |
 |---|---|
 | `requirements_met` | Every requirement given — entity requirements, use case requirements, or both — is satisfied. The wait returns the moment this becomes true, **even if an unrelated event of the correlation failed**: a caller waiting for a contact and a contract has what it asked for. |
-| `complete` | The correlation is closed and every event received for it is done. This is the hard stop for a caller that wants everything — and it also ends a requirement wait that can no longer be satisfied, which is how the portal learns that you sent an account but no contract. |
-| `timeout` | The wait budget elapsed. The body still lists everything that landed so far; call again to continue waiting. |
+| `complete` | The correlation is closed and every event received for it is done. This is the hard stop for a caller that wants everything — and it also ends a requirement wait that can no longer be satisfied, which is how the portal learns that you sent an account but no contract. That ending raises `CORRELATION_CLOSED_INCOMPLETE` in monitoring, once per correlation, naming what is missing. |
+| `timeout` | The wait budget elapsed. The body still lists everything that landed so far; call again to continue waiting. The first wait that runs out on a correlation raises `CORRELATION_WAIT_TIMEOUT`; later ones on the same correlation do not, and a `wait=0` read never does. |
 | `error` | A requirement can no longer be satisfied, because an event it depends on failed non-retryably — or, when the caller named no requirements, the correlation closed with failures. |
 
 `errors[]` lists every failure in the correlation whatever the verdict, so a `requirements_met` that
@@ -793,8 +869,15 @@ id, and let the portal wait.
 **Do not open a correlation for a customer you could not find.** Answer the hook with an error and
 push nothing; see [When the ERP cannot deliver](#when-the-erp-cannot-deliver).
 
-**Do not select on an attribute that is not a configured unique id.** It never matches and never says
-so; see [Entity requirements](#entity-requirements-with-selectors-on-unique_ids).
+**Do not reuse a correlation id, or send a constant one.** One id per identification; see
+[Correlation ids](#correlation-ids).
+
+**Do not put the close on one of several parallel requests.** It may arrive before the others and
+turn them into late events. Close with a request of its own once every push was accepted, or leave the
+close out; see [Closing a correlation](#closing-a-correlation).
+
+**Do not select on an attribute that is not a configured unique id.** It can never match, so the wait
+rejects it with 400; see [Entity requirements](#entity-requirements-with-selectors-on-unique_ids).
 
 ## Monitoring
 
@@ -809,16 +892,21 @@ the `correlation_id`, so you can filter a single registration end to end:
 | `INTERACTIVE_CROSS_LANE_WRITE` | warning | An interactive write landed on an entity that another lane had written within the last 60 seconds — the same entity was in flight on two lanes at once, typically a bulk sync and a registration push for the same customer |
 | `CORRELATION_COMPLETED` | info | A correlation reached `complete`, with its event and entity counts and the ingest-to-complete duration |
 | `CORRELATION_CLOSED_EMPTY` | info | A correlation was closed without a single event — the partner said nothing is coming for this customer, including a close that created the correlation |
+| `CORRELATION_CLOSE_IGNORED` | warning | A request set `correlation_complete: true` but every one of its events went to bulk (the use case does not allow interactive processing, or `interactive` was left out), so the close was ignored and no correlation was created or closed |
+| `CORRELATION_CLOSED_INCOMPLETE` | warning | A correlation reached `complete` without the requirements of a wait on it met — the partner closed without sending what was asked for. Raised once per correlation; the details list what is missing as `missing_entities` and `missing_use_cases` |
 | `CORRELATION_LATE_EVENT` | warning | An event arrived after `correlation_complete` |
+| `CORRELATION_EVENT_LIMIT_EXCEEDED` | warning | A correlation had already received its 32 events, so further events under its id were processed as plain bulk with no processing record; the details name the correlation id |
 | `CORRELATION_ID_MISSING` | error | A request set `correlation_complete: true` without a request-level `correlation_id` and was rejected with 400; nothing was closed |
 | `CORRELATION_REQUIREMENT_FAILED` | error | A wait ended `error` because an event a requirement depends on failed non-retryably; the details name the requirement and the failing event |
-| `CORRELATION_WAIT_TIMEOUT` | warning | A wait with requirements ended by timeout, or by `complete` without them met. The details list what was not satisfied as `missing_entities` and `missing_use_cases` |
+| `CORRELATION_WAIT_TIMEOUT` | warning | The wait budget ran out before the requirements were met. Raised once per correlation, however many waits run out on it, and never by a `wait=0` read. The details list what was not satisfied as `missing_entities` and `missing_use_cases` |
 | `CORRELATION_WAIT_REJECTED` | warning | A wait was refused with 429 because the organization's or the global cap on concurrent waits was reached |
 
-The two codes that end a correlation without data are ranked deliberately. `CORRELATION_WAIT_TIMEOUT`
-is the warning: an end customer waited, and was shown nothing. `CORRELATION_CLOSED_EMPTY` is only
-info: a partner that closes a correlation it has nothing for is doing exactly what this page asks, and
-the portal got its answer at once.
+The codes that end a correlation without data are ranked deliberately. `CORRELATION_WAIT_TIMEOUT` and
+`CORRELATION_CLOSED_INCOMPLETE` are the warnings: an end customer waited and was shown nothing, because
+the budget ran out or because the partner closed without what was asked for. Each is raised once per
+correlation, so a portal that retries on the same correlation counts one customer, not one per
+attempt. `CORRELATION_CLOSED_EMPTY` is only info: a partner that closes a correlation it has nothing for
+is doing exactly what this page asks, and the portal got its answer at once.
 
 ## A runnable reference
 

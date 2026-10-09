@@ -362,12 +362,12 @@ flowchart LR
 
 **What happens in the ERP:**
 - Middle layer validates the identifiers in the ERP and answers the hook as it does today — or, when the customer cannot be found, with an error, pushing nothing
-- Middle layer pushes the customer's data to `/v3/erp/updates/events` with the portal's `correlation_id` and `interactive: true` — the only two fields required — reusing the existing inbound mappings
-- Strongly recommended: the last request carries `correlation_complete: true`, the only way the portal learns that nothing more is coming — including when the ERP has the customer but not the whole bundle
+- Middle layer pushes the customer's data to `/v3/erp/updates/events` with the portal's `correlation_id` and `interactive: true` — the only two fields required — reusing the existing inbound mappings. The id is the one the hook passed, unique to this identification; a fixed or constant correlation id sent today must be replaced by it
+- Strongly recommended: close the correlation with `correlation_complete: true`, the only way the portal learns that nothing more is coming — including when the ERP has the customer but not the whole bundle. Pushing one request after another, the last request carries it; pushing in parallel, it is a request of its own with no events, sent once every push was accepted
 
 **Core Entities:** [`contact`](/docs/entities/core-entities#contact), [`billing_account`](/docs/entities/core-entities#billing_account), [`contract`](/docs/entities/core-entities#contract), [`meter`](/docs/entities/core-entities#meter)
 
-**Typical unique identifier:** the portal can only select an entity by an attribute that is one of its target's configured `unique_ids` — for example `customer_number` or `contract_number` when the end customer types them. Anything else never matches.
+**Typical unique identifier:** the portal can only select an entity by an attribute that is one of its target's configured `unique_ids` — for example `customer_number` or `contract_number` when the end customer types them. Anything else can never match, and the wait rejects it with 400.
 
 :::tip
 The full recipe, including the request and response contract, the failure cases, the `interactive` use case option, the rate limits and the Kafka variant, is on the [Interactive Registration](./interactive-registration.md) page.
