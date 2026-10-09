@@ -1,18 +1,56 @@
 {
-  "event_name": "GridConnectionRequested",
-  "event_title": "Grid Connection Request",
-  "event_description": "A grid connection request (new connection or change of an existing connection — electricity, gas, water, district heating, fibre) was submitted. Explicitly triggered by Automation once the journey mapping has created the opportunity, its orders, parties and uploaded documents.",
+  "event_name": "GridPlantRegistrationProgressed",
+  "event_title": "Grid Plant Registration Progress",
+  "event_description": "A registration of generation and/or consumption plants with the grid operator reached a further step, was completed or was cancelled. Explicitly triggered by Automation; carries a full snapshot of the process and where it stands.",
   "event_version": "1.0",
   "event_tags": [
     "builtin",
     "grid",
     "automation",
     "opportunity",
-    "order",
     "attachment",
-    "grid-connection"
+    "plant-registration"
   ],
   "schema_fields": {
+    "stage": {
+      "json_schema": {
+        "type": "object",
+        "properties": {
+          "workflow_definition_id": {
+            "type": "string",
+            "description": "ID of the workflow definition running the process"
+          },
+          "workflow_status": {
+            "type": "string",
+            "description": "Status of the workflow, e.g. `STARTED` while running, `DONE` once completed, `CLOSED` once cancelled"
+          },
+          "phase_id": {
+            "type": "string",
+            "description": "ID of the current workflow phase. Stable per workflow definition — match on this rather than the name"
+          },
+          "phase_name": {
+            "type": "string",
+            "description": "Name of the current workflow phase as configured by the organization"
+          },
+          "task_id": {
+            "type": "string",
+            "description": "ID of the current workflow task"
+          },
+          "task_name": {
+            "type": "string",
+            "description": "Name of the current workflow task"
+          },
+          "opportunity_status": {
+            "type": "string",
+            "description": "Status of the opportunity, e.g. `open`, `in_progress`, `closed`, `cancelled`"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Where the process stands when the event fires: the opportunity's primary workflow (status, current phase and task) and the opportunity status. Completion and cancellation show here — `workflow_status` / `opportunity_status`."
+      },
+      "required": true,
+      "graph_source": "{\"workflow_definition_id\": opportunity.workflows.primary.definition_id, \"workflow_status\": opportunity.workflows.primary.status, \"phase_id\": opportunity.workflows.primary.phase_id, \"phase_name\": opportunity.workflows.primary.phase_name, \"task_id\": opportunity.workflows.primary.task_id, \"task_name\": opportunity.workflows.primary.task_name, \"opportunity_status\": opportunity.status}"
+    },
     "event_attachments": {
       "json_schema": {
         "type": "array",
@@ -99,7 +137,7 @@
           ],
           "additionalProperties": false
         },
-        "description": "Every file related to the opportunity — site plans, floor plans, route plans, land-register extracts, load balances, powers of attorney. Empty when the request carries none. Consumers identify a given upload via `relation_tags` (the journey upload block tags) / `_tags`."
+        "description": "Every file related to the opportunity — the documents uploaded by the start journey and every follow-up journey. Empty when the process carries none. Consumers identify a given upload via `relation_tags` (the journey upload block tags) / `_tags`."
       },
       "required": true,
       "graph_source": "[opportunity_files.{\"entity_id\": _id, \"filename\": filename, \"mime_type\": mime_type, \"size_bytes\": size_bytes, \"s3ref\": s3ref, \"version_index\": ($count(versions) > 0 ? $count(versions) - 1 : 0), \"readable_size\": readable_size, \"_tags\": _tags, \"relation_tags\": relation_tags, \"category\": category, \"file_date\": file_date, \"_created_at\": _created_at}]"
@@ -113,9 +151,9 @@
         "cardinality": "one"
       },
       {
-        "id": "submission",
+        "id": "submissions",
         "schema": "submission",
-        "cardinality": "one",
+        "cardinality": "many",
         "fields": [
           "!token_claims",
           "!_historyIndexes",
@@ -135,11 +173,6 @@
         "cardinality": "many"
       },
       {
-        "id": "orders",
-        "schema": "order",
-        "cardinality": "many"
-      },
-      {
         "id": "opportunity_files",
         "schema": "file",
         "cardinality": "many"
@@ -148,7 +181,7 @@
     "edges": [
       {
         "from": "opportunity",
-        "to": "submission"
+        "to": "submissions"
       },
       {
         "from": "opportunity",
@@ -157,10 +190,6 @@
       {
         "from": "opportunity",
         "to": "accounts"
-      },
-      {
-        "from": "opportunity",
-        "to": "orders"
       },
       {
         "from": "opportunity",

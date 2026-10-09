@@ -1,16 +1,15 @@
 {
-  "event_name": "GridConnectionRequested",
-  "event_title": "Grid Connection Request",
-  "event_description": "A grid connection request (new connection or change of an existing connection — electricity, gas, water, district heating, fibre) was submitted. Explicitly triggered by Automation once the journey mapping has created the opportunity, its orders, parties and uploaded documents.",
+  "event_name": "GridPlantRegistrationRequested",
+  "event_title": "Grid Plant Registration Request",
+  "event_description": "A registration of generation and/or consumption plants (PV, storage, heat pump, charging point, …) with the grid operator was submitted. Explicitly triggered by Automation once the journey mapping has created the opportunity, its parties and uploaded documents.",
   "event_version": "1.0",
   "event_tags": [
     "builtin",
     "grid",
     "automation",
     "opportunity",
-    "order",
     "attachment",
-    "grid-connection"
+    "plant-registration"
   ],
   "schema_fields": {
     "event_attachments": {
@@ -99,7 +98,7 @@
           ],
           "additionalProperties": false
         },
-        "description": "Every file related to the opportunity — site plans, floor plans, route plans, land-register extracts, load balances, powers of attorney. Empty when the request carries none. Consumers identify a given upload via `relation_tags` (the journey upload block tags) / `_tags`."
+        "description": "Every file related to the opportunity — data sheets, site plans, certificates, further documents. Empty when the registration carries none. Consumers identify a given upload via `relation_tags` (the journey upload block tags) / `_tags`."
       },
       "required": true,
       "graph_source": "[opportunity_files.{\"entity_id\": _id, \"filename\": filename, \"mime_type\": mime_type, \"size_bytes\": size_bytes, \"s3ref\": s3ref, \"version_index\": ($count(versions) > 0 ? $count(versions) - 1 : 0), \"readable_size\": readable_size, \"_tags\": _tags, \"relation_tags\": relation_tags, \"category\": category, \"file_date\": file_date, \"_created_at\": _created_at}]"
@@ -135,11 +134,6 @@
         "cardinality": "many"
       },
       {
-        "id": "orders",
-        "schema": "order",
-        "cardinality": "many"
-      },
-      {
         "id": "opportunity_files",
         "schema": "file",
         "cardinality": "many"
@@ -157,10 +151,6 @@
       {
         "from": "opportunity",
         "to": "accounts"
-      },
-      {
-        "from": "opportunity",
-        "to": "orders"
       },
       {
         "from": "opportunity",
