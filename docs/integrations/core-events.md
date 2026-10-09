@@ -86,7 +86,7 @@ See [Event Catalog Trigger](/docs/automation/event-catalog-trigger) for configur
 The grid events are in early access and only listed for organizations that have them enabled. Contact epilot to get access.
 :::
 
-Each grid process runs on one opportunity. The `…Requested` event fires when the request is submitted; the `…Progressed` event fires at any later step the organization's automation chooses (follow-up journeys, completion, cancellation) and carries a full snapshot of the process plus its current `stage` (workflow phase and status, opportunity status). Parties are delivered as `contacts` and `accounts`, with their role on the request in `relation_tags`.
+Each grid process runs on one opportunity. The `…Requested` event fires when the request is submitted; the `…Progressed` event fires at any later step the organization's automation chooses (follow-up journeys, completion, cancellation) and carries a full snapshot of the process plus its current `stage`: every workflow on the opportunity (`stage.workflows`, with status, phase and task) and the opportunity status. An opportunity often runs several workflows, so identify the grid process by its `definition_id` in `stage.workflows` and read its completion (`DONE`) or cancellation (`CLOSED`) there — the top-level workflow fields only mirror the most recently updated running workflow. Parties are delivered as `contacts` and `accounts`, with their role on the request in `relation_tags`.
 
 <EventSchemaViewer event="GridConnectionRequested" />
 
