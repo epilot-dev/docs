@@ -161,7 +161,7 @@ Push data from your ERP into epilot. Typical flows:
 
 [Inbound Integration Guide](./inbound/getting-started.md)
 
-Inbound ingestion is asynchronous by design. For the flows where an end customer is waiting for the push to land — portal self-registration, adding a contract — [Interactive Registration](./interactive-registration.md) adds a correlation-id contract, a dedicated processing lane and a status endpoint the portal waits on, so nobody has to guess whether the data is still coming.
+Inbound ingestion is asynchronous by design. For the flows where an end customer is waiting for the push to land — portal self-registration, adding a contract — [Interactive Registration](./interactive-registration.md) adds a correlation-id contract, a dedicated processing lane and status endpoints the portal waits on, so nobody has to guess whether the data is still coming.
 
 ### Outbound (epilot to ERP)
 

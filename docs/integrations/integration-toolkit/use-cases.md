@@ -357,20 +357,20 @@ flowchart LR
 
 **What happens in epilot:**
 - The portal mints a correlation id and passes it to your [extension hook](/docs/apps/components/portal-extension) together with the identifiers the end customer entered
-- Instead of polling entity search for data that may or may not be coming, the portal waits on that correlation id until the entities it needs exist
-- On success it links the returned contact and shows the contracts; on a closed correlation that never produced a contract it says so, instead of timing out silently
+- Instead of polling entity search for data that may or may not be coming, the portal waits on that correlation id until the entities it needs exist — and the first matching entity is enough, so further data for the same customer may still be arriving
+- On success it links the contact and shows the contracts; on a closed correlation that never produced a contract it says so, instead of timing out silently
 
 **What happens in the ERP:**
-- Middle layer validates the identifiers in the ERP and answers the hook with `{ "correlation_id": "..." }`
-- Middle layer pushes the customer's data to `/v3/erp/updates/events` with that same `correlation_id` and `interactive: true`, reusing the existing inbound mappings
-- The last request carries `correlation_complete: true`, so the portal learns immediately when nothing more is coming
+- Middle layer validates the identifiers in the ERP and answers the hook as it does today — or, when the customer cannot be found, with an error, pushing nothing
+- Middle layer pushes the customer's data to `/v3/erp/updates/events` with the portal's `correlation_id` and `interactive: true` — the only two fields required — reusing the existing inbound mappings
+- Strongly recommended: the last request carries `correlation_complete: true`, the only way the portal learns that nothing more is coming — including when the ERP has the customer but not the whole bundle
 
 **Core Entities:** [`contact`](/docs/entities/core-entities#contact), [`billing_account`](/docs/entities/core-entities#billing_account), [`contract`](/docs/entities/core-entities#contract), [`meter`](/docs/entities/core-entities#meter)
 
-**Typical unique identifier:** whatever the end customer typed — `customer_number`, `contract_number`, `meter_number` — plus the portal user's identity id where the mapping writes one
+**Typical unique identifier:** the portal can only select an entity by an attribute that is one of its target's configured `unique_ids` — for example `customer_number` or `contract_number` when the end customer types them. Anything else never matches.
 
 :::tip
-The full recipe, including the request and response contract, the `interactive` use case option, the rate limits and the Kafka variant, is on the [Interactive Registration](./interactive-registration.md) page.
+The full recipe, including the request and response contract, the failure cases, the `interactive` use case option, the rate limits and the Kafka variant, is on the [Interactive Registration](./interactive-registration.md) page.
 :::
 
 ---

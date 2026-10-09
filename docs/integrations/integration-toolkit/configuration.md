@@ -150,6 +150,11 @@ registration push, and the inbound request decides which it is by sending `inter
 `disabled`, a request that asks for interactive is processed as bulk and told so per event; nothing
 is rejected. With `always`, every event of the use case is interactive.
 
+If a caller is going to wait on your use cases by slug (`wait_for_use_cases`), model one inbound use
+case per partner event type and give every use case a slug: a use case that maps several kinds of
+message cannot tell them apart, and one without a slug cannot be named at all. See
+[Interactive Registration](./interactive-registration.md#one-use-case-per-partner-event-type).
+
 ### Enabling/Disabling a Use Case
 
 ```bash
