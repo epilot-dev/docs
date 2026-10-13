@@ -467,7 +467,7 @@ needs has arrived.
 |---|---|
 | `correlation_id` | Required. The correlation to look at. |
 | `wait` | Seconds to wait, `0` to `25`. Omit or `0` for an immediate answer. The ceiling is 25 s because the HTTP API cuts off at 30 s. A value outside the range is rejected with **400** naming the maximum, not silently clamped. |
-| `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. Repeat the parameter for several, or separate them with commas. |
+| `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. Repeat the parameter for several, or separate them with commas. A selector value matches ignoring case and surrounding whitespace, like entity lookup. |
 | `wait_for_use_cases` | Inbound **use case slugs**. Repeat the parameter or separate with commas. |
 
 Both requirement sets are optional, and both are only valid together with `correlation_id` — sending
@@ -598,6 +598,11 @@ the final `]`, so a value may itself contain `=` and `]`. The value is percent-d
 split. To pass a value that contains a comma, either repeat the parameter — one requirement per
 occurrence, which avoids the comma separator altogether — or percent-encode the comma. The
 `curl -G --data-urlencode` form above encodes for you.
+
+**Value matching.** The value is compared the way the toolkit's own entity lookup compares unique ids:
+ignoring letter case and surrounding whitespace on both sides, so `contact[customer_number=ab-1001]`
+matches a contact stored with ` AB-1001 `. Whitespace inside the value stays significant: `MELO 001`
+does not match `MELO001`.
 
 #### Use case requirements
 
