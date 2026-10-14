@@ -184,7 +184,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
 ```
 
 The portal's wait ends `complete` as soon as that one event is processed, its contract requirement
-unmet — monitoring records that as `CORRELATION_CLOSED_INCOMPLETE`, naming the missing contract — and
+unmet — the wait raises `CORRELATION_CLOSED_INCOMPLETE` in monitoring, naming the missing contract — and
 it can tell the end customer "we found your account, your contract is not in our system
 yet" — in seconds. The wrong move is to push the partial bundle and leave the correlation open in the
 hope that the rest turns up: the portal then waits out its whole budget and the end customer gets a
@@ -444,7 +444,14 @@ waits.
 ```
 
 `status` is `accepted`, `processing`, `done`, `partial` (a non-retryable failure after some writes
-succeeded) or `error`. `writes_total` and `writes_done` count the entity writes the event fanned out
+succeeded) or `error` (a non-retryable failure with nothing written). An event that cannot write what
+its use case describes is a failure, not a success with nothing to do: the use case is disabled
+(`USE_CASE_DISABLED`), it has no configuration for the event (`EVENT_NOT_CONFIGURED`), or the mapping
+could not extract an entity or a field it should have written. Such an event ends `error`, or
+`partial` when other writes of it succeeded. An event that the mapping deliberately filters out
+writes nothing and is still `done`.
+
+`writes_total` and `writes_done` count the entity writes the event fanned out
 into, including follow-up writes such as stub creates, so `writes_done == writes_total` on a `done`
 record means the whole tree is finished — not just the first write. A write that found the entity
 already as described still counts, and appears in `entities` with `"operation": "unchanged"`.
@@ -466,7 +473,7 @@ needs has arrived.
 | Parameter | Meaning |
 |---|---|
 | `correlation_id` | Required. The correlation to look at. |
-| `wait` | Seconds to wait, `0` to `25`. Omit or `0` for an immediate answer. The ceiling is 25 s because the HTTP API cuts off at 30 s. A value outside the range is rejected with **400** naming the maximum, not silently clamped. |
+| `wait` | Seconds to wait, `0` to `25`. Omit or `0` for an immediate answer, which reads `completion: "timeout"` while nothing is decided yet. The ceiling is 25 s because the HTTP API cuts off at 30 s. A value outside the range is rejected with **400** naming the maximum, not silently clamped. |
 | `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. **One requirement per occurrence**: repeat the parameter for several. An occurrence is never split, so a selector value may contain commas. A selector value matches ignoring case and surrounding whitespace, like entity lookup. See [Selector syntax and encoding](#selector-syntax-and-encoding). |
 | `wait_for_use_cases` | Inbound **use case slugs**. Repeat the parameter, or separate the slugs with commas in one occurrence. |
 
@@ -538,9 +545,16 @@ finished — not when the event was received. Anything looser would be a lie: a 
 is ready" while the write is still queued would read an entity that does not exist yet, which is the
 failure mode this whole page exists to remove.
 
-An event that ends in a non-retryable error resolves its requirement too, into
-`completion: "error"`. A wait never hangs on a failed event waiting for something that can no longer
-come.
+A failed event does not always end the wait at once:
+
+- A **use case requirement** resolves into `completion: "error"` as soon as every event of that use
+  case received so far has ended in error.
+- An **entity requirement** cannot be traced to a single event, so it resolves into `error` only once
+  the correlation is **complete** — you closed it with `correlation_complete` and every event finished —
+  with the entity still missing and an event failed. On a correlation that is still open, a wait on an
+  entity whose event failed runs to its budget and answers `timeout`, although the failure is in
+  `errors[]` from the moment it happens. Closing the correlation is what turns that into an immediate
+  `error`.
 
 #### Entity requirements, with selectors on `unique_ids`
 
@@ -671,9 +685,11 @@ the ingest event. That is deliberate: the v3 events endpoint recommends `use_cas
 slug is unique within its integration and immutable once set. `event_name` is partner vocabulary and
 a fallback; it is not a stable key for a requirement.
 
-A requirement is met when **at least one event of that use case slug is done**. There are no
-selectors on use case slugs in this version. The response's `use_cases` array gives the per-use-case
-summary so a caller can see which side of the contract is still open.
+A requirement is met when **at least one event of that use case slug is done**. An event that ends
+`partial` does not meet it: for a use case requirement, `partial` counts as an error, because part of
+what the use case should have written is missing. There are no selectors on use case slugs in this
+version. The response's `use_cases` array gives the per-use-case summary so a caller can see which side
+of the contract is still open.
 
 #### One use case per partner event type
 
@@ -758,25 +774,31 @@ the kind of data that never came. Neither set can say that you have finished; on
 | Value | Meaning |
 |---|---|
 | `requirements_met` | Every requirement given — entity requirements, use case requirements, or both — is satisfied. The wait returns the moment this becomes true, **even if an unrelated event of the correlation failed**: a caller waiting for a contact and a contract has what it asked for. |
-| `complete` | The correlation is closed and every event received for it is done. This is the hard stop for a caller that wants everything — and it also ends a requirement wait that can no longer be satisfied, which is how the portal learns that you sent an account but no contract. That ending raises `CORRELATION_CLOSED_INCOMPLETE` in monitoring, once per correlation, naming what is missing. |
-| `timeout` | The wait budget elapsed. The body still lists everything that landed so far; call again to continue waiting. The first wait that runs out on a correlation raises `CORRELATION_WAIT_TIMEOUT`; later ones on the same correlation do not, and a `wait=0` read never does. |
-| `error` | A requirement can no longer be satisfied, because an event it depends on failed non-retryably — or, when the caller named no requirements, the correlation closed with failures. |
+| `complete` | The correlation is closed and every event received for it is done. This is the hard stop for a caller that wants everything — and it also ends a requirement wait that can no longer be satisfied, which is how the portal learns that you sent an account but no contract. A wait (`wait` above 0) that ends this way raises `CORRELATION_CLOSED_INCOMPLETE` in monitoring, once per correlation, naming what is missing; a `wait=0` read that sees the same state raises nothing. |
+| `timeout` | The wait budget elapsed, or — for a `wait=0` read — nothing is decided yet. The body still lists everything that landed so far; call again to continue waiting. The first wait that runs out on a correlation raises `CORRELATION_WAIT_TIMEOUT`; later ones on the same correlation do not, and a `wait=0` read never does. |
+| `error` | A requirement can no longer be satisfied: every event of a required use case failed, or the correlation is complete with a required entity missing and an event failed (see [What "arrived" means](#what-arrived-means)). When the caller named no requirements: the correlation is complete and an event of it failed. |
+
+**Once a correlation is complete, its answer is final.** The verdict is fixed at the moment the
+correlation becomes complete. An event that arrives after that is still processed and counted in
+`late_events`, and raises `CORRELATION_LATE_EVENT`, but it never changes `completion` — a waiter that
+was told `complete` or `requirements_met` is never contradicted by a later read.
 
 `errors[]` lists every failure in the correlation whatever the verdict, so a `requirements_met` that
 ignored an unrelated failure still tells you about it. If the contract event of the example had
-arrived without a contract number, the wait for `contract` would end like this:
+linked its billing account by an `_id` that does not exist, a wait for the `contract` use case
+(`wait_for_use_cases=contract`) would end like this:
 
 ```json title="Response (excerpt) — a requirement that can no longer be met"
 {
   "completion": "error",
   "use_cases": [
-    { "use_case_slug": "customer_account", "received": 1, "done": 1, "error": 0 },
-    { "use_case_slug": "contract", "received": 1, "done": 0, "error": 1 }
+    { "use_case_slug": "contract", "received": 1, "done": 0, "error": 1 },
+    { "use_case_slug": "customer_account", "received": 1, "done": 1, "error": 0 }
   ],
   "errors": [
     {
-      "code": "MISSING_UNIQUE_IDENTIFIERS",
-      "message": "contract: unique identifier contract_number is missing",
+      "code": "ENTITY_REFERENCE_NOT_FOUND",
+      "message": "Referenced entity 7d2e4c19-0b6a-4f3e-9a51-c8e2d0f4b6a7 not found (expected schema 'billing_account')",
       "event_id": "0199c3f5-1b07-7a2e-8d44-9e3c6f0a2b18",
       "occurred_at": "2026-10-09T09:05:32.640Z"
     }
@@ -784,12 +806,17 @@ arrived without a contract number, the wait for `contract` would end like this:
 }
 ```
 
+An event that lacks the unique identifiers its target needs never gets this far: ingest rejects it
+with **422** before anything is recorded, so it never reaches the correlation.
+
 There is no quiet-window heuristic: with no requirements and no close, a wait runs to its budget and
 then returns `timeout`.
 
 A correlation id that epilot has never seen — or one that belongs to non-interactive traffic — comes
-back as `events_received: 0, closed: false`. The caller cannot tell "not yet" from "never", which is
-exactly the ambiguity `correlation_complete` exists to remove.
+back as `events_received: 0, closed: false` with `completion: "timeout"`. Such a wait does not hold a
+long poll for its budget: it answers immediately, at most after a short grace period, and the caller
+calls again. The caller cannot tell "not yet" from "never", which is exactly the ambiguity
+`correlation_complete` exists to remove.
 
 :::note Concurrent waits are capped
 Long polls are limited per organization and globally. Past the cap the call answers **429** with a
