@@ -122,9 +122,12 @@ body, and the portal waits on yours instead of its own.
 If an inbound use case exists only to serve registrations, epilot can set it to
 `interactive: "always"` (see [Enabling it on the use case](#enabling-it-on-the-use-case)). Every event
 of that use case is then interactive whether the request says so or not, and your part shrinks to the
-`correlation_id` alone. Sending `interactive: true` yourself is the default because one mapping
-usually serves both the nightly batch and the registration push, and only the request knows which is
-which.
+`correlation_id` alone. That includes requests without the flag, events that send
+`interactive: false`, and requests without a correlation id, which get a generated one — and every
+such event is charged to the organization's interactive budget (see [Rate limits](#rate-limits)). A
+bulk sync routed to an `always` use case therefore drains the budget the registrations need. Sending
+`interactive: true` yourself is the default because one mapping usually serves both the nightly batch
+and the registration push, and only the request knows which is which.
 :::
 
 **Strongly recommended:** close the correlation with `correlation_complete: true` once everything for
@@ -141,8 +144,11 @@ match. Where the close goes depends on how you push:
 [Closing a correlation](#closing-a-correlation) has both patterns. If you cannot place the close
 correctly, leave it out: a close that arrives too early does more harm than no close.
 
-A request without `correlation_id` behaves exactly as it does today. Nothing breaks if you never adopt
-any of this; the portal simply keeps polling entity search.
+A request that does not ask for interactive processing is processed exactly as before. The one visible
+change is that every v3 response now carries a `correlation_id` — yours, or a generated one when you
+sent none. The exception is a use case set to `interactive: "always"`, whose events are interactive
+whatever the request says. Nothing breaks if you never adopt any of this; the portal simply keeps
+polling entity search.
 
 ## When the ERP cannot deliver
 
@@ -217,7 +223,7 @@ registration push, so the use case grants permission and the request decides.
 |---|---|
 | `disabled` (default) | The events are processed as bulk. Each result says `"interactive": false` with the message `use case does not allow interactive processing`, no processing record is written, and an `INTERACTIVE_NOT_ALLOWED` info event appears in monitoring. Nothing is rejected. |
 | `on_request` | The request's `interactive: true` selects the interactive lane. This is the normal setting. |
-| `always` | Every event of this use case is interactive, whether the request asks or not. Use it for a use case that exists only to serve registrations. The per-organization rate limit still applies. |
+| `always` | Every event of this use case is interactive, whether the request asks or not — including requests without the flag, events that send `interactive: false` and requests without a correlation id (which get a generated one). Every one of those events is charged to the organization's interactive budget. Use it only for a use case that exists solely to serve registrations. |
 
 The option is also exposed in the Integration Hub on the inbound use case. See
 [Use Case Configuration](./configuration.md#use-case-configuration) for the surrounding contract.
@@ -300,7 +306,15 @@ wants the lane, without a portal in the loop, still gets an id it can query late
 The two result fields answer different questions and are independent of each other:
 
 - `interactive` means **processed as interactive**: a processing record was written and the wait works
-  for this event. It is `false` only when the use case does not allow interactive processing.
+  for this event. It is `false`, with a `message` saying why, when
+  - the use case does not allow interactive processing;
+  - the correlation already holds its 32 events (see [Correlation ids](#correlation-ids));
+  - the event belongs to an `always` use case and its correlation id breaks the
+    [id format](#correlation-ids) — the request did not ask for interactive, so it is not rejected;
+  - the processing-state store is unavailable, so no record could be written.
+
+  In every case the event is processed as bulk on the organization's normal lane, where the wait
+  cannot see it. Nothing is rejected.
 - `lane` is the queue that actually carried the event — `interactive`, `priority`, `default` or
   `deferred`. Over the rate limit an event is still `"interactive": true` but runs on
   `"lane": "default"` (or the organization's other normal lane); see [Rate limits](#rate-limits).
@@ -373,6 +387,11 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
 "Accepted" means the request answered with success for every event. If any push is answered with a
 retry (a 422 with partial results, or a 429), retry it until it is accepted before you send the close.
 
+**Give every event a `deduplication_id`** whenever you may retry the request — which includes every
+request that closes a correlation. Without one, a retried event is a new event to epilot: it is
+processed and counted a second time, and a closing request whose response was lost cannot be told
+apart from a new one.
+
 The rules:
 
 - `correlation_complete` closes the **request-level** `correlation_id`, and only that one. epilot never
@@ -383,11 +402,20 @@ The rules:
   Closing twice is a no-op.
 - The close is applied only when **every** event of the request was accepted. A response that asks you
   to retry — a 422 with partial results, or a 429 — closes nothing, so a close can never overtake
-  events that are still being retried.
+  events that are still being retried. Monitoring raises `CORRELATION_CLOSE_IGNORED`.
+- **A retried closing request still closes**, even when every one of its events is a duplicate. If the
+  response to your closing request was lost and you send it again with the same `deduplication_id`s,
+  the events are skipped as duplicates and the close is applied to the correlation they were
+  registered under the first time.
+- **A close beyond the cap still closes.** When some or all of the request's events went over the
+  correlation's 32 events and were processed as plain bulk, the correlation exists, so it is closed.
 - A request that carries events of which **none** was processed as interactive — the use case does
   not allow it, or the request left out `interactive` — neither creates nor closes the correlation.
   Those events went to bulk, where the wait cannot see them, so the close is ignored and monitoring
   raises `CORRELATION_CLOSE_IGNORED`.
+- A request that **mixes** interactive and bulk events — `interactive` set per event, or events for a
+  use case that does not allow it next to one that does — closes the correlation. `complete` then
+  covers only its interactive events: the bulk ones are processed, but the wait never sees them.
 - A request may carry **no events at all** when it sets `correlation_complete: true` — the parallel
   pattern above, or a signal that the operation finished that arrives on its own, with no data
   attached. This is the one case
@@ -399,7 +427,8 @@ The rules:
 
 An event that arrives **after** the correlation was closed is still processed normally. It is counted
 as a late event and raises a `CORRELATION_LATE_EVENT` warning in monitoring, because by then the
-portal has usually already answered the end customer.
+portal has usually already answered the end customer. Once the correlation is complete, a late event
+does not change its answer; see [Values of `completion`](#values-of-completion).
 
 ## Checking what landed
 
@@ -939,7 +968,8 @@ has to hold the completion flag until the earlier offsets are through. Keep one 
 ## What not to do
 
 **Do not try to make the ingest call synchronous.** `wait` on `POST /v3/erp/updates/events` is not
-supported and returns **400**. Ingest validates, enqueues and answers; it never blocks on processing.
+supported: a `wait` field on the request or on an event is ignored, and the request is processed as if
+it were not there. Ingest validates, enqueues and answers; it never blocks on processing.
 That is deliberate: the ordering, deduplication and backpressure guarantees of the inbound pipeline
 all come from the fact that nothing waits inside the write path.
 
@@ -973,22 +1003,23 @@ rejects it with 400; see [Entity requirements](#entity-requirements-with-selecto
 ## Monitoring
 
 Interactive traffic raises its own codes in the
-[Monitoring tab](./monitoring/overview.md) alongside the usual entity events. Every one of them carries
-the `correlation_id`, so you can filter a single registration end to end:
+[Monitoring tab](./monitoring/overview.md) alongside the usual entity events. Every one of them except
+`CORRELATION_ID_MISSING` carries the `correlation_id`, so you can filter a single registration end to
+end:
 
 | Code | Level | Emitted when |
 |---|---|---|
 | `INTERACTIVE_RATE_LIMITED` | warning | An interactive request exceeded the organization's budget and ran on the normal lane |
 | `INTERACTIVE_NOT_ALLOWED` | info | `interactive: true` arrived for a use case configured `interactive: disabled` |
-| `INTERACTIVE_CROSS_LANE_WRITE` | warning | An interactive write landed on an entity that another lane had written within the last 60 seconds — the same entity was in flight on two lanes at once, typically a bulk sync and a registration push for the same customer |
+| `INTERACTIVE_CROSS_LANE_WRITE` | warning | The same entity was written on the interactive lane and on another lane within 60 seconds of each other, in either order — the entity was in flight on two lanes at once, typically a bulk sync and a registration push for the same customer |
 | `CORRELATION_COMPLETED` | info | A correlation reached `complete`, with its event and entity counts and the ingest-to-complete duration |
 | `CORRELATION_CLOSED_EMPTY` | info | A correlation was closed without a single event — the partner said nothing is coming for this customer, including a close that created the correlation |
-| `CORRELATION_CLOSE_IGNORED` | warning | A request set `correlation_complete: true` but every one of its events went to bulk (the use case does not allow interactive processing, or `interactive` was left out), so the close was ignored and no correlation was created or closed |
-| `CORRELATION_CLOSED_INCOMPLETE` | warning | A correlation reached `complete` without the requirements of a wait on it met — the partner closed without sending what was asked for. Raised once per correlation; the details list what is missing as `missing_entities` and `missing_use_cases` |
-| `CORRELATION_LATE_EVENT` | warning | An event arrived after `correlation_complete` |
+| `CORRELATION_CLOSE_IGNORED` | warning | A request set `correlation_complete: true` but the close was not applied: the response asked for a retry (a 422 with partial results, or a 429), or every one of its events went to bulk (the use case does not allow interactive processing, or `interactive` was left out). No correlation was created or closed; the details give the reason |
+| `CORRELATION_CLOSED_INCOMPLETE` | warning | A wait (`wait` above 0) ended `complete` without its requirements met — the partner closed without sending what was asked for. Raised once per correlation, never by a `wait=0` read; the details list what is missing as `missing_entities` and `missing_use_cases` |
+| `CORRELATION_LATE_EVENT` | warning | An event arrived after `correlation_complete`. It is processed, but does not change a complete correlation's answer |
 | `CORRELATION_EVENT_LIMIT_EXCEEDED` | warning | A correlation had already received its 32 events, so further events under its id were processed as plain bulk with no processing record; the details name the correlation id |
 | `CORRELATION_ID_MISSING` | error | A request set `correlation_complete: true` without a request-level `correlation_id` and was rejected with 400; nothing was closed |
-| `CORRELATION_REQUIREMENT_FAILED` | error | A wait ended `error` because an event a requirement depends on failed non-retryably; the details name the requirement and the failing event |
+| `CORRELATION_REQUIREMENT_FAILED` | error | A wait ended `error` because an event a requirement depends on failed non-retryably. Raised once per correlation, never by a `wait=0` read; the details name the requirement and the failing event |
 | `CORRELATION_WAIT_TIMEOUT` | warning | The wait budget ran out before the requirements were met. Raised once per correlation, however many waits run out on it, and never by a `wait=0` read. The details list what was not satisfied as `missing_entities` and `missing_use_cases` |
 | `CORRELATION_WAIT_REJECTED` | warning | A wait was refused with 429 because the organization's or the global cap on concurrent waits was reached |
 

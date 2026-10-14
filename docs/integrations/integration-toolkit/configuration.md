@@ -148,7 +148,9 @@ Beyond the mapping itself, an inbound use case's `configuration` accepts the fol
 With `on_request` — the normal setting — one mapping serves both the nightly batch and the
 registration push, and the inbound request decides which it is by sending `interactive: true`. With
 `disabled`, a request that asks for interactive is processed as bulk and told so per event; nothing
-is rejected. With `always`, every event of the use case is interactive.
+is rejected. With `always`, every event of the use case is interactive — also requests that do not ask
+and carry no correlation id — and every one is charged to the organization's interactive budget, so
+reserve it for a use case that serves registrations only.
 
 If a caller is going to wait on your use cases by slug (`wait_for_use_cases`), model one inbound use
 case per partner event type and give every use case a slug: a use case that maps several kinds of
