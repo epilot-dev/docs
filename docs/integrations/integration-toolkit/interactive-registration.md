@@ -221,7 +221,7 @@ registration push, so the use case grants permission and the request decides.
 
 | Value | Effect on a request that asks for interactive |
 |---|---|
-| `disabled` (default) | The events are processed as bulk. Each result says `"interactive": false` with the message `use case does not allow interactive processing`, no processing record is written, and an `INTERACTIVE_NOT_ALLOWED` info event appears in monitoring. Nothing is rejected. |
+| `disabled` (default) | The events are processed as bulk. Each result says `"interactive": false` with the message `Use case does not allow interactive processing`, no processing record is written, and an `INTERACTIVE_NOT_ALLOWED` info event appears in monitoring. Nothing is rejected. |
 | `on_request` | The request's `interactive: true` selects the interactive lane. This is the normal setting. |
 | `always` | Every event of this use case is interactive, whether the request asks or not — including requests without the flag, events that send `interactive: false` and requests without a correlation id (which get a generated one). Every one of those events is charged to the organization's interactive budget. Use it only for a use case that exists solely to serve registrations. |
 
@@ -459,6 +459,7 @@ waits.
   "lane": "interactive",
   "use_case_id": "58cf8956-e737-4b4c-a683-3528be3eedb8",
   "use_case_slug": "customer_account",
+  "event_name": "customer_account",
   "ingested_at": "2026-10-09T09:05:28.412Z",
   "mapped_at": "2026-10-09T09:05:29.004Z",
   "done_at": "2026-10-09T09:05:30.277Z",
@@ -466,16 +467,16 @@ waits.
   "writes_done": 2,
   "entities": [
     {
-      "slug": "contact",
-      "_id": "9acc9f54-5c0a-4b3e-8e6f-1d2c3b4a5968",
-      "operation": "created",
-      "unique_ids": { "customer_number": "4711" }
-    },
-    {
       "slug": "billing_account",
       "_id": "3f1b7e20-9c84-4a55-bd21-6e0d8a7c4f13",
       "operation": "created",
       "unique_ids": { "billing_account_number": "300571" }
+    },
+    {
+      "slug": "contact",
+      "_id": "9acc9f54-5c0a-4b3e-8e6f-1d2c3b4a5968",
+      "operation": "created",
+      "unique_ids": { "customer_number": "4711" }
     }
   ],
   "errors": []
@@ -494,6 +495,10 @@ writes nothing and is still `done`.
 into, including follow-up writes such as stub creates, so `writes_done == writes_total` on a `done`
 record means the whole tree is finished — not just the first write. A write that found the entity
 already as described still counts, and appears in `entities` with `"operation": "unchanged"`.
+
+`event_name` is the key the event was routed by: the `use_case_slug` you sent, or your `event_name`
+when you routed by that — not the use case's display name. `entities` is sorted by slug, then `_id`;
+find an entity by its slug and `unique_ids`, never by its position.
 
 The three timestamps follow your data: `ingested_at` when the event was accepted, `mapped_at` when the
 mapping had produced its entity updates, `done_at` when the last of those writes finished.
@@ -543,21 +548,21 @@ curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
   "first_ingested_at": "2026-10-09T09:05:28.412Z",
   "last_done_at": "2026-10-09T09:05:33.118Z",
   "use_cases": [
-    { "use_case_slug": "customer_account", "received": 1, "done": 1, "error": 0 },
-    { "use_case_slug": "contract", "received": 1, "done": 1, "error": 0 }
+    { "use_case_slug": "contract", "received": 1, "done": 1, "error": 0 },
+    { "use_case_slug": "customer_account", "received": 1, "done": 1, "error": 0 }
   ],
   "entities": [
-    {
-      "slug": "contact",
-      "_id": "9acc9f54-5c0a-4b3e-8e6f-1d2c3b4a5968",
-      "operation": "created",
-      "unique_ids": { "customer_number": "4711" }
-    },
     {
       "slug": "billing_account",
       "_id": "3f1b7e20-9c84-4a55-bd21-6e0d8a7c4f13",
       "operation": "created",
       "unique_ids": { "billing_account_number": "300571" }
+    },
+    {
+      "slug": "contact",
+      "_id": "9acc9f54-5c0a-4b3e-8e6f-1d2c3b4a5968",
+      "operation": "created",
+      "unique_ids": { "customer_number": "4711" }
     },
     {
       "slug": "contract",
@@ -573,7 +578,8 @@ curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
 `first_ingested_at` is when the first event of the correlation was accepted and `last_done_at` when
 the most recent one finished, so the pair is the end-to-end time of the whole correlation. `use_cases`
 has one item per use case the correlation's events were routed to, with how many were `received`, are
-`done` and ended in `error`. Each item in `errors[]` is
+`done` and ended in `error`. `use_cases` is sorted by `use_case_slug`, and `entities` by slug, then
+`_id`. Each item in `errors[]` is
 `{ "code", "message", "event_id", "occurred_at" }` — the same shape as on the single event, plus the
 `event_id` that failed.
 
@@ -896,20 +902,21 @@ curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/correlations' 
       "first_ingested_at": "2026-10-09T09:05:28.412Z",
       "last_done_at": "2026-10-09T09:05:33.118Z",
       "use_cases": [
-        { "use_case_slug": "customer_account", "received": 1, "done": 1, "error": 0 },
-        { "use_case_slug": "contract", "received": 1, "done": 1, "error": 0 }
+        { "use_case_slug": "contract", "received": 1, "done": 1, "error": 0 },
+        { "use_case_slug": "customer_account", "received": 1, "done": 1, "error": 0 }
       ],
       "entities": [ "..." ],
       "errors": []
     }
   ],
-  "next_cursor": "eyJzayI6IjIwMjYtMTAtMDlUMDk6MDU6MjguNDEyWiJ9",
+  "next_cursor": "<opaque cursor>",
   "horizon_days": 7
 }
 ```
 
 Each item in `results` is the same correlation summary the wait returns, without the long poll.
-`next_cursor` is `null` on the last page.
+`next_cursor` is `null` on the last page. Pass it back exactly as you received it; do not build or
+decode one.
 
 `horizon_days` states how far back the listing reaches: **7 days**, which is how long correlation
 records are kept. A correlation older than that is gone, not hidden, and the response says so rather
