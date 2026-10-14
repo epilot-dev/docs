@@ -98,9 +98,8 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
   -H 'Content-Type: application/json' \
   -d '{
     "integration_id": "<integration-id>",
-    "meta": { "correlation_id": "customer-sync-001" },
+    "correlation_id": "customer-sync-001",
     "events": [{
-      "event_type": "UPDATE",
       "use_case_slug": "customer-sync",
       "timestamp": "2024-01-15T10:00:00Z",
       "format": "json",

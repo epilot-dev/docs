@@ -540,15 +540,14 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/secure-proxy' \
 
 ### Event Message Structure
 
+The structure of a `POST /v3/erp/updates/events` request:
+
 ```json
 {
   "integration_id": "uuid",
-  "meta": {
-    "correlation_id": "string"
-  },
+  "correlation_id": "string (optional)",
   "events": [
     {
-      "event_type": "CREATE | UPDATE | DELETE",
       "use_case_slug": "string (recommended, 1-255 chars, pattern: ^[a-z0-9][a-z0-9_-]*$, required if event_name is not provided)",
       "event_name": "string (legacy fallback, required if use_case_slug is not provided)",
       "timestamp": "ISO 8601 datetime",
@@ -562,9 +561,15 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/secure-proxy' \
 
 For each event, include `use_case_slug` whenever possible. `event_name` is supported as a legacy fallback, and `use_case_slug` takes precedence if both are present.
 
+v3 takes `correlation_id` at request level and has no `event_type`. The deprecated v1 and v2 endpoints take
+`event_type` and, on v1, a `meta` object; v3 drops both without an error, so a `meta.correlation_id` sent to v3 is
+lost.
+
 `use_case_slug` format: `^[a-z0-9][a-z0-9_-]*$` with length `1..255` (must start with a lowercase letter or digit; then lowercase letters, digits, `_`, `-`).
 
-### Event Types
+### Event Types (v1 and v2)
+
+The deprecated v1 and v2 endpoints classify each event with `event_type`. v3 has no such field.
 
 | Type | Description |
 |------|-------------|
@@ -578,7 +583,6 @@ For each event, include `use_case_slug` whenever possible. `event_name` is suppo
 
 ```json
 {
-  "event_type": "UPDATE",
   "format": "json",
   "payload": "{\"customerId\":\"C001\",\"name\":\"John Doe\"}"
 }
@@ -588,7 +592,6 @@ For each event, include `use_case_slug` whenever possible. `event_name` is suppo
 
 ```json
 {
-  "event_type": "UPDATE",
   "format": "xml",
   "payload": "<customer><id>C001</id><name>John Doe</name></customer>"
 }
@@ -604,7 +607,6 @@ Prevent duplicate processing by including a unique deduplication ID:
 {
   "events": [
     {
-      "event_type": "UPDATE",
       "deduplication_id": "customer-C001-update-20240115-001",
       "payload": "..."
     }
@@ -633,16 +635,18 @@ customer-C001
 
 ### Correlation ID
 
-Include a correlation ID to track related events:
+Include a correlation ID at request level to track related events:
 
 ```json
 {
-  "meta": {
-    "correlation_id": "<uuidv4()>"
-  },
+  "integration_id": "uuid",
+  "correlation_id": "<uuidv4()>",
   "events": [...]
 }
 ```
+
+When you omit it, epilot generates one and returns it in the response. For a correlation id an end customer is
+waiting on, see [Interactive Registration](./interactive-registration.md#correlation-ids).
 
 ### Using Correlation IDs
 
