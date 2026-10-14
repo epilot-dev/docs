@@ -236,6 +236,15 @@ matters too — see [One use case per partner event type](#one-use-case-per-part
 Two new fields on `POST /v3/erp/updates/events`, both at request level. `interactive` may also be set
 per event, and the event wins — the same precedence `correlation_id` and `group_id` already follow.
 
+:::note Permissions
+Ingest requires the **`integration:ingest`** grant on the target integration, on every inbound
+endpoint (v1, v2 and v3). A token without it is answered **403** before anything is charged, recorded
+or queued. Roles that hold `integration:*`, the owner role among them, include it. **Existing tokens
+need the grant:** if your middleware pushes with a token whose role was scoped before the grant
+existed, add `integration:ingest` for each integration it pushes to. Reading what landed needs
+`integration:view`; see [Checking what landed](#checking-what-landed).
+:::
+
 The examples on the rest of this page share one integration with two inbound use cases. Their entity
 targets are keyed like this, and the keys matter later:
 
@@ -432,7 +441,8 @@ does not change its answer; see [Values of `completion`](#values-of-completion).
 
 ## Checking what landed
 
-Three read endpoints, all authorized with the same organization-scoped token you use for ingest. No
+Three read endpoints. They need the **`integration:view`** grant on the integration the event or
+correlation belongs to, so a token scoped to `integration:ingest` alone cannot read what it pushed. No
 cross-organization read is possible: every lookup is partitioned by the token's organization.
 
 ### One event
@@ -908,9 +918,19 @@ than returning less without comment. Single event records are kept for 24 hours.
 ## Rate limits
 
 The interactive lane is only worth having if it stays fast, and it stays fast only if no single
-organization can fill it. Every organization therefore has a token budget for interactive events,
-charged one token per event at ingest. The default is a sustained **120 interactive events per 5
-minutes with a burst of 40**, raised by agreement for organizations with higher registration volume.
+organization can fill it. Every organization therefore has a token budget for interactive events. The
+default is a sustained **120 interactive events per 5 minutes with a burst of 40**, raised by agreement
+for organizations with higher registration volume.
+
+How a request is charged:
+
+- **Once per request, at ingest, for the events it admits as interactive** — what is left after
+  validation, deduplication and the 32-event cap. Duplicates, events rejected with 422 and events over
+  the cap cost nothing, so a retry pays only for the events it newly admits.
+- The charge is the number of those events, **capped at the burst**: `min(events, burst)`.
+- **All or nothing.** If the budget cannot cover the whole charge, none of the request's events take
+  the interactive lane; all of them run on the normal lane. A bundle is never split across lanes.
+- A close with no events costs **one** token.
 
 When the budget is exhausted, nothing is rejected and nothing is lost:
 

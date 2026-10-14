@@ -11,7 +11,7 @@ This guide walks you through setting up an inbound integration to synchronize da
 ## Prerequisites
 
 - Access to the epilot platform with admin permissions
-- API credentials for your organization
+- API credentials for your organization, with the `integration:ingest` grant on the integration you push to
 - Basic understanding of REST APIs and JSON
 
 ## Step 1: Create an Integration
