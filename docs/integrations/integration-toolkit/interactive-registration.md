@@ -467,12 +467,12 @@ needs has arrived.
 |---|---|
 | `correlation_id` | Required. The correlation to look at. |
 | `wait` | Seconds to wait, `0` to `25`. Omit or `0` for an immediate answer. The ceiling is 25 s because the HTTP API cuts off at 30 s. A value outside the range is rejected with **400** naming the maximum, not silently clamped. |
-| `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. Repeat the parameter for several, or separate them with commas. A selector value matches ignoring case and surrounding whitespace, like entity lookup. |
-| `wait_for_use_cases` | Inbound **use case slugs**. Repeat the parameter or separate with commas. |
+| `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. **One requirement per occurrence**: repeat the parameter for several. An occurrence is never split, so a selector value may contain commas. A selector value matches ignoring case and surrounding whitespace, like entity lookup. See [Selector syntax and encoding](#selector-syntax-and-encoding). |
+| `wait_for_use_cases` | Inbound **use case slugs**. Repeat the parameter, or separate the slugs with commas in one occurrence. |
 
 Both requirement sets are optional, and both are only valid together with `correlation_id` — sending
-one without it returns 400. When both are given, **both** must be satisfied before the call answers
-`requirements_met`.
+one without it returns 400. Each set takes at most 20 requirements. When both are given, **both** must
+be satisfied before the call answers `requirements_met`.
 
 ```bash title="Wait for the customer's contact and a contract"
 curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
@@ -593,11 +593,70 @@ that entity by attribute: wait on a requirement that is unambiguous — such as 
 right contact through the delivered contract's `customer` relation, by `_id`. A contract is only
 reported once its relations are set, so that relation is there when the wait returns.
 
-**Selector syntax.** Inside `slug[key=value]` the key ends at the **first** `=`, and the value runs to
-the final `]`, so a value may itself contain `=` and `]`. The value is percent-decoded once after that
-split. To pass a value that contains a comma, either repeat the parameter — one requirement per
-occurrence, which avoids the comma separator altogether — or percent-encode the comma. The
-`curl -G --data-urlencode` form above encodes for you.
+##### Selector syntax and encoding
+
+Inside `slug[key=value]` the key ends at the **first** `=`, and the value runs to the final `]`, so a
+value may itself contain `=`, `]` and `,`.
+
+Each `wait_for_entities` parameter is exactly **one** requirement. epilot never splits it on commas, so
+a value that contains a comma needs no special treatment. Encode every parameter **once**, the
+standard way for a query string, and epilot decodes it once — which is exactly what
+`curl -G --data-urlencode`, `URLSearchParams` and the SDK do. Two things break that:
+
+- **Encoding the value yourself before handing it to one of those.** The value is then encoded twice,
+  and epilot receives the escape sequence as text: a value `A,B` that you pre-encode to `A%2CB`
+  arrives as the text `A%2CB` and matches nothing.
+- **Joining several entity requirements with commas into one parameter.** The joined text is read as
+  a single requirement, which is either rejected with **400** or a selector whose value contains the
+  rest of the list and never matches. The comma-separated form exists only for `wait_for_use_cases`,
+  whose slugs cannot contain a comma.
+
+```bash title="A contract number that contains a comma and a slash"
+curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
+  -H 'Authorization: Bearer <your-token>' \
+  --data-urlencode 'correlation_id=018f8e9b-5a1b-7c4e-9b2a-4f0f6c1d7a21' \
+  --data-urlencode 'wait=25' \
+  --data-urlencode 'wait_for_entities=contact[customer_number=4711]' \
+  --data-urlencode 'wait_for_entities=contract[contract_number=2001/84,A]'
+```
+
+On the wire, the second requirement is
+`wait_for_entities=contract%5Bcontract_number%3D2001%2F84%2CA%5D` — one parameter, encoded once.
+
+With the SDK, pass one array item per requirement, with the raw value; the client encodes each item
+once and repeats the parameter:
+
+```ts title="The same wait with the SDK"
+import { authorize, getClient } from '@epilot/sdk/integration-toolkit'
+
+const toolkit = getClient()
+authorize(toolkit, () => '<your-token>')
+
+const { data } = await toolkit.queryErpUpdateEvents({
+  correlation_id: correlationId,
+  wait: 25,
+  wait_for_entities: [
+    `contact[customer_number=${customerNumber}]`,
+    `contract[contract_number=${contractNumber}]`,
+  ],
+  wait_for_use_cases: ['customer_account', 'contract'],
+})
+```
+
+Without the SDK, build the query with `URLSearchParams` and `append` each requirement:
+
+```ts title="The same wait with axios and URLSearchParams"
+const params = new URLSearchParams({ correlation_id: correlationId, wait: '25' })
+params.append('wait_for_entities', `contact[customer_number=${customerNumber}]`)
+params.append('wait_for_entities', `contract[contract_number=${contractNumber}]`)
+params.append('wait_for_use_cases', 'customer_account')
+params.append('wait_for_use_cases', 'contract')
+
+const { data } = await axios.get('https://integration-toolkit.sls.epilot.io/v3/erp/updates/events', {
+  params,
+  headers: { Authorization: `Bearer ${token}` },
+})
+```
 
 **Value matching.** The value is compared the way the toolkit's own entity lookup compares unique ids:
 ignoring letter case and surrounding whitespace on both sides, so `contact[customer_number=ab-1001]`
