@@ -110,13 +110,18 @@ If your middleware sends a fixed or hard-coded correlation id today — some int
 Talend or similar tools put the same id on every push — replace it with the one the hook passes. See
 [Correlation ids](#correlation-ids) for the format and the limits.
 
-Your hook response does not change. The portal minted the id, so it already knows it, and when your
-response carries no `correlation_id` it waits on its own id.
+Your hook response does not change. The portal minted the id, so it already knows it, and it waits on
+its own id whatever your response carries.
 
 **Optional: return the id from the hook.** You only need to do this if you push under an id of your
 own rather than the portal's — for example because your middleware already has a transaction id it
-threads through every push. Then answer the hook with that id as `correlation_id` in the JSON response
-body, and the portal waits on yours instead of its own.
+threads through every push. Return that id in your hook response, and have the app's hook declare where
+it is with `result_correlation_id`, e.g. `{{CallResponse.data.acknowledgeId}}`; the portal then waits
+on yours instead of its own. There is no default: a `correlation_id` field in your response is ignored
+unless the hook declares it, so an unrelated field of that name (a trace id, say) can never redirect
+the wait. A declared id that is missing from the response falls back to the portal's id; one that does
+not match the [id format](#correlation-ids) leaves nothing to wait on, and the portal falls back to
+searching for the customer.
 
 :::note When the use case is dedicated to registrations
 If an inbound use case exists only to serve registrations, epilot can set it to
