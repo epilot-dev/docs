@@ -242,7 +242,8 @@ endpoint (v1, v2 and v3). A token without it is answered **403** before anything
 or queued. Roles that hold `integration:*`, the owner role among them, include it. **Existing tokens
 need the grant:** if your middleware pushes with a token whose role was scoped before the grant
 existed, add `integration:ingest` for each integration it pushes to. Reading what landed needs
-`integration:view`; see [Checking what landed](#checking-what-landed).
+`integration:view`; see [Checking what landed](#checking-what-landed). Replaying monitoring events
+needs `integration:manage`, checked organization-wide; `integration:ingest` does not cover it.
 :::
 
 The examples on the rest of this page share one integration with two inbound use cases. Their entity

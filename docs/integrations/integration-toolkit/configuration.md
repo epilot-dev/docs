@@ -704,6 +704,7 @@ specific integration.
 |---|---|
 | `integration:view` | Read integrations and use cases; read monitoring events, stats, time series, traces, access logs, notification history and status |
 | `integration:manage` | Create, update and delete integrations and use cases; edit notification configuration; push external monitoring events; send test notifications; replay events |
+| `integration:ingest` | Push inbound events to the integration (`POST /v1/erp/updates/events`, `/v2/…`, `/v3/…`). It grants nothing else — not reading what landed, and not replay |
 | `integration:consume` | Poll and acknowledge the outbound queue. Scoped to [Pollable Outbound](./pollable-outbound.md) only — it grants nothing else |
 
 The `view` / `manage` split is the one that catches people out when minting a scoped
@@ -716,7 +717,9 @@ token for a middleware:
 | `GET /v2/integrations/{id}/notifications/history`, `…/status` | `integration:view` |
 | `POST /v2/integrations/{id}/monitoring/external-events` | `integration:manage` |
 | `POST /v2/integrations/{id}/notifications/test` | `integration:manage` |
-| `POST /v1/integrations/{id}/events/replay` | `integration:manage` |
+| `POST /v1/integrations/{id}/events/replay` | `integration:manage`, checked organization-wide |
+| `POST /v3/erp/updates/events` (and v1, v2) | `integration:ingest` |
+| `GET /v3/erp/updates/events/{event_id}`, `GET /v3/erp/updates/events?correlation_id=…`, `GET /v3/erp/updates/correlations` | `integration:view` |
 | `POST /v1/integrations/{id}/outbound/messages/poll`, `…/ack` | `integration:consume` |
 
 The monitoring events list (`POST /v2/integrations/{id}/monitoring/events`) returns
@@ -724,5 +727,6 @@ The monitoring events list (`POST /v2/integrations/{id}/monitoring/events`) retu
 data — a mapped [poll message](./pollable-outbound.md#what-a-mapped-message-looks-like-in-monitoring)
 includes its delivered payload.
 
-Inbound event submission authenticates as the integration's own API token rather
-than through these actions — see [Inbound Getting Started](./inbound/getting-started.md).
+Inbound event submission needs `integration:ingest` on the integration it pushes to —
+see [Inbound Getting Started](./inbound/getting-started.md). A replay of inbound events
+needs `integration:manage` instead; a push token's `integration:ingest` does not cover it.
