@@ -530,7 +530,8 @@ waits.
       "unique_ids": { "customer_number": "4711" }
     }
   ],
-  "errors": []
+  "errors": [],
+  "errors_total": 0
 }
 ```
 
@@ -558,6 +559,20 @@ exposed. Use it when you want to know whether a slow registration was slow on yo
 
 Each item in `errors[]` is `{ "code", "message", "occurred_at" }`, where `code` is a
 [monitoring code](./monitoring/codes.md).
+
+Both lists are bounded, so one unusual event cannot grow its record without limit:
+
+- `errors` holds the event's **first 10 failures**, each message cut at 1,000 characters; a failure
+  repeated within one item of your data is listed once. `errors_total` counts every failure, listed or
+  not.
+- `entities` lists at most **200 entity writes**. Writes past that are counted in `entities_omitted`,
+  which is present only when it is not zero. Those entities were written all the same; they are only
+  missing from the list.
+
+If the processing record itself cannot be written because it reached the size the store allows —
+usually a payload with unusually many entities or very long unique ids — the event is ended `error`
+with `PROCESSING_STATE_LIMIT` instead of being left `processing`. Its data may have been written all
+the same, its correlation still completes, and anyone waiting on it is answered.
 
 ### A correlation, with a wait
 
@@ -593,6 +608,8 @@ curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
   "completion": "requirements_met",
   "closed": true,
   "closed_at": "2026-10-09T09:05:31.902Z",
+  "complete": true,
+  "completed_at": "2026-10-09T09:05:33.140Z",
   "events_received": 2,
   "events_done": 2,
   "late_events": 0,
@@ -622,7 +639,8 @@ curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
       "unique_ids": { "contract_number": "200184" }
     }
   ],
-  "errors": []
+  "errors": [],
+  "errors_total": 0
 }
 ```
 
@@ -633,6 +651,14 @@ has one item per use case the correlation's events were routed to, with how many
 `_id`. Each item in `errors[]` is
 `{ "code", "message", "event_id", "occurred_at" }` — the same shape as on the single event, plus the
 `event_id` that failed.
+
+The correlation lists its **first 50 failures** in `errors`, and `errors_total` counts them all —
+including those of events that arrived after the correlation completed, which carry
+`"after_completion": true` and do not change its answer. `entities` lists at most **200 entity
+writes**; `entities_omitted` counts the rest, including those of an event that ended
+`PROCESSING_STATE_LIMIT`. An entity that is only counted there may well have been written, but a
+`wait_for_entities` requirement cannot be met by it, so such a wait ends on `complete`. A real
+registration is far below either bound.
 
 #### What "arrived" means
 
@@ -886,7 +912,8 @@ the kind of data that never came. Neither set can say that you have finished; on
 | `error` | A requirement can no longer be satisfied: every event of a required use case failed, or the correlation is complete with a required entity missing and an event failed (see [What "arrived" means](#what-arrived-means)). When the caller named no requirements: the correlation is complete and an event of it failed. |
 
 **Once a correlation is complete, its answer is final.** The verdict is fixed at the moment the
-correlation becomes complete. An event that arrives after that is still processed and counted in
+correlation becomes complete, which the summary states as `complete: true` and `completed_at`. Read
+those rather than comparing `events_done` with `events_received`. An event that arrives after that is still processed and counted in
 `late_events`, and raises `CORRELATION_LATE_EVENT`, but it never changes `completion` — a waiter that
 was told `complete` or `requirements_met` is never contradicted by a later read.
 
@@ -909,7 +936,8 @@ linked its billing account by an `_id` that does not exist, a wait for the `cont
       "event_id": "0199c3f5-1b07-7a2e-8d44-9e3c6f0a2b18",
       "occurred_at": "2026-10-09T09:05:32.640Z"
     }
-  ]
+  ],
+  "errors_total": 1
 }
 ```
 
@@ -964,6 +992,8 @@ curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/correlations' 
       "integration_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "closed": true,
       "closed_at": "2026-10-09T09:05:31.902Z",
+      "complete": true,
+      "completed_at": "2026-10-09T09:05:33.140Z",
       "events_received": 2,
       "events_done": 2,
       "late_events": 0,
@@ -974,7 +1004,8 @@ curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/correlations' 
         { "use_case_slug": "customer_account", "received": 1, "done": 1, "error": 0 }
       ],
       "entities": [ "..." ],
-      "errors": []
+      "errors": [],
+      "errors_total": 0
     }
   ],
   "next_cursor": "<opaque cursor>",
@@ -1123,6 +1154,7 @@ end:
 | `CORRELATION_ID_MISSING` | error | A request set `correlation_complete: true` without a request-level `correlation_id` and was rejected with 400; nothing was closed |
 | `CORRELATION_REQUIREMENT_FAILED` | error | A wait ended `error` because an event a requirement depends on failed non-retryably. Raised once per correlation, never by a `wait=0` read; the details name the requirement and the failing event |
 | `CORRELATION_WAIT_TIMEOUT` | warning | The wait budget ran out before the requirements were met. Raised once per correlation, however many waits run out on it, and never by a `wait=0` read. The details list what was not satisfied as `missing_entities` and `missing_use_cases` |
+| `PROCESSING_STATE_LIMIT` | error | An interactive event's processing record reached the size the store allows, so the event was ended `error` instead of being left `processing`. Its correlation still completes and waiters are answered; its data may have been written all the same |
 | `CORRELATION_WAIT_REJECTED` | warning | A wait was refused with 429 because the organization's or the global cap on concurrent waits was reached, or — `scope: recordless` — the organization's cap on waits for correlations nothing was sent under yet |
 
 The codes that end a correlation without data are ranked deliberately. `CORRELATION_WAIT_TIMEOUT` and
