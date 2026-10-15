@@ -291,7 +291,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
 |---|---|---|
 | `correlation_id` | string | The id the portal handed to your hook. Already part of the API — what is new is that it is now the key the portal waits on, so it must be the portal's id, or the id you returned from the hook if you use one of your own. Unique per identification, 1 to 255 characters of `[A-Za-z0-9_-]`; see [Correlation ids](#correlation-ids). |
 | `interactive` | boolean | Request the interactive lane for this request's events. |
-| `correlation_complete` | boolean | No further events will follow for this request's `correlation_id`. Send it once, when you are done: on your last request, or as its own request with no events if you push in parallel. |
+| `correlation_complete` | boolean | No further events will follow for this request's `correlation_id`. Send it once, when you are done: on your last request, or as its own request with no events if you push in parallel. The response's `correlation_close` says whether it was applied; see [What became of the close](#what-became-of-the-close). |
 
 The response gains the correlation id and, per result, how the event was processed:
 
@@ -318,6 +318,7 @@ The two result fields answer different questions and are independent of each oth
   for this event. It is `false`, with a `message` saying why, when
   - the use case does not allow interactive processing;
   - the correlation already holds its 32 events (see [Correlation ids](#correlation-ids));
+  - the correlation belongs to another integration (see [Correlation ids](#correlation-ids));
   - the event belongs to an `always` use case and its correlation id breaks the
     [id format](#correlation-ids) — the request did not ask for interactive, so it is not rejected;
   - the processing-state store is unavailable, so no record could be written.
@@ -343,6 +344,11 @@ The two result fields answer different questions and are independent of each oth
   organization's normal lane, with no processing record, so the wait cannot see them, and monitoring
   raises `CORRELATION_EVENT_LIMIT_EXCEEDED` naming the correlation id. If you see that code, you are
   almost certainly reusing an id.
+- **One integration per correlation.** A correlation belongs to the integration whose event — or
+  close — created it. Events another integration sends under the same id are processed as bulk, with
+  `"interactive": false` and the reason in their result, and that integration's close is ignored.
+  Two integrations never share a correlation, so if you see this, the same id was minted for both:
+  use an id of your own for each.
 
 ### Closing a correlation
 
@@ -411,17 +417,21 @@ The rules:
   Closing twice is a no-op.
 - The close is applied only when **every** event of the request was accepted. A response that asks you
   to retry — a 422 with partial results, or a 429 — closes nothing, so a close can never overtake
-  events that are still being retried. Monitoring raises `CORRELATION_CLOSE_IGNORED`.
+  events that are still being retried. The same holds when the queue refused one of the request's
+  events, which its result reports on a 200. Monitoring raises `CORRELATION_CLOSE_IGNORED`.
 - **A retried closing request still closes**, even when every one of its events is a duplicate. If the
   response to your closing request was lost and you send it again with the same `deduplication_id`s,
   the events are skipped as duplicates and the close is applied to the correlation they were
   registered under the first time.
 - **A close beyond the cap still closes.** When some or all of the request's events went over the
   correlation's 32 events and were processed as plain bulk, the correlation exists, so it is closed.
-- A request that carries events of which **none** was processed as interactive — the use case does
-  not allow it, or the request left out `interactive` — neither creates nor closes the correlation.
-  Those events went to bulk, where the wait cannot see them, so the close is ignored and monitoring
-  raises `CORRELATION_CLOSE_IGNORED`.
+- **A request that carries events never creates the correlation.** It closes one that exists, whatever
+  became of its own events. If the correlation does not exist yet and none of the request's events was
+  recorded under it — the use case does not allow interactive processing, the request left out
+  `interactive`, or every event carried a `correlation_id` of its own — the close is ignored and
+  monitoring raises `CORRELATION_CLOSE_IGNORED`. Those events went to bulk, where the wait cannot see
+  them, and closing their correlation empty would tell the portal "nothing is coming" while the data is
+  being written.
 - A request that **mixes** interactive and bulk events — `interactive` set per event, or events for a
   use case that does not allow it next to one that does — closes the correlation. `complete` then
   covers only its interactive events: the bulk ones are processed, but the wait never sees them.
@@ -430,9 +440,50 @@ The rules:
   attached. This is the one case
   in which an empty `events` array is accepted; without the flag, an empty `events` array is still a
   400.
-- A close for a correlation epilot has never seen **creates it closed** and returns 200. The portal's
-  wait then answers `complete` with `events_received: 0` immediately — "the partner sent nothing and
-  never will" — instead of waiting out its budget. Monitoring records it as `CORRELATION_CLOSED_EMPTY`.
+- A close **without events** for a correlation epilot has never seen **creates it closed** and returns
+  200. The portal's wait then answers `complete` with `events_received: 0` immediately — "the partner
+  sent nothing and never will" — instead of waiting out its budget. Monitoring records it as
+  `CORRELATION_CLOSED_EMPTY`. Creating the correlation costs one token of the organization's
+  [interactive budget](#rate-limits); closing one that exists, or one that is already closed, is free.
+  When the budget is spent, the close creates nothing and the response says `rate_limited`: send it
+  again a few seconds later.
+- A close of a correlation that **belongs to another integration** is ignored; see
+  [Correlation ids](#correlation-ids).
+
+#### What became of the close
+
+Every request that sets `correlation_complete: true` gets a `correlation_close` object in its response
+— on a 200, a 422 and a 429 alike — saying what became of the close. Requests without the flag do not
+carry it.
+
+```json title="Response — a close without events, while the budget is spent"
+{
+  "correlation_id": "018f8e9b-5a1b-7c4e-9b2a-4f0f6c1d7a21",
+  "correlation_close": {
+    "outcome": "rate_limited",
+    "reasons": ["rate_limited"],
+    "message": "..."
+  },
+  "results": []
+}
+```
+
+| `outcome` | Meaning | What to do |
+|---|---|---|
+| `applied` | The correlation is closed: by this request, by an earlier one (closing twice is a no-op), or created closed and empty by a request without events. | Nothing. |
+| `rate_limited` | A close without events found no correlation, and the organization's interactive budget could not pay for creating it (`rate_limit_unavailable` when the budget could not be checked). Until it is created, a waiter on the id is not told that nothing is coming. | Send the same close again a few seconds later. |
+| `ignored` | The close was not applied for another reason, named in `reasons`. `message` gives them as text, and monitoring raises `CORRELATION_CLOSE_IGNORED` with the same reasons. | See the reasons below. |
+
+The `reasons` of an `ignored` close, each listed once:
+
+| Reason | What to do |
+|---|---|
+| `retry_requested` | The response is a 422 or a 429. Retry the request with `correlation_complete` still set; it closes then. |
+| `queue_refused` | The queue refused one of the request's events. Send the close again once every event is accepted. |
+| `other_integration` | The correlation belongs to another integration. Use a correlation id of your own. |
+| `events_under_own_correlation_ids`, `events_duplicate`, `events_not_configured`, `events_not_interactive`, `events_unrecorded` | The correlation does not exist, and this request — which carries events — recorded none under it: they carried their own correlation ids, were duplicates, matched no use case, or were not processed as interactive. Send the close under the correlation the events were recorded under, or send the events with `interactive: true` on a use case that allows it. |
+| `close_failed` | The close could not be written. Send it again. |
+| `interactive_unavailable` | Interactive processing is not available, so there is no correlation to close. |
 
 An event that arrives **after** the correlation was closed is still processed normally. It is counted
 as a late event and raises a `CORRELATION_LATE_EVENT` warning in monitoring, because by then the
@@ -937,7 +988,11 @@ How a request is charged:
 - The charge is the number of those events, **capped at the burst**: `min(events, burst)`.
 - **All or nothing.** If the budget cannot cover the whole charge, none of the request's events take
   the interactive lane; all of them run on the normal lane. A bundle is never split across lanes.
-- A close with no events costs **one** token.
+- A close with no events costs **one** token, and only when it creates the correlation. Closing a
+  correlation that exists, or one that is already closed, costs nothing. When the budget is spent, such
+  a close still closes a correlation that exists but creates none, and its `correlation_close` says
+  `rate_limited`: send it again a few seconds later. See
+  [What became of the close](#what-became-of-the-close).
 
 When the budget is exhausted, nothing is rejected and nothing is lost:
 
@@ -1041,7 +1096,7 @@ end:
 | `INTERACTIVE_CROSS_LANE_WRITE` | warning | The same entity was written on the interactive lane and on another lane within 60 seconds of each other, in either order — the entity was in flight on two lanes at once, typically a bulk sync and a registration push for the same customer |
 | `CORRELATION_COMPLETED` | info | A correlation reached `complete`, with its event and entity counts and the ingest-to-complete duration |
 | `CORRELATION_CLOSED_EMPTY` | info | A correlation was closed without a single event — the partner said nothing is coming for this customer, including a close that created the correlation |
-| `CORRELATION_CLOSE_IGNORED` | warning | A request set `correlation_complete: true` but the close was not applied: the response asked for a retry (a 422 with partial results, or a 429), or every one of its events went to bulk (the use case does not allow interactive processing, or `interactive` was left out). No correlation was created or closed; the details give the reason |
+| `CORRELATION_CLOSE_IGNORED` | warning | A request set `correlation_complete: true` but the close was not applied: the response asked for a retry, the queue refused one of its events, the correlation does not exist and the request recorded nothing under it, a close without events could not be paid for, or the correlation belongs to another integration. No correlation was created or closed; `detail.reasons` names the cause, the same reasons the response's [`correlation_close`](#what-became-of-the-close) carries |
 | `CORRELATION_CLOSED_INCOMPLETE` | warning | A wait (`wait` above 0) ended `complete` without its requirements met — the partner closed without sending what was asked for. Raised once per correlation, never by a `wait=0` read; the details list what is missing as `missing_entities` and `missing_use_cases` |
 | `CORRELATION_LATE_EVENT` | warning | An event arrived after `correlation_complete`. It is processed, but does not change a complete correlation's answer |
 | `CORRELATION_EVENT_LIMIT_EXCEEDED` | warning | A correlation had already received its 32 events, so further events under its id were processed as plain bulk with no processing record; the details name the correlation id |
