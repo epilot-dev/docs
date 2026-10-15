@@ -231,6 +231,25 @@ The option is also exposed in the Integration Hub on the inbound use case. See
 If anyone is going to wait on your data by use case rather than by entity, the way you model use cases
 matters too — see [One use case per partner event type](#one-use-case-per-partner-event-type).
 
+### When a configuration change takes effect
+
+A change to an inbound use case does not reach every part of the pipeline at the same moment:
+
+- **Ingest** reads the use case as saved. The `interactive` option, for instance, applies from the next
+  push on.
+- **The wait** accepts a use case slug, or a selector on a unique id, that you saved seconds before
+  the call — its check reads the configuration fresh. A use case you **deleted** may still be accepted
+  for up to about a minute; a wait on it then cannot be met, and ends `complete` or `timeout`.
+- **Processing** picks up a changed configuration — its unique ids, its mapping, enabling or disabling
+  it — within up to **5 minutes**. Events pushed in the meantime are processed with the previous
+  configuration.
+
+So a wait that names a unique id you have just added is accepted at once, but an event pushed in the
+next few minutes may still be mapped without that key and cannot meet it: the wait ends `complete`
+once the correlation completes, or `timeout`, with the requirement unmet. Likewise, a use case you have just disabled may still process events normally for
+a few minutes before they fail with `USE_CASE_DISABLED`. After changing a use case, give it 5 minutes
+before you test the change with a push.
+
 ## Sending interactive events
 
 Two new fields on `POST /v3/erp/updates/events`, both at request level. `interactive` may also be set
@@ -321,7 +340,8 @@ The two result fields answer different questions and are independent of each oth
   - the correlation already holds its 32 events (see [Correlation ids](#correlation-ids));
   - the correlation belongs to another integration (see [Correlation ids](#correlation-ids));
   - the event belongs to an `always` use case and its correlation id breaks the
-    [id format](#correlation-ids) — the request did not ask for interactive, so it is not rejected;
+    [id format](#correlation-ids) — the request did not ask for interactive, so it is not rejected, and
+    the `message` names the correlation id format as the reason;
   - the processing-state store is unavailable, so no record could be written.
 
   In every case the event is processed as bulk on the organization's normal lane, where the wait
@@ -475,6 +495,9 @@ carry it.
 | `rate_limited` | A close without events found no correlation, and the organization's interactive budget could not pay for creating it (`rate_limit_unavailable` when the budget could not be checked). Until it is created, a waiter on the id is not told that nothing is coming. | Send the same close again a few seconds later. |
 | `ignored` | The close was not applied for another reason, named in `reasons`. `message` gives them as text, and monitoring raises `CORRELATION_CLOSE_IGNORED` with the same reasons. | See the reasons below. |
 
+An applied close carries nothing but its outcome — `"correlation_close": { "outcome": "applied" }`.
+`reasons` and `message` are present only when the close was not applied.
+
 The `reasons` of an `ignored` close, each listed once:
 
 | Reason | What to do |
@@ -539,7 +562,7 @@ waits.
 `status` is `accepted`, `processing`, `done`, `partial` (a non-retryable failure after some writes
 succeeded) or `error` (a non-retryable failure with nothing written). An event that cannot write what
 its use case describes is a failure, not a success with nothing to do: the use case is disabled
-(`USE_CASE_DISABLED`), it has no configuration for the event (`EVENT_NOT_CONFIGURED`), or the mapping
+(`USE_CASE_DISABLED`; see [When a configuration change takes effect](#when-a-configuration-change-takes-effect)), it has no configuration for the event (`EVENT_NOT_CONFIGURED`), or the mapping
 could not extract an entity or a field it should have written. Such an event ends `error`, or
 `partial` when other writes of it succeeded. An event that the mapping deliberately filters out
 writes nothing and is still `done`.
@@ -585,12 +608,14 @@ needs has arrived.
 |---|---|
 | `correlation_id` | Required. The correlation to look at. |
 | `wait` | Seconds to wait, `0` to `25`. Omit or `0` for an immediate answer, which reads `completion: "timeout"` while nothing is decided yet. The ceiling is 25 s because the HTTP API cuts off at 30 s. A value outside the range is rejected with **400** naming the maximum, not silently clamped. |
-| `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. **One requirement per occurrence**: repeat the parameter for several. An occurrence is never split, so a selector value may contain commas. A selector value matches ignoring case and surrounding whitespace, like entity lookup. Only `wait_for_entities=…` is accepted: a bracketed form such as `wait_for_entities[]=` or `wait_for_entities[0]=` is a **400**. See [Selector syntax and encoding](#selector-syntax-and-encoding). |
+| `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. **One requirement per occurrence**: repeat the parameter for several. An occurrence is never split, so a selector value may contain commas. A selector value is compared after trimming surrounding whitespace and lower-casing; see [Value matching](#value-matching). Only `wait_for_entities=…` is accepted: a bracketed form such as `wait_for_entities[]=` or `wait_for_entities[0]=` is a **400**. See [Selector syntax and encoding](#selector-syntax-and-encoding). |
 | `wait_for_use_cases` | Inbound **use case slugs**. Repeat the parameter, or separate the slugs with commas in one occurrence. A bracketed form such as `wait_for_use_cases[]=` is a **400**. |
 
 Both requirement sets are optional, and both are only valid together with `correlation_id` — sending
-one without it returns 400. Each set takes at most 20 requirements. When both are given, **both** must
-be satisfied before the call answers `requirements_met`.
+one without it returns 400. Each set takes at most 20 requirements, and each parameter at most 20
+occurrences — **empty occurrences count**, so 20 selectors plus one empty `wait_for_entities=` is a
+**400** naming the limit. When both are given, **both** must be satisfied before the call answers
+`requirements_met`.
 
 ```bash title="Wait for the customer's contact and a contract"
 curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
@@ -657,9 +682,28 @@ The correlation lists its **first 50 failures** in `errors`, and `errors_total` 
 including those of events that arrived after the correlation completed, which carry
 `"after_completion": true` and do not change its answer. `entities` lists at most **200 entity
 writes**; `entities_omitted` counts the rest, including those of an event that ended
-`PROCESSING_STATE_LIMIT`. An entity that is only counted there may well have been written, but a
-`wait_for_entities` requirement cannot be met by it, so such a wait ends on `complete`. A real
-registration is far below either bound.
+`PROCESSING_STATE_LIMIT`, and is present only when it is not zero. A real registration is far below
+either bound.
+
+An entity that is only counted in `entities_omitted` may well have been written, but the wait cannot
+see it. So once a correlation has omitted entities, a `wait_for_entities` requirement that no listed
+entity satisfies is **undecided** — neither met nor missing:
+
+- the response names it, exactly as you passed it, in `undecided_entity_requirements`;
+- it never makes `completion` `error`;
+- the wait keeps waiting until the correlation completes and then ends `complete` — `complete` rather
+  than `requirements_met` even when every other requirement is met.
+
+Look such an entity up yourself, for instance by its unique id through the entity API. Use case
+requirements are never undecided, because their counts are never omitted.
+
+```json title="Response (excerpt) — an entity requirement the correlation could not list"
+{
+  "completion": "complete",
+  "entities_omitted": 14,
+  "undecided_entity_requirements": ["contract[contract_number=200184]"]
+}
+```
 
 #### What "arrived" means
 
@@ -685,7 +729,8 @@ Every entity in the response carries `unique_ids`, and that map holds **exactly 
 configured for that entity target in the use case — and nothing else**. In the example above the
 contact carries `customer_number` because that is its target's only unique id; its `email`,
 `first_name` and every other attribute the mapping wrote are not in the response, however identifying
-they look.
+they look. A configured unique id whose value is too long to record is left out as well; see
+[Selector syntax and encoding](#selector-syntax-and-encoding).
 
 That decides what a selector can name:
 
@@ -698,8 +743,9 @@ selector that some use case can satisfy is never rejected, and the check works b
 exists. A `wait_for_entities` entry whose slug no inbound use case writes is a 400 as well. Treat the
 400 as a configuration error to fix, not as a reason to retry.
 
-The check refuses a requirement only against the configuration as read after your request arrived, so
-a use case you saved or changed seconds before the wait is honoured — there is no cache to wait out.
+The check reads the configuration fresh, so a unique id you added seconds before the wait is accepted.
+Processing takes up to 5 minutes to pick up the same change, so an event pushed in between may still
+be mapped without it; see [When a configuration change takes effect](#when-a-configuration-change-takes-effect).
 :::
 
 ```json title="400 — a selector key that is not a configured unique id"
@@ -737,8 +783,16 @@ reported once its relations are set, so that relation is there when the wait ret
 
 Inside `slug[key=value]` the key ends at the **first** `=`, and the value runs to the final `]`, so a
 value may itself contain `=`, `]` and `,` — anything but `],` followed by another selector. A value
-longer than 256 characters is a **400**: unique ids that long are not recorded, so it could never
-match.
+longer than **256** is a **400**: unique ids that long are not recorded, so it could never match. The
+length is counted after trimming surrounding whitespace, in UTF-16 code units — what JavaScript's
+`length` returns — so `é` and `漢` count 1 each, and an emoji counts 2.
+
+Recording has a second bound. Each entity write is recorded in at most **1,024 bytes**: its slug,
+`_id`, `operation` and unique ids, encoded as JSON in UTF-8. Unique ids are recorded in alphabetical
+order of their keys while they fit, and a value that does not fit is not recorded — it is missing
+from `unique_ids`, so a selector on it is accepted but can never match. Customer, contract and meter
+numbers are nowhere near this; it takes several long unique ids on one entity, such as two of 256
+multi-byte characters, to reach it.
 
 Each `wait_for_entities` parameter is exactly **one** requirement. epilot never splits it on commas, so
 a value that contains a comma needs no special treatment. Encode every parameter **once**, the
@@ -801,10 +855,18 @@ const { data } = await axios.get('https://integration-toolkit.sls.epilot.io/v3/e
 })
 ```
 
-**Value matching.** The value is compared the way the toolkit's own entity lookup compares unique ids:
-ignoring letter case and surrounding whitespace on both sides, so `contact[customer_number=ab-1001]`
-matches a contact stored with ` AB-1001 `. Whitespace inside the value stays significant: `MELO 001`
-does not match `MELO001`.
+##### Value matching
+
+The selector value and the recorded unique id are both compared after trimming surrounding whitespace
+and lower-casing them with Unicode lower-case rules, so `contact[customer_number=ab-1001]` matches a
+contact stored with ` AB-1001 `. Whitespace inside the value stays significant: `MELO 001` does not
+match `MELO001`.
+
+For the ASCII identifiers ERPs use, this behaves like the toolkit's entity lookup by unique id. For
+letters with special case rules — the Turkish dotted `İ`, the Greek final `ς` — and for non-breaking
+spaces, the two may compare differently: a selector can miss an entity that lookup treats as the
+same one, or match one that lookup treats as different. For such values, build the selector from
+exactly the string you push.
 
 #### Use case requirements
 
@@ -815,9 +877,12 @@ slug is unique within its integration and immutable once set. `event_name` is pa
 a fallback; it is not a stable key for a requirement.
 
 A slug that no inbound use case of the organization has can never match and is refused with **400**,
-naming it in `use_case_slug`. Since a correlation belongs to one integration and counts only that
-integration's events, a wait on a correlation that already belongs to one also refuses a slug that only
-**another** integration's use cases have.
+naming it in `use_case_slug`. So is an entry that is not a well-formed slug at all: slugs are lower
+case, so `Customer_Account` is refused rather than matched against `customer_account`. Since a
+correlation belongs to one integration and counts only that integration's events, a wait on a
+correlation that already belongs to one also refuses a slug that only **another** integration's use
+cases have. A use case you have just deleted may still be accepted for up to about a minute; see
+[When a configuration change takes effect](#when-a-configuration-change-takes-effect).
 
 A requirement is met when **at least one event of that use case slug is done**. An event that ends
 `partial` does not meet it: for a use case requirement, `partial` counts as an error, because part of
@@ -908,9 +973,9 @@ the kind of data that never came. Neither set can say that you have finished; on
 | Value | Meaning |
 |---|---|
 | `requirements_met` | Every requirement given — entity requirements, use case requirements, or both — is satisfied. The wait returns the moment this becomes true, **even if an unrelated event of the correlation failed**: a caller waiting for a contact and a contract has what it asked for. |
-| `complete` | The correlation is closed and every event received for it is done. This is the hard stop for a caller that wants everything — and it also ends a requirement wait that can no longer be satisfied, which is how the portal learns that you sent an account but no contract. A wait (`wait` above 0) that ends this way raises `CORRELATION_CLOSED_INCOMPLETE` in monitoring, once per correlation, naming what is missing; a `wait=0` read that sees the same state raises nothing. |
+| `complete` | The correlation is closed and every event received for it is done. This is the hard stop for a caller that wants everything — and it also ends a requirement wait that can no longer be satisfied, which is how the portal learns that you sent an account but no contract. A wait whose only open requirements are [undecided](#a-correlation-with-a-wait) ends this way too. A wait (`wait` above 0) that ends this way raises `CORRELATION_CLOSED_INCOMPLETE` in monitoring, once per correlation, naming what is missing; a `wait=0` read that sees the same state raises nothing. |
 | `timeout` | The wait budget elapsed, or — for a `wait=0` read — nothing is decided yet. The body still lists everything that landed so far; call again to continue waiting. The first wait that runs out on a correlation raises `CORRELATION_WAIT_TIMEOUT`; later ones on the same correlation do not, and a `wait=0` read never does. |
-| `error` | A requirement can no longer be satisfied: every event of a required use case failed, or the correlation is complete with a required entity missing and an event failed (see [What "arrived" means](#what-arrived-means)). When the caller named no requirements: the correlation is complete and an event of it failed. |
+| `error` | A requirement can no longer be satisfied: every event of a required use case failed, or the correlation is complete with a required entity missing and an event failed (see [What "arrived" means](#what-arrived-means)). An [undecided](#a-correlation-with-a-wait) entity requirement never counts as missing. When the caller named no requirements: the correlation is complete and an event of it failed. |
 
 **Once a correlation is complete, its answer is final.** The verdict is fixed at the moment the
 correlation becomes complete, which the summary states as `complete: true` and `completed_at`. Read
@@ -1015,8 +1080,13 @@ curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/correlations' 
 ```
 
 Each item in `results` is the same correlation summary the wait returns, without the long poll.
-`next_cursor` is `null` on the last page. Pass it back exactly as you received it; do not build or
-decode one.
+
+**Only a `null` or absent `next_cursor` ends the listing.** A page can be shorter than `limit`, or even
+empty, and still carry a cursor — a listing filtered by `integration_id` reads a bounded slice of the
+organization's correlations per call — so keep paging until the cursor is gone. Pass it back exactly
+as you received it; do not build or decode one. The cursor is opaque but not secret: it may encode
+correlation ids and times outside your filter, including those of other integrations, so treat it like
+the listing itself and keep it out of places that people without access to it can read.
 
 `horizon_days` states how far back the listing reaches: **7 days**, which is how long correlation
 records are kept. A correlation older than that is gone, not hidden, and the response says so rather
@@ -1149,7 +1219,7 @@ end:
 | `CORRELATION_COMPLETED` | info | A correlation reached `complete`, with its event and entity counts and the ingest-to-complete duration |
 | `CORRELATION_CLOSED_EMPTY` | info | A correlation was closed without a single event — the partner said nothing is coming for this customer, including a close that created the correlation |
 | `CORRELATION_CLOSE_IGNORED` | warning | A request set `correlation_complete: true` but the close was not applied: the response asked for a retry, the queue refused one of its events, the correlation does not exist and the request recorded nothing under it, a close without events could not be paid for, or the correlation belongs to another integration. No correlation was created or closed; `detail.reasons` names the cause, the same reasons the response's [`correlation_close`](#what-became-of-the-close) carries |
-| `CORRELATION_CLOSED_INCOMPLETE` | warning | A wait (`wait` above 0) ended `complete` without its requirements met — the partner closed without sending what was asked for. Raised once per correlation, never by a `wait=0` read; the details list what is missing as `missing_entities` and `missing_use_cases` |
+| `CORRELATION_CLOSED_INCOMPLETE` | warning | A wait (`wait` above 0) ended `complete` without its requirements met — the partner closed without sending what was asked for. Raised once per correlation, never by a `wait=0` read; the details list what is missing as `missing_entities` and `missing_use_cases`, and undecided entity requirements as `undecided_entities` |
 | `CORRELATION_LATE_EVENT` | warning | An event arrived after `correlation_complete`. It is processed, but does not change a complete correlation's answer |
 | `CORRELATION_EVENT_LIMIT_EXCEEDED` | warning | A correlation had already received its 32 events, so further events under its id were processed as plain bulk with no processing record; the details name the correlation id |
 | `CORRELATION_ID_MISSING` | error | A request set `correlation_complete: true` without a request-level `correlation_id` and was rejected with 400; nothing was closed |
