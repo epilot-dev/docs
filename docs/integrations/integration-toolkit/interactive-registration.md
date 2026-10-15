@@ -569,8 +569,8 @@ needs has arrived.
 |---|---|
 | `correlation_id` | Required. The correlation to look at. |
 | `wait` | Seconds to wait, `0` to `25`. Omit or `0` for an immediate answer, which reads `completion: "timeout"` while nothing is decided yet. The ceiling is 25 s because the HTTP API cuts off at 30 s. A value outside the range is rejected with **400** naming the maximum, not silently clamped. |
-| `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. **One requirement per occurrence**: repeat the parameter for several. An occurrence is never split, so a selector value may contain commas. A selector value matches ignoring case and surrounding whitespace, like entity lookup. See [Selector syntax and encoding](#selector-syntax-and-encoding). |
-| `wait_for_use_cases` | Inbound **use case slugs**. Repeat the parameter, or separate the slugs with commas in one occurrence. |
+| `wait_for_entities` | Entity requirements, each `slug` or `slug[key=value]`. **One requirement per occurrence**: repeat the parameter for several. An occurrence is never split, so a selector value may contain commas. A selector value matches ignoring case and surrounding whitespace, like entity lookup. Only `wait_for_entities=…` is accepted: a bracketed form such as `wait_for_entities[]=` or `wait_for_entities[0]=` is a **400**. See [Selector syntax and encoding](#selector-syntax-and-encoding). |
+| `wait_for_use_cases` | Inbound **use case slugs**. Repeat the parameter, or separate the slugs with commas in one occurrence. A bracketed form such as `wait_for_use_cases[]=` is a **400**. |
 
 Both requirement sets are optional, and both are only valid together with `correlation_id` — sending
 one without it returns 400. Each set takes at most 20 requirements. When both are given, **both** must
@@ -670,6 +670,9 @@ match**, so the wait rejects it up front with **400**. The check is against the 
 selector that some use case can satisfy is never rejected, and the check works before the correlation
 exists. A `wait_for_entities` entry whose slug no inbound use case writes is a 400 as well. Treat the
 400 as a configuration error to fix, not as a reason to retry.
+
+The check refuses a requirement only against the configuration as read after your request arrived, so
+a use case you saved or changed seconds before the wait is honoured — there is no cache to wait out.
 :::
 
 ```json title="400 — a selector key that is not a configured unique id"
@@ -706,7 +709,9 @@ reported once its relations are set, so that relation is there when the wait ret
 ##### Selector syntax and encoding
 
 Inside `slug[key=value]` the key ends at the **first** `=`, and the value runs to the final `]`, so a
-value may itself contain `=`, `]` and `,`.
+value may itself contain `=`, `]` and `,` — anything but `],` followed by another selector. A value
+longer than 256 characters is a **400**: unique ids that long are not recorded, so it could never
+match.
 
 Each `wait_for_entities` parameter is exactly **one** requirement. epilot never splits it on commas, so
 a value that contains a comma needs no special treatment. Encode every parameter **once**, the
@@ -716,10 +721,11 @@ standard way for a query string, and epilot decodes it once — which is exactly
 - **Encoding the value yourself before handing it to one of those.** The value is then encoded twice,
   and epilot receives the escape sequence as text: a value `A,B` that you pre-encode to `A%2CB`
   arrives as the text `A%2CB` and matches nothing.
-- **Joining several entity requirements with commas into one parameter.** The joined text is read as
-  a single requirement, which is either rejected with **400** or a selector whose value contains the
-  rest of the list and never matches. The comma-separated form exists only for `wait_for_use_cases`,
-  whose slugs cannot contain a comma.
+- **Joining several entity requirements with commas into one parameter.** An occurrence holding
+  selectors joined by a comma, such as `contact[customer_number=4711],contract[contract_number=200184]`,
+  is rejected with **400** telling you to repeat the parameter. A comma inside one selector's value is
+  fine — only a comma between selectors is refused. The comma-separated form exists only for
+  `wait_for_use_cases`, whose slugs cannot contain a comma.
 
 ```bash title="A contract number that contains a comma and a slash"
 curl -G 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
@@ -780,6 +786,11 @@ the ingest event. That is deliberate: the v3 events endpoint recommends `use_cas
 `event_name` for routing precisely because slugs are portable across environments, and a use case
 slug is unique within its integration and immutable once set. `event_name` is partner vocabulary and
 a fallback; it is not a stable key for a requirement.
+
+A slug that no inbound use case of the organization has can never match and is refused with **400**,
+naming it in `use_case_slug`. Since a correlation belongs to one integration and counts only that
+integration's events, a wait on a correlation that already belongs to one also refuses a slug that only
+**another** integration's use cases have.
 
 A requirement is met when **at least one event of that use case slug is done**. An event that ends
 `partial` does not meet it: for a use case requirement, `partial` counts as an error, because part of
@@ -908,16 +919,22 @@ with **422** before anything is recorded, so it never reaches the correlation.
 There is no quiet-window heuristic: with no requirements and no close, a wait runs to its budget and
 then returns `timeout`.
 
-A correlation id that epilot has never seen — or one that belongs to non-interactive traffic — comes
-back as `events_received: 0, closed: false` with `completion: "timeout"`. Such a wait does not hold a
-long poll for its budget: it answers immediately, at most after a short grace period, and the caller
-calls again. The caller cannot tell "not yet" from "never", which is exactly the ambiguity
+A correlation id that epilot has never seen — or one that belongs to non-interactive traffic — reads
+as `events_received: 0, closed: false`. Waiting before anything was sent is the portal's normal case:
+it mints the id, calls your hook and waits before you push. Such a wait long-polls its budget like any
+other and picks the correlation up as soon as its first event is ingested; if nothing arrives, it
+answers `timeout`. The caller cannot tell "not yet" from "never", which is exactly the ambiguity
 `correlation_complete` exists to remove.
 
 :::note Concurrent waits are capped
-Long polls are limited per organization and globally. Past the cap the call answers **429** with a
-`Retry-After` header instead of waiting, and raises `CORRELATION_WAIT_REJECTED` in monitoring; callers
-fall back to a non-waiting call and retry. The portal already does this.
+Long polls are limited per organization and globally. A wait that starts before anything was sent
+under its correlation counts against a separate cap instead — **10 per organization** — for its whole
+duration, so waits on ids nothing is ever sent under cannot crowd out waits on correlations that exist.
+Past a cap the call answers **429** with a `Retry-After` header instead of waiting, and raises
+`CORRELATION_WAIT_REJECTED` in monitoring. An early wait can therefore meet a 429 while that cap is
+full; retry after `Retry-After`, or fall back to a non-waiting call (`wait=0`), which never needs a
+slot. The portal already does this. A call that does not have to wait — `wait=0`, or a correlation
+that is already decided — is never refused.
 :::
 
 ### Recent correlations
@@ -1082,6 +1099,9 @@ close out; see [Closing a correlation](#closing-a-correlation).
 **Do not select on an attribute that is not a configured unique id.** It can never match, so the wait
 rejects it with 400; see [Entity requirements](#entity-requirements-with-selectors-on-unique_ids).
 
+**Do not join entity requirements with commas.** Repeat `wait_for_entities` once per requirement; a
+comma between selectors is a 400. See [Selector syntax and encoding](#selector-syntax-and-encoding).
+
 ## Monitoring
 
 Interactive traffic raises its own codes in the
@@ -1103,7 +1123,7 @@ end:
 | `CORRELATION_ID_MISSING` | error | A request set `correlation_complete: true` without a request-level `correlation_id` and was rejected with 400; nothing was closed |
 | `CORRELATION_REQUIREMENT_FAILED` | error | A wait ended `error` because an event a requirement depends on failed non-retryably. Raised once per correlation, never by a `wait=0` read; the details name the requirement and the failing event |
 | `CORRELATION_WAIT_TIMEOUT` | warning | The wait budget ran out before the requirements were met. Raised once per correlation, however many waits run out on it, and never by a `wait=0` read. The details list what was not satisfied as `missing_entities` and `missing_use_cases` |
-| `CORRELATION_WAIT_REJECTED` | warning | A wait was refused with 429 because the organization's or the global cap on concurrent waits was reached |
+| `CORRELATION_WAIT_REJECTED` | warning | A wait was refused with 429 because the organization's or the global cap on concurrent waits was reached, or — `scope: recordless` — the organization's cap on waits for correlations nothing was sent under yet |
 
 The codes that end a correlation without data are ranked deliberately. `CORRELATION_WAIT_TIMEOUT` and
 `CORRELATION_CLOSED_INCOMPLETE` are the warnings: an end customer waited and was shown nothing, because
