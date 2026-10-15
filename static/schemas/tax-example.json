@@ -15,6 +15,7 @@
   "active": true,
   "region": "string",
   "region_label": "string",
+  "footnotes": "string",
   "_files": {
     "$relation": [
       {

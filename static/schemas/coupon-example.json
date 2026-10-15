@@ -29,6 +29,7 @@
       }
     ]
   },
+  "footnotes": "string",
   "_files": {
     "$relation": [
       {

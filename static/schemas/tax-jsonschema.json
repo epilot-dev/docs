@@ -75,6 +75,10 @@
       "type": "string",
       "description": "Region Label"
     },
+    "footnotes": {
+      "type": "string",
+      "description": "Footnotes"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
