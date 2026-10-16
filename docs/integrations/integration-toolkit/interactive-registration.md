@@ -230,7 +230,10 @@ registration push, so the use case grants permission and the request decides.
 | `on_request` | The request's `interactive: true` selects the interactive lane. This is the normal setting. |
 | `always` | Every event of this use case is interactive, whether the request asks or not — including requests without the flag, events that send `interactive: false` and requests without a correlation id (which get a generated one). Every one of those events is charged to the organization's interactive budget. Use it only for a use case that exists solely to serve registrations. |
 
-The option is also exposed in the Integration Hub on the inbound use case. See
+In the Integration Hub, open the inbound use case: the **General** card shows the current
+**Interactive processing** mode, and **Change** opens a dialog with the three options — *Off*
+(`disabled`), *On request* and *Always* — and what each one does. The choice is applied in the
+dialog and stored when you save the use case. See
 [Use Case Configuration](./configuration.md#use-case-configuration) for the surrounding contract.
 
 If anyone is going to wait on your data by use case rather than by entity, the way you model use cases
