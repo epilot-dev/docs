@@ -112,4 +112,8 @@ These events are triggered manually via automation.
 
 <EventSchemaViewer event="TerminateContractRequested" />
 
+`ContractWithdrawalRequested` carries a customer's withdrawal from a contract (Widerruf), such as one declared through the withdrawal function that § 356a BGB requires for contracts concluded online. Add the **Trigger Event** action as the last action of the withdrawal journey's automation, so the event is published only after every mapping step has written the ticket. `withdrawal_received_at` is the time epilot received the withdrawal: the journey submission time, or the ticket creation time for tickets not created from a journey. It is the receipt time to state in the acknowledgement of receipt sent to the customer.
+
+<EventSchemaViewer event="ContractWithdrawalRequested" />
+
 <EventSchemaViewer event="InvoiceSimulationRequested" />
