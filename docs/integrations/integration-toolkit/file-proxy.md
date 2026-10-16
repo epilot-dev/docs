@@ -81,6 +81,7 @@ A file proxy use case configuration has four top-level sections:
 | `params` | No | Declares which query parameters are expected in the download URL. |
 | `steps` | **Yes** | Ordered list of HTTP requests to execute. At least one step is required. |
 | `response` | **Yes** | How to extract the file content from the step results. |
+| `allowed_origins` | No | Additional browser origins allowed to call the download URL (CORS). See [Allowed Origins](#allowed-origins). |
 | `requires_vpc` | No | Whether requests should be routed through the VPC proxy for IP allowlisting. Defaults to `false`. |
 
 ## Authentication
@@ -148,6 +149,20 @@ The `params` array declares which query parameters the proxy URL must contain. T
 | `description` | No | Human-readable description |
 
 All query parameters (including `integrationId`, and either `useCaseSlug` or `useCaseId`, plus any custom ones) are available in the Handlebars context under `params`.
+
+## Allowed Origins
+
+When a web app calls the download URL from the browser, the request is cross-origin. The epilot portal and epilot 360 origins are always allowed. To call the download URL from any other site (e.g. your own website), list its origin in `allowed_origins`:
+
+```json
+{
+  "allowed_origins": ["https://www.example-utility.de"]
+}
+```
+
+- Each entry must be an `http(s)://` origin and is matched **exactly** against the request's `Origin` header. Wildcards, paths and trailing slashes are not supported.
+- The list adds to the always-allowed epilot origins; it never replaces them.
+- `allowed_origins` controls browser access only (CORS). It is not an access control: requests from other clients, such as server-to-server calls, are not affected.
 
 ## Steps
 
