@@ -136,7 +136,7 @@ Beyond the mapping itself, an inbound use case's `configuration` accepts the fol
 | Option | Values | Default | Description |
 |--------|--------|---------|-------------|
 | `direct` | boolean | `false` | Skip the mapping engine and accept entity-shaped payloads. See [Direct Mode](./inbound/direct-mode.md). |
-| `interactive` | `disabled`, `on_request`, `always` | `disabled` | Whether events of this use case may run on the interactive lane. See [Interactive Registration](./interactive-registration.md#enabling-it-on-the-use-case). |
+| `interactive` | `disabled`, `on_request`, `always` | `disabled` | Whether events of this use case may be processed on the interactive lane, so that an end customer can wait for them. See [Interactive Registration](./interactive-registration.md#allow-interactive-processing). |
 
 ```json title="Allow the request to decide"
 {
@@ -145,17 +145,13 @@ Beyond the mapping itself, an inbound use case's `configuration` accepts the fol
 }
 ```
 
-With `on_request` — the normal setting — one mapping serves both the nightly batch and the
-registration push, and the inbound request decides which it is by sending `interactive: true`. With
-`disabled`, a request that asks for interactive is processed as bulk and told so per event; nothing
-is rejected. With `always`, every event of the use case is interactive — also requests that do not ask
-and carry no correlation id — and every one is charged to the organization's interactive budget, so
-reserve it for a use case that serves registrations only.
+- `on_request` is the normal setting: one mapping serves both the scheduled sync and the registration push, and each inbound request selects the interactive lane by sending `interactive: true`.
+- `always` makes every event of the use case interactive, also on requests that do not ask, and charges every one to the organization's interactive budget. Reserve it for a use case that serves registrations only.
+- `disabled` processes a request that asks for interactive as bulk and says so in each result; nothing is rejected. Absent means `disabled`, so remove the option rather than setting it to `disabled`.
 
-If a caller is going to wait on your use cases by slug (`wait_for_use_cases`), model one inbound use
-case per partner event type and give every use case a slug: a use case that maps several kinds of
-message cannot tell them apart, and one without a slug cannot be named at all. See
-[Interactive Registration](./interactive-registration.md#one-use-case-per-partner-event-type).
+In the Integration Hub, the option is the **Interactive processing** mode on the use case's **General** card.
+
+If a caller is going to wait on your use cases by slug (`wait_for_use_cases`), model one inbound use case per partner event type and give every use case a slug. See [Use Case Requirements](./interactive-registration.md#use-case-requirements).
 
 ### Enabling/Disabling a Use Case
 
@@ -548,6 +544,8 @@ The structure of a `POST /v3/erp/updates/events` request:
 {
   "integration_id": "uuid",
   "correlation_id": "string (optional)",
+  "interactive": "boolean (optional)",
+  "correlation_complete": "boolean (optional)",
   "events": [
     {
       "use_case_slug": "string (recommended, 1-255 chars, pattern: ^[a-z0-9][a-z0-9_-]*$, required if event_name is not provided)",
@@ -565,7 +563,8 @@ For each event, include `use_case_slug` whenever possible. `event_name` is suppo
 
 v3 takes `correlation_id` at request level and has no `event_type`. The deprecated v1 and v2 endpoints take
 `event_type` and, on v1, a `meta` object; v3 drops both without an error, so a `meta.correlation_id` sent to v3 is
-lost.
+lost. `interactive` and `correlation_complete` are for pushes an end customer is waiting for — see
+[Interactive Registration](./interactive-registration.md#request-fields).
 
 `use_case_slug` format: `^[a-z0-9][a-z0-9_-]*$` with length `1..255` (must start with a lowercase letter or digit; then lowercase letters, digits, `_`, `-`).
 
@@ -696,7 +695,7 @@ Each organization's data is fully isolated. Integration IDs are scoped to organi
 
 ### Permissions
 
-Three actions govern the Integration Toolkit. They are checked against the
+Four actions govern the Integration Toolkit. They are checked against the
 organization the token belongs to, and — where the endpoint names one — against the
 specific integration.
 
@@ -727,6 +726,6 @@ The monitoring events list (`POST /v2/integrations/{id}/monitoring/events`) retu
 data — a mapped [poll message](./pollable-outbound.md#what-a-mapped-message-looks-like-in-monitoring)
 includes its delivered payload.
 
-Inbound event submission needs `integration:ingest` on the integration it pushes to —
-see [Inbound Getting Started](./inbound/getting-started.md). A replay of inbound events
+Inbound event submission needs `integration:ingest` on the integration it pushes to;
+`integration:*` and the owner role include it. See [Inbound Getting Started](./inbound/getting-started.md). A replay of inbound events
 needs `integration:manage` instead; a push token's `integration:ingest` does not cover it.

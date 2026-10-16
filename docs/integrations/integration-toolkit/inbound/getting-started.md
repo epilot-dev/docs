@@ -130,7 +130,7 @@ Events flow through the following pipeline:
 
 Ingestion is asynchronous: the response means "accepted and queued", not "written". When an end
 customer is waiting for the push to land — portal self-registration, adding a contract — send the
-portal's correlation id with the request and let the portal wait on it. See
+portal's correlation id and `interactive: true` with the request, and let the portal wait on it. See
 [Interactive Registration](../interactive-registration.md).
 
 ## Next Steps
