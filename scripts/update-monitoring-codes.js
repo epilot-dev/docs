@@ -118,6 +118,9 @@ A code's level is fixed. That is what makes alert rules scoped to \`_error_\` or
 \`_warning_\` predictable — see [Alerting](./alerting.md#choosing-what-to-watch).
 :::
 
+The interactive lane codes (\`INTERACTIVE_*\` and \`CORRELATION_*\`) are explained in
+context, with when each is raised, in [Interactive Registration](../interactive-registration.md#monitoring).
+
 ${sections.join('\n')}${familySection}`;
 }
 

@@ -513,6 +513,14 @@ The `value` field in a relation_ref item supports the same value sources as regu
 | `jsonataExpression` | `{ "attribute": "address", "jsonataExpression": "{ \"street\": street, \"city\": city }" }` |
 | `constant` | `{ "attribute": "type", "constant": "BILLING" }` |
 
+### An Empty Reference Means No Relation
+
+A relation item is built only when every unique id it is looked up by has a value. When the value
+is missing, `null`, an empty string (`""`) or an empty list (`[]`), the item is skipped with a
+warning: no relation is set and **no stub entity is created** — the toolkit never looks up or creates
+an entity whose unique id is empty. A relation your payload leaves empty on purpose therefore stays
+unset, and the event still ends `done`.
+
 ## Relation Resolution Strategy
 
 The Integration Toolkit uses an **all-or-nothing** strategy:

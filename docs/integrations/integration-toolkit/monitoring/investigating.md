@@ -94,6 +94,9 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 
 Things worth knowing before you use it:
 
+- **Needs `integration:manage`.** Replay is an operator action, checked organization-wide rather
+  than against the integration in the path. The `integration:ingest` grant a partner's push token
+  carries does not cover it.
 - **Inbound only.** Replay reconstructs a received inbound event. It does not re-send
   outbound deliveries.
 - **Maximum 100 event ids per request.**

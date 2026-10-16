@@ -27,6 +27,7 @@ Most integrations start with inbound use cases (syncing master data into epilot)
 | [Sync Billing Events](#sync-billing-events) | [`billing_event`](/docs/entities/core-entities#billing_event), [`billing_account`](/docs/entities/core-entities#billing_account) | Invoices/payments posted in ERP |
 | [Sync Installment Schedule](#sync-installment-schedule) | [`billing_event`](/docs/entities/core-entities#billing_event), [`billing_account`](/docs/entities/core-entities#billing_account) | Installment plan (Abschlagsplan) created/changed in ERP |
 | [Sync Portal User](#sync-portal-user) | [`portal_user`](/docs/entities/core-entities#portal_user), [`contact`](/docs/entities/core-entities#contact) | Portal user registered or mapped |
+| [Interactive Registration](#interactive-registration) | [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account) | Portal self-registration or contract addition, while the end customer waits |
 
 ### Outbound (epilot to ERP)
 
@@ -336,6 +337,41 @@ flowchart LR
 
 :::info
 This use case is typically combined with [Keep Customer In Sync](#keep-customer-in-sync) — that one creates the **business partner** contact, and this one creates the **profile** contact and the `portal_user` that links the two.
+:::
+
+---
+
+### Interactive Registration
+
+Deliver a customer's data while the end customer waits for it: portal self-registration, adding a contract or a customer account to an existing login, and public journeys that identify a customer.
+
+```mermaid
+flowchart LR
+    U[End customer] -->|Identifiers| EP[epilot portal]
+    EP -->|Extension hook + correlation id| MW[Middle Layer]
+    MW -->|Validate| ERP[ERP System]
+    MW -->|POST /v3/erp/updates/events<br/>correlation_id, interactive| API[ERP Integration API]
+    EP -->|Wait on the correlation| API
+    API -->|Upsert| E[contact, billing_account, contract, meter]
+```
+
+**What happens upstream:**
+- The portal calls your [extension hook](/docs/apps/components/portal-extension) with the identifiers the end customer entered and a correlation id
+- Middle layer validates the identifiers in the ERP and answers the hook — with an error, and pushing nothing, when the customer cannot be found
+- Middle layer pushes the customer's data to `/v3/erp/updates/events` with the hook's `correlation_id` and `interactive: true`, using the existing inbound mappings
+- Recommended: middle layer closes the correlation with `correlation_complete: true` once everything for the customer is sent, so the portal learns that nothing more is coming
+
+**What happens in epilot:**
+- The events are processed on a dedicated interactive lane, separate from bulk traffic
+- The portal waits on the correlation until the entities it needs exist, then links the contact and shows the contracts
+- When the correlation is closed without a contract, the portal says so within seconds instead of timing out
+
+**Core Entities:** [`contact`](/docs/entities/core-entities#contact), [`billing_account`](/docs/entities/core-entities#billing_account), [`contract`](/docs/entities/core-entities#contract), [`meter`](/docs/entities/core-entities#meter)
+
+**Typical unique identifier:** `customer_number` or `contract_number` — the portal can select an entity only by one of its target's configured `unique_ids`
+
+:::tip
+The request and response contract, the failure cases, the `interactive` use case option, rate limits and the event-stream variant are on the [Interactive Registration](./interactive-registration.md) page.
 :::
 
 ---

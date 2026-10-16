@@ -28,6 +28,7 @@ The Integration Toolkit is composed of the following components. Each plays a sp
 | **[ERP Integration API](#erp-integration-api)** | CRUD API to manage integrations, use cases, and mappings | Stable |
 | **[ERP Inbound API](#inbound-api)** | Dedicated API to receive and simulate inbound ERP events | Stable |
 | **[Use Cases](./use-cases.md)** | Documented integration flows with testing support | Stable |
+| **[Interactive Registration](./interactive-registration.md)** | Correlation-id contract and a dedicated lane for inbound pushes an end customer is waiting for | Stable |
 | **[Core Entities](/docs/entities/core-entities)** | Standardized entity schemas for mapping targets | Stable |
 | **[Changesets](/docs/entities/changesets)** | Pending attribute updates that wait for ERP confirmation or human approval | Stable |
 | **[Core Events](/docs/integrations/core-events)** | Standardized event payloads for outbound notifications | Stable |
@@ -159,6 +160,8 @@ Push data from your ERP into epilot. Typical flows:
 - Update billing and payment information
 
 [Inbound Integration Guide](./inbound/getting-started.md)
+
+Inbound ingestion is asynchronous. For the flows where an end customer is waiting for the push to land — portal self-registration, adding a contract — use [Interactive Registration](./interactive-registration.md): your middleware sends the portal's correlation id with the push, the events run on a dedicated lane, and the portal waits until exactly that data has been written.
 
 ### Outbound (epilot to ERP)
 

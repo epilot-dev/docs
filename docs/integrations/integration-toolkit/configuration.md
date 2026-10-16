@@ -129,6 +129,30 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
 - `secure_proxy` — Route requests through epilot's secure proxy for static IP or VPN access. See [Secure Proxy Use Cases](#secure-proxy-use-cases).
 :::
 
+### Inbound Use Case Options
+
+Beyond the mapping itself, an inbound use case's `configuration` accepts the following options.
+
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `direct` | boolean | `false` | Skip the mapping engine and accept entity-shaped payloads. See [Direct Mode](./inbound/direct-mode.md). |
+| `interactive` | `disabled`, `on_request`, `always` | `disabled` | Whether events of this use case may be processed on the interactive lane, so that an end customer can wait for them. See [Interactive Registration](./interactive-registration.md#allow-interactive-processing). |
+
+```json title="Allow the request to decide"
+{
+  "entities": [ "..." ],
+  "interactive": "on_request"
+}
+```
+
+- `on_request` is the normal setting: one mapping serves both the scheduled sync and the registration push, and each inbound request selects the interactive lane by sending `interactive: true`.
+- `always` makes every event of the use case interactive, also on requests that do not ask, and charges every one to the organization's interactive budget. Reserve it for a use case that serves registrations only.
+- `disabled` processes a request that asks for interactive as bulk and says so in each result; nothing is rejected. Absent means `disabled`, so remove the option rather than setting it to `disabled`.
+
+In the Integration Hub, the option is the **Interactive processing** mode on the use case's **General** card.
+
+If a caller is going to wait on your use cases by slug (`wait_for_use_cases`), model one inbound use case per partner event type and give every use case a slug. See [Use Case Requirements](./interactive-registration.md#use-case-requirements).
+
 ### Enabling/Disabling a Use Case
 
 ```bash
@@ -514,15 +538,16 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/secure-proxy' \
 
 ### Event Message Structure
 
+The structure of a `POST /v3/erp/updates/events` request:
+
 ```json
 {
   "integration_id": "uuid",
-  "meta": {
-    "correlation_id": "string"
-  },
+  "correlation_id": "string (optional)",
+  "interactive": "boolean (optional)",
+  "correlation_complete": "boolean (optional)",
   "events": [
     {
-      "event_type": "CREATE | UPDATE | DELETE",
       "use_case_slug": "string (recommended, 1-255 chars, pattern: ^[a-z0-9][a-z0-9_-]*$, required if event_name is not provided)",
       "event_name": "string (legacy fallback, required if use_case_slug is not provided)",
       "timestamp": "ISO 8601 datetime",
@@ -536,9 +561,16 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/secure-proxy' \
 
 For each event, include `use_case_slug` whenever possible. `event_name` is supported as a legacy fallback, and `use_case_slug` takes precedence if both are present.
 
+v3 takes `correlation_id` at request level and has no `event_type`. The deprecated v1 and v2 endpoints take
+`event_type` and, on v1, a `meta` object; v3 drops both without an error, so a `meta.correlation_id` sent to v3 is
+lost. `interactive` and `correlation_complete` are for pushes an end customer is waiting for — see
+[Interactive Registration](./interactive-registration.md#request-fields).
+
 `use_case_slug` format: `^[a-z0-9][a-z0-9_-]*$` with length `1..255` (must start with a lowercase letter or digit; then lowercase letters, digits, `_`, `-`).
 
-### Event Types
+### Event Types (v1 and v2)
+
+The deprecated v1 and v2 endpoints classify each event with `event_type`. v3 has no such field.
 
 | Type | Description |
 |------|-------------|
@@ -552,7 +584,6 @@ For each event, include `use_case_slug` whenever possible. `event_name` is suppo
 
 ```json
 {
-  "event_type": "UPDATE",
   "format": "json",
   "payload": "{\"customerId\":\"C001\",\"name\":\"John Doe\"}"
 }
@@ -562,7 +593,6 @@ For each event, include `use_case_slug` whenever possible. `event_name` is suppo
 
 ```json
 {
-  "event_type": "UPDATE",
   "format": "xml",
   "payload": "<customer><id>C001</id><name>John Doe</name></customer>"
 }
@@ -578,7 +608,6 @@ Prevent duplicate processing by including a unique deduplication ID:
 {
   "events": [
     {
-      "event_type": "UPDATE",
       "deduplication_id": "customer-C001-update-20240115-001",
       "payload": "..."
     }
@@ -607,16 +636,18 @@ customer-C001
 
 ### Correlation ID
 
-Include a correlation ID to track related events:
+Include a correlation ID at request level to track related events:
 
 ```json
 {
-  "meta": {
-    "correlation_id": "<uuidv4()>"
-  },
+  "integration_id": "uuid",
+  "correlation_id": "<uuidv4()>",
   "events": [...]
 }
 ```
+
+When you omit it, epilot generates one and returns it in the response. For a correlation id an end customer is
+waiting on, see [Interactive Registration](./interactive-registration.md#correlation-ids).
 
 ### Using Correlation IDs
 
@@ -664,7 +695,7 @@ Each organization's data is fully isolated. Integration IDs are scoped to organi
 
 ### Permissions
 
-Three actions govern the Integration Toolkit. They are checked against the
+Four actions govern the Integration Toolkit. They are checked against the
 organization the token belongs to, and — where the endpoint names one — against the
 specific integration.
 
@@ -672,6 +703,7 @@ specific integration.
 |---|---|
 | `integration:view` | Read integrations and use cases; read monitoring events, stats, time series, traces, access logs, notification history and status |
 | `integration:manage` | Create, update and delete integrations and use cases; edit notification configuration; push external monitoring events; send test notifications; replay events |
+| `integration:ingest` | Push inbound events to the integration (`POST /v1/erp/updates/events`, `/v2/…`, `/v3/…`). It grants nothing else — not reading what landed, and not replay |
 | `integration:consume` | Poll and acknowledge the outbound queue. Scoped to [Pollable Outbound](./pollable-outbound.md) only — it grants nothing else |
 
 The `view` / `manage` split is the one that catches people out when minting a scoped
@@ -684,7 +716,9 @@ token for a middleware:
 | `GET /v2/integrations/{id}/notifications/history`, `…/status` | `integration:view` |
 | `POST /v2/integrations/{id}/monitoring/external-events` | `integration:manage` |
 | `POST /v2/integrations/{id}/notifications/test` | `integration:manage` |
-| `POST /v1/integrations/{id}/events/replay` | `integration:manage` |
+| `POST /v1/integrations/{id}/events/replay` | `integration:manage`, checked organization-wide |
+| `POST /v3/erp/updates/events` (and v1, v2) | `integration:ingest` |
+| `GET /v3/erp/updates/events/{event_id}`, `GET /v3/erp/updates/events?correlation_id=…`, `GET /v3/erp/updates/correlations` | `integration:view` |
 | `POST /v1/integrations/{id}/outbound/messages/poll`, `…/ack` | `integration:consume` |
 
 The monitoring events list (`POST /v2/integrations/{id}/monitoring/events`) returns
@@ -692,5 +726,6 @@ The monitoring events list (`POST /v2/integrations/{id}/monitoring/events`) retu
 data — a mapped [poll message](./pollable-outbound.md#what-a-mapped-message-looks-like-in-monitoring)
 includes its delivered payload.
 
-Inbound event submission authenticates as the integration's own API token rather
-than through these actions — see [Inbound Getting Started](./inbound/getting-started.md).
+Inbound event submission needs `integration:ingest` on the integration it pushes to;
+`integration:*` and the owner role include it. See [Inbound Getting Started](./inbound/getting-started.md). A replay of inbound events
+needs `integration:manage` instead; a push token's `integration:ingest` does not cover it.

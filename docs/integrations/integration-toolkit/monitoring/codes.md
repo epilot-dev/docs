@@ -15,13 +15,16 @@ Every monitoring event carries a **code** and a **level**. The code says what
 happened; the level says how much you should care. Both are filterable in the
 Integration Hub's [Monitoring tab](./overview.md) and through the events API.
 
-There are 85 codes. You are most likely here because you saw one in a failed
+There are 99 codes. You are most likely here because you saw one in a failed
 event — find it below.
 
 :::tip
 A code's level is fixed. That is what makes alert rules scoped to `_error_` or
 `_warning_` predictable — see [Alerting](./alerting.md#choosing-what-to-watch).
 :::
+
+The interactive lane codes (`INTERACTIVE_*` and `CORRELATION_*`) are explained in
+context, with when each is raised, in [Interactive Registration](../interactive-registration.md#monitoring).
 
 ## Error
 
@@ -32,6 +35,8 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `ATTACHMENT_NOT_FOUND` | The file no longer exists — it was removed between the event and the delivery |
 | `ATTRIBUTE_TYPE_MISMATCH` | An attribute value did not match the type declared in the entity schema |
 | `CONDITIONAL_VARIANT_WRITE_FAILED` | Conditional pricing refused one variant write. The item is dropped and not retried; the rest of the batch and the run continue. details.code names the reason where pricing gave one — UNKNOWN_ERROR means it did not |
+| `CORRELATION_ID_MISSING` | A request asked for something that only makes sense for a correlation, but did not say which correlation |
+| `CORRELATION_REQUIREMENT_FAILED` | Something a caller was waiting for can no longer arrive: every event that would have satisfied the requirement ended in an error. Reported once per correlation |
 | `DEPRECATED_ENDPOINT` | This endpoint version is deprecated |
 | `DIRECT_ENTITY_NOT_ALLOWED` | The entity is not permitted by the use case entity allowlist |
 | `DIRECT_PAYLOAD_INVALID` | The direct mode payload failed validation against the versioned payload schema |
@@ -59,6 +64,7 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `MSG_HEAD_BLOCKED` | Outbound stream halted by a poison head message (block policy) — requires operator unblock or consumer acknowledgement |
 | `OAUTH2_TOKEN_FAILURE` | Failed to obtain an OAuth2 access token |
 | `PAYLOAD_TOO_LARGE` | The payload exceeded the maximum size accepted by the receiving system |
+| `PROCESSING_STATE_LIMIT` | The processing record of an interactive event could not be written, because it or its correlation reached the size the store allows, so the event was ended as an error instead of being left processing: its correlation still completes, and anyone waiting on it is answered. The event's data may have been written all the same. Usually a payload with unusually many entities or very long unique ids |
 | `PRUNE_SCOPE_PARTIAL_FAILURE` | Scope pruning completed with some failures |
 | `RECURSION_DEPTH_EXCEEDED` | Maximum recursion depth was exceeded during processing |
 | `RELATION_REF_ITEM_NOT_FOUND` | The relation_ref value could not be matched on the target entity (invalid mapped value, or still no match after writing it to the target) — skipped as non-retryable. Check the mapping configuration and the entity data. |
@@ -96,8 +102,16 @@ Processing continued, but something needs a human eye — often a retry in fligh
 |---|---|
 | `ACK_TIMEOUT` | Acknowledgement timed out waiting for the ERP system |
 | `CONDITIONAL_VARIANT_WRITE_WARNING` | One variant write succeeded with a warning. The variant is stored and the rest of the batch and the run continue. details.code names the warning |
+| `CORRELATION_CLOSED_INCOMPLETE` | The partner declared a correlation complete and everything it sent was processed, but what the caller was waiting for was not in it — see `missing_entities` and `missing_use_cases`. Reported once per correlation |
+| `CORRELATION_CLOSE_IGNORED` | The partner declared a correlation complete, but the close was not applied: the same request has to be retried, the queue refused one of its events, the correlation does not exist and the request recorded nothing under it (its events carried their own correlation ids, were duplicates, matched no use case, or were not processed as interactive), a close without events found the organization over its interactive rate and could not create the correlation, or the correlation belongs to another integration (the one whose event or close created it). The reason names the cause. Retry with `correlation_complete`, send the close under the correlation the events were recorded under, or use a correlation id of your own |
+| `CORRELATION_EVENT_LIMIT_EXCEEDED` | This correlation already holds as many events as one correlation may, so further events sent under it were processed normally and cannot be waited on. A correlation is meant to cover one registration or one change; this usually means the partner sends the same correlation id with every push. Each request that should be waited on needs its own id |
+| `CORRELATION_LATE_EVENT` | An event arrived under a correlation the partner had already declared complete. It was processed, but anyone waiting on that correlation had already been answered, and once the correlation is complete the event cannot change that answer — the partner is sending `correlation_complete` too early |
+| `CORRELATION_WAIT_REJECTED` | A caller tried to wait on a correlation while too many waits were already open, so it was asked to retry. Its data is unaffected — only the answer it was waiting for is slower |
+| `CORRELATION_WAIT_TIMEOUT` | A caller waited on a correlation until its time ran out without getting what it asked for — see `missing_entities` and `missing_use_cases` for what had not arrived. Reported once per correlation. When nothing at all was sent under the correlation, it carries no integration: none is known before the first event |
 | `EXTERNAL_WARNING` | A warning span pushed by an external system via the external monitoring events endpoint. |
 | `FILE_PROXY_UPLOAD_RETRYING` | A file upload failed with a retryable error and will be retried automatically — one event per attempt |
+| `INTERACTIVE_CROSS_LANE_WRITE` | The same entity was updated from two different processing lanes within seconds of each other, one of them the interactive lane. Both updates were applied; this reports that they overlapped, so the order they landed in was decided by timing |
+| `INTERACTIVE_RATE_LIMITED` | The organization asked for interactive processing more often than its agreed rate, so these events were processed on its normal lane instead. Nothing was lost and the correlation can still be waited on — it will simply take as long as a bulk event does |
 | `LOOKUP_UNMAPPED` | A value was not listed in a lookup table and its fallback was used — see lookup_name and lookup_key for the gap |
 | `MSG_LATE_ARRIVAL` | An event arrived after the poll consumer had already received later events, so it was placed at the end of the stream instead of at its event time — it is delivered, but out of event-time order |
 | `SOFT_DELETED_ENTITY_MATCHED` | A soft-deleted entity matched the unique ID — it will be resurrected on upsert, or referenced as-is by a relation. Investigate why the ERP source is sending events for a deleted entity. |
@@ -130,10 +144,13 @@ Lifecycle markers rather than outcomes: a message was queued, a duplicate was ig
 | Code | What it means |
 |---|---|
 | `ACK_PENDING` | Acknowledgement is pending from the ERP system |
+| `CORRELATION_CLOSED_EMPTY` | The partner declared a correlation complete without sending any event for it. That is the partner reporting "I found nothing", and anyone waiting is told so at once instead of waiting it out |
+| `CORRELATION_COMPLETED` | Every event the partner sent under this correlation has finished processing and the partner declared the correlation complete |
 | `DUPLICATE_EVENT` | This event was already processed (duplicate) |
 | `EXTERNAL_INFO` | An informational span pushed by an external system via the external monitoring events endpoint. |
 | `FAN_OUT_EMPTY` | The split expression returned an empty list, so nothing was sent — expected for events that carry no relevant items |
 | `FILE_PROXY_UPLOAD_ENQUEUED` | A per-file upload was accepted for delivery during fan-out |
+| `INTERACTIVE_NOT_ALLOWED` | Interactive processing was requested for a use case that is not configured for it, so the events were processed normally. Set `interactive` to `on_request` or `always` on the use case if the caller is meant to be able to wait for these events |
 | `MSG_ENQUEUED` | Outbound message enqueued to the poll queue, awaiting consumption by the ERP. When the use case maps the payload, the detail carries the mapped payload as delivered and its mapping_version (or payload_omitted when it exceeds 48 KiB) |
 ## Status-code families
 
