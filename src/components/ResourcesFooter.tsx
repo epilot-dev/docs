@@ -58,6 +58,21 @@ const ClockIcon = () => (
   </svg>
 );
 
+const HeartIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+);
+
 const StoreIcon = () => (
   <svg
     width="18"
@@ -77,6 +92,7 @@ const StoreIcon = () => (
 const resources = [
   { label: 'GitHub', href: 'https://github.com/epilot-dev', icon: <GitHubIcon /> },
   { label: 'Blog', href: 'https://dev.to/epilot', icon: <PenIcon /> },
+  { label: 'Open Source', href: 'https://opensource.epilot.cloud', icon: <HeartIcon /> },
   { label: 'Tech Radar', href: 'https://docs.epilot.io/techradar', icon: <CompassIcon /> },
   { label: 'API Changelog', href: '/api/changelog', icon: <ClockIcon /> },
   { label: 'Marketplace', href: 'https://marketplace.epilot.cloud/en', icon: <StoreIcon /> },

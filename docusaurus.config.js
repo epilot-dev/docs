@@ -255,6 +255,10 @@ This documentation covers all aspects of the epilot platform for developers, adm
               href: 'https://dev.to/epilot',
             },
             {
+              label: 'Open Source',
+              href: 'https://opensource.epilot.cloud',
+            },
+            {
               label: 'Changelog',
               to: '/api/changelog',
             },
