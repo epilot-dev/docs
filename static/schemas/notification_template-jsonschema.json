@@ -67,6 +67,14 @@
       "type": "string",
       "description": "Action URL: CTA button URL (supports variables)"
     },
+    "portal_title": {
+      "type": "string",
+      "description": "Portal Title: Portal variant title shown in the end-customer portal, as Lexical editor JSON (supports variables). Falls back to notification_title when empty."
+    },
+    "portal_message": {
+      "type": "string",
+      "description": "Portal Message: Portal variant body shown in the end-customer portal, as Lexical editor JSON (supports variables). Falls back to message when empty."
+    },
     "style": {
       "type": "string",
       "description": "Style: JSON string with style config"

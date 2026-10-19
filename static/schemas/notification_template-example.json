@@ -12,6 +12,8 @@
   "message": "string",
   "action_label": "string",
   "action_url": "string",
+  "portal_title": "string",
+  "portal_message": "string",
   "style": "string",
   "_files": {
     "$relation": [
