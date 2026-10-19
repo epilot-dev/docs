@@ -7,7 +7,7 @@ title: Open Source
 
 epilot builds on open source and actively gives back. Our product codebase depends on millions of lines of open source code, and we contribute tools, libraries, and SDKs to the community under permissive licenses.
 
-Public repositories live at [github.com/epilot-dev](https://github.com/epilot-dev).
+Public repositories live at [github.com/epilot-dev](https://github.com/epilot-dev). For the full picture of what we ship, what we contribute to and who builds it, see [opensource.epilot.cloud](https://opensource.epilot.cloud).
 
 
 
