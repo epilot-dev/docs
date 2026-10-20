@@ -1,5 +1,6 @@
 ---
 title: "Workflows Executions"
+description: "epilot CLI commands for the Workflows Executions: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Workflows Executions

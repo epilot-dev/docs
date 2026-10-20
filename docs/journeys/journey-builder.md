@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+description: "The Journey Builder is a WYSIWYG editor for creating end-customer and partner journeys from steps and blocks, and for embedding them and handling submissions."
 ---
 
 # Journey Builder

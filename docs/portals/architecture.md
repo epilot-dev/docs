@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+description: "Architecture of epilot Portals: multi-tenant, white-label portals with per-portal domain and authentication on a shared, serverless AWS backend."
 ---
 
 # Architecture

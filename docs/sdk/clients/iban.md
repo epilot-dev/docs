@@ -1,5 +1,6 @@
 ---
 title: "Iban API"
+description: "TypeScript SDK client for the epilot Iban API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Iban API

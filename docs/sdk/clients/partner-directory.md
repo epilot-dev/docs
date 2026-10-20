@@ -1,5 +1,6 @@
 ---
 title: "Partner Directory API"
+description: "TypeScript SDK client for the epilot Partner Directory API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Partner Directory API

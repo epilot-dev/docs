@@ -1,5 +1,6 @@
 ---
 title: "Data Governance API"
+description: "epilot CLI commands for the Data Governance API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Data Governance API

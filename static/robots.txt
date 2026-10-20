@@ -3,7 +3,8 @@
 # and AI agents. LLM-friendly resources:
 #   - /llms.txt          (index for LLM agents, https://llmstxt.org/)
 #   - /llms-full.txt     (complete documentation in one file)
-#   - append .md to any docs URL for the raw markdown version
+#   - append .md to any docs URL (without the trailing slash) for the raw
+#     markdown version, e.g. /docs/intro.md
 
 User-agent: *
 Allow: /

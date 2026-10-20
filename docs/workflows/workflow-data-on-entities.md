@@ -1,6 +1,7 @@
 ---
 title: Workflow data on entities
 sidebar_position: 2
+description: "How epilot stores workflow execution data inside the entity payload, keyed by workflow definition ID, and how to migrate from the deprecated structure."
 ---
 
 # Workflow data on entities

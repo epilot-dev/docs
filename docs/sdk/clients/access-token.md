@@ -1,5 +1,6 @@
 ---
 title: "Access Token API"
+description: "TypeScript SDK client for the epilot Access Token API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Access Token API

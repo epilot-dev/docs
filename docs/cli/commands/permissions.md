@@ -1,5 +1,6 @@
 ---
 title: "Permissions API"
+description: "epilot CLI commands for the Permissions API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Permissions API

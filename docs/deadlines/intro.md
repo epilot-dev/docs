@@ -1,6 +1,7 @@
 ---
 title: Switching Deadlines
 sidebar_position: 0
+description: "Calculate contract switching deadlines for power and gas in the German energy market, based on regulatory rules, working days and holidays, via API, SDK or a standalone library."
 ---
 
 # Contract Switching Deadlines

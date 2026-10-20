@@ -33,7 +33,10 @@ function ApiIntro(): JSX.Element {
   const specs: Spec[] = redocusaurusOpts?.[1]?.['specs'] ?? [];
 
   return (
-    <Layout title="Getting Started" description="epilot REST API Reference">
+    <Layout
+      title="REST API Reference"
+      description="Integrate with every epilot platform feature through REST APIs: authentication, SDK, entities, webhooks, versioning, changelog and the reference for each API."
+    >
       <div className={DocPageStyles.docPage}>
         <ApiSidebar />
         <main style={{ width: '100%', minHeight: '100vh' }}>

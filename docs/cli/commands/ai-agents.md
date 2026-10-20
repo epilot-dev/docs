@@ -1,5 +1,6 @@
 ---
 title: "AI Agents API - OpenAPI 3.0"
+description: "epilot CLI commands for the AI Agents API - OpenAPI 3.0: quick start, common flags and every operation, callable from the command line."
 ---
 
 # AI Agents API - OpenAPI 3.0

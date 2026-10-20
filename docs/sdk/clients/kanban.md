@@ -1,5 +1,6 @@
 ---
 title: "Kanban API"
+description: "TypeScript SDK client for the epilot Kanban API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Kanban API

@@ -1,5 +1,6 @@
 ---
 title: "Portal API"
+description: "TypeScript SDK client for the epilot Portal API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Portal API

@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+description: "Automation Flows are epilot's automation configurations: the triggers that start them and the actions they run on entities."
 ---
 
 # Automation Flows

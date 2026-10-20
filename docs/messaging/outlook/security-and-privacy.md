@@ -1,6 +1,7 @@
 ---
 title: Security & Privacy
 sidebar_position: 4
+description: "Security and privacy of the epilot Outlook integration: Microsoft Entra controls which mailboxes flow into epilot, and epilot permissions control who sees them."
 ---
 
 # Security & Privacy

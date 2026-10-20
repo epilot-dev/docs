@@ -1,6 +1,7 @@
 ---
 title: Workflow Notes
 sidebar_position: 3
+description: "Workflow Notes are stored through the Comments API with a specific context ID format that links each note to its workflow."
 ---
 
 # Workflow Notes

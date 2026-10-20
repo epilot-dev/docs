@@ -1,5 +1,6 @@
 ---
 title: "Sandbox API"
+description: "TypeScript SDK client for the epilot Sandbox API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Sandbox API

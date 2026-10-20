@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+description: "Use the Create/Edit Entity (Advanced) automation action to map data from one entity into new or existing entities, with attribute mappings and mapping operations."
 ---
 
 # Entity Mapping

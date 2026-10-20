@@ -1,5 +1,6 @@
 ---
 title: "Deduplication API"
+description: "epilot CLI commands for the Deduplication API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Deduplication API

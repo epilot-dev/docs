@@ -1,5 +1,6 @@
 ---
 title: "Notes API"
+description: "TypeScript SDK client for the epilot Notes API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Notes API

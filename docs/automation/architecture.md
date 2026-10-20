@@ -1,5 +1,6 @@
 ---
 sidebar_position: 10
+description: "How the epilot automation engine works: a serverless, event-driven pipeline on AWS Lambda, DynamoDB, EventBridge and SQS that matches entity events to flows and runs their actions."
 ---
 
 # Architecture

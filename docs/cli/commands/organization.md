@@ -1,5 +1,6 @@
 ---
 title: "Organization API"
+description: "epilot CLI commands for the Organization API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Organization API

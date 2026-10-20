@@ -1,5 +1,6 @@
 ---
 title: "Pricing Tier API"
+description: "TypeScript SDK client for the epilot Pricing Tier API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Pricing Tier API

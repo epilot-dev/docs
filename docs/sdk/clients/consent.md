@@ -1,5 +1,6 @@
 ---
 title: "Consent API"
+description: "TypeScript SDK client for the epilot Consent API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Consent API

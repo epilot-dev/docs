@@ -1,5 +1,6 @@
 ---
 title: "Template Variables API"
+description: "TypeScript SDK client for the epilot Template Variables API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Template Variables API

@@ -1,5 +1,6 @@
 ---
 title: "Permissions API"
+description: "TypeScript SDK client for the epilot Permissions API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Permissions API

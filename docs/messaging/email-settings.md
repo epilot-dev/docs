@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+description: "Send and receive email through epilot on behalf of your organization from your own custom subdomain instead of the default epilot domain."
 ---
 
 # Email Settings

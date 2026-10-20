@@ -2,6 +2,7 @@
 title: Overview
 hide_title: true
 sidebar_position: 1
+description: "Developer documentation for epilot, the energy XRM: architecture, entities, authentication, automation, journeys, portals, integrations, APIs and SDK."
 ---
 
 import AgentToolkitPromo from '@site/src/components/AgentToolkitPromo';

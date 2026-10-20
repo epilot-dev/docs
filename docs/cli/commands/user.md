@@ -1,5 +1,6 @@
 ---
 title: "User API"
+description: "epilot CLI commands for the User API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # User API

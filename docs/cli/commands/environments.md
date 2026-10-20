@@ -1,5 +1,6 @@
 ---
 title: "Environments API"
+description: "epilot CLI commands for the Environments API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Environments API

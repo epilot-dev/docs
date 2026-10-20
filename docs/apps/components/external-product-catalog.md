@@ -2,6 +2,7 @@
 title: External Product Catalog
 hide_title: true
 sidebar_position: 7
+description: "Integrate an external product catalog with epilot by adding an External Product Catalog component to your App and configuring its hooks in the component editor."
 ---
 
 <h1 align="center">External Product Catalog</h1>

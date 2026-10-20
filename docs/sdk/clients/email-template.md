@@ -1,5 +1,6 @@
 ---
 title: "Email template API"
+description: "TypeScript SDK client for the epilot Email template API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Email template API

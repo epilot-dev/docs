@@ -1,5 +1,6 @@
 ---
 title: "Entity API"
+description: "TypeScript SDK client for the epilot Entity API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Entity API

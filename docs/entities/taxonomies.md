@@ -1,6 +1,7 @@
 ---
 title: Taxonomies
 sidebar_label: Taxonomies
+description: "Taxonomies are epilot's labeling and classification system for entities, relations and files, managed through the Label Builder."
 ---
 
 # Taxonomies

@@ -1,5 +1,6 @@
 ---
 title: "Address API"
+description: "TypeScript SDK client for the epilot Address API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Address API

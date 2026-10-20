@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+description: "The Metering API manages meters and meter readings for administrators and portal end users, with different permission scopes."
 ---
 
 # Metering

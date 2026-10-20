@@ -1,5 +1,6 @@
 ---
 title: "Notification API"
+description: "epilot CLI commands for the Notification API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Notification API

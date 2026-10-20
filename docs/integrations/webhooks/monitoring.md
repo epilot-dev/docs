@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+description: "Monitor epilot webhooks: every webhook request is logged as an event with a success or failure status in the Webhook Events section of the webhook configuration."
 ---
 
 # Monitoring

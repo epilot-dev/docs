@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+description: "Every file uploaded to epilot is a File entity, available through the Entity API, with access control, file relations and versions."
 ---
 
 # File Entity

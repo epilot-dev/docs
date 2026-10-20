@@ -1,5 +1,6 @@
 ---
 title: "Address Suggestions API"
+description: "TypeScript SDK client for the epilot Address Suggestions API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Address Suggestions API

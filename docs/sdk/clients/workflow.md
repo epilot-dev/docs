@@ -1,5 +1,6 @@
 ---
 title: "Workflows Executions"
+description: "TypeScript SDK client for the epilot Workflows Executions: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Workflows Executions

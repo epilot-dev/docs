@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
 title: JSONata Customization
+description: "Customize epilot webhook payloads with JSONata to reshape, filter or extract fields before delivery."
 ---
 
 # Customization

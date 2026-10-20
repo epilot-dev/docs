@@ -1,6 +1,7 @@
 ---
 title: Blueprints
 sidebar_position: 1
+description: "Blueprints from the epilot Marketplace bundle journeys, automations, entity schemas, templates and more, so companies can launch energy use cases in a few clicks."
 ---
 
 # Blueprints

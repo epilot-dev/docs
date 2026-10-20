@@ -1,5 +1,6 @@
 ---
 sidebar_position: 5
+description: "Custom Variables are reusable, organization-level template logic (Handlebars expressions, order tables, journey links and text snippets) for email and document templates."
 ---
 
 # Custom Variables

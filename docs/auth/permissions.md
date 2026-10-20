@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+description: "epilot permissions use role-based access control (RBAC) with attribute-based conditions, inspired by AWS IAM policies, for fine-grained control by role, resource and attribute."
 ---
 
 # Permissions

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2.5
 title: PII Anonymization
+description: "epilot can mask personal data (PII) in API responses so AI assistants, analytics and integrations get the shape and relations of your data without personal identifiers."
 ---
 
 # PII Anonymization

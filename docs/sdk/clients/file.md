@@ -1,5 +1,6 @@
 ---
 title: "File API"
+description: "TypeScript SDK client for the epilot File API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # File API

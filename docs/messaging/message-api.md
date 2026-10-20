@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+description: "The Message API is epilot's central email service for sending, receiving and managing email messages within the platform."
 ---
 
 # Message API

@@ -1,5 +1,6 @@
 ---
 title: "Messaging Settings API"
+description: "epilot CLI commands for the Messaging Settings API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Messaging Settings API

@@ -1,5 +1,6 @@
 ---
 title: "Submission API"
+description: "epilot CLI commands for the Submission API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Submission API

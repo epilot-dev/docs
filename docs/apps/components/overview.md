@@ -2,6 +2,7 @@
 title: Overview
 hide_title: true
 sidebar_position: 1
+description: "Components are the building blocks of every epilot App. Each component type extends a specific part of the platform, such as entity pages, journeys, portals or flows."
 ---
 
 <p>&nbsp;</p>

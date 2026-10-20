@@ -1,5 +1,6 @@
 ---
 title: "Notification API"
+description: "TypeScript SDK client for the epilot Notification API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Notification API

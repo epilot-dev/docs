@@ -1,5 +1,6 @@
 ---
 title: "Data Governance API"
+description: "TypeScript SDK client for the epilot Data Governance API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Data Governance API

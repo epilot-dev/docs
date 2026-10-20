@@ -2,6 +2,7 @@
 title: Concorde Design tokens
 hide_title: true
 sidebar_position: 3
+description: "Reference of Concorde design tokens: the CSS variables for colors, typography, shadows, layout and blocks that style epilot Journeys built with the open-source Concorde library."
 ---
 
 <h1 style={{display:"inline-block"}}>Concorde Design tokens: CSS variables</h1>

@@ -1,6 +1,7 @@
 ---
 title: Workflow in progress
 sidebar_position: 4
+description: "How epilot workflows progress: tasks, phases, their statuses and how the current workflow position is tracked."
 ---
 
 # Workflow in progress

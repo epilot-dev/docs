@@ -1,6 +1,7 @@
 ---
 sidebar_position: 5
 title: Batch API
+description: "The Batch API executes multiple epilot API calls in a single HTTP request and lets you retrieve the results asynchronously."
 ---
 
 # Batch API

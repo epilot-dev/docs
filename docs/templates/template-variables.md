@@ -1,5 +1,6 @@
 ---
 sidebar_position: 0
+description: "The Template Variables API discovers and substitutes Handlebars variables in epilot email and document templates."
 ---
 
 # Template Variables

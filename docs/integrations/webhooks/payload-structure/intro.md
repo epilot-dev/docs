@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 title: Common Data Structure
+description: "Structure of epilot webhook payloads for automation and portal user access triggers: metadata, entity, relations and activity objects."
 ---
 
 # Payload Structure

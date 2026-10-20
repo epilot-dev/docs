@@ -55,7 +55,7 @@ export default function HeroSection(): JSX.Element {
           </div>
           <h1 className={styles.title}>Build what energy businesses need next.</h1>
           <p className={styles.subtitle}>
-            Everything you need to extend the Energy XRM—from APIs and SDKs to Apps, integrations, and agent-powered
+            Everything you need to extend the energy XRM—from APIs and SDKs to Apps, integrations, and agent-powered
             development.
           </p>
           <div className={styles.actions}>

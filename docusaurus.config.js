@@ -16,9 +16,13 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
 ;(
   module.exports = {
     title: 'epilot dev center',
-    tagline: 'The Energy XRM - for developers.',
+    tagline: 'The energy XRM - for developers.',
     url: DOCS_URL,
     baseUrl: '/',
+    // Amplify serves every page from <route>/index.html and 301-redirects
+    // /route to /route/. Emit trailing-slash URLs everywhere (links, canonical,
+    // og:url, sitemap) so they point at the final URL instead of a redirect.
+    trailingSlash: true,
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     favicon: 'img/favicon.svg',
@@ -131,7 +135,9 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
       [
         require.resolve('./src/plugins/llms-txt/index.js'),
         {
-          siteDescription: `epilot is a cloud-native SaaS platform (Energy XRM) designed for energy suppliers and service providers in the German energy market.
+          siteSummary:
+            'Developer documentation for epilot, the energy XRM: a cloud-native SaaS platform for energy suppliers, grid operators and service providers in the German energy market. Covers the REST APIs, TypeScript SDK, CLI, Apps and every platform capability.',
+          siteDescription: `epilot is a cloud-native SaaS platform (energy XRM) designed for energy suppliers and service providers in the German energy market.
 
 The platform provides:
 - **Entity Management**: Flexible data modeling with schemas for contacts, products, orders, opportunities, and custom entities
@@ -181,6 +187,10 @@ This documentation covers all aspects of the epilot platform for developers, adm
         colorMode: {
           respectPrefersColorScheme: true,
         },
+        // Default og:image / twitter:image for pages without their own image.
+        // The logo is square, so use the matching "summary" Twitter card.
+        image: 'img/logo.png',
+        metadata: [{ name: 'twitter:card', content: 'summary' }],
         navbar: {
           title: 'Dev Center',
           logo: {

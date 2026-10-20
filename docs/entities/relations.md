@@ -1,5 +1,6 @@
 ---
 sidebar_position: 6
+description: "Relations link entities to each other across epilot, regardless of schema. Covers the relation data structure, references, hydration and relation attributes."
 ---
 
 # Relations

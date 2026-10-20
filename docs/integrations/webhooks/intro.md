@@ -2,6 +2,7 @@
 title: Overview
 sidebar_position: 0
 slug: /integrations/webhooks
+description: "Subscribe to events in your epilot organization with webhooks: epilot sends an HTTP POST request to your URL whenever an event occurs, to integrate external systems."
 ---
 
 # Webhooks

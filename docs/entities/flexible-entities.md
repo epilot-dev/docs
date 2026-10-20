@@ -1,5 +1,6 @@
 ---
 sidebar_position: 0
+description: "Everything in epilot is an entity: contacts, orders, products, contracts, meters, files and more. Entities are flexible JSON objects backed by user-definable schemas."
 ---
 
 # Flexible Entities

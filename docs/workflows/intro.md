@@ -1,6 +1,7 @@
 ---
 title: Overview
 sidebar_position: 1
+description: "Workflows are structured collections of tasks that track progress and execute operations across a business process in epilot."
 ---
 
 # Workflows

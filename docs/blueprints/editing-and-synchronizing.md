@@ -2,6 +2,7 @@
 sidebar_position: 3
 title: Editing and synchronizing
 hide_title: true
+description: "Edit a Blueprint in the Blueprint overview (rename it, add or remove resources, download or delete it) and synchronize it with another organization."
 ---
 
 ## Editing Blueprints 

@@ -115,7 +115,7 @@ const items = [
   {
     title: 'Documentation',
     description:
-      'Understand the Energy XRM: entities, journeys, workflows, automation, pricing, and everything else that runs an energy business.',
+      'Understand the energy XRM: entities, journeys, workflows, automation, pricing, and everything else that runs an energy business.',
     href: '/docs/intro',
     cta: 'Read the docs',
     art: <DocsIllustration />,

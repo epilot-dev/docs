@@ -1,5 +1,6 @@
 ---
 title: "Audit Log"
+description: "TypeScript SDK client for the epilot Audit Log: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Audit Log

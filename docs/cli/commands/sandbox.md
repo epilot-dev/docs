@@ -1,5 +1,6 @@
 ---
 title: "Sandbox API"
+description: "epilot CLI commands for the Sandbox API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Sandbox API

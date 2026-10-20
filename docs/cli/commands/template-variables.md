@@ -1,5 +1,6 @@
 ---
 title: "Template Variables API"
+description: "epilot CLI commands for the Template Variables API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Template Variables API

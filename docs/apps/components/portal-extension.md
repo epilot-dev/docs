@@ -2,6 +2,7 @@
 title: Portal Extensions
 hide_title: true
 sidebar_position: 6
+description: "Extend epilot portals with custom functionality and third-party integrations, from seamless links to hooks for data retrieval, validation and export."
 ---
 
 <h1 align="center">Portal Extensions</h1>

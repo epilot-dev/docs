@@ -1,5 +1,6 @@
 ---
 title: "Design Builder API v2"
+description: "epilot CLI commands for the Design Builder API v2: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Design Builder API v2

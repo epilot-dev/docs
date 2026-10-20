@@ -1,5 +1,6 @@
 ---
 title: "Blueprint Manifest API"
+description: "epilot CLI commands for the Blueprint Manifest API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Blueprint Manifest API

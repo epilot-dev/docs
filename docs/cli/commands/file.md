@@ -1,5 +1,6 @@
 ---
 title: "File API"
+description: "epilot CLI commands for the File API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # File API

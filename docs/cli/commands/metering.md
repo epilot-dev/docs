@@ -1,5 +1,6 @@
 ---
 title: "Metering API"
+description: "epilot CLI commands for the Metering API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Metering API
