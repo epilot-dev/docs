@@ -135,7 +135,9 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
       [
         require.resolve('./src/plugins/llms-txt/index.js'),
         {
-          siteDescription: `epilot is a cloud-native SaaS platform (Energy XRM) designed for energy suppliers and service providers in the German energy market.
+          siteSummary:
+            'Developer documentation for epilot, the energy XRM: a cloud-native SaaS platform for energy suppliers, grid operators and service providers in the German energy market. Covers the REST APIs, TypeScript SDK, CLI, Apps and every platform capability.',
+          siteDescription: `epilot is a cloud-native SaaS platform (energy XRM) designed for energy suppliers and service providers in the German energy market.
 
 The platform provides:
 - **Entity Management**: Flexible data modeling with schemas for contacts, products, orders, opportunities, and custom entities
