@@ -13,13 +13,17 @@ import styles from './styles.module.css';
 function ChangelogPage(props: Props): JSX.Element {
   const { content: ChangelogContent } = props;
   const { metadata, toc } = ChangelogContent;
-  const { title, nextItem, prevItem } = metadata;
+  const { title, description, nextItem, prevItem } = metadata;
 
   const windowSize = useWindowSize();
   const renderTocDesktop = toc && toc.length > 0 && (windowSize === 'desktop' || windowSize === 'ssr');
 
   return (
-    <Layout title={title} description={title} pageClassName={DocPageStyles.docPage}>
+    <Layout
+      title={title}
+      description={description?.replace(/^[-*]\s+/, '') || title}
+      pageClassName={DocPageStyles.docPage}
+    >
       <ApiSidebar />
       <main className={styles.changelogMain}>
         <div className="container padding-top--md padding-bottom--lg">

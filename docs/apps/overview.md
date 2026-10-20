@@ -10,7 +10,7 @@ import DocCards from '@site/src/components/DocCards';
 
 # Build Apps for epilot
 
-epilot is the Energy XRM that Apps extend. Add custom UI to entity pages, journeys, and portals, run your own code inside flows, and connect external systems — then install your App privately or publish it to the epilot Marketplace.
+epilot is the energy XRM that Apps extend. Add custom UI to entity pages, journeys, and portals, run your own code inside flows, and connect external systems — then install your App privately or publish it to the epilot Marketplace.
 
 ## Get started
 

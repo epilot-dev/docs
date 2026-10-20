@@ -15,3 +15,12 @@
     max-width: calc(100vw - var(--doc-sidebar-width) - 15px);
   }
 }
+
+.loadingIntro {
+  padding: 2rem 2.5rem 0;
+  max-width: 60rem;
+}
+
+.loadingIntro p {
+  overflow-wrap: anywhere;
+}

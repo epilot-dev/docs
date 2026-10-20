@@ -16,7 +16,7 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
 ;(
   module.exports = {
     title: 'epilot dev center',
-    tagline: 'The Energy XRM - for developers.',
+    tagline: 'The energy XRM - for developers.',
     url: DOCS_URL,
     baseUrl: '/',
     // Amplify serves every page from <route>/index.html and 301-redirects
@@ -187,6 +187,10 @@ This documentation covers all aspects of the epilot platform for developers, adm
         colorMode: {
           respectPrefersColorScheme: true,
         },
+        // Default og:image / twitter:image for pages without their own image.
+        // The logo is square, so use the matching "summary" Twitter card.
+        image: 'img/logo.png',
+        metadata: [{ name: 'twitter:card', content: 'summary' }],
         navbar: {
           title: 'Dev Center',
           logo: {
