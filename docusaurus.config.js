@@ -19,6 +19,10 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
     tagline: 'The Energy XRM - for developers.',
     url: DOCS_URL,
     baseUrl: '/',
+    // Amplify serves every page from <route>/index.html and 301-redirects
+    // /route to /route/. Emit trailing-slash URLs everywhere (links, canonical,
+    // og:url, sitemap) so they point at the final URL instead of a redirect.
+    trailingSlash: true,
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     favicon: 'img/favicon.svg',

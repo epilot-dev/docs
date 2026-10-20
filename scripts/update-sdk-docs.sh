@@ -147,7 +147,7 @@ if [ -f "$SDK_README" ]; then
         continue
       fi
       TABLE_LINES="$TABLE_LINES
-| $api_name | $import_path | [SDK](clients/$slug) · [API]($api_route) |"
+| $api_name | $import_path | [SDK](clients/$slug.md) · [API]($api_route) |"
     fi
   done < "$SDK_README"
 else
@@ -160,7 +160,7 @@ else
       continue
     fi
     TABLE_LINES="$TABLE_LINES
-| \`@epilot/sdk/$slug\` | \`@epilot/sdk/$slug\` | [SDK](clients/$slug) · [API]($api_route) |"
+| \`@epilot/sdk/$slug\` | \`@epilot/sdk/$slug\` | [SDK](clients/$slug.md) · [API]($api_route) |"
   done
 fi
 

@@ -300,56 +300,56 @@ epilot completion fish
 
 ## API Commands
 
-Per-API command reference with all operations, parameters, and sample calls. See the [API Commands](commands/entity) section in the sidebar, or browse the table below.
+Per-API command reference with all operations, parameters, and sample calls. See the [API Commands](commands/entity.md) section in the sidebar, or browse the table below.
 
 <!-- cli-commands-table -->
 
 | API | Command | Reference |
 | --- | ------- | --------- |
-| Access Token API | `epilot access-token` | [reference](commands/access-token) |
-| Address Suggestions API | `epilot address-suggestions` | [reference](commands/address-suggestions) |
-| Address API | `epilot address` | [reference](commands/address) |
-| AI Agents API - OpenAPI 3.0 | `epilot ai-agents` | [reference](commands/ai-agents) |
-| App API | `epilot app` | [reference](commands/app) |
-| Audit Log | `epilot audit-logs` | [reference](commands/audit-logs) |
-| Automation API | `epilot automation` | [reference](commands/automation) |
-| Billing API | `epilot billing` | [reference](commands/billing) |
-| Blueprint Manifest API | `epilot blueprint-manifest` | [reference](commands/blueprint-manifest) |
-| Consent API | `epilot consent` | [reference](commands/consent) |
-| Portal API | `epilot customer-portal` | [reference](commands/customer-portal) |
-| Dashboard API | `epilot dashboard` | [reference](commands/dashboard) |
-| Data Governance API | `epilot data-governance` | [reference](commands/data-governance) |
-| Deduplication API | `epilot deduplication` | [reference](commands/deduplication) |
-| Design Builder API v2 | `epilot design` | [reference](commands/design) |
-| Document API | `epilot document` | [reference](commands/document) |
-| Messaging Settings API | `epilot email-settings` | [reference](commands/email-settings) |
-| Email template API | `epilot email-template` | [reference](commands/email-template) |
-| Entity Mapping API | `epilot entity-mapping` | [reference](commands/entity-mapping) |
-| Entity API | `epilot entity` | [reference](commands/entity) |
-| Environments API | `epilot environments` | [reference](commands/environments) |
-| ERP Integration API | `epilot erp-integration` | [reference](commands/erp-integration) |
-| Event Catalog API | `epilot event-catalog` | [reference](commands/event-catalog) |
-| File API | `epilot file` | [reference](commands/file) |
-| Iban API | `epilot iban` | [reference](commands/iban) |
-| Journey API | `epilot journey` | [reference](commands/journey) |
-| Kanban API | `epilot kanban` | [reference](commands/kanban) |
-| Message API | `epilot message` | [reference](commands/message) |
-| Metering API | `epilot metering` | [reference](commands/metering) |
-| Notes API | `epilot notes` | [reference](commands/notes) |
-| Notification API | `epilot notification` | [reference](commands/notification) |
-| Organization API | `epilot organization` | [reference](commands/organization) |
-| Partner API | `epilot partner-directory` | [reference](commands/partner-directory) |
-| Permissions API | `epilot permissions` | [reference](commands/permissions) |
-| Pricing Tier API | `epilot pricing-tier` | [reference](commands/pricing-tier) |
-| Pricing API | `epilot pricing` | [reference](commands/pricing) |
-| Purpose API | `epilot purpose` | [reference](commands/purpose) |
-| Sandbox API | `epilot sandbox` | [reference](commands/sandbox) |
-| Submission API | `epilot submission` | [reference](commands/submission) |
-| Targeting API | `epilot targeting` | [reference](commands/targeting) |
-| Template Variables API | `epilot template-variables` | [reference](commands/template-variables) |
-| User API | `epilot user` | [reference](commands/user) |
-| Validation Rules API | `epilot validation-rules` | [reference](commands/validation-rules) |
-| Webhooks | `epilot webhooks` | [reference](commands/webhooks) |
-| Workflows Definitions | `epilot workflow-definition` | [reference](commands/workflow-definition) |
-| Workflows Executions | `epilot workflow` | [reference](commands/workflow) |
+| Access Token API | `epilot access-token` | [reference](commands/access-token.md) |
+| Address Suggestions API | `epilot address-suggestions` | [reference](commands/address-suggestions.md) |
+| Address API | `epilot address` | [reference](commands/address.md) |
+| AI Agents API - OpenAPI 3.0 | `epilot ai-agents` | [reference](commands/ai-agents.md) |
+| App API | `epilot app` | [reference](commands/app.md) |
+| Audit Log | `epilot audit-logs` | [reference](commands/audit-logs.md) |
+| Automation API | `epilot automation` | [reference](commands/automation.md) |
+| Billing API | `epilot billing` | [reference](commands/billing.md) |
+| Blueprint Manifest API | `epilot blueprint-manifest` | [reference](commands/blueprint-manifest.md) |
+| Consent API | `epilot consent` | [reference](commands/consent.md) |
+| Portal API | `epilot customer-portal` | [reference](commands/customer-portal.md) |
+| Dashboard API | `epilot dashboard` | [reference](commands/dashboard.md) |
+| Data Governance API | `epilot data-governance` | [reference](commands/data-governance.md) |
+| Deduplication API | `epilot deduplication` | [reference](commands/deduplication.md) |
+| Design Builder API v2 | `epilot design` | [reference](commands/design.md) |
+| Document API | `epilot document` | [reference](commands/document.md) |
+| Messaging Settings API | `epilot email-settings` | [reference](commands/email-settings.md) |
+| Email template API | `epilot email-template` | [reference](commands/email-template.md) |
+| Entity Mapping API | `epilot entity-mapping` | [reference](commands/entity-mapping.md) |
+| Entity API | `epilot entity` | [reference](commands/entity.md) |
+| Environments API | `epilot environments` | [reference](commands/environments.md) |
+| ERP Integration API | `epilot erp-integration` | [reference](commands/erp-integration.md) |
+| Event Catalog API | `epilot event-catalog` | [reference](commands/event-catalog.md) |
+| File API | `epilot file` | [reference](commands/file.md) |
+| Iban API | `epilot iban` | [reference](commands/iban.md) |
+| Journey API | `epilot journey` | [reference](commands/journey.md) |
+| Kanban API | `epilot kanban` | [reference](commands/kanban.md) |
+| Message API | `epilot message` | [reference](commands/message.md) |
+| Metering API | `epilot metering` | [reference](commands/metering.md) |
+| Notes API | `epilot notes` | [reference](commands/notes.md) |
+| Notification API | `epilot notification` | [reference](commands/notification.md) |
+| Organization API | `epilot organization` | [reference](commands/organization.md) |
+| Partner API | `epilot partner-directory` | [reference](commands/partner-directory.md) |
+| Permissions API | `epilot permissions` | [reference](commands/permissions.md) |
+| Pricing Tier API | `epilot pricing-tier` | [reference](commands/pricing-tier.md) |
+| Pricing API | `epilot pricing` | [reference](commands/pricing.md) |
+| Purpose API | `epilot purpose` | [reference](commands/purpose.md) |
+| Sandbox API | `epilot sandbox` | [reference](commands/sandbox.md) |
+| Submission API | `epilot submission` | [reference](commands/submission.md) |
+| Targeting API | `epilot targeting` | [reference](commands/targeting.md) |
+| Template Variables API | `epilot template-variables` | [reference](commands/template-variables.md) |
+| User API | `epilot user` | [reference](commands/user.md) |
+| Validation Rules API | `epilot validation-rules` | [reference](commands/validation-rules.md) |
+| Webhooks | `epilot webhooks` | [reference](commands/webhooks.md) |
+| Workflows Definitions | `epilot workflow-definition` | [reference](commands/workflow-definition.md) |
+| Workflows Executions | `epilot workflow` | [reference](commands/workflow.md) |
 <!-- /cli-commands-table -->
