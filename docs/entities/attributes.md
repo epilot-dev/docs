@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 title: Attributes
+description: "Attributes are the fields of an entity schema. Each one appears as a table column and as an editable field in the entity detail view. Reference of attribute types and properties."
 ---
 
 # Attributes

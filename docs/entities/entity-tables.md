@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+description: "Entity tables list the entities of a schema with full-text search, attribute filters, sorting, saved views and bulk import and export."
 ---
 
 # Entity Tables

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 5
 title: Sandboxes
+description: "A Sandbox is a separate epilot organization for safely testing configurations without affecting production. Validated changes can be promoted to production."
 ---
 
 # Sandboxes

@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+description: "The Email Template API manages reusable email templates in epilot with HTML content, variable substitution, branding and file attachments."
 ---
 
 # Email Templates

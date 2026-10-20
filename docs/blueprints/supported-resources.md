@@ -1,6 +1,7 @@
 ---
 sidebar_position: 10
 title: Supported Resources
+description: "Resource types that Blueprints support, each corresponding to a ResourceNodeType in the Blueprint Manifest API."
 ---
 
 # Supported Resources

@@ -1,5 +1,6 @@
 ---
 sidebar_position: 5
+description: "The Entity API is the primary data layer for epilot business objects, with sub-APIs for schemas, CRUD, search, relations and activity."
 ---
 
 # Entity API

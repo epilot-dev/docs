@@ -2,6 +2,7 @@
 sidebar_position: 2
 title: Installing a Blueprint
 hide_title: true
+description: "Install a Blueprint from the epilot Marketplace with a one-click or advanced install, configure it after installation, or create your own custom Blueprint."
 ---
 
 

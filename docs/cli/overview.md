@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 title: Overview
+description: "The epilot CLI calls any epilot API operation with one command, no SDK setup or boilerplate needed: just run npx epilot."
 ---
 
 # epilot CLI

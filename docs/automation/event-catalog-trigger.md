@@ -1,6 +1,7 @@
 ---
 sidebar_position: 5
 title: Event Catalog Trigger
+description: "The Event Catalog trigger starts an Automation Flow whenever a Core Event, such as CustomerRequestSubmitted or MeterReadingAdded, is published in your organization."
 ---
 
 # Event Catalog Trigger

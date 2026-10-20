@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+description: "File Collections group and organize files within entities. They come in two types: shared (global) collections and personal (user) collections."
 ---
 
 # File Collections

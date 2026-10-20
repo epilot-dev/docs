@@ -1,5 +1,6 @@
 ---
 sidebar_position: 8
+description: "A post-qualification journey collects additional information about a lead captured by another journey, via a link sent to the contact by email."
 ---
 
 # Post Qualification Journey

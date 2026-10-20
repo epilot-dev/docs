@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+description: "Upload and download files in epilot with the File API, step by step: request upload and download URLs, transfer the file and save it as a File entity."
 ---
 
 # File API

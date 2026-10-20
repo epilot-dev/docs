@@ -1,5 +1,6 @@
 ---
 sidebar_position: 4
+description: "Submissions are entities that store raw data collected from journeys or other external sources, created through the Submission API."
 ---
 
 # Submissions

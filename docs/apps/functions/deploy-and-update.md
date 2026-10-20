@@ -2,6 +2,7 @@
 title: Deploying & Updating
 hide_title: true
 sidebar_position: 5
+description: "Add, deploy and update App functions with the epilot CLI: scaffold workflow or scheduled functions, deploy them and learn how updates reach installations."
 ---
 
 # Deploying & Updating Functions

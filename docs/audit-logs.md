@@ -1,5 +1,6 @@
 ---
 sidebar_position: 14
+description: "Audit logs are a tamper-resistant record of who did what, when and on which resource in your epilot organization, for security reviews, compliance and troubleshooting."
 ---
 
 # Audit Logs

@@ -2,6 +2,7 @@
 title: "How to build a custom Journey block"
 hide_title: true
 sidebar_position: 1
+description: "Step-by-step guide to building a custom Journey block as an epilot App: a block that shows the address entered in the journey as a marker on an OpenStreetMap map."
 ---
 
 ## How to build a custom Journey block

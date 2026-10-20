@@ -1,5 +1,6 @@
 ---
 sidebar_position: 2
+description: "Authorize epilot API calls with Access Tokens: create, restrict (read-only or anonymized), use and revoke tokens for integrations and scripts."
 ---
 
 # Access Tokens

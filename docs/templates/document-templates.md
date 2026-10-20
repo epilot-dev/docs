@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+description: "Generate PDF, DOCX and XLSX documents from Word or Excel templates populated with Handlebars variables from epilot entities."
 ---
 
 # Document Templates

@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+description: "epilot Portals are white-label self-service interfaces for customers and installers. Overview of what administrators configure and what end users can do."
 ---
 
 # Overview

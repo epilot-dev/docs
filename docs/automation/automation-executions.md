@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+description: "Every time an Automation Flow is triggered, epilot creates an Automation Execution. Learn how executions run their actions and which execution statuses exist."
 ---
 
 # Automation Executions

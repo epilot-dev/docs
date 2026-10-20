@@ -1,6 +1,7 @@
 ---
 title: Environments & Secrets
 sidebar_position: 1
+description: "Environments & Secrets is an organization-level key-value store for configuration and credentials that you reference anywhere with {{ env.variable_key }} syntax."
 ---
 
 # Environments & Secrets

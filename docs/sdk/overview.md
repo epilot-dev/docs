@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 title: Overview
+description: "@epilot/sdk is the official TypeScript SDK for epilot: one package with 30+ fully typed API clients. Install it, get started and import only the clients you need."
 ---
 
 # epilot SDK

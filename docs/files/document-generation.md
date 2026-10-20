@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+description: "The Document Generation API creates documents from templates with variable substitution, image embedding, Excel output and asynchronous jobs."
 ---
 
 # Document Generation

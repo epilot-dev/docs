@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 title: "File Data Delivery"
+description: "Deliver the actual file bytes of file events, such as File Created, to your webhook endpoint as Base64 in the JSON payload or as multipart/form-data."
 ---
 
 # File Data Delivery
