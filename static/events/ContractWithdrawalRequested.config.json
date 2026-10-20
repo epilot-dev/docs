@@ -1,0 +1,88 @@
+{
+  "event_name": "ContractWithdrawalRequested",
+  "event_title": "Contract Withdrawal Request",
+  "event_description": "A customer withdrew from a contract (Widerruf), e.g. through the withdrawal function required by § 356a BGB. Explicitly triggered by Automation once the withdrawal ticket is complete.",
+  "event_version": "1.0",
+  "event_tags": [
+    "builtin",
+    "erp",
+    "automation",
+    "ticket",
+    "contract",
+    "withdrawal"
+  ],
+  "schema_fields": {
+    "withdrawal_received_at": {
+      "json_schema": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When epilot received the withdrawal declaration (ISO 8601): the journey submission time, or the ticket creation time when the ticket was not created from a journey. This is the receipt time the trader must state in the acknowledgement of receipt (§ 356a (4) BGB) and the time that decides whether the withdrawal was declared within the withdrawal period (§ 356a (5) BGB)."
+      },
+      "required": true,
+      "graph_source": "submission._created_at ? submission._created_at : ticket._created_at"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "ticket",
+        "schema": "ticket",
+        "cardinality": "one"
+      },
+      {
+        "id": "submission",
+        "schema": "submission",
+        "cardinality": "one",
+        "fields": [
+          "_id",
+          "_created_at"
+        ]
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "contract",
+        "schema": "contract",
+        "cardinality": "one"
+      },
+      {
+        "id": "order",
+        "schema": "order",
+        "cardinality": "one"
+      },
+      {
+        "id": "billing_account",
+        "schema": "billing_account",
+        "cardinality": "one"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ticket",
+        "to": "submission"
+      },
+      {
+        "from": "ticket",
+        "to": "contact"
+      },
+      {
+        "from": "ticket",
+        "to": "contract"
+      },
+      {
+        "from": "ticket",
+        "to": "order"
+      },
+      {
+        "from": "ticket",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "automation_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket"
+}

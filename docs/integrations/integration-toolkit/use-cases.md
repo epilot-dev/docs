@@ -46,6 +46,7 @@ Most integrations start with inbound use cases (syncing master data into epilot)
 | [Request Data Sync](#request-data-sync) | [`OnDemandSyncCustomerRequested`](/docs/integrations/core-events#OnDemandSyncCustomerRequested), [`OnDemandSyncContractRequested`](/docs/integrations/core-events#OnDemandSyncContractRequested) | varies | Portal login / 360 |
 | [Contract Move](#contract-move-move-in--move-out) | [`LocationMoveRequested`](/docs/integrations/core-events#LocationMoveRequested) | [`ticket`](/docs/entities/core-entities#ticket), [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`meter`](/docs/entities/core-entities#meter) | Portal / Journey |
 | [Terminate Contract](#terminate-contract) | [`TerminateContractRequested`](/docs/integrations/core-events#TerminateContractRequested) | [`ticket`](/docs/entities/core-entities#ticket), [`contract`](/docs/entities/core-entities#contract), [`contact`](/docs/entities/core-entities#contact) | Portal / Journey |
+| [Withdraw From Contract](#withdraw-from-contract) | [`ContractWithdrawalRequested`](/docs/integrations/core-events#ContractWithdrawalRequested) | [`ticket`](/docs/entities/core-entities#ticket), [`contract`](/docs/entities/core-entities#contract), [`order`](/docs/entities/core-entities#order), [`contact`](/docs/entities/core-entities#contact) | Portal / Journey |
 
 ---
 
@@ -803,6 +804,40 @@ flowchart LR
 **Core Entities:** [`ticket`](/docs/entities/core-entities#ticket), [`contract`](/docs/entities/core-entities#contract), [`contact`](/docs/entities/core-entities#contact)
 
 **Typical payload fields:** identity ID, customer account ID, contract number, termination date, ordinary vs extraordinary flag, reason key, free-text reason for "other"
+
+---
+
+### Withdraw From Contract
+
+A customer withdraws from a contract (Widerruf) via a portal or journey. Since 19 June 2026, § 356a BGB requires a withdrawal function for every contract concluded with a consumer through an online interface: a "Vertrag widerrufen" button, a "Widerruf bestätigen" confirmation step, and an acknowledgement of receipt stating the date and time the withdrawal was received.
+
+```mermaid
+flowchart LR
+    U[User] -->|Confirms withdrawal| EP[epilot]
+    EP -->|ContractWithdrawalRequested| WH[Webhook]
+    WH -->|Event payload| MW[Middle Layer]
+    MW -->|Withdraw contract or order| ERP[ERP System]
+```
+
+**What happens in epilot:**
+- User submits the withdrawal journey; its automation maps the request to a ticket
+- The **Trigger Event** action, added as the last action of that automation, creates a `ContractWithdrawalRequested` core event once the ticket is complete
+- Webhook delivers the event payload containing the ticket, the withdrawn contract or order, the customer, and `withdrawal_received_at`
+
+**What happens in the ERP:**
+- Middle layer receives the webhook and processes the withdrawal
+- Middle layer calls the ERP API to withdraw the contract, or the order when the contract does not exist yet
+- Middle layer sends an ACK back to epilot
+
+**Core Event:** [`ContractWithdrawalRequested`](/docs/integrations/core-events#ContractWithdrawalRequested)
+
+**Core Entities:** [`ticket`](/docs/entities/core-entities#ticket), [`contract`](/docs/entities/core-entities#contract), [`order`](/docs/entities/core-entities#order), [`contact`](/docs/entities/core-entities#contact), [`billing_account`](/docs/entities/core-entities#billing_account)
+
+**Typical payload fields:** name of the withdrawing person, contract or order number, email address for the confirmation, time the withdrawal was received
+
+:::tip
+Do not trigger the withdrawal webhook on the ticket's creation. Journey automations often write the ticket in several mapping steps, so a flow triggered by `createEntity` can send the ticket before the later steps have added fields such as the confirmation email. Triggering the event as the last automation action avoids this.
+:::
 
 ## ACK Tracking
 
