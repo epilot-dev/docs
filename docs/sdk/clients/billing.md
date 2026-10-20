@@ -1,5 +1,6 @@
 ---
 title: "Billing API"
+description: "TypeScript SDK client for the epilot Billing API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Billing API

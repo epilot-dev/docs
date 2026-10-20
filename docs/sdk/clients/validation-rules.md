@@ -1,5 +1,6 @@
 ---
 title: "Validation Rules API"
+description: "TypeScript SDK client for the epilot Validation Rules API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Validation Rules API

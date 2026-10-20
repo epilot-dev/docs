@@ -1,5 +1,6 @@
 ---
 title: "Targeting API"
+description: "TypeScript SDK client for the epilot Targeting API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Targeting API

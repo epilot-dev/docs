@@ -1,5 +1,6 @@
 ---
 title: "ERP Integration API"
+description: "TypeScript SDK client for the epilot ERP Integration API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # ERP Integration API

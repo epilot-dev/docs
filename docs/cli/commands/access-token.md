@@ -1,5 +1,6 @@
 ---
 title: "Access Token API"
+description: "epilot CLI commands for the Access Token API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Access Token API

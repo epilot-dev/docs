@@ -1,5 +1,6 @@
 ---
 title: "Entity Mapping API"
+description: "TypeScript SDK client for the epilot Entity Mapping API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Entity Mapping API

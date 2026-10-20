@@ -1,5 +1,6 @@
 ---
 title: "Dashboard API"
+description: "epilot CLI commands for the Dashboard API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Dashboard API

@@ -1,5 +1,6 @@
 ---
 title: "Email template API"
+description: "epilot CLI commands for the Email template API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Email template API

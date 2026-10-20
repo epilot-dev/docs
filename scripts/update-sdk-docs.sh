@@ -36,6 +36,7 @@ for src_file in "$SDK_DOCS_SRC"/*.md; do
   {
     echo "---"
     echo "title: \"$title\""
+    echo "description: \"TypeScript SDK client for the epilot $title: usage with @epilot/sdk, all operations and schemas.\""
     echo "---"
     echo ""
     cat "$src_file"

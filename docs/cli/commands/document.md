@@ -1,5 +1,6 @@
 ---
 title: "Document API"
+description: "epilot CLI commands for the Document API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Document API

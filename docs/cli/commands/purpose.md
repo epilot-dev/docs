@@ -1,5 +1,6 @@
 ---
 title: "Purpose API"
+description: "epilot CLI commands for the Purpose API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Purpose API

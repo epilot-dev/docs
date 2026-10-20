@@ -1,5 +1,6 @@
 ---
 title: "Environments API"
+description: "TypeScript SDK client for the epilot Environments API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Environments API

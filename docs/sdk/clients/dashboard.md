@@ -1,5 +1,6 @@
 ---
 title: "Dashboard API"
+description: "TypeScript SDK client for the epilot Dashboard API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Dashboard API

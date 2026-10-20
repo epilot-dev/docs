@@ -1,5 +1,6 @@
 ---
 title: "Partner API"
+description: "epilot CLI commands for the Partner API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Partner API

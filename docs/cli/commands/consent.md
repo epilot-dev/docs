@@ -1,5 +1,6 @@
 ---
 title: "Consent API"
+description: "epilot CLI commands for the Consent API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Consent API

@@ -1,5 +1,6 @@
 ---
 title: "Message API"
+description: "TypeScript SDK client for the epilot Message API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Message API

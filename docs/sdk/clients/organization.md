@@ -1,5 +1,6 @@
 ---
 title: "Organization API"
+description: "TypeScript SDK client for the epilot Organization API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Organization API

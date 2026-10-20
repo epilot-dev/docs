@@ -1,5 +1,6 @@
 ---
 title: "Journey API"
+description: "TypeScript SDK client for the epilot Journey API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Journey API

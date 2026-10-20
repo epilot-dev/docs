@@ -1,5 +1,6 @@
 ---
 title: "Automation API"
+description: "TypeScript SDK client for the epilot Automation API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Automation API

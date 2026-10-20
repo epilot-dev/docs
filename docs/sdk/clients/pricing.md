@@ -1,5 +1,6 @@
 ---
 title: "Pricing API"
+description: "TypeScript SDK client for the epilot Pricing API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Pricing API

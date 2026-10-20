@@ -1,5 +1,6 @@
 ---
 title: "Address API"
+description: "epilot CLI commands for the Address API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Address API

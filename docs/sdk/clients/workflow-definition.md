@@ -1,5 +1,6 @@
 ---
 title: "Workflows Definitions"
+description: "TypeScript SDK client for the epilot Workflows Definitions: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Workflows Definitions

@@ -1,5 +1,6 @@
 ---
 title: "Purpose API"
+description: "TypeScript SDK client for the epilot Purpose API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Purpose API

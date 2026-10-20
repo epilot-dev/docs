@@ -1,5 +1,6 @@
 ---
 title: "Blueprint Manifest API"
+description: "TypeScript SDK client for the epilot Blueprint Manifest API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Blueprint Manifest API

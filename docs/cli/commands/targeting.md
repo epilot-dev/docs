@@ -1,5 +1,6 @@
 ---
 title: "Targeting API"
+description: "epilot CLI commands for the Targeting API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Targeting API

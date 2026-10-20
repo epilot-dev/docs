@@ -1,5 +1,6 @@
 ---
 title: "Workflows Definitions"
+description: "epilot CLI commands for the Workflows Definitions: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Workflows Definitions

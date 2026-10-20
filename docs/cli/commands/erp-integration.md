@@ -1,5 +1,6 @@
 ---
 title: "ERP Integration API"
+description: "epilot CLI commands for the ERP Integration API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # ERP Integration API

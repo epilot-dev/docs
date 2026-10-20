@@ -1,5 +1,6 @@
 ---
 title: "Kanban API"
+description: "epilot CLI commands for the Kanban API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Kanban API

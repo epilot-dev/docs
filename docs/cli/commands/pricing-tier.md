@@ -1,5 +1,6 @@
 ---
 title: "Pricing Tier API"
+description: "epilot CLI commands for the Pricing Tier API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Pricing Tier API

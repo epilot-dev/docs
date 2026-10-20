@@ -1,5 +1,6 @@
 ---
 title: "Submission API"
+description: "TypeScript SDK client for the epilot Submission API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Submission API

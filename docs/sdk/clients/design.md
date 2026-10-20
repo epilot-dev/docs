@@ -1,5 +1,6 @@
 ---
 title: "Design Builder API v2"
+description: "TypeScript SDK client for the epilot Design Builder API v2: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Design Builder API v2

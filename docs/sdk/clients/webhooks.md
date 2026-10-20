@@ -1,5 +1,6 @@
 ---
 title: "Webhooks"
+description: "TypeScript SDK client for the epilot Webhooks: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Webhooks

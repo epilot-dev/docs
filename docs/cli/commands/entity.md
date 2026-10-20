@@ -1,5 +1,6 @@
 ---
 title: "Entity API"
+description: "epilot CLI commands for the Entity API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Entity API

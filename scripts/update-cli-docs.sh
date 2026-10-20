@@ -38,6 +38,7 @@ for src_file in "$CLI_DOCS_SRC"/*.md; do
   {
     echo "---"
     echo "title: \"$title\""
+    echo "description: \"epilot CLI commands for the $title: quick start, common flags and every operation, callable from the command line.\""
     echo "---"
     echo ""
     cat "$src_file"

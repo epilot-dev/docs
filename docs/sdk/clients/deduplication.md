@@ -1,5 +1,6 @@
 ---
 title: "Deduplication API"
+description: "TypeScript SDK client for the epilot Deduplication API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Deduplication API

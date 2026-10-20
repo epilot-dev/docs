@@ -1,5 +1,6 @@
 ---
 title: "AI Agents API - OpenAPI 3.0"
+description: "TypeScript SDK client for the epilot AI Agents API - OpenAPI 3.0: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # AI Agents API - OpenAPI 3.0

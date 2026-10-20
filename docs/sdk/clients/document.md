@@ -1,5 +1,6 @@
 ---
 title: "Document API"
+description: "TypeScript SDK client for the epilot Document API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Document API

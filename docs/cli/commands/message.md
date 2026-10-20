@@ -1,5 +1,6 @@
 ---
 title: "Message API"
+description: "epilot CLI commands for the Message API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Message API

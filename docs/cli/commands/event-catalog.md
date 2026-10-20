@@ -1,5 +1,6 @@
 ---
 title: "Event Catalog API"
+description: "epilot CLI commands for the Event Catalog API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Event Catalog API

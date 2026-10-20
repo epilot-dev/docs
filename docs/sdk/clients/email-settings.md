@@ -1,5 +1,6 @@
 ---
 title: "Messaging Settings API"
+description: "TypeScript SDK client for the epilot Messaging Settings API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # Messaging Settings API

@@ -1,5 +1,6 @@
 ---
 title: "User API"
+description: "TypeScript SDK client for the epilot User API: usage with @epilot/sdk, all operations and schemas."
 ---
 
 # User API

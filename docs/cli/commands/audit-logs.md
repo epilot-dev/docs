@@ -1,5 +1,6 @@
 ---
 title: "Audit Log"
+description: "epilot CLI commands for the Audit Log: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Audit Log

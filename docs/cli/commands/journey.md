@@ -1,5 +1,6 @@
 ---
 title: "Journey API"
+description: "epilot CLI commands for the Journey API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Journey API

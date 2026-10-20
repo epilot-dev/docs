@@ -1,5 +1,6 @@
 ---
 title: "Validation Rules API"
+description: "epilot CLI commands for the Validation Rules API: quick start, common flags and every operation, callable from the command line."
 ---
 
 # Validation Rules API
