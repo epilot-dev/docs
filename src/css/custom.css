@@ -277,6 +277,11 @@ html[data-theme='dark'] .button.button--primary {
   text-decoration: none;
 }
 
+/* No external-link icon in the compact footer */
+.footer__link-item svg[class*='iconExternalLink'] {
+  display: none;
+}
+
 .footer__link-separator {
   color: var(--ifm-color-emphasis-300);
   margin: 0 0.5rem;
