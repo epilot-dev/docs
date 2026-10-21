@@ -358,6 +358,11 @@ Everything beyond the configuration contract — the polling and acknowledgement
         "items_jsonata": "string",
         "result_mapping": {},
         "on_error": "fail | skip | warn"
+      },
+      "sharing": {
+        "partners": [
+          { "partner_org_id": "string", "enabled": "boolean | JSONata string" }
+        ]
       }
     }
   ],

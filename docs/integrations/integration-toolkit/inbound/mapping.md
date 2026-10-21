@@ -814,4 +814,5 @@ Transform and validate in one expression:
 - [Relations](./relations.md) - Link entities together
 - [Pricing](./pricing.md) - Map ERP line items and calculate prices
 - [Meter Readings](./meter-readings.md) - Handle meter reading data
+- [Partner Sharing](./partner-sharing.md) - Share inbound entities with partner organizations
 - [Key/Value Maps](../key-value-maps.md) - Re-usable lookup tables for enum-like values
