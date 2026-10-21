@@ -21,6 +21,7 @@
   "origin": "string",
   "access_status": true,
   "expires_at": "2025-01-01",
+  "role": "string",
   "mapping_status": "Pending",
   "registration_status": "Registration Pending",
   "external_id": "string",

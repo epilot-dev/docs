@@ -87,6 +87,10 @@
       "example": "2025-01-01",
       "description": "Expiration Date"
     },
+    "role": {
+      "type": "string",
+      "description": "Role: Portal role of this user. Empty uses the portal's default role."
+    },
     "mapping_status": {
       "type": "string",
       "enum": [
