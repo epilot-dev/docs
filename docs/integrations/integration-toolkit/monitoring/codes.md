@@ -15,7 +15,7 @@ Every monitoring event carries a **code** and a **level**. The code says what
 happened; the level says how much you should care. Both are filterable in the
 Integration Hub's [Monitoring tab](./overview.md) and through the events API.
 
-There are 99 codes. You are most likely here because you saw one in a failed
+There are 102 codes. You are most likely here because you saw one in a failed
 event — find it below.
 
 :::tip
@@ -81,6 +81,7 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `SECURE_PROXY_IP_NOT_ALLOWED` | The target IP address is not in the allowlist |
 | `SECURE_PROXY_NOT_FOUND` | The secure proxy use case was not found |
 | `SECURE_PROXY_UNAVAILABLE` | Secure proxy service is unavailable |
+| `SHARING_FAILED` | Sharing the entity with its partner orgs kept failing with a temporary error and the retries were used up. The entity itself was written; the next event for it syncs its sharing again |
 | `SIGNATURE_VERIFICATION_FAILED` | Request signature could not be verified |
 | `SIGNATURE_VERIFICATION_UNAVAILABLE` | The file service could not be reached to verify the request signature |
 | `STEP_DISABLED` | A request step's "run this step when" expression returned false, so this step and every step after it were skipped. This is the configuration working as written, not a fault. |
@@ -114,6 +115,8 @@ Processing continued, but something needs a human eye — often a retry in fligh
 | `INTERACTIVE_RATE_LIMITED` | The organization asked for interactive processing more often than its agreed rate, so these events were processed on its normal lane instead. Nothing was lost and the correlation can still be waited on — it will simply take as long as a bulk event does |
 | `LOOKUP_UNMAPPED` | A value was not listed in a lookup table and its fallback was used — see lookup_name and lookup_key for the gap |
 | `MSG_LATE_ARRIVAL` | An event arrived after the poll consumer had already received later events, so it was placed at the end of the stream instead of at its event time — it is delivered, but out of event-time order |
+| `SHARING_PARTNER_NOT_CONNECTED` | The entity was written but not shared with the partner orgs in partner_org_ids: this organization has no partnership with them. Set up the partnership, or fix the partner_org_id in the mapping |
+| `SHARING_REJECTED` | The entity was written but the sharing service rejected sharing it with its partner orgs (details.status). Check the sharing configuration of the partners in partner_org_ids |
 | `SOFT_DELETED_ENTITY_MATCHED` | A soft-deleted entity matched the unique ID — it will be resurrected on upsert, or referenced as-is by a relation. Investigate why the ERP source is sending events for a deleted entity. |
 
 ## Success
