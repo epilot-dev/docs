@@ -294,6 +294,16 @@
       ]
     },
     {
+      "name": "Sharing API",
+      "baseURL": "https://sharing-api.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/sharing.yaml"
+        }
+      ]
+    },
+    {
       "name": "Partner API",
       "baseURL": "https://partner-directory-api.sls.epilot.io",
       "properties": [

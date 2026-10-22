@@ -129,6 +129,7 @@ See [Client Usage](client-usage.md) for all import patterns.
 | `epilot.permissions` | `@epilot/sdk/permissions` | [SDK](clients/permissions.md) · [API](/api/permissions) |
 | `epilot.pricing` | `@epilot/sdk/pricing` | [SDK](clients/pricing.md) · [API](/api/pricing) |
 | `epilot.purpose` | `@epilot/sdk/purpose` | [SDK](clients/purpose.md) · [API](/api/purpose) |
+| `epilot.sharing` | `@epilot/sdk/sharing` | [SDK](clients/sharing.md) · [API](/api/sharing) |
 | `epilot.submission` | `@epilot/sdk/submission` | [SDK](clients/submission.md) · [API](/api/submission) |
 | `epilot.targeting` | `@epilot/sdk/targeting` | [SDK](clients/targeting.md) · [API](/api/targeting) |
 | `epilot.templateVariables` | `@epilot/sdk/template-variables` | [SDK](clients/template-variables.md) · [API](/api/template-variables) |

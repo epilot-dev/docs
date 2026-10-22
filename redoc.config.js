@@ -147,6 +147,11 @@ module.exports.specs = [
     specUrl: 'https://docs.api.epilot.io/consent.yaml',
   },
   {
+    layout: { title: 'Sharing API' },
+    routePath: '/api/sharing',
+    specUrl: 'https://docs.api.epilot.io/sharing.yaml',
+  },
+  {
     layout: { title: 'Partner API' },
     routePath: '/api/partner',
     specUrl: 'https://docs.api.epilot.io/partner-directory-api.yaml',
