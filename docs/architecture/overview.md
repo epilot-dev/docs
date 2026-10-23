@@ -4,6 +4,12 @@ sidebar_position: 1
 
 # Tech Stack & Architecture
 
+:::caution Security notice: PHP RCE vulnerabilities (October 2026)
+epilot is **not affected** by the "php2shell" PHP remote code execution vulnerabilities disclosed on October 21, 2026 ([CVE-2026-109618](https://www.cve.org/CVERecord?id=CVE-2026-109618), [CVE-2026-109619](https://www.cve.org/CVERecord?id=CVE-2026-109619)). epilot does not use PHP anywhere in its platform.
+
+epilot runs on a [serverless Node.js stack](#tech-stack) on AWS Lambda, where AWS automatically applies security updates to the managed runtimes.
+:::
+
 :::info
 
 _epilot_ is a multi-tenant SaaS platform for energy suppliers, municipal utilities, grid operators, and solution providers. It provides a 360° energy XRM (extended relationship management) to digitize sales, service, and grid processes end-to-end.
