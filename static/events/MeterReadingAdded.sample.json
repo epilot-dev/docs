@@ -3,7 +3,7 @@
   "_event_time": "1970-01-01T00:00:00.000Z",
   "_event_id": "string",
   "_event_name": "MeterReadingAdded",
-  "_event_version": "2.1",
+  "_event_version": "2.2",
   "_event_source": "string",
   "_ack_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_trigger_source_type": "api",
@@ -51,7 +51,8 @@
       "remark": "string",
       "status": "valid",
       "external_id": "string",
-      "unit": "string"
+      "unit": "string",
+      "file_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     }
   ],
   "meter_reading_status": [
@@ -75,11 +76,35 @@
       "created_at": "1970-01-01T00:00:00.000Z",
       "previous_value": 0,
       "previous_direction": "feed-in",
-      "previous_timestamp": "1970-01-01T00:00:00.000Z"
+      "previous_timestamp": "1970-01-01T00:00:00.000Z",
+      "file_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     }
   ],
   "dismissed_reason": "string",
   "dismissed_at": "1970-01-01T00:00:00.000Z",
+  "event_attachments": [
+    {
+      "entity_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "filename": "string",
+      "mime_type": "string",
+      "size_bytes": 0,
+      "s3ref": {
+        "bucket": "string",
+        "key": "string"
+      },
+      "version_index": 0,
+      "readable_size": "string",
+      "_tags": [
+        "string"
+      ],
+      "relation_tags": [
+        "string"
+      ],
+      "category": "string",
+      "file_date": "string",
+      "_created_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
   "meter": {
     "_schema": "meter",
     "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",

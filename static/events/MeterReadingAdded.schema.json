@@ -23,7 +23,7 @@
     "_event_version": {
       "type": "string",
       "description": "Schema version number",
-      "example": "2.1"
+      "example": "2.2"
     },
     "_event_source": {
       "type": "string",
@@ -226,6 +226,11 @@
           "unit": {
             "type": "string",
             "description": "Unit of measurement (e.g., kWh, m3) entered with the reading"
+          },
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Entity ID of the photo submitted with this reading (ECP / journey). Matches `event_attachments[].entity_id`, so consumers can pair a reading with its photo deterministically."
           }
         },
         "additionalProperties": false
@@ -336,6 +341,11 @@
             "type": "string",
             "format": "date-time",
             "description": "Timestamp of the reading being overwritten"
+          },
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Entity ID of the photo submitted with this reading (ECP / journey). Matches `event_attachments[].entity_id`, so consumers can pair a reading with its photo deterministically."
           }
         },
         "required": [
@@ -355,6 +365,93 @@
       "type": "string",
       "format": "date-time",
       "description": "ISO 8601 timestamp when a pending changeset was dismissed."
+    },
+    "event_attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entity_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Entity ID of the file"
+          },
+          "filename": {
+            "type": "string",
+            "description": "Name of the file"
+          },
+          "mime_type": {
+            "type": "string",
+            "description": "MIME type of the file (e.g., application/pdf)"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "File size in bytes"
+          },
+          "s3ref": {
+            "type": "object",
+            "properties": {
+              "bucket": {
+                "type": "string",
+                "description": "S3 bucket name"
+              },
+              "key": {
+                "type": "string",
+                "description": "S3 object key"
+              }
+            },
+            "required": [
+              "bucket",
+              "key"
+            ],
+            "additionalProperties": false,
+            "description": "S3 reference for the file content"
+          },
+          "version_index": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Latest version index of the file (versions[].length - 1, or 0 if no versions array)"
+          },
+          "readable_size": {
+            "type": "string",
+            "description": "Human-readable file size (e.g., \"200 KB\")"
+          },
+          "_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags on the file entity (semantic labels set by uploader/automation)"
+          },
+          "relation_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags on the relation pointing at the file (journey upload block tags such as \"Lageplan\", plus a hidden journey step marker)"
+          },
+          "category": {
+            "type": "string",
+            "description": "File category select value (e.g., \"address-suggestions\", \"unknown\")"
+          },
+          "file_date": {
+            "type": "string",
+            "description": "User-provided file date"
+          },
+          "_created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the file entity was created — useful for time-window filtering"
+          }
+        },
+        "required": [
+          "entity_id",
+          "version_index"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Photos submitted with the committed readings (one per `meter_readings[].file_id`). Populated only on committed-reading events (`MeterReadingsAdded`, `ChangesetApplied`), so a pending reading that is later dismissed never delivers a file. Absent when no reading carried a photo or the file could not be loaded."
     },
     "meter": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
