@@ -131,7 +131,9 @@ With `"exclusive": true`, the enabled partners are the only partner organization
 Exclusive sharing also removes shares made outside this mapping, for example by a user in epilot or by another mapping.
 :::
 
-With `exclusive`, a lookup that finds no partner organization (`SHARING_PARTNER_NOT_PROVISIONED`) still counts as "no partner". The entity is unshared from its current partner even though the new one is not set up yet. It is shared with the new partner on the first event after that partner's organization ID is set.
+With `exclusive`, a lookup that finds no partner organization (`SHARING_PARTNER_NOT_PROVISIONED`) still counts as "no partner". The entity is unshared from its current partner even though the new one is not set up yet. It is shared with the new partner on the first event after that partner's organization ID is set. The old partner must not keep access to a record that now belongs to someone else, so the gap is intended. It is reported as `SHARING_PARTNER_NOT_PROVISIONED`.
+
+Because of this, a misconfigured lookup (for example an attribute that is not declared on the partner schema) unshares every entity the mapping writes. Test a new lookup without `exclusive` first, and turn `exclusive` on once events stop reporting `partner_not_found`. A failed partner search is retried and never unshares.
 
 ## How it works
 
