@@ -1,0 +1,825 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "_schema"
+  ],
+  "properties": {
+    "_schema": {
+      "readOnly": true,
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "example": "lead",
+      "description": "URL-friendly identifier for the entity schema"
+    },
+    "_id": {
+      "readOnly": true,
+      "type": "string",
+      "format": "uuid",
+      "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "description": "Unique identifier for the entity"
+    },
+    "_org": {
+      "type": "string",
+      "description": "Organization Id the entity belongs to",
+      "readOnly": true,
+      "example": "123"
+    },
+    "_title": {
+      "readOnly": true,
+      "type": "string",
+      "nullable": true,
+      "example": "Entity Title",
+      "description": "Generated title for the entity based on schema title_template"
+    },
+    "_tags": {
+      "type": "array",
+      "nullable": true,
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "family:label"
+      ],
+      "description": "Entity Labels"
+    },
+    "_purpose": {
+      "$ref": "#/definitions/PurposeAttribute",
+      "description": "Purposes"
+    },
+    "lead_number": {
+      "type": "string",
+      "description": "Lead Number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "in_progress",
+        "qualified",
+        "converted",
+        "disqualified"
+      ],
+      "description": "Status"
+    },
+    "lead_title": {
+      "type": "string",
+      "description": "Lead Title"
+    },
+    "lead_type": {
+      "type": "string",
+      "enum": [
+        "Customer Lead",
+        "Partner Lead",
+        "Partner Contact",
+        "Other"
+      ],
+      "description": "Lead Type: hint_helper.lead.lead_type"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "Journey / Website",
+        "Phone",
+        "Email",
+        "Trade Show / Event",
+        "Referral",
+        "Partner",
+        "Campaign",
+        "Other"
+      ],
+      "description": "Channel: hint_helper.lead.channel"
+    },
+    "source": {
+      "$ref": "#/definitions/LinkAttribute",
+      "description": "Source: hint_helper.lead.source"
+    },
+    "assignee": {
+      "$ref": "#/definitions/User",
+      "description": "Assignee"
+    },
+    "customer": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Contact"
+    },
+    "customer_type": {
+      "type": "string",
+      "enum": [
+        "New Customer",
+        "Existing Customer",
+        "Unknown"
+      ],
+      "description": "Customer Type"
+    },
+    "preferred_contact_channel": {
+      "type": "string",
+      "enum": [
+        "Phone",
+        "Email",
+        "WhatsApp",
+        "Post",
+        "No preference"
+      ],
+      "description": "Preferred Contact Channel"
+    },
+    "in_service_area": {
+      "type": "string",
+      "enum": [
+        "Yes",
+        "No",
+        "To be checked"
+      ],
+      "description": "In Service Area"
+    },
+    "current_contract_account_number": {
+      "type": "string",
+      "description": "Current Contract Account Number"
+    },
+    "delivery_address": {
+      "$ref": "#/definitions/BaseRelationRef",
+      "description": "Delivery / Property Address: hint_helper.lead.delivery_address"
+    },
+    "billing_address": {
+      "$ref": "#/definitions/BaseRelationRef",
+      "description": "Billing Address"
+    },
+    "address": {
+      "$ref": "#/definitions/BaseRelationRef",
+      "description": "Additional Addresses"
+    },
+    "products": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Products"
+    },
+    "customer_message": {
+      "type": "string",
+      "description": "Customer Message"
+    },
+    "desired_delivery_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Desired Delivery Date"
+    },
+    "qualification_stage": {
+      "type": "string",
+      "enum": [
+        "Raw Lead",
+        "Marketing Qualified (MQL)",
+        "Sales Qualified (SQL)"
+      ],
+      "description": "Qualification Stage"
+    },
+    "lead_score": {
+      "type": "string",
+      "description": "Lead Score: hint_helper.lead.lead_score"
+    },
+    "lead_score_grade": {
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "description": "Score Grade: hint_helper.lead.lead_score_grade"
+    },
+    "lead_score_status": {
+      "type": "string",
+      "enum": [
+        "live",
+        "completed"
+      ],
+      "description": "Score Status: hint_helper.lead.lead_score_status"
+    },
+    "first_contact_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "First Contact At"
+    },
+    "contact_attempts": {
+      "type": "string",
+      "description": "Contact Attempts"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "description": "Follow-up Date"
+    },
+    "next_action": {
+      "type": "string",
+      "description": "Next Action"
+    },
+    "qualification_note": {
+      "type": "string",
+      "description": "Qualification Note"
+    },
+    "disqualification_reason": {
+      "type": "string",
+      "enum": [
+        "No need",
+        "Insufficient budget",
+        "Outside service area",
+        "Property unsuitable",
+        "Time horizon too long",
+        "No contact established",
+        "Incorrect contact data",
+        "Test entry / Spam",
+        "Duplicate",
+        "Decision for competitor"
+      ],
+      "description": "Disqualification Reason"
+    },
+    "disqualified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Disqualified At"
+    },
+    "duplicate_of": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Duplicate Of"
+    },
+    "score_urgency": {
+      "type": "string",
+      "description": "Sub-score: Urgency: hint_helper.lead.score_urgency"
+    },
+    "score_system_size": {
+      "type": "string",
+      "description": "Sub-score: System Size: hint_helper.lead.score_system_size"
+    },
+    "score_partner": {
+      "type": "string",
+      "description": "Sub-score: Partner / Region Coverage: hint_helper.lead.score_partner"
+    },
+    "score_property": {
+      "type": "string",
+      "description": "Sub-score: Property Suitability: hint_helper.lead.score_property"
+    },
+    "score_data_quality": {
+      "type": "string",
+      "description": "Sub-score: Data Quality: hint_helper.lead.score_data_quality"
+    },
+    "score_switching_pressure": {
+      "type": "string",
+      "description": "Sub-score: Switching Pressure & Subsidies: hint_helper.lead.score_switching_pressure"
+    },
+    "score_customer_relationship": {
+      "type": "string",
+      "description": "Sub-score: Customer Relationship: hint_helper.lead.score_customer_relationship"
+    },
+    "score_source": {
+      "type": "string",
+      "description": "Sub-score: Source & Campaign: hint_helper.lead.score_source"
+    },
+    "lead_score_calculated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Score Calculated At: hint_helper.lead.lead_score_calculated_at"
+    },
+    "lead_score_reasoning": {
+      "type": "string",
+      "description": "Score Reasoning: hint_helper.lead.lead_score_reasoning"
+    },
+    "opportunity": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Created Opportunity"
+    },
+    "converted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Converted At"
+    },
+    "converted_by": {
+      "$ref": "#/definitions/User",
+      "description": "Converted By"
+    },
+    "offer_status": {
+      "type": "string",
+      "enum": [
+        "Offer sent",
+        "Signed offer returned",
+        "Offer declined"
+      ],
+      "description": "Offer Status: hint_helper.lead.offer_status"
+    },
+    "campaign": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Campaign"
+    },
+    "utm_source": {
+      "type": "string",
+      "description": "utm_source"
+    },
+    "utm_medium": {
+      "type": "string",
+      "description": "utm_medium"
+    },
+    "utm_campaign": {
+      "type": "string",
+      "description": "utm_campaign"
+    },
+    "utm_term": {
+      "type": "string",
+      "description": "utm_term"
+    },
+    "utm_content": {
+      "type": "string",
+      "description": "utm_content"
+    },
+    "utm_id": {
+      "type": "string",
+      "description": "utm_id"
+    },
+    "cid": {
+      "type": "string",
+      "description": "cid"
+    },
+    "reporting_partner": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Reporting Partner"
+    },
+    "partner_contact": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Partner Contact Person"
+    },
+    "partner_reference": {
+      "type": "string",
+      "description": "Partner Reference"
+    },
+    "workflows": {
+      "$ref": "#/definitions/WorkflowOverview"
+    },
+    "consents": {
+      "$ref": "#/definitions/LocalConsents"
+    },
+    "_files": {
+      "$ref": "#/definitions/BaseRelation"
+    },
+    "_created_at": {
+      "readOnly": true,
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Timestamp of entity creation"
+    },
+    "_updated_at": {
+      "readOnly": true,
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Timestamp of entity last update"
+    },
+    "_owners": {
+      "type": "array",
+      "readOnly": true,
+      "items": {
+        "description": "The user / organization owning this entity.\n\nNote: Owner implicitly has access to the entity regardless of ACLs.\n",
+        "type": "object",
+        "properties": {
+          "org_id": {
+            "type": "string",
+            "example": "123"
+          },
+          "user_id": {
+            "type": "string",
+            "example": "456"
+          }
+        },
+        "required": [
+          "org_id"
+        ]
+      }
+    },
+    "_acl": {
+      "readOnly": true,
+      "type": "object",
+      "description": "Access control list (ACL) for an entity. Defines sharing access to external orgs or users.",
+      "additionalProperties": true,
+      "properties": {
+        "view": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        },
+        "edit": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        },
+        "delete": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        }
+      }
+    },
+    "_manifest": {
+      "readOnly": true,
+      "type": "array",
+      "nullable": true,
+      "description": "Blueprint ID used to create/update the entity",
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "123e4567-e89b-12d3-a456-426614174000"
+      ]
+    }
+  },
+  "definitions": {
+    "PurposeAttribute": {
+      "type": "array",
+      "description": "List of purpose ids",
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+      ]
+    },
+    "LinkAttribute": {
+      "type": "object",
+      "description": "Link with title and href",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "link"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "example": "Visit Website"
+        },
+        "href": {
+          "type": "string",
+          "format": "uri",
+          "example": "https://example.com"
+        }
+      }
+    },
+    "BaseUUID": {
+      "type": "string",
+      "format": "uuid",
+      "example": "123e4567-e89b-12d3-a456-426614174000"
+    },
+    "BaseTags": {
+      "type": "array",
+      "nullable": true,
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "example"
+      ]
+    },
+    "BaseRelation": {
+      "type": "object",
+      "nullable": true,
+      "description": "Relation to another entity",
+      "properties": {
+        "$relation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "_tags": {
+                "$ref": "#/definitions/BaseTags"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BaseRelationRef": {
+      "type": "object",
+      "nullable": true,
+      "description": "Reference to a specific property of another entity",
+      "properties": {
+        "$relation_ref": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "path": {
+                "type": "string",
+                "example": "address",
+                "description": "The property of the entity (pointed by entity_id) to be used as the reference"
+              },
+              "_tags": {
+                "$ref": "#/definitions/BaseTags"
+              },
+              "_id": {
+                "type": "string",
+                "example": "xHcOoJCa07eysJ1GaQeSb"
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserId": {
+      "description": "User's unique identifier",
+      "type": "string",
+      "readOnly": true
+    },
+    "OrganizationId": {
+      "description": "Organization unique identifier",
+      "type": "string",
+      "readOnly": true,
+      "example": "123"
+    },
+    "User": {
+      "type": "object",
+      "description": "User information",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/UserId"
+        },
+        "organization_id": {
+          "$ref": "#/definitions/OrganizationId"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "user@example.com"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe",
+          "deprecated": true
+        },
+        "preferred_language": {
+          "type": "string",
+          "example": "de",
+          "description": "ISO 639-1 language code"
+        },
+        "signature": {
+          "type": "string",
+          "example": "<p>Best regards,<br/>John Doe</p>",
+          "description": "HTML email signature"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "Owner"
+          },
+          "deprecated": true,
+          "description": "Deprecated! Please use Permissions API instead"
+        },
+        "image_uri": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "original": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
+            },
+            "thumbnail_32": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
+            }
+          },
+          "nullable": true
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "profileImageName"
+              },
+              "value": {
+                "type": "string",
+                "example": "avatar.png"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          }
+        }
+      },
+      "required": [
+        "id",
+        "organization_id",
+        "email",
+        "name",
+        "preferred_language",
+        "roles",
+        "properties"
+      ]
+    },
+    "LocalConsents": {
+      "type": "object",
+      "description": "Consent management",
+      "properties": {
+        "_isValid": {
+          "type": "boolean",
+          "example": true,
+          "description": "Whether all required consents are valid"
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "agreed": {
+            "type": "boolean",
+            "example": true
+          },
+          "topic": {
+            "type": "string",
+            "example": "privacy_policy"
+          },
+          "text": {
+            "type": "string",
+            "example": "I agree to the privacy policy"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "agreed",
+          "topic",
+          "text",
+          "time"
+        ]
+      },
+      "required": [
+        "_isValid"
+      ]
+    },
+    "WorkflowStatus": {
+      "type": "string",
+      "enum": [
+        "STARTED",
+        "DONE",
+        "CLOSED"
+      ]
+    },
+    "StepType": {
+      "type": "string",
+      "enum": [
+        "MANUAL",
+        "AUTOMATION"
+      ]
+    },
+    "StepStatus": {
+      "type": "string",
+      "enum": [
+        "UNASSIGNED",
+        "ASSIGNED",
+        "COMPLETED",
+        "SKIPPED",
+        "IN_PROGRESS"
+      ]
+    },
+    "PhaseInEntity": {
+      "type": "object",
+      "description": "Workflow phase information",
+      "properties": {
+        "phase_id": {
+          "type": "string"
+        },
+        "phase_name": {
+          "type": "string"
+        },
+        "phase_progress": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "phase_id",
+        "phase_name",
+        "phase_progress"
+      ]
+    },
+    "WorkflowInEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "definition_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/WorkflowStatus"
+        },
+        "assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "progress": {
+          "type": "number"
+        },
+        "phases_in_progress": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PhaseInEntity"
+          }
+        },
+        "last_update_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "upcoming_tasks_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "task_name": {
+          "type": "string"
+        },
+        "task_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_duedate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "task_execution_type": {
+          "$ref": "#/definitions/StepType"
+        },
+        "task_status": {
+          "$ref": "#/definitions/StepStatus"
+        },
+        "phase_id": {
+          "type": "string"
+        },
+        "phase_name": {
+          "type": "string"
+        },
+        "phase_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "phase_progress": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "definition_id",
+        "name",
+        "status",
+        "assignees",
+        "last_update_time"
+      ]
+    },
+    "WorkflowOverview": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "$ref": "#/definitions/WorkflowInEntity"
+        }
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/WorkflowInEntity"
+        }
+      }
+    }
+  }
+}

@@ -57,6 +57,10 @@
       "type": "string",
       "description": "Type"
     },
+    "subject": {
+      "type": "string",
+      "description": "Subject"
+    },
     "text": {
       "type": "string",
       "description": "Content"
