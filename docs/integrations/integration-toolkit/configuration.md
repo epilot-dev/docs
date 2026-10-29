@@ -362,7 +362,16 @@ Everything beyond the configuration contract — the polling and acknowledgement
       "sharing": {
         "partners": [
           { "partner_org_id": "string", "enabled": "boolean | JSONata string" }
-        ]
+        ],
+        "partner_lookups": [
+          {
+            "unique_ids": [{ "attribute": "string", "field": "string" }],
+            "schema": "string",
+            "partner_org_id_attribute": "string",
+            "enabled": "boolean | JSONata string"
+          }
+        ],
+        "exclusive": "boolean"
       }
     }
   ],

@@ -15,7 +15,7 @@ Every monitoring event carries a **code** and a **level**. The code says what
 happened; the level says how much you should care. Both are filterable in the
 Integration Hub's [Monitoring tab](./overview.md) and through the events API.
 
-There are 102 codes. You are most likely here because you saw one in a failed
+There are 118 codes. You are most likely here because you saw one in a failed
 event — find it below.
 
 :::tip
@@ -42,6 +42,8 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `DIRECT_PAYLOAD_INVALID` | The direct mode payload failed validation against the versioned payload schema |
 | `DIRECT_VERSION_UNSUPPORTED` | The direct mode payload version is not supported by the platform |
 | `ENTITY_REFERENCE_NOT_FOUND` | A direct-by-id entity reference points at an entity that does not exist or has a different schema |
+| `ENV_VAR_REF_JSONATA_FAILED` | The JSONata expression of an env_var_ref field failed to evaluate, so the field was skipped |
+| `ENV_VAR_REF_LOOKUP_FAILED` | The environment variables could not be looked up for an env_var_ref field, so the field was skipped |
 | `EVENT_NOT_CONFIGURED` | No mapping configuration found for this event type |
 | `EXTERNAL_API_ERROR` | An external API returned an error |
 | `EXTERNAL_ERROR` | An error span pushed by an external system (e.g. your integration middleware) via the external monitoring events endpoint. epilot assigns the code from the span's level; the middleware never sends one. |
@@ -57,6 +59,8 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `METERING_API_ERROR` | The metering API returned an error |
 | `METER_READING_GROUP_FAILED` | A batch write of meter readings failed permanently after all retries — summary event alongside the per-reading errors |
 | `METER_READING_GROUP_RETRYING` | A batch write of meter readings failed and will be retried automatically — one event per attempt covering the whole group (reading_count and external_ids in details) |
+| `MISSING_METER_COUNTER_UNIQUE_IDS` | A meter reading was skipped because the event did not contain the unique IDs configured to identify its meter counter |
+| `MISSING_METER_UNIQUE_IDS` | A meter reading was skipped because the event did not contain the unique IDs configured to identify its meter |
 | `MISSING_REQUIRED_PARAM` | A required parameter is missing from the request |
 | `MISSING_UNIQUE_IDENTIFIERS` | The event is missing the unique identifier field(s) required to match an entity |
 | `MSG_DEAD_LETTERED` | Outbound message moved to the dead-letter queue after exhausting delivery attempts, or via an operator skip |
@@ -64,6 +68,8 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `MSG_HEAD_BLOCKED` | Outbound stream halted by a poison head message (block policy) — requires operator unblock or consumer acknowledgement |
 | `OAUTH2_TOKEN_FAILURE` | Failed to obtain an OAuth2 access token |
 | `PAYLOAD_TOO_LARGE` | The payload exceeded the maximum size accepted by the receiving system |
+| `PORTAL_REF_JSONATA_FAILED` | The JSONata expression of a portal_ref field failed to evaluate, so the field was skipped |
+| `PORTAL_REF_LOOKUP_FAILED` | The portals could not be looked up for a portal_ref field, so the field was skipped |
 | `PROCESSING_STATE_LIMIT` | The processing record of an interactive event could not be written, because it or its correlation reached the size the store allows, so the event was ended as an error instead of being left processing: its correlation still completes, and anyone waiting on it is answered. The event's data may have been written all the same. Usually a payload with unusually many entities or very long unique ids |
 | `PRUNE_SCOPE_PARTIAL_FAILURE` | Scope pruning completed with some failures |
 | `RECURSION_DEPTH_EXCEEDED` | Maximum recursion depth was exceeded during processing |
@@ -94,6 +100,7 @@ Something failed and the event did not do what it was meant to do. These are wha
 | `USE_CASE_INVALID_TYPE` | The use case type is invalid or unsupported |
 | `USE_CASE_MISSING_CONFIG` | The use case is missing required configuration |
 | `USE_CASE_NOT_FOUND` | The use case could not be found |
+| `WEBHOOK_DELIVERY_FAILED` | The webhook could not be delivered and the target returned no HTTP status (for example a connection or timeout error). The webhook service's own error code is in the event detail |
 
 ## Warning
 
@@ -109,15 +116,21 @@ Processing continued, but something needs a human eye — often a retry in fligh
 | `CORRELATION_LATE_EVENT` | An event arrived under a correlation the partner had already declared complete. It was processed, but anyone waiting on that correlation had already been answered, and once the correlation is complete the event cannot change that answer — the partner is sending `correlation_complete` too early |
 | `CORRELATION_WAIT_REJECTED` | A caller tried to wait on a correlation while too many waits were already open, so it was asked to retry. Its data is unaffected — only the answer it was waiting for is slower |
 | `CORRELATION_WAIT_TIMEOUT` | A caller waited on a correlation until its time ran out without getting what it asked for — see `missing_entities` and `missing_use_cases` for what had not arrived. Reported once per correlation. When nothing at all was sent under the correlation, it carries no integration: none is known before the first event |
+| `ENV_VAR_REF_NOT_FOUND` | The environment variable an env_var_ref field points at does not exist, so the field was left unset |
 | `EXTERNAL_WARNING` | A warning span pushed by an external system via the external monitoring events endpoint. |
 | `FILE_PROXY_UPLOAD_RETRYING` | A file upload failed with a retryable error and will be retried automatically — one event per attempt |
 | `INTERACTIVE_CROSS_LANE_WRITE` | The same entity was updated from two different processing lanes within seconds of each other, one of them the interactive lane. Both updates were applied; this reports that they overlapped, so the order they landed in was decided by timing |
 | `INTERACTIVE_RATE_LIMITED` | The organization asked for interactive processing more often than its agreed rate, so these events were processed on its normal lane instead. Nothing was lost and the correlation can still be waited on — it will simply take as long as a bulk event does |
 | `LOOKUP_UNMAPPED` | A value was not listed in a lookup table and its fallback was used — see lookup_name and lookup_key for the gap |
 | `MSG_LATE_ARRIVAL` | An event arrived after the poll consumer had already received later events, so it was placed at the end of the stream instead of at its event time — it is delivered, but out of event-time order |
+| `PORTAL_REF_AMBIGUOUS` | Several portals matched the portal_ref filter and the oldest one was used. Narrow the filter so it matches exactly one portal |
+| `PORTAL_REF_NO_MATCH` | No portal matched the portal_ref filter, so the field was left unset. Check the filter against the portals in this organization |
+| `RELATION_MISSING_UNIQUE_IDS` | A relation was skipped because the event did not contain all unique IDs of the relation's target. The entity was still written, without that relation — check that the mapping sends every unique ID the relation is configured with |
 | `SHARING_PARTNER_NOT_CONNECTED` | The entity was written but not shared with the partner orgs in partner_org_ids: this organization has no partnership with them. Set up the partnership, or fix the partner_org_id in the mapping |
+| `SHARING_PARTNER_NOT_PROVISIONED` | The entity was written but a partner lookup in the mapping found no partner org to share it with: no entity matched details.unique_ids, or the match has no partner org id yet (details.reason). Expected while a partner org is still being set up: the next event for the entity shares it once the partner org id is set |
 | `SHARING_REJECTED` | The entity was written but the sharing service rejected sharing it with its partner orgs (details.status). Check the sharing configuration of the partners in partner_org_ids |
 | `SOFT_DELETED_ENTITY_MATCHED` | A soft-deleted entity matched the unique ID — it will be resurrected on upsert, or referenced as-is by a relation. Investigate why the ERP source is sending events for a deleted entity. |
+| `UNIQUE_ID_TYPE_DERIVATION_FAILED` | Direct mode could not derive a unique ID's type from the entity schema, so the value was used exactly as sent |
 
 ## Success
 
@@ -138,6 +151,7 @@ The event did what it was meant to do. Useful for confirming a sync actually lan
 | `METER_READING_UPSERTED` | One or more meter readings were created or updated — emitted once per batch, not per reading (reading_count and external_ids in details) |
 | `MSG_ACKED` | Outbound message delivered: the polling consumer acknowledged it and it was removed from the queue |
 | `PRUNE_SCOPE_COMPLETED` | Scope pruning completed successfully |
+| `SECURE_PROXY_OK` | The secure proxy reached the target and returned its answer |
 | `WEBHOOK_DELIVERED` | Webhook was delivered successfully |
 
 ## Info
@@ -155,6 +169,8 @@ Lifecycle markers rather than outcomes: a message was queued, a duplicate was ig
 | `FILE_PROXY_UPLOAD_ENQUEUED` | A per-file upload was accepted for delivery during fan-out |
 | `INTERACTIVE_NOT_ALLOWED` | Interactive processing was requested for a use case that is not configured for it, so the events were processed normally. Set `interactive` to `on_request` or `always` on the use case if the caller is meant to be able to wait for these events |
 | `MSG_ENQUEUED` | Outbound message enqueued to the poll queue, awaiting consumption by the ERP. When the use case maps the payload, the detail carries the mapped payload as delivered and its mapping_version (or payload_omitted when it exceeds 48 KiB) |
+| `ORG_DROPPED` | Events from this organization are configured to be dropped, so the event was consumed without being processed |
+| `WEBHOOK_SKIPPED` | The webhook was not delivered because its filters did not match the event |
 ## Status-code families
 
 Some codes are generated from an upstream response rather than drawn from the fixed list above.
