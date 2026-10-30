@@ -15,7 +15,7 @@ Every monitoring event carries a **code** and a **level**. The code says what
 happened; the level says how much you should care. Both are filterable in the
 Integration Hub's [Monitoring tab](./overview.md) and through the events API.
 
-There are 118 codes. You are most likely here because you saw one in a failed
+There are 119 codes. You are most likely here because you saw one in a failed
 event — find it below.
 
 :::tip
@@ -170,6 +170,7 @@ Lifecycle markers rather than outcomes: a message was queued, a duplicate was ig
 | `INTERACTIVE_NOT_ALLOWED` | Interactive processing was requested for a use case that is not configured for it, so the events were processed normally. Set `interactive` to `on_request` or `always` on the use case if the caller is meant to be able to wait for these events |
 | `MSG_ENQUEUED` | Outbound message enqueued to the poll queue, awaiting consumption by the ERP. When the use case maps the payload, the detail carries the mapped payload as delivered and its mapping_version (or payload_omitted when it exceeds 48 KiB) |
 | `ORG_DROPPED` | Events from this organization are configured to be dropped, so the event was consumed without being processed |
+| `SANDBOX_LANE` | This organization is a sandbox, so its events are processed on the sandbox lane: isolated from production organizations and with a fixed, small capacity. Nothing is lost, but a large load takes proportionally longer than it would on a production organization. Use a production organization for full-volume migrations, or ask epilot for a time-boxed lift before a rehearsal. Reported at most once per hour per integration |
 | `WEBHOOK_SKIPPED` | The webhook was not delivered because its filters did not match the event |
 ## Status-code families
 
