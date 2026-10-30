@@ -12,7 +12,7 @@ epilot supports **OIDC**-based SSO.
 
 ### Create a provider
 
-1. Go to **Settings** > **Single Sign On** in the epilot portal.
+1. Go to **Settings** > **Single Sign On** in the epilot portal. You need a role with the **Configure SSO** permission.
 
 :::info
 If the SSO option is not visible, contact customer success to enable it for your organization.
@@ -48,7 +48,11 @@ https://portal.epilot.cloud/sso
 
 ![SSO redirect](/img/sso/sso-redirect.png)
 
-Create a client secret and enter the `OIDC Issuer URL`, `Client ID`, `Client Secret`, and `Scope`.
+Enter the `OIDC Issuer URL`, `Client ID`, and `Scope`.
+
+:::note
+No client secret is needed. epilot signs users in with the Authorization Code flow with PKCE, so the app registration works as a public client (Single Page Application).
+:::
 
 ![SSO OIDC](/img/sso/sso-oidc.png)
 
