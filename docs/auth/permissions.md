@@ -70,7 +70,7 @@ Actions follow a `{domain}:{operation}` pattern. Common actions include:
 | `workflow:*` | All workflow operations |
 | `webhook:*` | All webhook operations |
 | `user:invite` | Invite users to the organization |
-| `role:assign` | Assign roles to users |
+| `role:assign` | Assign roles to users (granting the `owner` role additionally requires being an owner) |
 
 ## Resource Patterns
 
@@ -154,7 +154,7 @@ Conditions are evaluated at runtime with actual entity data. This enables scenar
 Grant evaluation follows AWS IAM conventions:
 
 1. **Tenant isolation** -- Roles only grant access within their own organization.
-2. **Owner role** -- The built-in `owner` role (present in every organization) inherits all organization grants.
+2. **Owner role** -- The built-in `owner` role (present in every organization) inherits all organization grants. The owner role is immutable (it cannot be edited or deleted), and only an owner can assign it to other users -- `role:assign` (e.g. via the Administrator role) is not sufficient and returns `403`. Every organization must keep at least one owner: removing the owner role from, or deleting, the last user holding it is rejected with `409` (internal platform callers are exempt). Owners are also the only users who can wipe all entities of an organization and assume roles other than their own via access tokens.
 3. **Least privilege** -- Roles have no grants by default.
 4. **Dual-role matching** -- Both the organization root role grant **and** a user role grant must match for access to be granted.
 5. **Explicit deny** -- An explicit `deny` in any matched grant overrides all `allow` grants. Use deny grants to create exceptions within broad allow rules.
