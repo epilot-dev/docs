@@ -88,7 +88,10 @@
         "gas",
         "water",
         "district_heating",
-        "waste_water"
+        "waste_water",
+        "rain_water",
+        "eeg",
+        "warm_water"
       ],
       "description": "Sector"
     },

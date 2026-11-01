@@ -100,7 +100,10 @@
         "gas",
         "water",
         "waste_water",
-        "district_heating"
+        "district_heating",
+        "rain_water",
+        "eeg",
+        "warm_water"
       ],
       "description": "Branch"
     },
