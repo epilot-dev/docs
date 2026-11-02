@@ -49,6 +49,7 @@
     },
     "lead_number": {
       "type": "string",
+      "nullable": true,
       "description": "Lead Number"
     },
     "status": {
@@ -58,12 +59,15 @@
         "in_progress",
         "qualified",
         "converted",
-        "disqualified"
+        "disqualified",
+        null
       ],
+      "nullable": true,
       "description": "Status"
     },
     "lead_title": {
       "type": "string",
+      "nullable": true,
       "description": "Lead Title"
     },
     "lead_type": {
@@ -72,8 +76,10 @@
         "Customer Lead",
         "Partner Lead",
         "Partner Contact",
-        "Other"
+        "Other",
+        null
       ],
+      "nullable": true,
       "description": "Lead Type: hint_helper.lead.lead_type"
     },
     "channel": {
@@ -86,8 +92,10 @@
         "Referral",
         "Partner",
         "Campaign",
-        "Other"
+        "Other",
+        null
       ],
+      "nullable": true,
       "description": "Channel: hint_helper.lead.channel"
     },
     "source": {
@@ -95,7 +103,7 @@
       "description": "Source: hint_helper.lead.source"
     },
     "assignee": {
-      "$ref": "#/definitions/User",
+      "$ref": "#/definitions/UserRelation",
       "description": "Assignee"
     },
     "customer": {
@@ -107,8 +115,10 @@
       "enum": [
         "New Customer",
         "Existing Customer",
-        "Unknown"
+        "Unknown",
+        null
       ],
+      "nullable": true,
       "description": "Customer Type"
     },
     "preferred_contact_channel": {
@@ -118,8 +128,10 @@
         "Email",
         "WhatsApp",
         "Post",
-        "No preference"
+        "No preference",
+        null
       ],
+      "nullable": true,
       "description": "Preferred Contact Channel"
     },
     "in_service_area": {
@@ -127,12 +139,15 @@
       "enum": [
         "Yes",
         "No",
-        "To be checked"
+        "To be checked",
+        null
       ],
+      "nullable": true,
       "description": "In Service Area"
     },
     "current_contract_account_number": {
       "type": "string",
+      "nullable": true,
       "description": "Current Contract Account Number"
     },
     "delivery_address": {
@@ -153,12 +168,14 @@
     },
     "customer_message": {
       "type": "string",
+      "nullable": true,
       "description": "Customer Message"
     },
     "desired_delivery_date": {
       "type": "string",
       "format": "date",
       "example": "2025-01-01",
+      "nullable": true,
       "description": "Desired Delivery Date"
     },
     "qualification_stage": {
@@ -166,12 +183,15 @@
       "enum": [
         "Raw Lead",
         "Marketing Qualified (MQL)",
-        "Sales Qualified (SQL)"
+        "Sales Qualified (SQL)",
+        null
       ],
+      "nullable": true,
       "description": "Qualification Stage"
     },
     "lead_score": {
       "type": "string",
+      "nullable": true,
       "description": "Lead Score: hint_helper.lead.lead_score"
     },
     "lead_score_grade": {
@@ -180,39 +200,48 @@
         "A",
         "B",
         "C",
-        "D"
+        "D",
+        null
       ],
+      "nullable": true,
       "description": "Score Grade: hint_helper.lead.lead_score_grade"
     },
     "lead_score_status": {
       "type": "string",
       "enum": [
         "live",
-        "completed"
+        "completed",
+        null
       ],
+      "nullable": true,
       "description": "Score Status: hint_helper.lead.lead_score_status"
     },
     "first_contact_at": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "First Contact At"
     },
     "contact_attempts": {
       "type": "string",
+      "nullable": true,
       "description": "Contact Attempts"
     },
     "follow_up_date": {
       "type": "string",
       "format": "date",
       "example": "2025-01-01",
+      "nullable": true,
       "description": "Follow-up Date"
     },
     "next_action": {
       "type": "string",
+      "nullable": true,
       "description": "Next Action"
     },
     "qualification_note": {
       "type": "string",
+      "nullable": true,
       "description": "Qualification Note"
     },
     "disqualification_reason": {
@@ -227,13 +256,16 @@
         "Incorrect contact data",
         "Test entry / Spam",
         "Duplicate",
-        "Decision for competitor"
+        "Decision for competitor",
+        null
       ],
+      "nullable": true,
       "description": "Disqualification Reason"
     },
     "disqualified_at": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "Disqualified At"
     },
     "duplicate_of": {
@@ -242,43 +274,53 @@
     },
     "score_urgency": {
       "type": "string",
+      "nullable": true,
       "description": "Sub-score: Urgency: hint_helper.lead.score_urgency"
     },
     "score_system_size": {
       "type": "string",
+      "nullable": true,
       "description": "Sub-score: System Size: hint_helper.lead.score_system_size"
     },
     "score_partner": {
       "type": "string",
+      "nullable": true,
       "description": "Sub-score: Partner / Region Coverage: hint_helper.lead.score_partner"
     },
     "score_property": {
       "type": "string",
+      "nullable": true,
       "description": "Sub-score: Property Suitability: hint_helper.lead.score_property"
     },
     "score_data_quality": {
       "type": "string",
+      "nullable": true,
       "description": "Sub-score: Data Quality: hint_helper.lead.score_data_quality"
     },
     "score_switching_pressure": {
       "type": "string",
+      "nullable": true,
       "description": "Sub-score: Switching Pressure & Subsidies: hint_helper.lead.score_switching_pressure"
     },
     "score_customer_relationship": {
       "type": "string",
+      "nullable": true,
       "description": "Sub-score: Customer Relationship: hint_helper.lead.score_customer_relationship"
     },
     "score_source": {
       "type": "string",
+      "nullable": true,
       "description": "Sub-score: Source & Campaign: hint_helper.lead.score_source"
     },
     "lead_score_calculated_at": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "Score Calculated At: hint_helper.lead.lead_score_calculated_at"
     },
     "lead_score_reasoning": {
       "type": "string",
+      "nullable": true,
       "description": "Score Reasoning: hint_helper.lead.lead_score_reasoning"
     },
     "opportunity": {
@@ -288,10 +330,11 @@
     "converted_at": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "Converted At"
     },
     "converted_by": {
-      "$ref": "#/definitions/User",
+      "$ref": "#/definitions/UserRelation",
       "description": "Converted By"
     },
     "offer_status": {
@@ -299,8 +342,10 @@
       "enum": [
         "Offer sent",
         "Signed offer returned",
-        "Offer declined"
+        "Offer declined",
+        null
       ],
+      "nullable": true,
       "description": "Offer Status: hint_helper.lead.offer_status"
     },
     "campaign": {
@@ -309,30 +354,37 @@
     },
     "utm_source": {
       "type": "string",
+      "nullable": true,
       "description": "utm_source"
     },
     "utm_medium": {
       "type": "string",
+      "nullable": true,
       "description": "utm_medium"
     },
     "utm_campaign": {
       "type": "string",
+      "nullable": true,
       "description": "utm_campaign"
     },
     "utm_term": {
       "type": "string",
+      "nullable": true,
       "description": "utm_term"
     },
     "utm_content": {
       "type": "string",
+      "nullable": true,
       "description": "utm_content"
     },
     "utm_id": {
       "type": "string",
+      "nullable": true,
       "description": "utm_id"
     },
     "cid": {
       "type": "string",
+      "nullable": true,
       "description": "cid"
     },
     "reporting_partner": {
@@ -345,6 +397,7 @@
     },
     "partner_reference": {
       "type": "string",
+      "nullable": true,
       "description": "Partner Reference"
     },
     "workflows": {
@@ -446,6 +499,7 @@
     },
     "LinkAttribute": {
       "type": "object",
+      "nullable": true,
       "description": "Link with title and href",
       "properties": {
         "type": {
@@ -460,8 +514,9 @@
         },
         "href": {
           "type": "string",
-          "format": "uri",
-          "example": "https://example.com"
+          "nullable": true,
+          "example": "https://example.com",
+          "description": "Absolute URL or a path within epilot 360"
         }
       }
     },
@@ -481,9 +536,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",
@@ -531,108 +600,48 @@
         }
       }
     },
-    "UserId": {
-      "description": "User's unique identifier",
-      "type": "string",
-      "readOnly": true
-    },
-    "OrganizationId": {
-      "description": "Organization unique identifier",
-      "type": "string",
-      "readOnly": true,
-      "example": "123"
-    },
-    "User": {
-      "type": "object",
-      "description": "User information",
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/UserId"
-        },
-        "organization_id": {
-          "$ref": "#/definitions/OrganizationId"
-        },
-        "email": {
-          "type": "string",
-          "format": "email",
-          "example": "user@example.com"
-        },
-        "display_name": {
-          "type": "string",
-          "example": "John Doe",
-          "deprecated": true
-        },
-        "name": {
-          "type": "string",
-          "example": "John Doe",
-          "deprecated": true
-        },
-        "preferred_language": {
-          "type": "string",
-          "example": "de",
-          "description": "ISO 639-1 language code"
-        },
-        "signature": {
-          "type": "string",
-          "example": "<p>Best regards,<br/>John Doe</p>",
-          "description": "HTML email signature"
-        },
-        "roles": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "example": "Owner"
-          },
-          "deprecated": true,
-          "description": "Deprecated! Please use Permissions API instead"
-        },
-        "image_uri": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "original": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
-            },
-            "thumbnail_32": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
-            }
-          },
-          "nullable": true
-        },
+    "UserRelation": {
+      "type": "array",
+      "nullable": true,
+      "description": "Users or user groups assigned to the entity",
+      "items": {
+        "type": "object",
         "properties": {
-          "type": "array",
-          "items": {
+          "type": {
+            "type": "string",
+            "example": "user"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "org_id": {
+            "type": "string",
+            "example": "123"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "example": "user@example.com"
+          },
+          "display_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_uri": {
             "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "profileImageName"
-              },
-              "value": {
-                "type": "string",
-                "example": "avatar.png"
-              }
-            },
-            "required": [
-              "name",
-              "value"
-            ]
+            "nullable": true,
+            "additionalProperties": true
           }
         }
-      },
-      "required": [
-        "id",
-        "organization_id",
-        "email",
-        "name",
-        "preferred_language",
-        "roles",
-        "properties"
-      ]
+      }
     },
     "LocalConsents": {
       "type": "object",
@@ -697,7 +706,14 @@
         "ASSIGNED",
         "COMPLETED",
         "SKIPPED",
-        "IN_PROGRESS"
+        "IN_PROGRESS",
+        "SCHEDULED",
+        "PENDING",
+        "CONDITION_PENDING",
+        "WAITING_FOR_CONFIRMATION",
+        "WAITING_FOR_JOURNEY_SUBMISSION",
+        "ON_HOLD",
+        "FAILED"
       ]
     },
     "PhaseInEntity": {
@@ -712,12 +728,62 @@
         },
         "phase_progress": {
           "type": "number"
+        },
+        "phase_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TaskInEntity": {
+      "type": "object",
+      "description": "Open task of a workflow",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_name": {
+          "type": "string"
+        },
+        "task_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_duedate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "task_start_date": {
+          "type": "string"
+        },
+        "task_execution_type": {
+          "$ref": "#/definitions/StepType"
+        },
+        "task_status": {
+          "$ref": "#/definitions/StepStatus"
+        }
+      }
+    },
+    "ClosingReason": {
+      "type": "object",
+      "description": "Reason for closing a workflow",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "won"
+        },
+        "title": {
+          "type": "string",
+          "example": "Won"
         }
       },
       "required": [
-        "phase_id",
-        "phase_name",
-        "phase_progress"
+        "id",
+        "title"
       ]
     },
     "WorkflowInEntity": {
@@ -740,6 +806,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "duedate": {
+          "type": "string",
+          "format": "date-time"
         },
         "progress": {
           "type": "number"
@@ -776,11 +846,20 @@
           "type": "string",
           "format": "date-time"
         },
+        "task_start_date": {
+          "type": "string"
+        },
         "task_execution_type": {
           "$ref": "#/definitions/StepType"
         },
         "task_status": {
           "$ref": "#/definitions/StepStatus"
+        },
+        "current_tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskInEntity"
+          }
         },
         "phase_id": {
           "type": "string"
@@ -796,16 +875,17 @@
         },
         "phase_progress": {
           "type": "number"
+        },
+        "selected_closing_reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClosingReason"
+          }
+        },
+        "closing_reason_description": {
+          "type": "string"
         }
-      },
-      "required": [
-        "id",
-        "definition_id",
-        "name",
-        "status",
-        "assignees",
-        "last_update_time"
-      ]
+      }
     },
     "WorkflowOverview": {
       "type": "object",

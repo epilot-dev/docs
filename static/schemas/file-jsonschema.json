@@ -3,8 +3,7 @@
   "type": "object",
   "required": [
     "_schema",
-    "filename",
-    "language"
+    "filename"
   ],
   "properties": {
     "_schema": {
@@ -59,6 +58,7 @@
     },
     "mime_type": {
       "type": "string",
+      "nullable": true,
       "description": "MIME Type"
     },
     "type": {
@@ -75,66 +75,82 @@
         "font",
         "archive",
         "application",
-        "unknown"
+        "unknown",
+        null
       ],
+      "nullable": true,
       "description": "File Type"
     },
     "readable_size": {
       "type": "string",
+      "nullable": true,
       "description": "Size"
     },
     "language": {
       "type": "string",
       "enum": [
         "de",
-        "en"
+        "en",
+        null
       ],
+      "nullable": true,
       "description": "Language"
     },
     "alt_text": {
       "type": "string",
+      "nullable": true,
       "description": "Alt text"
     },
     "access_control": {
       "type": "string",
       "enum": [
         "private",
-        "public-read"
+        "public-read",
+        null
       ],
+      "nullable": true,
       "description": "Access Control"
     },
     "public_url": {
       "type": "string",
+      "nullable": true,
       "description": "Public URL"
     },
     "shared_with_end_customer": {
       "type": "boolean",
+      "nullable": true,
       "description": "Shared with End Customer"
     },
     "category": {
       "type": "string",
       "enum": [
         "address-suggestions",
-        "unknown"
+        "unknown",
+        null
       ],
+      "nullable": true,
       "description": "Category"
     },
     "file_date": {
       "type": "string",
       "format": "date",
       "example": "2025-01-01",
+      "nullable": true,
       "description": "File Date"
     },
     "external_id": {
       "type": "string",
+      "nullable": true,
       "description": "External ID"
     },
     "custom_download_url": {
       "type": "string",
+      "nullable": true,
       "description": "Custom Download URL"
     },
     "custom_download_url_auth": {
       "type": "string",
+      "nullable": true,
       "description": "Custom Download URL Auth"
     },
     "journeys": {
@@ -143,18 +159,22 @@
     },
     "preview_summary_de": {
       "type": "string",
+      "nullable": true,
       "description": "Preview Summary (DE)"
     },
     "short_summary_de": {
       "type": "string",
+      "nullable": true,
       "description": "Short Summary (DE)"
     },
     "preview_summary_en": {
       "type": "string",
+      "nullable": true,
       "description": "Preview Summary (EN)"
     },
     "short_summary_en": {
       "type": "string",
+      "nullable": true,
       "description": "Short Summary (EN)"
     },
     "summary_status": {
@@ -163,8 +183,10 @@
         "processing",
         "completed",
         "failed",
-        "unsupported"
+        "unsupported",
+        null
       ],
+      "nullable": true,
       "description": "Summary Status"
     },
     "_files": {
@@ -274,9 +296,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

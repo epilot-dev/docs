@@ -49,50 +49,61 @@
     },
     "name": {
       "type": "string",
+      "nullable": true,
       "description": "Name"
     },
     "subject": {
       "type": "string",
+      "nullable": true,
       "description": "Subject"
     },
     "from": {
       "type": "string",
       "format": "email",
+      "nullable": true,
       "description": "From"
     },
     "to": {
       "type": "string",
       "format": "email",
+      "nullable": true,
       "description": "To"
     },
     "cc": {
       "type": "string",
       "format": "email",
+      "nullable": true,
       "description": "Cc"
     },
     "bcc": {
       "type": "string",
       "format": "email",
+      "nullable": true,
       "description": "Bcc"
     },
     "body": {
       "type": "string",
+      "nullable": true,
       "description": "Body"
     },
     "system_template": {
       "type": "boolean",
+      "nullable": true,
       "description": "System Template"
     },
     "portal_id": {
       "type": "string",
+      "nullable": true,
       "description": "Portal ID"
     },
     "editor_type": {
       "type": "string",
       "enum": [
         "standard",
-        "visual"
+        "visual",
+        null
       ],
+      "nullable": true,
       "description": "Editor type"
     },
     "_files": {
@@ -202,9 +213,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

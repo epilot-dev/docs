@@ -51,6 +51,7 @@
     },
     "goal": {
       "type": "string",
+      "nullable": true,
       "description": "Goal"
     },
     "status": {
@@ -58,20 +59,24 @@
       "enum": [
         "draft",
         "active",
-        "inactive"
+        "inactive",
+        null
       ],
+      "nullable": true,
       "description": "Status"
     },
     "start_date": {
       "type": "string",
       "format": "date",
       "example": "2025-01-01",
+      "nullable": true,
       "description": "Start Date"
     },
     "end_date": {
       "type": "string",
       "format": "date",
       "example": "2025-01-01",
+      "nullable": true,
       "description": "End Date"
     },
     "target": {
@@ -175,9 +180,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

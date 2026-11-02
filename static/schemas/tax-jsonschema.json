@@ -51,32 +51,57 @@
       "type": "string",
       "enum": [
         "VAT",
-        "Custom"
+        "Custom",
+        null
       ],
+      "nullable": true,
       "description": "Type"
     },
     "description": {
       "type": "string",
+      "nullable": true,
       "description": "Description"
     },
     "rate": {
       "type": "number",
+      "nullable": true,
       "description": "Tax Rate (%)"
     },
     "active": {
       "type": "boolean",
+      "nullable": true,
       "description": "Active"
     },
     "region": {
       "type": "string",
+      "nullable": true,
       "description": "Region"
     },
     "region_label": {
       "type": "string",
+      "nullable": true,
       "description": "Region Label"
     },
     "footnotes": {
-      "type": "string",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "footnotes": {
+            "type": "string"
+          }
+        }
+      },
+      "nullable": true,
       "description": "Footnotes"
     },
     "_files": {
@@ -186,9 +211,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

@@ -60,6 +60,7 @@
     },
     "description": {
       "type": "string",
+      "nullable": true,
       "description": "Description"
     },
     "address": {
@@ -168,6 +169,7 @@
           }
         }
       },
+      "nullable": true,
       "description": "Address"
     },
     "customer": {
@@ -182,6 +184,7 @@
     "phone": {
       "type": "string",
       "example": "+491234567890",
+      "nullable": true,
       "description": "Phone"
     },
     "_availability_files": {
@@ -298,9 +301,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",
@@ -340,7 +357,14 @@
         "ASSIGNED",
         "COMPLETED",
         "SKIPPED",
-        "IN_PROGRESS"
+        "IN_PROGRESS",
+        "SCHEDULED",
+        "PENDING",
+        "CONDITION_PENDING",
+        "WAITING_FOR_CONFIRMATION",
+        "WAITING_FOR_JOURNEY_SUBMISSION",
+        "ON_HOLD",
+        "FAILED"
       ]
     },
     "PhaseInEntity": {
@@ -355,12 +379,62 @@
         },
         "phase_progress": {
           "type": "number"
+        },
+        "phase_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TaskInEntity": {
+      "type": "object",
+      "description": "Open task of a workflow",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_name": {
+          "type": "string"
+        },
+        "task_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_duedate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "task_start_date": {
+          "type": "string"
+        },
+        "task_execution_type": {
+          "$ref": "#/definitions/StepType"
+        },
+        "task_status": {
+          "$ref": "#/definitions/StepStatus"
+        }
+      }
+    },
+    "ClosingReason": {
+      "type": "object",
+      "description": "Reason for closing a workflow",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "won"
+        },
+        "title": {
+          "type": "string",
+          "example": "Won"
         }
       },
       "required": [
-        "phase_id",
-        "phase_name",
-        "phase_progress"
+        "id",
+        "title"
       ]
     },
     "WorkflowInEntity": {
@@ -383,6 +457,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "duedate": {
+          "type": "string",
+          "format": "date-time"
         },
         "progress": {
           "type": "number"
@@ -419,11 +497,20 @@
           "type": "string",
           "format": "date-time"
         },
+        "task_start_date": {
+          "type": "string"
+        },
         "task_execution_type": {
           "$ref": "#/definitions/StepType"
         },
         "task_status": {
           "$ref": "#/definitions/StepStatus"
+        },
+        "current_tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskInEntity"
+          }
         },
         "phase_id": {
           "type": "string"
@@ -439,16 +526,17 @@
         },
         "phase_progress": {
           "type": "number"
+        },
+        "selected_closing_reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClosingReason"
+          }
+        },
+        "closing_reason_description": {
+          "type": "string"
         }
-      },
-      "required": [
-        "id",
-        "definition_id",
-        "name",
-        "status",
-        "assignees",
-        "last_update_time"
-      ]
+      }
     },
     "WorkflowOverview": {
       "type": "object",

@@ -4,11 +4,7 @@
   "required": [
     "_schema",
     "description",
-    "internal_description",
-    "unit_amount",
-    "type",
-    "billing_period",
-    "tiers"
+    "internal_description"
   ],
   "properties": {
     "_schema": {
@@ -63,6 +59,7 @@
     },
     "long_description": {
       "type": "string",
+      "nullable": true,
       "description": "Description"
     },
     "pricing_model": {
@@ -73,8 +70,10 @@
         "tiered_graduated",
         "tiered_flatfee",
         "dynamic_tariff",
-        "external_getag"
+        "external_getag",
+        null
       ],
+      "nullable": true,
       "description": "Pricing model"
     },
     "unit_amount_currency": {
@@ -89,10 +88,12 @@
     },
     "unit_amount": {
       "type": "number",
+      "nullable": true,
       "description": "Currency"
     },
     "is_tax_inclusive": {
       "type": "boolean",
+      "nullable": true,
       "description": "Include tax in price"
     },
     "price_display_in_journeys": {
@@ -101,8 +102,10 @@
         "show_price",
         "show_as_starting_price",
         "show_as_on_request",
-        "estimated_price"
+        "estimated_price",
+        null
       ],
+      "nullable": true,
       "description": "Price Display Mode (Journeys)"
     },
     "unit": {
@@ -121,28 +124,35 @@
         "kw",
         "kwh",
         "wp",
-        "kwp"
+        "kwp",
+        null
       ],
+      "nullable": true,
       "description": "Unit"
     },
     "active": {
       "type": "boolean",
+      "nullable": true,
       "description": "Active"
     },
     "variable_price": {
       "type": "boolean",
+      "nullable": true,
       "description": "Variable Pricing"
     },
     "additional_information": {
       "type": "string",
+      "nullable": true,
       "description": "Additional Information"
     },
     "type": {
       "type": "string",
       "enum": [
         "one_time",
-        "recurring"
+        "recurring",
+        null
       ],
+      "nullable": true,
       "description": "Type"
     },
     "billing_period": {
@@ -152,12 +162,15 @@
         "monthly",
         "every_quarter",
         "every_6_months",
-        "yearly"
+        "yearly",
+        null
       ],
+      "nullable": true,
       "description": "Billing Period"
     },
     "billing_duration_amount": {
       "type": "string",
+      "nullable": true,
       "description": "Billing Duration"
     },
     "billing_duration_unit": {
@@ -166,12 +179,15 @@
         "days",
         "weeks",
         "months",
-        "years"
+        "years",
+        null
       ],
+      "nullable": true,
       "description": "Billing Duration Unit"
     },
     "notice_time_amount": {
       "type": "string",
+      "nullable": true,
       "description": "Notice Time"
     },
     "notice_time_unit": {
@@ -180,12 +196,15 @@
         "days",
         "weeks",
         "months",
-        "years"
+        "years",
+        null
       ],
+      "nullable": true,
       "description": "Notice Time Unit"
     },
     "termination_time_amount": {
       "type": "string",
+      "nullable": true,
       "description": "Termination Time"
     },
     "termination_time_unit": {
@@ -194,12 +213,15 @@
         "days",
         "weeks",
         "months",
-        "years"
+        "years",
+        null
       ],
+      "nullable": true,
       "description": "Termination Time Unit"
     },
     "renewal_duration_amount": {
       "type": "string",
+      "nullable": true,
       "description": "Renewal Duration"
     },
     "renewal_duration_unit": {
@@ -208,8 +230,10 @@
         "days",
         "weeks",
         "months",
-        "years"
+        "years",
+        null
       ],
+      "nullable": true,
       "description": "Renewal Duration Unit"
     },
     "price_components": {
@@ -218,6 +242,7 @@
     },
     "is_composite_price": {
       "type": "boolean",
+      "nullable": true,
       "description": "Is composite price"
     },
     "tax": {
@@ -225,7 +250,11 @@
       "description": "Tax"
     },
     "tiers": {
-      "$ref": "#/definitions/PriceTier",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PriceTier"
+      },
+      "nullable": true,
       "description": "Tiers"
     },
     "journeys": {
@@ -233,7 +262,25 @@
       "description": "Journeys"
     },
     "footnotes": {
-      "type": "string",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "footnotes": {
+            "type": "string"
+          }
+        }
+      },
+      "nullable": true,
       "description": "Footnotes"
     },
     "_files": {
@@ -343,9 +390,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

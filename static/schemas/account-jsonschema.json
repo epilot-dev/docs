@@ -49,26 +49,32 @@
     },
     "name": {
       "type": "string",
+      "nullable": true,
       "description": "Company name"
     },
     "customer_number": {
       "type": "string",
+      "nullable": true,
       "description": "Customer Number"
     },
     "registry_court": {
       "type": "string",
+      "nullable": true,
       "description": "Registry court"
     },
     "registry_number": {
       "type": "string",
+      "nullable": true,
       "description": "Registry number"
     },
     "tax_id": {
       "type": "string",
+      "nullable": true,
       "description": "Tax ID"
     },
     "tax_exemption": {
       "type": "boolean",
+      "nullable": true,
       "description": "Tax exemption"
     },
     "annual_revenue_currency": {
@@ -83,6 +89,7 @@
     },
     "annual_revenue": {
       "type": "number",
+      "nullable": true,
       "description": "Annual revenue"
     },
     "industry": {
@@ -90,6 +97,7 @@
       "items": {
         "type": "string"
       },
+      "nullable": true,
       "description": "Company industry"
     },
     "company_size": {
@@ -101,16 +109,20 @@
         "50-99",
         "100-249",
         "250-499",
-        "500+"
+        "500+",
+        null
       ],
+      "nullable": true,
       "description": "Company size"
     },
     "website": {
       "type": "string",
+      "nullable": true,
       "description": "Website"
     },
     "marketing_permission": {
       "type": "boolean",
+      "nullable": true,
       "description": "Marketing Permission"
     },
     "address": {
@@ -219,6 +231,7 @@
           }
         }
       },
+      "nullable": true,
       "description": "Address"
     },
     "payment": {
@@ -259,6 +272,7 @@
           }
         }
       },
+      "nullable": true,
       "description": "Payment"
     },
     "contacts": {
@@ -266,7 +280,7 @@
       "description": "Contacts"
     },
     "assigned_to": {
-      "$ref": "#/definitions/User",
+      "$ref": "#/definitions/UserRelation",
       "description": "Assigned to"
     },
     "email": {
@@ -289,6 +303,7 @@
           "email"
         ]
       },
+      "nullable": true,
       "description": "Email"
     },
     "phone": {
@@ -311,6 +326,7 @@
           "phone"
         ]
       },
+      "nullable": true,
       "description": "Phone"
     },
     "opportunities": {
@@ -427,9 +443,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",
@@ -447,108 +477,48 @@
         }
       }
     },
-    "UserId": {
-      "description": "User's unique identifier",
-      "type": "string",
-      "readOnly": true
-    },
-    "OrganizationId": {
-      "description": "Organization unique identifier",
-      "type": "string",
-      "readOnly": true,
-      "example": "123"
-    },
-    "User": {
-      "type": "object",
-      "description": "User information",
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/UserId"
-        },
-        "organization_id": {
-          "$ref": "#/definitions/OrganizationId"
-        },
-        "email": {
-          "type": "string",
-          "format": "email",
-          "example": "user@example.com"
-        },
-        "display_name": {
-          "type": "string",
-          "example": "John Doe",
-          "deprecated": true
-        },
-        "name": {
-          "type": "string",
-          "example": "John Doe",
-          "deprecated": true
-        },
-        "preferred_language": {
-          "type": "string",
-          "example": "de",
-          "description": "ISO 639-1 language code"
-        },
-        "signature": {
-          "type": "string",
-          "example": "<p>Best regards,<br/>John Doe</p>",
-          "description": "HTML email signature"
-        },
-        "roles": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "example": "Owner"
-          },
-          "deprecated": true,
-          "description": "Deprecated! Please use Permissions API instead"
-        },
-        "image_uri": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "original": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
-            },
-            "thumbnail_32": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
-            }
-          },
-          "nullable": true
-        },
+    "UserRelation": {
+      "type": "array",
+      "nullable": true,
+      "description": "Users or user groups assigned to the entity",
+      "items": {
+        "type": "object",
         "properties": {
-          "type": "array",
-          "items": {
+          "type": {
+            "type": "string",
+            "example": "user"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "org_id": {
+            "type": "string",
+            "example": "123"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "example": "user@example.com"
+          },
+          "display_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_uri": {
             "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "profileImageName"
-              },
-              "value": {
-                "type": "string",
-                "example": "avatar.png"
-              }
-            },
-            "required": [
-              "name",
-              "value"
-            ]
+            "nullable": true,
+            "additionalProperties": true
           }
         }
-      },
-      "required": [
-        "id",
-        "organization_id",
-        "email",
-        "name",
-        "preferred_language",
-        "roles",
-        "properties"
-      ]
+      }
     },
     "WorkflowStatus": {
       "type": "string",
@@ -572,7 +542,14 @@
         "ASSIGNED",
         "COMPLETED",
         "SKIPPED",
-        "IN_PROGRESS"
+        "IN_PROGRESS",
+        "SCHEDULED",
+        "PENDING",
+        "CONDITION_PENDING",
+        "WAITING_FOR_CONFIRMATION",
+        "WAITING_FOR_JOURNEY_SUBMISSION",
+        "ON_HOLD",
+        "FAILED"
       ]
     },
     "PhaseInEntity": {
@@ -587,12 +564,62 @@
         },
         "phase_progress": {
           "type": "number"
+        },
+        "phase_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TaskInEntity": {
+      "type": "object",
+      "description": "Open task of a workflow",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_name": {
+          "type": "string"
+        },
+        "task_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_duedate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "task_start_date": {
+          "type": "string"
+        },
+        "task_execution_type": {
+          "$ref": "#/definitions/StepType"
+        },
+        "task_status": {
+          "$ref": "#/definitions/StepStatus"
+        }
+      }
+    },
+    "ClosingReason": {
+      "type": "object",
+      "description": "Reason for closing a workflow",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "won"
+        },
+        "title": {
+          "type": "string",
+          "example": "Won"
         }
       },
       "required": [
-        "phase_id",
-        "phase_name",
-        "phase_progress"
+        "id",
+        "title"
       ]
     },
     "WorkflowInEntity": {
@@ -615,6 +642,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "duedate": {
+          "type": "string",
+          "format": "date-time"
         },
         "progress": {
           "type": "number"
@@ -651,11 +682,20 @@
           "type": "string",
           "format": "date-time"
         },
+        "task_start_date": {
+          "type": "string"
+        },
         "task_execution_type": {
           "$ref": "#/definitions/StepType"
         },
         "task_status": {
           "$ref": "#/definitions/StepStatus"
+        },
+        "current_tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskInEntity"
+          }
         },
         "phase_id": {
           "type": "string"
@@ -671,16 +711,17 @@
         },
         "phase_progress": {
           "type": "number"
+        },
+        "selected_closing_reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClosingReason"
+          }
+        },
+        "closing_reason_description": {
+          "type": "string"
         }
-      },
-      "required": [
-        "id",
-        "definition_id",
-        "name",
-        "status",
-        "assignees",
-        "last_update_time"
-      ]
+      }
     },
     "WorkflowOverview": {
       "type": "object",

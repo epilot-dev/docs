@@ -14,28 +14,18 @@
   "status": "open",
   "due_date": "1970-01-01T00:00:00.000Z",
   "description": "string",
-  "assignee": {
-    "id": "string",
-    "organization_id": "123",
-    "email": "user@example.com",
-    "display_name": "John Doe",
-    "name": "John Doe",
-    "preferred_language": "de",
-    "signature": "<p>Best regards,<br/>John Doe</p>",
-    "roles": [
-      "Owner"
-    ],
-    "image_uri": {
-      "original": "https://account-profile-images.epilot.cloud/1/avatar.png",
-      "thumbnail_32": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
-    },
-    "properties": [
-      {
-        "name": "profileImageName",
-        "value": "avatar.png"
-      }
-    ]
-  },
+  "assignee": [
+    {
+      "type": "user",
+      "user_id": "string",
+      "group_id": "string",
+      "org_id": "123",
+      "email": "user@example.com",
+      "display_name": "John Doe",
+      "phone": "string",
+      "image_uri": {}
+    }
+  ],
   "source": {
     "type": "link",
     "title": "Visit Website",
@@ -136,12 +126,16 @@
       "assignees": [
         "string"
       ],
+      "duedate": "1970-01-01T00:00:00.000Z",
       "progress": 0,
       "phases_in_progress": [
         {
           "phase_id": "string",
           "phase_name": "string",
-          "phase_progress": 0
+          "phase_progress": 0,
+          "phase_assignees": [
+            "string"
+          ]
         }
       ],
       "last_update_time": "1970-01-01T00:00:00.000Z",
@@ -154,14 +148,35 @@
         "string"
       ],
       "task_duedate": "1970-01-01T00:00:00.000Z",
+      "task_start_date": "string",
       "task_execution_type": "MANUAL",
       "task_status": "UNASSIGNED",
+      "current_tasks": [
+        {
+          "task_id": "string",
+          "task_name": "string",
+          "task_assignees": [
+            "string"
+          ],
+          "task_duedate": "1970-01-01T00:00:00.000Z",
+          "task_start_date": "string",
+          "task_execution_type": "MANUAL",
+          "task_status": "UNASSIGNED"
+        }
+      ],
       "phase_id": "string",
       "phase_name": "string",
       "phase_assignees": [
         "string"
       ],
-      "phase_progress": 0
+      "phase_progress": 0,
+      "selected_closing_reasons": [
+        {
+          "id": "won",
+          "title": "Won"
+        }
+      ],
+      "closing_reason_description": "string"
     }
   },
   "consents": {

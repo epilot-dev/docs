@@ -54,10 +54,12 @@
     },
     "subject": {
       "type": "string",
+      "nullable": true,
       "description": "Subject"
     },
     "description": {
       "type": "string",
+      "nullable": true,
       "description": "Description"
     },
     "event_type": {
@@ -78,8 +80,10 @@
         "busy",
         "oof",
         "workingElsewhere",
-        "unknown"
+        "unknown",
+        null
       ],
+      "nullable": true,
       "description": "Status"
     },
     "start_time": {
@@ -94,18 +98,22 @@
     },
     "timezone": {
       "type": "string",
+      "nullable": true,
       "description": "Timezone"
     },
     "is_all_day": {
       "type": "boolean",
+      "nullable": true,
       "description": "All Day"
     },
     "location": {
       "type": "string",
+      "nullable": true,
       "description": "Location"
     },
     "is_cancelled": {
       "type": "boolean",
+      "nullable": true,
       "description": "Cancelled"
     },
     "sensitivity": {
@@ -114,8 +122,10 @@
         "normal",
         "personal",
         "private",
-        "confidential"
+        "confidential",
+        null
       ],
+      "nullable": true,
       "description": "Sensitivity"
     },
     "importance": {
@@ -123,20 +133,25 @@
       "enum": [
         "low",
         "normal",
-        "high"
+        "high",
+        null
       ],
+      "nullable": true,
       "description": "Importance"
     },
     "is_online_meeting": {
       "type": "boolean",
+      "nullable": true,
       "description": "Online Meeting"
     },
     "online_meeting_url": {
       "type": "string",
+      "nullable": true,
       "description": "Online Meeting URL"
     },
     "web_link": {
       "type": "string",
+      "nullable": true,
       "description": "Web Link"
     },
     "response_status": {
@@ -147,25 +162,31 @@
         "tentativelyAccepted",
         "accepted",
         "declined",
-        "notResponded"
+        "notResponded",
+        null
       ],
+      "nullable": true,
       "description": "Response Status"
     },
     "organizer_email": {
       "type": "string",
       "format": "email",
+      "nullable": true,
       "description": "Organizer Email"
     },
     "attendees": {
       "type": "string",
+      "nullable": true,
       "description": "Attendees"
     },
     "is_recurring": {
       "type": "boolean",
+      "nullable": true,
       "description": "Recurring"
     },
     "series_master_id": {
       "type": "string",
+      "nullable": true,
       "description": "Series Master ID"
     },
     "source_type": {
@@ -180,25 +201,31 @@
       "type": "string",
       "enum": [
         "outlook",
-        "google"
+        "google",
+        null
       ],
+      "nullable": true,
       "description": "Source Provider"
     },
     "provider_event_id": {
       "type": "string",
+      "nullable": true,
       "description": "Provider Event ID"
     },
     "provider_event_url": {
       "type": "string",
+      "nullable": true,
       "description": "Provider Event URL"
     },
     "etag": {
       "type": "string",
+      "nullable": true,
       "description": "ETag"
     },
     "last_synced_at": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "Last Synced At"
     },
     "_files": {
@@ -298,9 +325,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

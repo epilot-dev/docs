@@ -12,28 +12,18 @@
   "is_default": true,
   "read_only": true,
   "owner_email": "user@example.com",
-  "owner": {
-    "id": "string",
-    "organization_id": "123",
-    "email": "user@example.com",
-    "display_name": "John Doe",
-    "name": "John Doe",
-    "preferred_language": "de",
-    "signature": "<p>Best regards,<br/>John Doe</p>",
-    "roles": [
-      "Owner"
-    ],
-    "image_uri": {
-      "original": "https://account-profile-images.epilot.cloud/1/avatar.png",
-      "thumbnail_32": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
-    },
-    "properties": [
-      {
-        "name": "profileImageName",
-        "value": "avatar.png"
-      }
-    ]
-  },
+  "owner": [
+    {
+      "type": "user",
+      "user_id": "string",
+      "group_id": "string",
+      "org_id": "123",
+      "email": "user@example.com",
+      "display_name": "John Doe",
+      "phone": "string",
+      "image_uri": {}
+    }
+  ],
   "source_type": "native",
   "source_provider": "outlook",
   "provider_calendar_id": "string",

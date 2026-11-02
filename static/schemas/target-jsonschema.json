@@ -50,10 +50,12 @@
     },
     "description": {
       "type": "string",
+      "nullable": true,
       "description": "Description"
     },
     "entity_schema": {
       "type": "string",
+      "nullable": true,
       "description": "Entity Schema"
     },
     "_files": {
@@ -153,9 +155,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

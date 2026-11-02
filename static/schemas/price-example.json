@@ -53,14 +53,16 @@
       }
     ]
   },
-  "tiers": {
-    "up_to": 100,
-    "flat_fee_amount": 1000,
-    "flat_fee_amount_decimal": "10.00",
-    "unit_amount": 500,
-    "unit_amount_decimal": "5.00",
-    "display_mode": "hidden"
-  },
+  "tiers": [
+    {
+      "up_to": 100,
+      "flat_fee_amount": 1000,
+      "flat_fee_amount_decimal": "10.00",
+      "unit_amount": 500,
+      "unit_amount_decimal": "5.00",
+      "display_mode": "hidden"
+    }
+  ],
   "journeys": {
     "$relation": [
       {
@@ -71,7 +73,15 @@
       }
     ]
   },
-  "footnotes": "string",
+  "footnotes": [
+    {
+      "_id": "string",
+      "_tags": [
+        "string"
+      ],
+      "footnotes": "string"
+    }
+  ],
   "_files": {
     "$relation": [
       {

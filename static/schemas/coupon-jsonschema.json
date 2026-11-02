@@ -3,9 +3,7 @@
   "type": "object",
   "required": [
     "_schema",
-    "name",
-    "percentage_value",
-    "fixed_value"
+    "name"
   ],
   "properties": {
     "_schema": {
@@ -56,18 +54,22 @@
     },
     "description": {
       "type": "string",
+      "nullable": true,
       "description": "Description"
     },
     "type": {
       "type": "string",
       "enum": [
         "percentage",
-        "fixed"
+        "fixed",
+        null
       ],
+      "nullable": true,
       "description": "Type"
     },
     "percentage_value": {
       "type": "string",
+      "nullable": true,
       "description": "Value (%)"
     },
     "fixed_value_currency": {
@@ -82,18 +84,22 @@
     },
     "fixed_value": {
       "type": "number",
+      "nullable": true,
       "description": "Value (€)"
     },
     "category": {
       "type": "string",
+      "nullable": true,
       "description": "What type of coupon is it?"
     },
     "cashback_period": {
       "type": "string",
+      "nullable": true,
       "description": "When should it be applied?"
     },
     "active": {
       "type": "boolean",
+      "nullable": true,
       "description": "Available"
     },
     "prices": {
@@ -101,7 +107,25 @@
       "description": "Promoted prices"
     },
     "footnotes": {
-      "type": "string",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "footnotes": {
+            "type": "string"
+          }
+        }
+      },
+      "nullable": true,
       "description": "Footnotes"
     },
     "_files": {
@@ -211,9 +235,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

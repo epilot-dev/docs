@@ -49,38 +49,46 @@
     },
     "journey_name": {
       "type": "string",
+      "nullable": true,
       "description": "Journey name"
     },
     "journey_id": {
       "type": "string",
+      "nullable": true,
       "description": "Journey Id"
     },
     "journey_type": {
       "type": "string",
+      "nullable": true,
       "description": "Journey Type"
     },
     "access_mode": {
       "type": "string",
       "enum": [
         "PUBLIC",
-        "PRIVATE"
+        "PRIVATE",
+        null
       ],
+      "nullable": true,
       "description": "Journey Access Mode"
     },
     "design": {
       "type": "string",
+      "nullable": true,
       "description": "Design"
     },
     "created_by": {
-      "$ref": "#/definitions/User",
+      "$ref": "#/definitions/UserRelation",
       "description": "Created by"
     },
     "journey_version": {
       "type": "string",
+      "nullable": true,
       "description": "Version"
     },
     "is_active": {
       "type": "boolean",
+      "nullable": true,
       "description": "Published"
     },
     "products": {
@@ -206,9 +214,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",
@@ -226,108 +248,48 @@
         }
       }
     },
-    "UserId": {
-      "description": "User's unique identifier",
-      "type": "string",
-      "readOnly": true
-    },
-    "OrganizationId": {
-      "description": "Organization unique identifier",
-      "type": "string",
-      "readOnly": true,
-      "example": "123"
-    },
-    "User": {
-      "type": "object",
-      "description": "User information",
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/UserId"
-        },
-        "organization_id": {
-          "$ref": "#/definitions/OrganizationId"
-        },
-        "email": {
-          "type": "string",
-          "format": "email",
-          "example": "user@example.com"
-        },
-        "display_name": {
-          "type": "string",
-          "example": "John Doe",
-          "deprecated": true
-        },
-        "name": {
-          "type": "string",
-          "example": "John Doe",
-          "deprecated": true
-        },
-        "preferred_language": {
-          "type": "string",
-          "example": "de",
-          "description": "ISO 639-1 language code"
-        },
-        "signature": {
-          "type": "string",
-          "example": "<p>Best regards,<br/>John Doe</p>",
-          "description": "HTML email signature"
-        },
-        "roles": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "example": "Owner"
-          },
-          "deprecated": true,
-          "description": "Deprecated! Please use Permissions API instead"
-        },
-        "image_uri": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "original": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://account-profile-images.epilot.cloud/1/avatar.png"
-            },
-            "thumbnail_32": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
-            }
-          },
-          "nullable": true
-        },
+    "UserRelation": {
+      "type": "array",
+      "nullable": true,
+      "description": "Users or user groups assigned to the entity",
+      "items": {
+        "type": "object",
         "properties": {
-          "type": "array",
-          "items": {
+          "type": {
+            "type": "string",
+            "example": "user"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "org_id": {
+            "type": "string",
+            "example": "123"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "example": "user@example.com"
+          },
+          "display_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_uri": {
             "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "profileImageName"
-              },
-              "value": {
-                "type": "string",
-                "example": "avatar.png"
-              }
-            },
-            "required": [
-              "name",
-              "value"
-            ]
+            "nullable": true,
+            "additionalProperties": true
           }
         }
-      },
-      "required": [
-        "id",
-        "organization_id",
-        "email",
-        "name",
-        "preferred_language",
-        "roles",
-        "properties"
-      ]
+      }
     }
   }
 }

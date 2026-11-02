@@ -14,28 +14,18 @@
   "journey_type": "string",
   "access_mode": "PUBLIC",
   "design": "string",
-  "created_by": {
-    "id": "string",
-    "organization_id": "123",
-    "email": "user@example.com",
-    "display_name": "John Doe",
-    "name": "John Doe",
-    "preferred_language": "de",
-    "signature": "<p>Best regards,<br/>John Doe</p>",
-    "roles": [
-      "Owner"
-    ],
-    "image_uri": {
-      "original": "https://account-profile-images.epilot.cloud/1/avatar.png",
-      "thumbnail_32": "https://account-profile-images.epilot.cloud/1/avatar_32x32.png"
-    },
-    "properties": [
-      {
-        "name": "profileImageName",
-        "value": "avatar.png"
-      }
-    ]
-  },
+  "created_by": [
+    {
+      "type": "user",
+      "user_id": "string",
+      "group_id": "string",
+      "org_id": "123",
+      "email": "user@example.com",
+      "display_name": "John Doe",
+      "phone": "string",
+      "image_uri": {}
+    }
+  ],
   "journey_version": "string",
   "is_active": true,
   "products": {

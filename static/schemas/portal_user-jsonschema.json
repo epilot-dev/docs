@@ -67,36 +67,44 @@
           "email"
         ]
       },
+      "nullable": true,
       "description": "Email"
     },
     "secondary_identifier": {
       "type": "string",
+      "nullable": true,
       "description": "Secondary Identifier"
     },
     "origin": {
       "type": "string",
+      "nullable": true,
       "description": "Origin"
     },
     "access_status": {
       "type": "boolean",
+      "nullable": true,
       "description": "Access Status"
     },
     "expires_at": {
       "type": "string",
       "format": "date",
       "example": "2025-01-01",
+      "nullable": true,
       "description": "Expiration Date"
     },
     "role": {
       "type": "string",
+      "nullable": true,
       "description": "Role: Portal role of this user. Empty uses the portal's default role."
     },
     "mapping_status": {
       "type": "string",
       "enum": [
         "Pending",
-        "Mapped"
+        "Mapped",
+        null
       ],
+      "nullable": true,
       "description": "Mapping Status"
     },
     "registration_status": {
@@ -105,12 +113,15 @@
         "Registration Pending",
         "Confirmation Email Sent",
         "Registered",
-        "Email Update In Progress"
+        "Email Update In Progress",
+        null
       ],
+      "nullable": true,
       "description": "Registration Status"
     },
     "external_id": {
       "type": "string",
+      "nullable": true,
       "description": "External ID"
     },
     "mapped_contact": {
@@ -123,16 +134,19 @@
     },
     "portal_id": {
       "type": "string",
+      "nullable": true,
       "description": "Portal ID"
     },
     "first_login": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "First Login"
     },
     "last_login": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "Last Login"
     },
     "_files": {
@@ -242,9 +256,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

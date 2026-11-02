@@ -49,14 +49,17 @@
     },
     "obis_number": {
       "type": "string",
+      "nullable": true,
       "description": "OBIS Number"
     },
     "direction": {
       "type": "string",
       "enum": [
         "feed-in",
-        "feed-out"
+        "feed-out",
+        null
       ],
+      "nullable": true,
       "description": "Direction"
     },
     "tariff_type": {
@@ -64,12 +67,15 @@
       "enum": [
         "ht",
         "nt",
-        "et"
+        "et",
+        null
       ],
+      "nullable": true,
       "description": "Tariff type"
     },
     "transformer_ratio": {
       "type": "string",
+      "nullable": true,
       "description": "Transformer Ratio"
     },
     "unit": {
@@ -88,12 +94,15 @@
         "day",
         "month",
         "year",
-        "percentage"
+        "percentage",
+        null
       ],
+      "nullable": true,
       "description": "Unit"
     },
     "conversion_factor": {
       "type": "string",
+      "nullable": true,
       "description": "Conversion Factor"
     },
     "meter": {
@@ -102,18 +111,22 @@
     },
     "external_id": {
       "type": "string",
+      "nullable": true,
       "description": "External ID"
     },
     "digits": {
       "type": "string",
+      "nullable": true,
       "description": "Digits"
     },
     "decimals": {
       "type": "string",
+      "nullable": true,
       "description": "Decimals"
     },
     "ma_lo_id": {
       "type": "string",
+      "nullable": true,
       "description": "MaLo-ID"
     },
     "_files": {
@@ -223,9 +236,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

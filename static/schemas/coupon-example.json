@@ -29,7 +29,15 @@
       }
     ]
   },
-  "footnotes": "string",
+  "footnotes": [
+    {
+      "_id": "string",
+      "_tags": [
+        "string"
+      ],
+      "footnotes": "string"
+    }
+  ],
   "_files": {
     "$relation": [
       {

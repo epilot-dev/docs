@@ -45,38 +45,47 @@
     },
     "name": {
       "type": "string",
+      "nullable": true,
       "description": "Name: Internal template name. Example: 'New Message Received'"
     },
     "type": {
       "type": "string",
+      "nullable": true,
       "description": "Type: Notification type key. Example: 'email_received'"
     },
     "notification_title": {
       "type": "string",
+      "nullable": true,
       "description": "Notification Title: Notification title as Lexical editor JSON (supports variables)"
     },
     "message": {
       "type": "string",
+      "nullable": true,
       "description": "Message: Notification body as Lexical editor JSON (supports variables)"
     },
     "action_label": {
       "type": "string",
+      "nullable": true,
       "description": "Action Label: CTA button text (supports variables)"
     },
     "action_url": {
       "type": "string",
+      "nullable": true,
       "description": "Action URL: CTA button URL (supports variables)"
     },
     "portal_title": {
       "type": "string",
+      "nullable": true,
       "description": "Portal Title: Portal variant title shown in the end-customer portal, as Lexical editor JSON (supports variables). Falls back to notification_title when empty."
     },
     "portal_message": {
       "type": "string",
+      "nullable": true,
       "description": "Portal Message: Portal variant body shown in the end-customer portal, as Lexical editor JSON (supports variables). Falls back to message when empty."
     },
     "style": {
       "type": "string",
+      "nullable": true,
       "description": "Style: JSON string with style config"
     },
     "_files": {
@@ -176,9 +185,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

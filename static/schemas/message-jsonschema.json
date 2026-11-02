@@ -46,23 +46,28 @@
     "received_at": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "Received at"
     },
     "sent_at": {
       "type": "string",
       "format": "date-time",
+      "nullable": true,
       "description": "Sent at"
     },
     "type": {
       "type": "string",
+      "nullable": true,
       "description": "Type"
     },
     "subject": {
       "type": "string",
+      "nullable": true,
       "description": "Subject"
     },
     "text": {
       "type": "string",
+      "nullable": true,
       "description": "Content"
     },
     "tags": {
@@ -70,6 +75,7 @@
       "items": {
         "type": "string"
       },
+      "nullable": true,
       "description": "Tags"
     },
     "attachments": {
@@ -209,9 +215,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",

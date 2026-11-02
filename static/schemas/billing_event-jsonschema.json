@@ -78,8 +78,10 @@
       "type": "string",
       "enum": [
         "debit",
-        "credit"
+        "credit",
+        null
       ],
+      "nullable": true,
       "description": "Direction"
     },
     "booking_date": {
@@ -92,20 +94,24 @@
       "type": "string",
       "format": "date",
       "example": "2025-01-01",
+      "nullable": true,
       "description": "Due date"
     },
     "paid_date": {
       "type": "string",
       "format": "date",
       "example": "2025-01-01",
+      "nullable": true,
       "description": "Paid date"
     },
     "external_id": {
       "type": "string",
+      "nullable": true,
       "description": "External ID"
     },
     "invoice_number": {
       "type": "string",
+      "nullable": true,
       "description": "Invoice Number"
     },
     "external_link": {
@@ -114,10 +120,12 @@
     },
     "note": {
       "type": "string",
+      "nullable": true,
       "description": "Note"
     },
     "internal_note": {
       "type": "string",
+      "nullable": true,
       "description": "Internal Note"
     },
     "contract": {
@@ -211,6 +219,7 @@
   "definitions": {
     "LinkAttribute": {
       "type": "object",
+      "nullable": true,
       "description": "Link with title and href",
       "properties": {
         "type": {
@@ -225,8 +234,9 @@
         },
         "href": {
           "type": "string",
-          "format": "uri",
-          "example": "https://example.com"
+          "nullable": true,
+          "example": "https://example.com",
+          "description": "Absolute URL or a path within epilot 360"
         }
       }
     },
@@ -246,9 +256,23 @@
       ]
     },
     "BaseRelation": {
-      "type": "object",
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
       "nullable": true,
       "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
       "properties": {
         "$relation": {
           "type": "array",
