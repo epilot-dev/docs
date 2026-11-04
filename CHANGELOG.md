@@ -2,6 +2,163 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-11-03 Design Builder API
+
+- `PUT /v1/designs/addConsumer/{application}/{designId}`, `PUT /v1/designs/removeConsumer/{application}/{designId}`, and `GET /v1/designs/{designId}/parse` endpoints are now deprecated
+- `PUT /v1/designs/{designId}` now supports safe concurrent updates through a new optional `If-Match` header and can respond with `409` when the design was changed in the meantime
+
+## 2026-11-03 Email Settings API
+
+- Outlook mailboxes can now sync up to two years of history through the new `2y` value for `mailboxSyncTimeframe` on `POST /v2/outlook/mailbox/connect` and `timeframe` on `POST /v2/outlook/mailbox/{email}/sync`, which is also returned by `GET /v2/outlook/mailbox/{email}/sync/status`, so consumers must be prepared for this additional value
+
+## 2026-11-03 File API
+
+- New `GET` and `POST /v1/files:meterReadingSuggestions` and `PATCH /v1/files:meterReadingSuggestions/{meter_id}/{file_id}/{suggestion_id}` endpoints were added for generating, reading, and updating meter reading suggestions from uploaded files
+
+## 2026-11-02 Entity Mapping API
+
+- Mappings can now chain targets: relation attribute source filters accept a new optional `source_filter.output_of` field for relating to entities produced by another target — accepted when creating or updating mappings and versions, on `POST /v1/mappings:execute` and `POST /v1/relations:execute`, and returned wherever mappings are read — and `POST /v1/mappings:execute` and `POST /v1/relations:execute` accept a new optional `outputs` field
+
+## 2026-11-02 Core Entities
+
+- Core entity schemas now reflect how epilot stores data: user assignment fields such as `assigned_to` and `assignee` are now arrays of user or user group references (with `user_id`, `group_id`, `org_id`, `email`, `display_name`, `phone`, and `image_uri`) instead of a single user object, the `footnotes` field on coupons, prices, products, and taxes and the product `feature` field changed from a string to an array of objects, and price `tiers` changed from a single object to an array of tiers (breaking)
+- Most entity attributes, enum values, and link `href` values may now be `null`, empty relations may be returned as empty arrays, and link `href` values may be paths within epilot 360 rather than absolute URLs, so consumers must handle these values
+- Workflow summaries on entities now include optional `duedate`, `current_tasks`, `selected_closing_reasons`, `closing_reason_description`, `task_start_date`, and `phase_assignees` fields, their previously required fields are now optional, and task statuses can report the new values `SCHEDULED`, `PENDING`, `CONDITION_PENDING`, `WAITING_FOR_CONFIRMATION`, `WAITING_FOR_JOURNEY_SUBMISSION`, `ON_HOLD`, and `FAILED`
+
+## 2026-11-01 Core Entities
+
+- Contract `branch` and meter `sector` now accept the new values `rain_water`, `eeg` (renewable energy), and `warm_water` (hot water), so consumers must be prepared for these additional values
+
+## 2026-10-30 Blueprint Manifest API
+
+- New `POST /v3/blueprint-manifest/blueprints/{blueprint_id}/deployments/{job_id}:restore-preview` and `GET /v3/blueprint-manifest/blueprints/{blueprint_id}/deployments/{job_id}/restore-preview/{preview_id}` endpoints were added for creating and reading a preview of restoring a blueprint deployment
+
+## 2026-10-30 Entity Mapping API
+
+- `GET /v1/mappings/history` endpoint is now deprecated
+
+## 2026-10-30 SSO API
+
+- New `GET` and `POST /v1/sso/domains`, `DELETE /v1/sso/domains/{domain}`, and `POST /v1/sso/domains/{domain}/verify` endpoints were added for registering, verifying, and removing SSO domains
+- `oidc_config.client_secret` on identity providers is now deprecated in requests to `PUT /v1/sso/identity-providers/{slug}` and wherever identity providers are read
+
+## 2026-10-29 Integration Toolkit API
+
+- New file import integrations: the new `file_import` value for `integration_type` is accepted when creating or updating integrations and returned wherever integrations are read, so consumers must be prepared for this additional value
+- New `GET` and `POST /v2/imports`, `GET` and `DELETE /v2/imports/{importId}`, `GET /v2/imports/{importId}/results`, and `POST /v2/imports/{importId}:validate`, `:execute`, `:abort`, and `:suggest-templates` endpoints were added for running file imports, together with new `GET` and `POST /v2/import-templates` and `GET`, `PUT`, and `DELETE /v2/import-templates/{templateId}` endpoints for managing reusable import templates
+- ERP use case entity sharing can now resolve partners dynamically through a new optional `sharing.partner_lookups` field and restrict sharing through a new optional `sharing.exclusive` field; `sharing.partners` is no longer required in requests and may be missing in responses
+- Monitoring events, associated events, and trace spans can now report the new `SHARING_PARTNER_NOT_PROVISIONED` code, so consumers must be prepared for this additional value
+
+## 2026-10-29 Journey Config API
+
+- New `PATCH /v1/journey/configuration/{id}/revisions/{revision_id}` endpoint was added for updating a journey revision, and revisions now report when and by whom their metadata was last updated through new optional `metadata_updated_at` and `metadata_updated_by` fields
+
+## 2026-10-28 Pricing API
+
+- New `GET /v1/conditional-pricing/organization` endpoint was added for reading the organization's conditional pricing settings
+- `valid_from` on conditional pricing variants and variant versions is now a `date` (`YYYY-MM-DD`) — in request bodies, the `{valid_from}` path parameter, and `variants:batchUpsert` / `variants:batchDelete` items, and wherever variants, versions, and resolved results are returned
+
+## 2026-10-28 Event: Meter Reading Added
+
+- Readings submitted with a photo now reference it through a new optional `meter_readings[].file_id` field, and committed-reading events carry the photos in a new optional `event_attachments` array (with file ID, name, MIME type, size, and S3 reference) whose `entity_id` matches the reading's `file_id`
+
+## 2026-10-23 Workflows Definition API
+
+- Flow template tasks can now define which context they receive through a new optional `tasks[].input_context` field, and automation input contexts can now pass the workflow's main context through the new `main_context` value for `source`, together with new optional `also_pass` and `with_relations` fields — accepted on `POST /v2/flows/templates` and `PUT /v2/flows/templates/{flowId}` and returned wherever flow templates are read, so consumers must be prepared for this additional source value
+
+## 2026-10-23 Workflows Execution API
+
+- Tasks now return their input context through a new optional `input_context` field wherever flow executions and tasks are read
+- Automation input contexts on triggers and tasks can now pass the workflow's main context through the new `main_context` value for `automation_config.input_context.source`, together with new optional `input_context.also_pass`, `input_context.with_relations`, and `output_context.attach_to_contexts` fields — accepted on `POST /v2/flows/executions`, `POST /v2/flows/executions/{execution_id}/tasks`, and `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever flow executions and tasks are read, so consumers must be prepared for this additional source value
+- Automations on triggers and tasks can now run on behalf of a specific user through a new optional `automation_config.run_for_user_id` field — accepted on `POST /v2/flows/executions`, `POST /v2/flows/executions/{execution_id}/tasks`, and `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever flow executions and tasks are read
+
+## 2026-10-23 Lead Entity
+
+- New `lead` core entity was introduced for capturing and qualifying sales leads, with fields for status, lead type, channel, qualification stage, lead scoring, follow-up, disqualification, conversion, offer status, and UTM campaign tracking, and relations to the customer contact, delivery and billing addresses, products, campaign, reporting partner, partner contact, the created opportunity, and duplicate leads
+
+## 2026-10-22 Configuration Hub API
+
+- Configuration sync jobs can now include portal widgets through a new optional `sync_portal_widgets` field on `POST /v1/configs/sync-jobs`
+
+## 2026-10-22 Entity API
+
+- Entity schemas can now define portal role attributes through the new `PortalRoleAttribute` attribute type — accepted when creating or updating schema attributes, capabilities, and schemas and returned wherever entity schemas are read, so consumers must be prepared for this additional attribute type
+
+## 2026-10-21 Automation API
+
+- Automation actions accept new optional `actions[].config.operation` and `actions[].config.unshare_all_partners` fields for controlling partner sharing — accepted on `POST /v1/automation/flows` and `PUT /v1/automation/flows/{flow_id}` and returned wherever flows and executions are read
+
+## 2026-10-21 File API
+
+- New `POST /v1/files/{id}/attribute-suggestion-jobs`, `GET /v1/files/{id}/attribute-suggestion-jobs/latest`, `GET /v1/files/{id}/attribute-suggestion-jobs/{job_id}`, and `PATCH /v1/files/{id}/attribute-suggestion-jobs/{job_id}` endpoints were added for creating and tracking jobs that suggest attributes for a file
+
+## 2026-10-21 Integration Toolkit API
+
+- ERP use cases can now share synced entities with partners through a new optional `configuration.entities[].sharing` field — accepted when creating or updating use cases and integrations and in the mapping and direct simulation endpoints, which also return the resulting `entity_updates[].sharing`
+- Monitoring events, associated events, and trace spans can now report the new `SHARING_FAILED`, `SHARING_PARTNER_NOT_CONNECTED`, and `SHARING_REJECTED` codes, so consumers must be prepared for these additional values
+- Monitoring events, associated events, and trace spans can also report new codes for environment variable and portal reference resolution (`ENV_VAR_REF_*`, `PORTAL_REF_*`), missing unique identifiers (`MISSING_METER_UNIQUE_IDS`, `MISSING_METER_COUNTER_UNIQUE_IDS`, `RELATION_MISSING_UNIQUE_IDS`, `UNIQUE_ID_TYPE_DERIVATION_FAILED`), webhook delivery (`WEBHOOK_DELIVERY_FAILED`, `WEBHOOK_SKIPPED`), `ORG_DROPPED`, and `SECURE_PROXY_OK`, so consumers must be prepared for these additional values
+
+## 2026-10-21 Kanban API
+
+- Kanban boards can now be shared through structured grants: `shared_with` items accept and return grant objects in addition to strings, so consumers must handle non-string entries, and a new optional `shared_with_format` query parameter on `GET /v1/kanban/boards`, `GET`, `PATCH`, and `PUT /v1/kanban/board/{boardId}` controls the returned format
+- Boards can now define organization-wide access through a new optional `org_access` field — accepted when creating or updating a board — and report the caller's access through a new optional `my_access` field wherever boards are read
+- Boards and flow queries can now group by flow template through the new `flow_template_id` value for `config.group_by.field` on `POST /v1/kanban/board` and `PUT /v1/kanban/board/{boardId}` and for `group_by.field` on `POST /v1/kanban/query/flows:execute`, so consumers reading boards must be prepared for this additional value
+
+## 2026-10-21 Portal User Entity
+
+- Portal users can now be assigned a portal role through a new `role` field; when empty, the portal's default role applies
+
+## 2026-10-20 App API
+
+- App hooks can now declare a new `value` context requirement type in `configuration.hooks[].contexts`, so consumers reading app components must be prepared for this additional type
+- The maximum `timeout_ms` for app hooks was increased from 5000 to 20000 milliseconds
+
+## 2026-10-20 Customer Portal API
+
+- New `GET` and `PUT /v2/portal/user/notification-preferences` endpoints were added for reading and updating a portal user's notification preferences
+- Portal notification triggers can now fire when an entity is added through the new `entity_added` value for `notification_triggers[].trigger_type`, and can be limited to specific targets through a new optional `notification_triggers[].target_ids` field
+
+## 2026-10-20 External Values API
+
+- Hooks returned by `GET /v1/external-values` can now include the new `value` context requirement type in `hooks[].contexts`, so consumers must be prepared for this additional type
+
+## 2026-10-20 Identity API
+
+- New `GET /v1/identity/sector-identifier/{client_id}` endpoint was added for reading the sector identifier of a client
+
+## 2026-10-20 Integration Toolkit API
+
+- The v1 monitoring endpoints `POST /v1/integrations/{integrationId}/monitoring/inbound-events`, `outbound-events`, `stats`, and `timeseries` are now deprecated in favour of their `/v2` counterparts
+
+## 2026-10-20 Journey Config API
+
+- New `GET /v1/journey/template-variables` endpoint was added for listing the template variables available to journeys, and v1 journey configurations now carry their templating context wherever they are read
+- `blueprint_customization` was removed from journey configurations: it is no longer accepted when creating or updating a journey configuration or revision in v1 and v2, and no longer returned wherever journey configurations are read (breaking)
+
+## 2026-10-20 Phone Integration API
+
+- New `GET` and `POST /v1/manager/agents` and `DELETE /v1/manager/agents/{user_id}` endpoints were added for managing phone agents, together with a new `GET /v1/manager/status` endpoint for reading the phone integration status
+- New `GET /v1/manager/live`, `GET /v1/manager/agents/live`, `GET /v1/manager/queues`, `GET /v1/manager/queues/{queue_id}`, and `GET /v1/manager/reporting/calls` endpoints were added for monitoring live agent and queue activity and reporting on calls, together with new `PUT /v1/manager/agents/{provider_agent_id}/routing` and `POST /v1/manager/agents/{provider_agent_id}/routing:preview` endpoints for configuring and previewing an agent's call routing
+- New `PUT /v1/manager/agents/{provider_agent_id}/presence` and `GET /v1/manager/presences` endpoints were added for setting an agent's presence and listing agent presences
+
+## 2026-10-20 Sharing API
+
+- New `GET /v1/sharing/configurations:list` endpoint was added for listing sharing configurations
+
+## 2026-10-20 Snapshot API
+
+- Scheduled org snapshots can now be skipped: `last_status` on `GET` and `PUT /v1/org-snapshot-schedule` can return the new `skipped` value together with a new optional `last_status_reason` field, so consumers must be prepared for this additional status
+- `DELETE /v1/snapshots/{id}` can now respond with `409` when a conflicting operation is in progress
+
+## 2026-10-19 Pricing API
+
+- `fields` is no longer accepted on `POST /v1/public/catalog` (breaking)
+- The required `warnings` field was removed from the `POST /v2/public/catalog` response (breaking)
+
+## 2026-10-19 Notification Template Entity
+
+- Notification templates can now have a separate title and message for the end-customer portal through new `portal_title` and `portal_message` fields, which fall back to the regular title and message when empty
+
 ## 2026-10-16 Automation API
 
 - Assignment actions can now require skills from their assignees through new optional `actions[].config.required_skills` and `actions[].config.required_skills_match_mode` fields — accepted on `POST /v1/automation/flows` and `PUT /v1/automation/flows/{flow_id}` and returned wherever flows and executions are read
@@ -10,9 +167,13 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - New `POST /v1/designs/generate` endpoint was added for generating a design
 
-## 2026-10-15 AI Agents API
+## 2026-10-16 Integration Toolkit API
 
-- `POST /v1/agents/{agent_id}/execute` and `POST /v1/agents/{agent_id}/execute/stream` accept new optional `mode` and `input.message` fields, and `POST /v1/agents/{agent_id}/execute` can now respond with `201`, `422`, and `504`
+- Import validation can now report the new issue codes `UNIQUE_ID_NOT_IN_SCHEMA` and `VALID_FROM_NOT_MAPPED`, and issue attributes carry a new optional `entity` detail — returned by all `/v2/erp/imports` endpoints, so consumers must be prepared for these additional issue codes
+
+## 2026-10-16 Workflows Definition API
+
+- Task conditions in flow templates can now reference flow runtime and flow trait values through the new `flow_runtime` value for `source.origin` and `flow_trait` value for `source.origin_type`, so consumers reading flow templates must be prepared for these additional values
 
 ## 2026-10-15 Entity API
 
@@ -49,6 +210,7 @@ This changelog covers breaking changes, new features, and significant updates to
 - New `POST /v2/integrations/{integrationId}/monitoring/runs/completion` endpoint was added for reporting the completion of a monitoring run
 - `group_id` and `events[].group_id` on `POST /v3/erp/updates/events` must now be non-empty and contain only printable characters without spaces
 - `code` on monitoring events, associated events, and trace spans is no longer always a string, so consumers must handle other value types
+- ERP update submissions on the `/v1`, `/v2`, and `/v3` `erp/updates/events` endpoints now return a new optional `correlation_close` field, v3 events and correlations report omitted entities through a new optional `entities_omitted` field, and monitoring events, associated events, and trace spans can now report the new `PROCESSING_STATE_LIMIT` code, so consumers must be prepared for this additional value
 
 ## 2026-10-13 Automation API
 
