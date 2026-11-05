@@ -140,6 +140,11 @@
       "nullable": true,
       "description": "Variable Pricing"
     },
+    "is_conditional": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Is conditional"
+    },
     "additional_information": {
       "type": "string",
       "nullable": true,

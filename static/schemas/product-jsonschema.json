@@ -76,6 +76,11 @@
       "nullable": true,
       "description": "Active"
     },
+    "is_conditional": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Is conditional"
+    },
     "description": {
       "type": "string",
       "nullable": true,

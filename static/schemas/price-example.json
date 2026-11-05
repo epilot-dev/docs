@@ -21,6 +21,7 @@
   "unit": "",
   "active": true,
   "variable_price": true,
+  "is_conditional": true,
   "additional_information": "string",
   "type": "one_time",
   "billing_period": "weekly",
