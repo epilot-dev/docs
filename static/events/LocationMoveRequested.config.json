@@ -74,6 +74,10 @@
         "to": "customer"
       },
       {
+        "from": "ticket",
+        "to": "billing_account"
+      },
+      {
         "from": "contract",
         "to": "billing_account"
       }
