@@ -189,33 +189,6 @@
       "nullable": true,
       "description": "Qualification Stage"
     },
-    "lead_score": {
-      "type": "string",
-      "nullable": true,
-      "description": "Lead Score: hint_helper.lead.lead_score"
-    },
-    "lead_score_grade": {
-      "type": "string",
-      "enum": [
-        "A",
-        "B",
-        "C",
-        "D",
-        null
-      ],
-      "nullable": true,
-      "description": "Score Grade: hint_helper.lead.lead_score_grade"
-    },
-    "lead_score_status": {
-      "type": "string",
-      "enum": [
-        "live",
-        "completed",
-        null
-      ],
-      "nullable": true,
-      "description": "Score Status: hint_helper.lead.lead_score_status"
-    },
     "first_contact_at": {
       "type": "string",
       "format": "date-time",
@@ -271,57 +244,6 @@
     "duplicate_of": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Duplicate Of"
-    },
-    "score_urgency": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sub-score: Urgency: hint_helper.lead.score_urgency"
-    },
-    "score_system_size": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sub-score: System Size: hint_helper.lead.score_system_size"
-    },
-    "score_partner": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sub-score: Partner / Region Coverage: hint_helper.lead.score_partner"
-    },
-    "score_property": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sub-score: Property Suitability: hint_helper.lead.score_property"
-    },
-    "score_data_quality": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sub-score: Data Quality: hint_helper.lead.score_data_quality"
-    },
-    "score_switching_pressure": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sub-score: Switching Pressure & Subsidies: hint_helper.lead.score_switching_pressure"
-    },
-    "score_customer_relationship": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sub-score: Customer Relationship: hint_helper.lead.score_customer_relationship"
-    },
-    "score_source": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sub-score: Source & Campaign: hint_helper.lead.score_source"
-    },
-    "lead_score_calculated_at": {
-      "type": "string",
-      "format": "date-time",
-      "nullable": true,
-      "description": "Score Calculated At: hint_helper.lead.lead_score_calculated_at"
-    },
-    "lead_score_reasoning": {
-      "type": "string",
-      "nullable": true,
-      "description": "Score Reasoning: hint_helper.lead.lead_score_reasoning"
     },
     "opportunity": {
       "$ref": "#/definitions/BaseRelation",

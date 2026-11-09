@@ -94,9 +94,6 @@
   "customer_message": "string",
   "desired_delivery_date": "2025-01-01",
   "qualification_stage": "Raw Lead",
-  "lead_score": "string",
-  "lead_score_grade": "A",
-  "lead_score_status": "live",
   "first_contact_at": "1970-01-01T00:00:00.000Z",
   "contact_attempts": "string",
   "follow_up_date": "2025-01-01",
@@ -114,16 +111,6 @@
       }
     ]
   },
-  "score_urgency": "string",
-  "score_system_size": "string",
-  "score_partner": "string",
-  "score_property": "string",
-  "score_data_quality": "string",
-  "score_switching_pressure": "string",
-  "score_customer_relationship": "string",
-  "score_source": "string",
-  "lead_score_calculated_at": "1970-01-01T00:00:00.000Z",
-  "lead_score_reasoning": "string",
   "opportunity": {
     "$relation": [
       {
