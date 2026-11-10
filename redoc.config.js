@@ -241,4 +241,9 @@ module.exports.specs = [
     routePath: '/api/data-governance',
     specUrl: 'https://docs.api.epilot.io/data-governance.yaml',
   },
+  {
+    layout: { title: 'Deadlines API' },
+    routePath: '/api/deadlines',
+    specUrl: 'https://docs.api.epilot.io/deadlines.yaml',
+  },
 ];

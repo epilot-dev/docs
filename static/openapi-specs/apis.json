@@ -482,6 +482,16 @@
           "url": "https://docs.api.epilot.io/data-governance.yaml"
         }
       ]
+    },
+    {
+      "name": "Deadlines API",
+      "baseURL": "https://deadlines-api.sls.epilot.io",
+      "properties": [
+        {
+          "type": "Swagger",
+          "url": "https://docs.api.epilot.io/deadlines.yaml"
+        }
+      ]
     }
   ]
 }
