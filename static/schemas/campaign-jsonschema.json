@@ -58,6 +58,7 @@
       "type": "string",
       "enum": [
         "draft",
+        "scheduled",
         "active",
         "inactive",
         null
@@ -67,15 +68,13 @@
     },
     "start_date": {
       "type": "string",
-      "format": "date",
-      "example": "2025-01-01",
+      "format": "date-time",
       "nullable": true,
       "description": "Start Date"
     },
     "end_date": {
       "type": "string",
-      "format": "date",
-      "example": "2025-01-01",
+      "format": "date-time",
       "nullable": true,
       "description": "End Date"
     },
