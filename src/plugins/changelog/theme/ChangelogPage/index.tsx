@@ -31,7 +31,7 @@ function ChangelogPage(props: Props): JSX.Element {
             <div className={`col ${renderTocDesktop ? styles.docItemCol : ''}`}>
               <article>
                 <div className={`${ThemeClassNames.docs.docMarkdown} markdown`}>
-                  <div style={{ marginBottom: '1rem' }}>
+                  <div style={{ marginBottom: '1rem' }} data-search-ignore>
                     <Link to={metadata.listPageLink || '/api/changelog'}>← Back to Changelog</Link>
                   </div>
                   <header>

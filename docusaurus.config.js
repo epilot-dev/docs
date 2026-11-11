@@ -94,7 +94,7 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
           },
         }
       },
-      require.resolve('@cmfcmf/docusaurus-search-local'),
+      [require.resolve('./src/plugins/search/index.js'), { specs }],
       [
         '@docusaurus/plugin-client-redirects',
         {

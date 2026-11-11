@@ -147,25 +147,10 @@ html[data-theme='dark'] .button.button--primary {
   gap: 0;
 }
 
-.navbar__items--right .navbar__search,
-.navbar__items--right .dsla-search-wrapper {
+.navbar__items--right .navbar__search {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  min-width: 200px;
-}
-
-.aa-DetachedSearchButton,
-.dsla-search-wrapper .aa-Autocomplete .aa-Form,
-.dsla-search-wrapper .dsla-search-field input,
-.dsla-search-wrapper input[type="search"],
-.navbar__search-input {
-  border-radius: 0.75rem !important;
-}
-
-.aa-DetachedContainer--modal .aa-Form {
-  border-radius: 0.75rem !important;
-  margin: 8px;
 }
 
 /* Navbar button links */
@@ -216,10 +201,6 @@ html[data-theme='dark'] .button.button--primary {
 }
 
 
-.aa-DetachedSearchButtonPlaceholder {
-  padding-right: 10px;
-}
-
 /* Hide navbar buttons and fix search on mobile */
 @media (max-width: 996px) {
   .navbar-button,
@@ -227,23 +208,10 @@ html[data-theme='dark'] .button.button--primary {
     display: none;
   }
 
-  .navbar__items--right .navbar__search,
-  .navbar__items--right .dsla-search-wrapper {
+  .navbar__items--right .navbar__search {
     position: static;
     transform: none;
-    min-width: 0;
   }
-}
-
-/* Fix search bar colors in dark mode */
-[data-theme='dark'] .aa-DetachedSearchButton {
-  color: #a0a8b4;
-  border-color: rgba(160, 168, 180, 0.4);
-}
-
-[data-theme='dark'] .aa-DetachedSearchButtonIcon,
-[data-theme='dark'] .aa-DetachedSearchButtonPlaceholder {
-  color: #a0a8b4;
 }
 
 /* Compact inline footer */
