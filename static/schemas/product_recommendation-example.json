@@ -9,7 +9,6 @@
   "name": "string",
   "description": "string",
   "type": "change",
-  "active": true,
   "source_product": {
     "$relation": [
       {

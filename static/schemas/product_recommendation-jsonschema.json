@@ -62,11 +62,6 @@
       "nullable": true,
       "description": "Type"
     },
-    "active": {
-      "type": "boolean",
-      "nullable": true,
-      "description": "Active"
-    },
     "source_product": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Source Product"

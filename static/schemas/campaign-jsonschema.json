@@ -91,6 +91,10 @@
       "$ref": "#/definitions/BaseRelation",
       "description": "Target"
     },
+    "product_recommendations": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Product Recommendations"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
