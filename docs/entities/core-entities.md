@@ -113,6 +113,12 @@ graph TB
 ### Sales
 
 <EntitySchemaViewer
+  schema="lead"
+  displayName="Lead"
+  description="Leads collect all incoming inquiries from journeys, partners, phone and campaigns. They are only converted into an opportunity after qualification."
+/>
+
+<EntitySchemaViewer
   schema="opportunity"
   displayName="Opportunity"
   description="Opportunities store details about sales leads or product inquiries usually made through journeys."
@@ -180,6 +186,34 @@ graph TB
 />
 
 
+### Assets & Locations
+
+<EntitySchemaViewer
+  schema="asset"
+  displayName="Asset"
+  description="Assets represent physical or digital items that can be used in the business."
+/>
+
+<EntitySchemaViewer
+  schema="location"
+  displayName="Location"
+  description="Locations store unique addresses and track the entities related to them."
+/>
+
+### Calendar
+
+<EntitySchemaViewer
+  schema="calendar"
+  displayName="Calendar"
+  description="Calendars hold scheduled events. Calendars can be created in epilot, or synced from a connected provider like Outlook or Google."
+/>
+
+<EntitySchemaViewer
+  schema="calendar_event"
+  displayName="Calendar Event"
+  description="Calendar events are scheduled blocks of time on a calendar. They can be created in epilot, or synced from a connected provider like Outlook or Google."
+/>
+
 ### Metering
 
 <EntitySchemaViewer
@@ -226,6 +260,19 @@ graph TB
   displayName="Email Template"
   description="Email templates are used as templates containing variables for emails sent from epilot."
   apiLink="/api/email-template#tag/email_template_schema"
+/>
+
+<EntitySchemaViewer
+  schema="call"
+  displayName="Call"
+  description="Calls represent a record of a phone conversation with a customer."
+/>
+
+<EntitySchemaViewer
+  schema="notification_template"
+  displayName="Notification Template"
+  description="Notification templates are reusable templates for notifications sent from epilot, supporting variables and custom styling."
+  apiLink="/api/notification"
 />
 
 ### Marketing & Analytics

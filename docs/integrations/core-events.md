@@ -74,6 +74,14 @@ See [Event Catalog Trigger](/docs/automation/event-catalog-trigger) for configur
 
 <EventSchemaViewer event="FileCreated" />
 
+<EventSchemaViewer event="FileUpdated" />
+
+### Portal
+
+<EventSchemaViewer event="PortalUserRegistered" />
+
+<EventSchemaViewer event="PortalUserLoggedIn" />
+
 ### Orders & Tariffs
 
 <EventSchemaViewer event="OrderSubmission" />
