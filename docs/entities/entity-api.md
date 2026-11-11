@@ -136,9 +136,15 @@ The CRUD API provides create, read, update, and delete operations for entity doc
 204 No Content
 ```
 
+Reads by ID always return the latest stored state. Pass `?async=true` on create, update, patch and upsert to return without waiting for the entity to become searchable — see [Write Guarantees](/docs/entities/indexing-guarantees#write-guarantees).
+
 ## Search API
 
 The Search API provides list and search functionality for entity documents.
+
+:::info
+Search and list read from a search index, not from the primary store. By default a write is searchable as soon as the write call returns; with `?async=true` it becomes searchable shortly after. See [Search Indexing Guarantees](/docs/entities/indexing-guarantees) for the full consistency model.
+:::
 
 ### Listing Entities
 
@@ -196,6 +202,8 @@ Keep the `stable_for` TTL short. Stable windows consume server-side resources an
 **Skip stable queries when:**
 - Fetching a single page (up to 1,000 items, the max `size`)
 - The next page request depends on user input (the stable window may expire)
+
+See [Pagination](/docs/entities/indexing-guarantees#pagination) for the guarantees of each pagination mode.
 
 ## Relations API
 

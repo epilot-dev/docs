@@ -46,6 +46,17 @@ Each filter also supports an **(empty)** option to find entities where the attri
 Filter suggestions load progressively (up to 50 results). Type a keyword to search within the filter values if you need to find a specific option.
 :::
 
+## Data Freshness
+
+Entity tables read from the search index through the [Search API](/api/entity/#tag/Entities/operation/searchEntities).
+
+- Changes made in epilot or through the API with default settings show up the next time the table loads.
+- Entities written with `?async=true` (bulk imports, migrations) appear shortly after the write.
+- Columns and filters based on **related** entities update in the background. After renaming a contact, filtering orders by the contact's name can match the old value for a short time.
+- Only attributes defined in the schema can be filtered and sorted.
+
+See [Search Indexing Guarantees](/docs/entities/indexing-guarantees) for details.
+
 ## Saved Views
 
 [[API Docs](/api/entity#tag/Saved-Views)]
