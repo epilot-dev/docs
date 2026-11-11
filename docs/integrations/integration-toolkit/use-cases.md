@@ -27,7 +27,7 @@ Most integrations start with inbound use cases (syncing master data into epilot)
 | [Sync Billing Events](#sync-billing-events) | [`billing_event`](/docs/entities/core-entities#billing_event), [`billing_account`](/docs/entities/core-entities#billing_account) | Invoices/payments posted in ERP |
 | [Sync Installment Schedule](#sync-installment-schedule) | [`billing_event`](/docs/entities/core-entities#billing_event), [`billing_account`](/docs/entities/core-entities#billing_account) | Installment plan (Abschlagsplan) created/changed in ERP |
 | [Sync Portal User](#sync-portal-user) | [`portal_user`](/docs/entities/core-entities#portal_user), [`contact`](/docs/entities/core-entities#contact) | Portal user registered or mapped |
-| [Interactive Registration](#interactive-registration) | [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account) | Portal self-registration or contract addition, while the end customer waits |
+| [Interactive Inbound](#interactive-inbound) | [`contact`](/docs/entities/core-entities#contact), [`contract`](/docs/entities/core-entities#contract), [`billing_account`](/docs/entities/core-entities#billing_account) | Portal self-registration or contract addition, while the end customer waits |
 
 ### Outbound (epilot to ERP)
 
@@ -342,7 +342,7 @@ This use case is typically combined with [Keep Customer In Sync](#keep-customer-
 
 ---
 
-### Interactive Registration
+### Interactive Inbound
 
 Deliver a customer's data while the end customer waits for it: portal self-registration, adding a contract or a customer account to an existing login, and public journeys that identify a customer.
 
@@ -372,7 +372,7 @@ flowchart LR
 **Typical unique identifier:** `customer_number` or `contract_number` — the portal can select an entity only by one of its target's configured `unique_ids`
 
 :::tip
-The request and response contract, the failure cases, the `interactive` use case option, rate limits and the event-stream variant are on the [Interactive Registration](./interactive-registration.md) page.
+The request and response contract, the failure cases, the `interactive` use case option, rate limits and the event-stream variant are on the [Interactive Inbound](./interactive-inbound.md) page.
 :::
 
 ---

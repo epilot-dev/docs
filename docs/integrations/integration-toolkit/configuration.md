@@ -136,7 +136,7 @@ Beyond the mapping itself, an inbound use case's `configuration` accepts the fol
 | Option | Values | Default | Description |
 |--------|--------|---------|-------------|
 | `direct` | boolean | `false` | Skip the mapping engine and accept entity-shaped payloads. See [Direct Mode](./inbound/direct-mode.md). |
-| `interactive` | `disabled`, `on_request`, `always` | `disabled` | Whether events of this use case may be processed on the interactive lane, so that an end customer can wait for them. See [Interactive Registration](./interactive-registration.md#allow-interactive-processing). |
+| `interactive` | `disabled`, `on_request`, `always` | `disabled` | Whether events of this use case may be processed on the interactive lane, so that an end customer can wait for them. See [Interactive Inbound](./interactive-inbound.md#allow-interactive-processing). |
 
 ```json title="Allow the request to decide"
 {
@@ -151,7 +151,7 @@ Beyond the mapping itself, an inbound use case's `configuration` accepts the fol
 
 In the Integration Hub, the option is the **Interactive processing** mode on the use case's **General** card.
 
-If a caller is going to wait on your use cases by slug (`wait_for_use_cases`), model one inbound use case per partner event type and give every use case a slug. See [Use Case Requirements](./interactive-registration.md#use-case-requirements).
+If a caller is going to wait on your use cases by slug (`wait_for_use_cases`), model one inbound use case per partner event type and give every use case a slug. See [Use Case Requirements](./interactive-inbound.md#use-case-requirements).
 
 ### Enabling/Disabling a Use Case
 
@@ -578,7 +578,7 @@ For each event, include `use_case_slug` whenever possible. `event_name` is suppo
 v3 takes `correlation_id` at request level and has no `event_type`. The deprecated v1 and v2 endpoints take
 `event_type` and, on v1, a `meta` object; v3 drops both without an error, so a `meta.correlation_id` sent to v3 is
 lost. `interactive` and `correlation_complete` are for pushes an end customer is waiting for — see
-[Interactive Registration](./interactive-registration.md#request-fields).
+[Interactive Inbound](./interactive-inbound.md#request-fields).
 
 `use_case_slug` format: `^[a-z0-9][a-z0-9_-]*$` with length `1..255` (must start with a lowercase letter or digit; then lowercase letters, digits, `_`, `-`).
 
@@ -661,7 +661,7 @@ Include a correlation ID at request level to track related events:
 ```
 
 When you omit it, epilot generates one and returns it in the response. For a correlation id an end customer is
-waiting on, see [Interactive Registration](./interactive-registration.md#correlation-ids).
+waiting on, see [Interactive Inbound](./interactive-inbound.md#correlation-ids).
 
 ### Using Correlation IDs
 
