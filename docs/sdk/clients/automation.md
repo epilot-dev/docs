@@ -40,6 +40,7 @@ const { data } = await automationClient.searchFlows(...)
 **executions**
 - [`getExecutions`](#getexecutions)
 - [`startExecution`](#startexecution)
+- [`searchExecutions`](#searchexecutions)
 - [`getExecution`](#getexecution)
 - [`cancelExecution`](#cancelexecution)
 - [`retriggerAction`](#retriggeraction)
@@ -55,14 +56,18 @@ const { data } = await automationClient.searchFlows(...)
 - [`AutomationFlowId`](#automationflowid)
 - [`AutomationActionId`](#automationactionid)
 - [`AutomationFlow`](#automationflow)
-- [`WorkflowContext`](#workflowcontext)
 - [`WorkflowContextRole`](#workflowcontextrole)
 - [`SearchAutomationsResp`](#searchautomationsresp)
+- [`JourneyContextUsagesReq`](#journeycontextusagesreq)
+- [`JourneyContextUsage`](#journeycontextusage)
+- [`JourneyContextUsagesResp`](#journeycontextusagesresp)
 - [`AnyTrigger`](#anytrigger)
 - [`AnyAction`](#anyaction)
 - [`AnyActionConfig`](#anyactionconfig)
 - [`AutomationActionConfig`](#automationactionconfig)
+- [`AutomationLoop`](#automationloop)
 - [`AutomationActionExecutionState`](#automationactionexecutionstate)
+- [`AutomationActionIteration`](#automationactioniteration)
 - [`RetryStrategy`](#retrystrategy)
 - [`AutomationAction`](#automationaction)
 - [`ErrorOutput`](#erroroutput)
@@ -74,6 +79,12 @@ const { data } = await automationClient.searchFlows(...)
 - [`MapEntityActionConfig`](#mapentityactionconfig)
 - [`MapEntityAction`](#mapentityaction)
 - [`MapEntityConfig`](#mapentityconfig)
+- [`GraphContextEntry`](#graphcontextentry)
+- [`GraphSeed`](#graphseed)
+- [`GraphDefinition`](#graphdefinition)
+- [`GraphNode`](#graphnode)
+- [`GraphNodeFilter`](#graphnodefilter)
+- [`GraphEdge`](#graphedge)
 - [`MappingConfigRef`](#mappingconfigref)
 - [`RelationAttribute`](#relationattribute)
 - [`MappingAttributeV2`](#mappingattributev2)
@@ -87,10 +98,23 @@ const { data } = await automationClient.searchFlows(...)
 - [`AppendValueMapper`](#appendvaluemapper)
 - [`MoveThreadAction`](#movethreadaction)
 - [`AssignThreadAction`](#assignthreadaction)
+- [`LabelEmailAction`](#labelemailaction)
 - [`MoveThreadConfig`](#movethreadconfig)
+- [`LabelEmailConfig`](#labelemailconfig)
 - [`AssignThreadConfig`](#assignthreadconfig)
+- [`EntityAssignee`](#entityassignee)
+- [`EntityAssigneeVariable`](#entityassigneevariable)
+- [`AssignEntityConfig`](#assignentityconfig)
+- [`AssignEntityActionConfig`](#assignentityactionconfig)
+- [`AssignEntityAction`](#assignentityaction)
 - [`SendEmailActionConfig`](#sendemailactionconfig)
 - [`SendEmailAction`](#sendemailaction)
+- [`ForwardEmailActionConfig`](#forwardemailactionconfig)
+- [`ForwardEmailAction`](#forwardemailaction)
+- [`ForwardEmailConfig`](#forwardemailconfig)
+- [`ReplyEmailActionConfig`](#replyemailactionconfig)
+- [`ReplyEmailAction`](#replyemailaction)
+- [`ReplyEmailConfig`](#replyemailconfig)
 - [`SendEmailConfig`](#sendemailconfig)
 - [`SendEmailCondition`](#sendemailcondition)
 - [`CreateDocumentActionConfig`](#createdocumentactionconfig)
@@ -124,21 +148,31 @@ const { data } = await automationClient.searchFlows(...)
 - [`ActionSchedule`](#actionschedule)
 - [`AutomationExecutionId`](#automationexecutionid)
 - [`AutomationExecution`](#automationexecution)
+- [`AutomationLoopState`](#automationloopstate)
 - [`WorkflowExecutionContext`](#workflowexecutioncontext)
+- [`WorkflowWaitContext`](#workflowwaitcontext)
 - [`ExecutionChain`](#executionchain)
 - [`TriggerEventManual`](#triggereventmanual)
 - [`TriggerEventFlowAutomationTask`](#triggereventflowautomationtask)
 - [`TriggerEventEntityActivity`](#triggerevententityactivity)
 - [`TriggerEventMessaging`](#triggereventmessaging)
 - [`TriggerEventEntityOperation`](#triggerevententityoperation)
+- [`TriggerEventEventCatalog`](#triggereventeventcatalog)
+- [`TriggerEventPayloadRef`](#triggereventpayloadref)
 - [`ApiCallerContext`](#apicallercontext)
 - [`ExecutionStatus`](#executionstatus)
 - [`GetExecutionsResp`](#getexecutionsresp)
+- [`SearchExecutionsReq`](#searchexecutionsreq)
+- [`SearchExecutionsResp`](#searchexecutionsresp)
 - [`StartExecutionRequest`](#startexecutionrequest)
+- [`ActionInputs`](#actioninputs)
+- [`SendEmailInputs`](#sendemailinputs)
+- [`FlowExecutionCancelInputs`](#flowexecutioncancelinputs)
 - [`PatchBulkJobRequest`](#patchbulkjobrequest)
 - [`BulkTriggerRequest`](#bulktriggerrequest)
 - [`EntityRef`](#entityref)
 - [`BulkTriggerJob`](#bulktriggerjob)
+- [`ExecutionStats`](#executionstats)
 - [`ExecItem`](#execitem)
 - [`JobId`](#jobid)
 - [`EntityId`](#entityid)
@@ -152,12 +186,14 @@ const { data } = await automationClient.searchFlows(...)
 - [`ApiSubmissionTrigger`](#apisubmissiontrigger)
 - [`NewEmailThreadTrigger`](#newemailthreadtrigger)
 - [`ReceivedEmailTrigger`](#receivedemailtrigger)
+- [`SentEmailTrigger`](#sentemailtrigger)
 - [`EntityOperationTrigger`](#entityoperationtrigger)
 - [`ActivityTrigger`](#activitytrigger)
 - [`EntityOperation`](#entityoperation)
 - [`EntitySearchFilter`](#entitysearchfilter)
 - [`EntitySearchFilterValue`](#entitysearchfiltervalue)
 - [`EntityManualTrigger`](#entitymanualtrigger)
+- [`EventCatalogTrigger`](#eventcatalogtrigger)
 - [`TriggerCondition`](#triggercondition)
 - [`Comparison`](#comparison)
 - [`FilterConditionOnEvent`](#filterconditiononevent)
@@ -192,6 +228,8 @@ const { data } = await client.searchFlows({
   size: 1,
   from: 1,
   trigger_source_id: 'example',
+  target_workflow: 'example',
+  trigger_event_name: 'example',
   include_flows: true,
 })
 ```
@@ -306,11 +344,16 @@ const { data } = await client.getExecutions({
       "conditions": [],
       "schedules": [],
       "actions": [],
+      "action_inputs": {},
       "resume_token": "eyJraWQiOiJrZXkifQ==",
       "trigger_context": {},
       "version": 2,
       "trigger_event": {},
-      "workflow_context": {}
+      "workflow_context": {},
+      "workflow_wait_context": {},
+      "loops": [],
+      "loop_state": {},
+      "chain": ["string"]
     }
   ]
 }
@@ -340,10 +383,48 @@ const { data } = await client.startExecution(
         parent_execution_id: 'string',
         parent_task_id: 'string',
         depth: 0
+      },
+      _automation_chain: ['string'],
+      entity_contexts: [
+        {
+          entity_id: 'string',
+          entity_schema: 'string',
+          is_primary: true
+        }
+      ],
+      resolved_input: {
+        with_relations: true,
+        also_pass: [
+          {
+            entity_id: 'string',
+            entity_schema: 'string'
+          }
+        ]
+      },
+      trigger_user_id: '10006129',
+      run_by: {
+        user_id: '10006129',
+        org_id: '739224'
       }
     },
     flow_execution_id: 'string',
-    flow_automation_task_id: 'string'
+    flow_automation_task_id: 'string',
+    action_inputs: {
+      'cancel-flow-execution': {
+        selected_reasons: [
+          {
+            id: '_6kITMwkv_0Uo4i7fO7Ja',
+            title: 'Process completed successfully'
+          }
+        ],
+        extra_description: 'string'
+      },
+      'send-email': {
+        subject: 'string',
+        body: 'string',
+        attachment_entity_ids: ['string']
+      }
+    }
   },
 )
 ```
@@ -376,7 +457,10 @@ const { data } = await client.startExecution(
     {
       "id": "string",
       "schedule_id": "string",
+      "evaluation_order": "AFTER_SCHEDULE",
       "evaluationResult": true,
+      "error_output": {},
+      "allow_failure": true,
       "statements": []
     }
   ],
@@ -403,12 +487,14 @@ const { data } = await client.startExecution(
       "reason": {},
       "condition_id": "string",
       "schedule_id": "string",
+      "loop_id": "string",
       "execution_status": "pending",
       "started_at": "string",
       "updated_at": "string",
       "outputs": {},
       "error_output": {},
-      "retry_strategy": "RETRY_AND_RESUME"
+      "retry_strategy": "RETRY_AND_RESUME",
+      "iterations": []
     },
     {
       "id": "9ec3711b-db63-449c-b894-54d5bb622a8f",
@@ -422,14 +508,27 @@ const { data } = await client.startExecution(
       "reason": {},
       "condition_id": "string",
       "schedule_id": "string",
+      "loop_id": "string",
       "execution_status": "pending",
       "started_at": "string",
       "updated_at": "string",
       "outputs": {},
       "error_output": {},
-      "retry_strategy": "RETRY_AND_RESUME"
+      "retry_strategy": "RETRY_AND_RESUME",
+      "iterations": []
     }
   ],
+  "action_inputs": {
+    "cancel-flow-execution": {
+      "selected_reasons": [],
+      "extra_description": "string"
+    },
+    "send-email": {
+      "subject": "string",
+      "body": "string",
+      "attachment_entity_ids": ["string"]
+    }
+  },
   "resume_token": "eyJraWQiOiJrZXkifQ==",
   "trigger_context": {
     "entity_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
@@ -451,8 +550,100 @@ const { data } = await client.startExecution(
       "parent_execution_id": "string",
       "parent_task_id": "string",
       "depth": 0
+    },
+    "_automation_chain": ["string"],
+    "entity_contexts": [
+      {}
+    ],
+    "resolved_input": {
+      "with_relations": true,
+      "also_pass": []
+    },
+    "trigger_user_id": "10006129",
+    "run_by": {
+      "user_id": "10006129",
+      "org_id": "739224"
     }
-  }
+  },
+  "workflow_wait_context": {
+    "workflow_execution_id": "string",
+    "workflow_task_id": "string",
+    "source": "journey_submission"
+  },
+  "loops": [
+    {
+      "id": "loop_contracts",
+      "source_path": "submission.steps[0]['Contracts']",
+      "source_type": "journey-multi-select",
+      "filter_tags": ["_hidden_ 2a4b1c3d-0000-4000-8000-000000000000 - Dokumente"],
+      "length": 0
+    }
+  ],
+  "loop_state": {},
+  "chain": ["string"]
+}
+```
+
+</details>
+
+---
+
+### `searchExecutions`
+
+Search automation executions of an entity with cursor-based pagination.
+Returns pages of up to 100 executions, newest first.
+Prefer this over GET /v1/automation/executions, which returns the full
+exec
+
+`POST /v1/automation/executions:search`
+
+```ts
+const { data } = await client.searchExecutions(
+  null,
+  {
+    entity_id: 'e3d3ebac-baab-4395-abf4-50b5bf1f8b74',
+    include_flows: false,
+    size: 25,
+    cursor: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "total": 0,
+  "results": [
+    {
+      "id": "9baf184f-bc81-4128-bca3-d974c90a12c4",
+      "execution_status": "pending",
+      "entity_id": "e3d3ebac-baab-4395-abf4-50b5bf1f8b74",
+      "activity_id": "e3d3ebac-baab-4395-abf4-50b5bf1f8b74",
+      "entity_snapshot": {},
+      "org_id": "e3d3ebac-baab-4395-abf4-50b5bf1f8b74",
+      "flow_id": "7791b04a-16d2-44a2-9af9-2d59c25c512f",
+      "flow_name": "Handle contact form",
+      "created_at": "1970-01-01T00:00:00.000Z",
+      "updated_at": "1970-01-01T00:00:00.000Z",
+      "current_action_id": "9ec3711b-db63-449c-b894-54d5bb622a8f",
+      "conditions": [],
+      "schedules": [],
+      "actions": [],
+      "action_inputs": {},
+      "resume_token": "eyJraWQiOiJrZXkifQ==",
+      "trigger_context": {},
+      "version": 2,
+      "trigger_event": {},
+      "workflow_context": {},
+      "workflow_wait_context": {},
+      "loops": [],
+      "loop_state": {},
+      "chain": ["string"]
+    }
+  ],
+  "next_cursor": "string"
 }
 ```
 
@@ -488,13 +679,14 @@ const { data } = await client.bulkTriggerExecutions(
 
 ### `getBulkJob`
 
-Get the status of a bulk job that triggers multiple automation executions
+Get the status of a bulk job that triggers multiple automation executions.
 
 `GET /v1/automation/executions/bulk-jobs/{job_id}`
 
 ```ts
 const { data } = await client.getBulkJob({
   job_id: 'example',
+  include_execution_summary: true,
 })
 ```
 
@@ -516,6 +708,9 @@ const { data } = await client.getBulkJob({
   },
   "task_token": "8c086140-f33e-4bb7-a993-50c0f2402c7b",
   "report_file_entity_id": "string",
+  "last_error": "ThrottlingException: Throughput exceeds the current capacity of your table or index.",
+  "restart_count": 1,
+  "restarted_at": "1970-01-01T00:00:00.000Z",
   "entity_query": {
     "type": "refs",
     "data": [
@@ -542,7 +737,21 @@ const { data } = await client.getBulkJob({
       "timestamp": "2025-10-30T15:56:47.842Z",
       "error": "string"
     }
-  ]
+  ],
+  "execution_stats": {
+    "total": 60582,
+    "pending": 0,
+    "starting": 0,
+    "in_progress": 0,
+    "success": 0,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "paused": 0,
+    "scheduled": 0,
+    "hot": 0
+  },
+  "execution_summary_truncated": true
 }
 ```
 
@@ -552,7 +761,7 @@ const { data } = await client.getBulkJob({
 
 ### `patchBulkJob`
 
-Approve / Cancel bulk job that triggers multiple automation executions
+Approve / Cancel / Restart a bulk job that triggers multiple automation executions.
 
 `PATCH /v1/automation/executions/bulk-jobs/{job_id}`
 
@@ -586,6 +795,9 @@ const { data } = await client.patchBulkJob(
   },
   "task_token": "8c086140-f33e-4bb7-a993-50c0f2402c7b",
   "report_file_entity_id": "string",
+  "last_error": "ThrottlingException: Throughput exceeds the current capacity of your table or index.",
+  "restart_count": 1,
+  "restarted_at": "1970-01-01T00:00:00.000Z",
   "entity_query": {
     "type": "refs",
     "data": [
@@ -612,7 +824,21 @@ const { data } = await client.patchBulkJob(
       "timestamp": "2025-10-30T15:56:47.842Z",
       "error": "string"
     }
-  ]
+  ],
+  "execution_stats": {
+    "total": 60582,
+    "pending": 0,
+    "starting": 0,
+    "in_progress": 0,
+    "success": 0,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "paused": 0,
+    "scheduled": 0,
+    "hot": 0
+  },
+  "execution_summary_truncated": true
 }
 ```
 
@@ -660,7 +886,10 @@ const { data } = await client.getExecution({
     {
       "id": "string",
       "schedule_id": "string",
+      "evaluation_order": "AFTER_SCHEDULE",
       "evaluationResult": true,
+      "error_output": {},
+      "allow_failure": true,
       "statements": []
     }
   ],
@@ -687,12 +916,14 @@ const { data } = await client.getExecution({
       "reason": {},
       "condition_id": "string",
       "schedule_id": "string",
+      "loop_id": "string",
       "execution_status": "pending",
       "started_at": "string",
       "updated_at": "string",
       "outputs": {},
       "error_output": {},
-      "retry_strategy": "RETRY_AND_RESUME"
+      "retry_strategy": "RETRY_AND_RESUME",
+      "iterations": []
     },
     {
       "id": "9ec3711b-db63-449c-b894-54d5bb622a8f",
@@ -706,14 +937,27 @@ const { data } = await client.getExecution({
       "reason": {},
       "condition_id": "string",
       "schedule_id": "string",
+      "loop_id": "string",
       "execution_status": "pending",
       "started_at": "string",
       "updated_at": "string",
       "outputs": {},
       "error_output": {},
-      "retry_strategy": "RETRY_AND_RESUME"
+      "retry_strategy": "RETRY_AND_RESUME",
+      "iterations": []
     }
   ],
+  "action_inputs": {
+    "cancel-flow-execution": {
+      "selected_reasons": [],
+      "extra_description": "string"
+    },
+    "send-email": {
+      "subject": "string",
+      "body": "string",
+      "attachment_entity_ids": ["string"]
+    }
+  },
   "resume_token": "eyJraWQiOiJrZXkifQ==",
   "trigger_context": {
     "entity_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
@@ -735,8 +979,37 @@ const { data } = await client.getExecution({
       "parent_execution_id": "string",
       "parent_task_id": "string",
       "depth": 0
+    },
+    "_automation_chain": ["string"],
+    "entity_contexts": [
+      {}
+    ],
+    "resolved_input": {
+      "with_relations": true,
+      "also_pass": []
+    },
+    "trigger_user_id": "10006129",
+    "run_by": {
+      "user_id": "10006129",
+      "org_id": "739224"
     }
-  }
+  },
+  "workflow_wait_context": {
+    "workflow_execution_id": "string",
+    "workflow_task_id": "string",
+    "source": "journey_submission"
+  },
+  "loops": [
+    {
+      "id": "loop_contracts",
+      "source_path": "submission.steps[0]['Contracts']",
+      "source_type": "journey-multi-select",
+      "filter_tags": ["_hidden_ 2a4b1c3d-0000-4000-8000-000000000000 - Dokumente"],
+      "length": 0
+    }
+  ],
+  "loop_state": {},
+  "chain": ["string"]
 }
 ```
 
@@ -784,7 +1057,10 @@ const { data } = await client.cancelExecution({
     {
       "id": "string",
       "schedule_id": "string",
+      "evaluation_order": "AFTER_SCHEDULE",
       "evaluationResult": true,
+      "error_output": {},
+      "allow_failure": true,
       "statements": []
     }
   ],
@@ -811,12 +1087,14 @@ const { data } = await client.cancelExecution({
       "reason": {},
       "condition_id": "string",
       "schedule_id": "string",
+      "loop_id": "string",
       "execution_status": "pending",
       "started_at": "string",
       "updated_at": "string",
       "outputs": {},
       "error_output": {},
-      "retry_strategy": "RETRY_AND_RESUME"
+      "retry_strategy": "RETRY_AND_RESUME",
+      "iterations": []
     },
     {
       "id": "9ec3711b-db63-449c-b894-54d5bb622a8f",
@@ -830,14 +1108,27 @@ const { data } = await client.cancelExecution({
       "reason": {},
       "condition_id": "string",
       "schedule_id": "string",
+      "loop_id": "string",
       "execution_status": "pending",
       "started_at": "string",
       "updated_at": "string",
       "outputs": {},
       "error_output": {},
-      "retry_strategy": "RETRY_AND_RESUME"
+      "retry_strategy": "RETRY_AND_RESUME",
+      "iterations": []
     }
   ],
+  "action_inputs": {
+    "cancel-flow-execution": {
+      "selected_reasons": [],
+      "extra_description": "string"
+    },
+    "send-email": {
+      "subject": "string",
+      "body": "string",
+      "attachment_entity_ids": ["string"]
+    }
+  },
   "resume_token": "eyJraWQiOiJrZXkifQ==",
   "trigger_context": {
     "entity_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
@@ -859,8 +1150,37 @@ const { data } = await client.cancelExecution({
       "parent_execution_id": "string",
       "parent_task_id": "string",
       "depth": 0
+    },
+    "_automation_chain": ["string"],
+    "entity_contexts": [
+      {}
+    ],
+    "resolved_input": {
+      "with_relations": true,
+      "also_pass": []
+    },
+    "trigger_user_id": "10006129",
+    "run_by": {
+      "user_id": "10006129",
+      "org_id": "739224"
     }
-  }
+  },
+  "workflow_wait_context": {
+    "workflow_execution_id": "string",
+    "workflow_task_id": "string",
+    "source": "journey_submission"
+  },
+  "loops": [
+    {
+      "id": "loop_contracts",
+      "source_path": "submission.steps[0]['Contracts']",
+      "source_type": "journey-multi-select",
+      "filter_tags": ["_hidden_ 2a4b1c3d-0000-4000-8000-000000000000 - Dokumente"],
+      "length": 0
+    }
+  ],
+  "loop_state": {},
+  "chain": ["string"]
 }
 ```
 
@@ -939,6 +1259,10 @@ const { data } = await client.resumeExecutionWithToken(
       {},
       {}
     ],
+    "action_inputs": {
+      "cancel-flow-execution": {},
+      "send-email": {}
+    },
     "resume_token": "eyJraWQiOiJrZXkifQ==",
     "trigger_context": {
       "entity_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
@@ -954,8 +1278,23 @@ const { data } = await client.resumeExecutionWithToken(
       "workflow_exec_id": "string",
       "workflow_exec_task_id": "string",
       "workflow_role": "trigger_workflow",
-      "_execution_chain": {}
-    }
+      "_execution_chain": {},
+      "_automation_chain": ["string"],
+      "entity_contexts": [],
+      "resolved_input": {},
+      "trigger_user_id": "10006129",
+      "run_by": {}
+    },
+    "workflow_wait_context": {
+      "workflow_execution_id": "string",
+      "workflow_task_id": "string",
+      "source": "journey_submission"
+    },
+    "loops": [
+      {}
+    ],
+    "loop_state": {},
+    "chain": ["string"]
   },
   "resumedAction": {
     "id": "9ec3711b-db63-449c-b894-54d5bb622a8f",
@@ -965,11 +1304,13 @@ const { data } = await client.resumeExecutionWithToken(
     "config": {
       "mapping_config": {},
       "target_schema": "string",
+      "use_uniqueness_criteria": true,
       "target_unique": ["string"],
       "mapping_attributes": [],
       "relation_attributes": [],
       "linkback_relation_attribute": "mapped_entities",
-      "linkback_relation_tags": ["string"]
+      "linkback_relation_tags": ["string"],
+      "graph_context": []
     },
     "allow_failure": true,
     "created_automatically": true,
@@ -980,6 +1321,7 @@ const { data } = await client.resumeExecutionWithToken(
     },
     "condition_id": "string",
     "schedule_id": "string",
+    "loop_id": "string",
     "execution_status": "pending",
     "started_at": "string",
     "updated_at": "string",
@@ -989,7 +1331,10 @@ const { data } = await client.resumeExecutionWithToken(
       "error_reason": "string",
       "error_info": {}
     },
-    "retry_strategy": "RETRY_AND_RESUME"
+    "retry_strategy": "RETRY_AND_RESUME",
+    "iterations": [
+      {}
+    ]
   }
 }
 ```
@@ -1112,6 +1457,10 @@ type AutomationFlow = {
     }
   } | {
     id?: string // uuid
+    type: "sent_email"
+    configuration: object
+  } | {
+    id?: string // uuid
     type: "new_email_thread"
     configuration: {
       shared_inbox_ids?: { ... }
@@ -1120,9 +1469,18 @@ type AutomationFlow = {
   } | {
     id?: string // uuid
     type: "flows_trigger"
-    configuration: {
-      source_id: { ... }
+    configuration?: {
       journey_id?: { ... }
+    }
+  } | {
+    id?: string // uuid
+    type: "event_catalog"
+    configuration: {
+      event_name: { ... }
+      event_version: { ... }
+      entity_node_id: { ... }
+      entity_schema: { ... }
+      ignore_automation_triggered?: { ... }
     }
   }>
   trigger_conditions?: Array<{
@@ -1134,38 +1492,13 @@ type AutomationFlow = {
   conditions?: Array<{
     id?: string
     schedule_id?: string
+    evaluation_order?: "AFTER_SCHEDULE" | "BEFORE_SCHEDULE"
     evaluationResult?: boolean
-    statements?: Array<{
-      id?: { ... }
-      source?: { ... }
-      operation?: { ... }
-      values?: { ... }
-    }>
-  }>
-  schedules?: Array<{
-    id: string
-    scheduleApiId?: string
-    numberOfUnits?: number
-    timePeriod?: "minutes" | "hours" | "days" | "weeks" | "months"
-    timeRelation?: "after" | "before"
-    source: {
-      id: { ... }
-      origin: { ... }
-      schema?: { ... }
-      attribute?: { ... }
+    error_output?: {
+      error_code: { ... }
+      error_reason: { ... }
+      error_info?: { ... }
   // ...
-}
-```
-
-### `WorkflowContext`
-
-For automation that are connected to workflows V2, this field tracks various information about the workflow.
-
-```ts
-type WorkflowContext = {
-  workflow_id: string // uuid
-  task_id?: string // uuid
-  workflow_role: "trigger_workflow" | "run_task_automation"
 }
 ```
 
@@ -1227,6 +1560,14 @@ type SearchAutomationsResp = {
       id?: { ... }
       type: { ... }
       configuration: { ... }
+    } | {
+      id?: { ... }
+      type: { ... }
+      configuration?: { ... }
+    } | {
+      id?: { ... }
+      type: { ... }
+      configuration: { ... }
     }>
     trigger_conditions?: Array<{
       source: { ... }
@@ -1237,7 +1578,10 @@ type SearchAutomationsResp = {
     conditions?: Array<{
       id?: { ... }
       schedule_id?: { ... }
+      evaluation_order?: { ... }
       evaluationResult?: { ... }
+      error_output?: { ... }
+      allow_failure?: { ... }
       statements?: { ... }
     }>
     schedules?: Array<{
@@ -1247,6 +1591,13 @@ type SearchAutomationsResp = {
       timePeriod?: { ... }
       timeRelation?: { ... }
       source: { ... }
+    }>
+    loops?: Array<{
+      id: { ... }
+      source_path: { ... }
+      source_type?: { ... }
+      filter_tags?: { ... }
+      length?: { ... }
     }>
     actions: Array<{
       type?: { ... }
@@ -1262,25 +1613,73 @@ type SearchAutomationsResp = {
       config?: { ... }
     } | {
       type?: { ... }
-      config?: { ... }
-    } | {
-      type?: { ... }
-      config?: { ... }
-    } | {
-      type?: { ... }
-      config?: { ... }
-    } | {
-      type?: { ... }
-      config?: { ... }
-    } | {
-      type?: { ... }
-      config?: { ... }
-    } | {
-      type?: { ... }
-      config?: { ... }
-    } | {
-      id?: { ... }
   // ...
+}
+```
+
+### `JourneyContextUsagesReq`
+
+```ts
+type JourneyContextUsagesReq = {
+  journey_id: string // uuid
+  param_keys: string[]
+  param_ids?: string[]
+}
+```
+
+### `JourneyContextUsage`
+
+```ts
+type JourneyContextUsage = {
+  kind: "automation"
+  resource: {
+    type: "automation_flow"
+    id: string
+    name?: string
+  }
+  location?: {
+    action_id?: string
+    action_type?: string
+  }
+  matched_as: {
+    dialect: "name"
+    token: string
+    at: string
+  }
+  link_hint: {
+    route: "automation-flow"
+    params: Record<string, string>
+  }
+}
+```
+
+### `JourneyContextUsagesResp`
+
+```ts
+type JourneyContextUsagesResp = {
+  usages: Array<{
+    kind: "automation"
+    resource: {
+      type: { ... }
+      id: { ... }
+      name?: { ... }
+    }
+    location?: {
+      action_id?: { ... }
+      action_type?: { ... }
+    }
+    matched_as: {
+      dialect: { ... }
+      token: { ... }
+      at: { ... }
+    }
+    link_hint: {
+      route: { ... }
+      params: { ... }
+    }
+  }>
+  status: "ok" | "partial"
+  scanned: number
 }
 ```
 
@@ -1310,7 +1709,7 @@ type AnyTrigger = {
   type: "entity_operation"
   configuration: {
     schema?: string
-    operations?: "createEntity" | "updateEntity" | "deleteEntity" | "softDeleteEntity" | "restoreEntity"[]
+    operations?: "createEntity" | "updateEntity" | "deleteEntity" | "softDeleteEntity" | "restoreEntity" | "relationsAdded" | "relationsRemoved" | "relationsSoftDeleted" | "relationsRestored" | "relationsDeleted"[]
     include_activities?: string[]
     exclude_activities?: string[]
     filter_config?: {
@@ -1344,6 +1743,10 @@ type AnyTrigger = {
   }
 } | {
   id?: string // uuid
+  type: "sent_email"
+  configuration: object
+} | {
+  id?: string // uuid
   type: "new_email_thread"
   configuration: {
     shared_inbox_ids?: string[]
@@ -1352,9 +1755,18 @@ type AnyTrigger = {
 } | {
   id?: string // uuid
   type: "flows_trigger"
-  configuration: {
-    source_id: string // uuid
+  configuration?: {
     journey_id?: string // uuid
+  }
+} | {
+  id?: string // uuid
+  type: "event_catalog"
+  configuration: {
+    event_name: string
+    event_version: string
+    entity_node_id: string
+    entity_schema: string
+    ignore_automation_triggered?: boolean
   }
 }
 ```
@@ -1371,6 +1783,7 @@ type AnyAction = {
       version?: { ... }
     }
     target_schema: string
+    use_uniqueness_criteria?: boolean
     target_unique?: string[]
     mapping_attributes?: Array<{
       target?: { ... }
@@ -1400,6 +1813,10 @@ type AnyAction = {
     }>
     linkback_relation_attribute?: string
     linkback_relation_tags?: string[]
+    graph_context?: Array<{
+      seed: { ... }
+      graph: { ... }
+    }>
   }
 } | {
   type?: "trigger-workflow"
@@ -1422,6 +1839,8 @@ type AnyAction = {
 } | {
   type?: "trigger-share-entity"
   config?: {
+    operation?: "share" | "unshare"
+    unshare_all_partners?: boolean
     partner_org_ids?: string[]
   }
 } | {
@@ -1455,13 +1874,6 @@ type AnyAction = {
   type?: "send-email"
   config?: {
     email_template_id?: string
-    language_code?: "de" | "en"
-    notify_portal_user_only?: boolean
-    skip_creating_entities?: boolean
-    wait_for_confirmation?: boolean
-    attachments?: Array<{
-      source_filter?: { ... }
-    }>
   // ...
 }
 ```
@@ -1481,6 +1893,7 @@ type AnyActionConfig = {
       version?: { ... }
     }
     target_schema: string
+    use_uniqueness_criteria?: boolean
     target_unique?: string[]
     mapping_attributes?: Array<{
       target?: { ... }
@@ -1510,6 +1923,10 @@ type AnyActionConfig = {
     }>
     linkback_relation_attribute?: string
     linkback_relation_tags?: string[]
+    graph_context?: Array<{
+      seed: { ... }
+      graph: { ... }
+    }>
   }
   allow_failure?: boolean
   created_automatically?: boolean
@@ -1520,6 +1937,7 @@ type AnyActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 } | {
   id?: string
   flow_action_id?: string
@@ -1550,25 +1968,19 @@ type AnyActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 } | {
   id?: string
   flow_action_id?: string
   name?: string
   type?: "trigger-workflow"
   config?: {
+    operation?: "share" | "unshare"
+    unshare_all_partners?: boolean
     partner_org_ids?: string[]
   }
   allow_failure?: boolean
   created_automatically?: boolean
-  is_bulk_action?: boolean
-  reason?: {
-    message?: string
-    payload?: Record<string, unknown>
-  }
-  condition_id?: string
-  schedule_id?: string
-} | {
-  id?: string
   // ...
 }
 ```
@@ -1591,6 +2003,21 @@ type AutomationActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
+}
+```
+
+### `AutomationLoop`
+
+A loop scope on an automation flow.
+
+```ts
+type AutomationLoop = {
+  id: string
+  source_path: string
+  source_type?: "journey-multi-select" | "journey-file-upload" | "previous-action-outputs" | "entity-relation"
+  filter_tags?: string[]
+  length?: number
 }
 ```
 
@@ -1610,6 +2037,39 @@ type AutomationActionExecutionState = {
     }
   }
   retry_strategy?: "RETRY_AND_RESUME" | "RETRY_AND_STOP" | "RETRY_ALL_PARENT_CONDITION_ACTIONS"
+  iterations?: Array<{
+    index: number
+    execution_status: "pending" | "starting" | "in_progress" | "paused" | "success" | "failed" | "cancelled" | "skipped" | "scheduled" | "hot"
+    started_at?: string // date-time
+    ended_at?: string // date-time
+    outputs?: Record<string, unknown>
+    error_output?: {
+      error_code: { ... }
+      error_reason: { ... }
+      error_info?: { ... }
+    }
+  }>
+}
+```
+
+### `AutomationActionIteration`
+
+A snapshot of a single completed pass through a looped action.
+
+```ts
+type AutomationActionIteration = {
+  index: number
+  execution_status: "pending" | "starting" | "in_progress" | "paused" | "success" | "failed" | "cancelled" | "skipped" | "scheduled" | "hot"
+  started_at?: string // date-time
+  ended_at?: string // date-time
+  outputs?: Record<string, unknown>
+  error_output?: {
+    error_code: "MAPPING_ERROR" | "REFRESH_RELATIONS_ERROR" | "DUPLICATE_ENTITY_ERROR" | "TRIGGER_WORKFLOW_ERROR" | "TIMEOUT_ERROR" | "BAD_CONFIG" | "INTERNAL_ERROR" | "TRIGGER_WEBHOOK_ERROR" | "TEMPLATE_ERROR" | "INVALID_PAYLOAD" | "INVALID_SCHEDULE_CONFIG" | "CUSTOM_ACTION_ERROR" | "ORDER_CREATION_ERROR" | "DOCUMENT_GENERATION_ERROR" | "BULK_EMAIL_ERROR" | "SHARING_ERROR" | "CANCEL_FLOW_EXECUTION_ERROR" | "METER_READING_NOT_FOUND" | "ENTITY_NOT_FOUND"
+    error_reason: string
+    error_info?: {
+      details?: { ... }
+    }
+  }
 }
 ```
 
@@ -1639,6 +2099,7 @@ type AutomationAction = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
   execution_status?: "pending" | "starting" | "in_progress" | "paused" | "success" | "failed" | "cancelled" | "skipped" | "scheduled" | "hot"
   started_at?: string
   updated_at?: string
@@ -1651,6 +2112,18 @@ type AutomationAction = {
     }
   }
   retry_strategy?: "RETRY_AND_RESUME" | "RETRY_AND_STOP" | "RETRY_ALL_PARENT_CONDITION_ACTIONS"
+  iterations?: Array<{
+    index: number
+    execution_status: "pending" | "starting" | "in_progress" | "paused" | "success" | "failed" | "cancelled" | "skipped" | "scheduled" | "hot"
+    started_at?: string // date-time
+    ended_at?: string // date-time
+    outputs?: Record<string, unknown>
+    error_output?: {
+      error_code: { ... }
+      error_reason: { ... }
+      error_info?: { ... }
+    }
+  }>
 }
 ```
 
@@ -1740,6 +2213,7 @@ type CartCheckoutActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -1857,6 +2331,7 @@ type MapEntityActionConfig = {
       version?: { ... }
     }
     target_schema: string
+    use_uniqueness_criteria?: boolean
     target_unique?: string[]
     mapping_attributes?: Array<{
       target?: { ... }
@@ -1886,6 +2361,10 @@ type MapEntityActionConfig = {
     }>
     linkback_relation_attribute?: string
     linkback_relation_tags?: string[]
+    graph_context?: Array<{
+      seed: { ... }
+      graph: { ... }
+    }>
   }
   allow_failure?: boolean
   created_automatically?: boolean
@@ -1896,6 +2375,7 @@ type MapEntityActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -1911,6 +2391,7 @@ type MapEntityAction = {
       version?: { ... }
     }
     target_schema: string
+    use_uniqueness_criteria?: boolean
     target_unique?: string[]
     mapping_attributes?: Array<{
       target?: { ... }
@@ -1940,6 +2421,10 @@ type MapEntityAction = {
     }>
     linkback_relation_attribute?: string
     linkback_relation_tags?: string[]
+    graph_context?: Array<{
+      seed: { ... }
+      graph: { ... }
+    }>
   }
 }
 ```
@@ -1954,6 +2439,7 @@ type MapEntityConfig = {
     version?: number
   }
   target_schema: string
+  use_uniqueness_criteria?: boolean
   target_unique?: string[]
   mapping_attributes?: Array<{
     target?: string
@@ -1995,6 +2481,113 @@ type MapEntityConfig = {
   }>
   linkback_relation_attribute?: string
   linkback_relation_tags?: string[]
+  graph_context?: Array<{
+    seed: {
+      entity_id: { ... }
+      node_id: { ... }
+    }
+    graph: {
+      nodes: { ... }
+      edges: { ... }
+    }
+  }>
+}
+```
+
+### `GraphContextEntry`
+
+One multi-hop graph query to run against entity-api's `POST /v1/entity:graph`. Every node
+in `graph.nodes` is merged into the mapping's source context under its own `id`, so
+listing multiple nodes here costs one entity-api call, not one per node. A node's value
+overwrites any existing source-context
+
+```ts
+type GraphContextEntry = {
+  seed: {
+    entity_id: string // uuid
+    node_id: string
+  }
+  graph: {
+    nodes: Array<{
+      id: { ... }
+      schema: { ... }
+      cardinality?: { ... }
+      fields?: { ... }
+      filter?: { ... }
+      optional?: { ... }
+    }>
+    edges: Array<{
+      from: { ... }
+      to: { ... }
+    }>
+  }
+}
+```
+
+### `GraphSeed`
+
+```ts
+type GraphSeed = {
+  entity_id: string // uuid
+  node_id: string
+}
+```
+
+### `GraphDefinition`
+
+```ts
+type GraphDefinition = {
+  nodes: Array<{
+    id: string
+    schema: string
+    cardinality?: "one" | "many"
+    fields?: string[]
+    filter?: Array<{
+      attribute: { ... }
+      value: { ... }
+    }>
+    optional?: boolean
+  }>
+  edges: Array<{
+    from: string
+    to: string
+  }>
+}
+```
+
+### `GraphNode`
+
+```ts
+type GraphNode = {
+  id: string
+  schema: string
+  cardinality?: "one" | "many"
+  fields?: string[]
+  filter?: Array<{
+    attribute: string
+    value: string | number | boolean
+  }>
+  optional?: boolean
+}
+```
+
+### `GraphNodeFilter`
+
+Entities are included in this node's result only if `attribute` exactly equals the literal `value`.
+
+```ts
+type GraphNodeFilter = {
+  attribute: string
+  value: string | number | boolean
+}
+```
+
+### `GraphEdge`
+
+```ts
+type GraphEdge = {
+  from: string
+  to: string
 }
 ```
 
@@ -2151,6 +2744,26 @@ type AssignThreadAction = {
   config?: {
     remove?: string[]
     add?: string[]
+    assignment_type?: "direct" | "even_distribution" | "sequential"
+    only_available_users?: boolean
+    hold_until_available?: boolean
+    match_user_skills?: boolean
+    required_skill_categories?: string[]
+    skill_match_mode?: "require_all" | "prefer"
+    fallback?: "leave_unassigned" | "assign_to_fallback"
+    fallback_assignees?: string[]
+    write_mode?: "append" | "replace"
+  }
+}
+```
+
+### `LabelEmailAction`
+
+```ts
+type LabelEmailAction = {
+  type?: "label-email"
+  config?: {
+    add: string[]
   }
 }
 ```
@@ -2163,12 +2776,273 @@ type MoveThreadConfig = {
 }
 ```
 
+### `LabelEmailConfig`
+
+```ts
+type LabelEmailConfig = {
+  add: string[]
+}
+```
+
 ### `AssignThreadConfig`
 
 ```ts
 type AssignThreadConfig = {
   remove?: string[]
   add?: string[]
+  assignment_type?: "direct" | "even_distribution" | "sequential"
+  only_available_users?: boolean
+  hold_until_available?: boolean
+  match_user_skills?: boolean
+  required_skill_categories?: string[]
+  skill_match_mode?: "require_all" | "prefer"
+  fallback?: "leave_unassigned" | "assign_to_fallback"
+  fallback_assignees?: string[]
+  write_mode?: "append" | "replace"
+}
+```
+
+### `EntityAssignee`
+
+A single assignee as stored in a user-relation attribute. Written through
+verbatim by the assign-entity worker. Note this object encoding differs
+deliberately from AssignThreadConfig, which stores bare id strings —
+each matches what its own target accepts.
+
+
+```ts
+type EntityAssignee = {
+  type: "user" | "partner_user" | "partner_organization" | "group"
+  user_id?: string
+  group_id?: string
+  org_id?: string
+  partner_id?: string
+  display_name?: string
+  email?: string
+}
+```
+
+### `EntityAssigneeVariable`
+
+An assignee resolved at execution time from a user-relation attribute of an
+entity in the automation context, e.g. `{{submission._owners}}`. Resolves
+against the entity being assigned or the triggering entity, whichever has
+the given schema slug. The attribute may hold user ids, `{ org_id, user_id }
+
+```ts
+type EntityAssigneeVariable = {
+  variable: string
+}
+```
+
+### `AssignEntityConfig`
+
+```ts
+type AssignEntityConfig = {
+  attribute?: string
+  assignees?: Array<{
+    type: "user" | "partner_user" | "partner_organization" | "group"
+    user_id?: string
+    group_id?: string
+    org_id?: string
+    partner_id?: string
+    display_name?: string
+    email?: string
+  } | {
+    variable: string
+  }>
+  write_mode?: "replace" | "append"
+  assignment_type?: "direct" | "sequential" | "even_distribution"
+  candidate_pool?: Array<{
+    type: "user" | "partner_user" | "partner_organization" | "group"
+    user_id?: string
+    group_id?: string
+    org_id?: string
+    partner_id?: string
+    display_name?: string
+    email?: string
+  }>
+  candidate_group?: {
+    type: "user" | "partner_user" | "partner_organization" | "group"
+    user_id?: string
+    group_id?: string
+    org_id?: string
+    partner_id?: string
+    display_name?: string
+    email?: string
+  }
+  reset_interval?: "daily" | "weekly" | "monthly" | "never"
+  workload_filter?: {
+    attribute?: string
+    values?: string[]
+  }
+  match_user_skills?: boolean
+  required_skill_categories?: string[]
+  required_skills?: string[]
+  required_skills_match_mode?: "require_all" | "prefer"
+  skill_match_mode?: "require_all" | "prefer"
+  fallback?: "leave_unassigned" | "assign_to_fallback"
+  fallback_assignees?: Array<{
+    type: "user" | "partner_user" | "partner_organization" | "group"
+    user_id?: string
+    group_id?: string
+    org_id?: string
+    partner_id?: string
+    display_name?: string
+    email?: string
+  }>
+  source?: {
+    id?: string
+    origin?: "trigger" | "action"
+    schema?: string
+  }
+}
+```
+
+### `AssignEntityActionConfig`
+
+```ts
+type AssignEntityActionConfig = {
+  id?: string
+  flow_action_id?: string
+  name?: string
+  type?: "assign-entity"
+  config?: {
+    attribute?: string
+    assignees?: Array<{
+      type: { ... }
+      user_id?: { ... }
+      group_id?: { ... }
+      org_id?: { ... }
+      partner_id?: { ... }
+      display_name?: { ... }
+      email?: { ... }
+    } | {
+      variable: { ... }
+    }>
+    write_mode?: "replace" | "append"
+    assignment_type?: "direct" | "sequential" | "even_distribution"
+    candidate_pool?: Array<{
+      type: { ... }
+      user_id?: { ... }
+      group_id?: { ... }
+      org_id?: { ... }
+      partner_id?: { ... }
+      display_name?: { ... }
+      email?: { ... }
+    }>
+    candidate_group?: {
+      type: { ... }
+      user_id?: { ... }
+      group_id?: { ... }
+      org_id?: { ... }
+      partner_id?: { ... }
+      display_name?: { ... }
+      email?: { ... }
+    }
+    reset_interval?: "daily" | "weekly" | "monthly" | "never"
+    workload_filter?: {
+      attribute?: { ... }
+      values?: { ... }
+    }
+    match_user_skills?: boolean
+    required_skill_categories?: string[]
+    required_skills?: string[]
+    required_skills_match_mode?: "require_all" | "prefer"
+    skill_match_mode?: "require_all" | "prefer"
+    fallback?: "leave_unassigned" | "assign_to_fallback"
+    fallback_assignees?: Array<{
+      type: { ... }
+      user_id?: { ... }
+      group_id?: { ... }
+      org_id?: { ... }
+      partner_id?: { ... }
+      display_name?: { ... }
+      email?: { ... }
+    }>
+    source?: {
+      id?: { ... }
+      origin?: { ... }
+      schema?: { ... }
+    }
+  }
+  allow_failure?: boolean
+  created_automatically?: boolean
+  is_bulk_action?: boolean
+  reason?: {
+    message?: string
+    payload?: Record<string, unknown>
+  }
+  condition_id?: string
+  schedule_id?: string
+  loop_id?: string
+}
+```
+
+### `AssignEntityAction`
+
+```ts
+type AssignEntityAction = {
+  type?: "assign-entity"
+  config?: {
+    attribute?: string
+    assignees?: Array<{
+      type: { ... }
+      user_id?: { ... }
+      group_id?: { ... }
+      org_id?: { ... }
+      partner_id?: { ... }
+      display_name?: { ... }
+      email?: { ... }
+    } | {
+      variable: { ... }
+    }>
+    write_mode?: "replace" | "append"
+    assignment_type?: "direct" | "sequential" | "even_distribution"
+    candidate_pool?: Array<{
+      type: { ... }
+      user_id?: { ... }
+      group_id?: { ... }
+      org_id?: { ... }
+      partner_id?: { ... }
+      display_name?: { ... }
+      email?: { ... }
+    }>
+    candidate_group?: {
+      type: { ... }
+      user_id?: { ... }
+      group_id?: { ... }
+      org_id?: { ... }
+      partner_id?: { ... }
+      display_name?: { ... }
+      email?: { ... }
+    }
+    reset_interval?: "daily" | "weekly" | "monthly" | "never"
+    workload_filter?: {
+      attribute?: { ... }
+      values?: { ... }
+    }
+    match_user_skills?: boolean
+    required_skill_categories?: string[]
+    required_skills?: string[]
+    required_skills_match_mode?: "require_all" | "prefer"
+    skill_match_mode?: "require_all" | "prefer"
+    fallback?: "leave_unassigned" | "assign_to_fallback"
+    fallback_assignees?: Array<{
+      type: { ... }
+      user_id?: { ... }
+      group_id?: { ... }
+      org_id?: { ... }
+      partner_id?: { ... }
+      display_name?: { ... }
+      email?: { ... }
+    }>
+    source?: {
+      id?: { ... }
+      origin?: { ... }
+      schema?: { ... }
+    }
+  }
 }
 ```
 
@@ -2182,10 +3056,16 @@ type SendEmailActionConfig = {
   type?: "send-email"
   config?: {
     email_template_id?: string
-    language_code?: "de" | "en"
+    language_code?: string
     notify_portal_user_only?: boolean
     skip_creating_entities?: boolean
     wait_for_confirmation?: boolean
+    wait_for_journey_submission?: boolean
+    journey_id?: string
+    reply_to_sender?: boolean
+    reply_mode?: "reply_in_thread" | "new_email"
+    mark_as_done?: boolean
+    mark_as_read?: boolean
     attachments?: Array<{
       source_filter?: { ... }
     }>
@@ -2202,6 +3082,7 @@ type SendEmailActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -2212,10 +3093,16 @@ type SendEmailAction = {
   type?: "send-email"
   config?: {
     email_template_id?: string
-    language_code?: "de" | "en"
+    language_code?: string
     notify_portal_user_only?: boolean
     skip_creating_entities?: boolean
     wait_for_confirmation?: boolean
+    wait_for_journey_submission?: boolean
+    journey_id?: string
+    reply_to_sender?: boolean
+    reply_mode?: "reply_in_thread" | "new_email"
+    mark_as_done?: boolean
+    mark_as_read?: boolean
     attachments?: Array<{
       source_filter?: { ... }
     }>
@@ -2226,19 +3113,149 @@ type SendEmailAction = {
 }
 ```
 
+### `ForwardEmailActionConfig`
+
+```ts
+type ForwardEmailActionConfig = {
+  id?: string
+  flow_action_id?: string
+  name?: string
+  type?: "forward-email"
+  config?: {
+    forward_to: Array<{
+      email: { ... }
+      name?: { ... }
+    }>
+    include_attachments?: boolean
+    subject_prefix?: string
+    language_code?: "de" | "en"
+    mark_as_done?: boolean
+    mark_as_read?: boolean
+  }
+  allow_failure?: boolean
+  created_automatically?: boolean
+  is_bulk_action?: boolean
+  reason?: {
+    message?: string
+    payload?: Record<string, unknown>
+  }
+  condition_id?: string
+  schedule_id?: string
+  loop_id?: string
+}
+```
+
+### `ForwardEmailAction`
+
+```ts
+type ForwardEmailAction = {
+  type?: "forward-email"
+  config?: {
+    forward_to: Array<{
+      email: { ... }
+      name?: { ... }
+    }>
+    include_attachments?: boolean
+    subject_prefix?: string
+    language_code?: "de" | "en"
+    mark_as_done?: boolean
+    mark_as_read?: boolean
+  }
+}
+```
+
+### `ForwardEmailConfig`
+
+```ts
+type ForwardEmailConfig = {
+  forward_to: Array<{
+    email: string // email
+    name?: string
+  }>
+  include_attachments?: boolean
+  subject_prefix?: string
+  language_code?: "de" | "en"
+  mark_as_done?: boolean
+  mark_as_read?: boolean
+}
+```
+
+### `ReplyEmailActionConfig`
+
+```ts
+type ReplyEmailActionConfig = {
+  id?: string
+  flow_action_id?: string
+  name?: string
+  type?: "reply-email"
+  config?: {
+    email_template_id?: string
+    language_code?: string
+    reply_mode?: "reply_in_thread" | "new_email"
+    mark_as_done?: boolean
+    mark_as_read?: boolean
+  }
+  allow_failure?: boolean
+  created_automatically?: boolean
+  is_bulk_action?: boolean
+  reason?: {
+    message?: string
+    payload?: Record<string, unknown>
+  }
+  condition_id?: string
+  schedule_id?: string
+  loop_id?: string
+}
+```
+
+### `ReplyEmailAction`
+
+```ts
+type ReplyEmailAction = {
+  type?: "reply-email"
+  config?: {
+    email_template_id?: string
+    language_code?: string
+    reply_mode?: "reply_in_thread" | "new_email"
+    mark_as_done?: boolean
+    mark_as_read?: boolean
+  }
+}
+```
+
+### `ReplyEmailConfig`
+
+```ts
+type ReplyEmailConfig = {
+  email_template_id?: string
+  language_code?: string
+  reply_mode?: "reply_in_thread" | "new_email"
+  mark_as_done?: boolean
+  mark_as_read?: boolean
+}
+```
+
 ### `SendEmailConfig`
 
 ```ts
 type SendEmailConfig = {
   email_template_id?: string
-  language_code?: "de" | "en"
+  language_code?: string
   notify_portal_user_only?: boolean
   skip_creating_entities?: boolean
   wait_for_confirmation?: boolean
+  wait_for_journey_submission?: boolean
+  journey_id?: string
+  reply_to_sender?: boolean
+  reply_mode?: "reply_in_thread" | "new_email"
+  mark_as_done?: boolean
+  mark_as_read?: boolean
   attachments?: Array<{
     source_filter?: {
       limit?: { ... }
       filename_regex?: { ... }
+      filename?: { ... }
+      filename_pattern?: { ... }
       attribute?: { ... }
       relation_tag?: { ... }
       tag?: { ... }
@@ -2287,6 +3304,7 @@ type CreateDocumentActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -2344,6 +3362,7 @@ type TriggerWorkflowActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -2412,6 +3431,8 @@ type TriggerShareEntityActionConfig = {
   name?: string
   type?: "trigger-workflow"
   config?: {
+    operation?: "share" | "unshare"
+    unshare_all_partners?: boolean
     partner_org_ids?: string[]
   }
   allow_failure?: boolean
@@ -2423,6 +3444,7 @@ type TriggerShareEntityActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -2432,6 +3454,8 @@ type TriggerShareEntityActionConfig = {
 type TriggerShareEntityAction = {
   type?: "trigger-share-entity"
   config?: {
+    operation?: "share" | "unshare"
+    unshare_all_partners?: boolean
     partner_org_ids?: string[]
   }
 }
@@ -2441,6 +3465,8 @@ type TriggerShareEntityAction = {
 
 ```ts
 type TriggerShareEntityConfig = {
+  operation?: "share" | "unshare"
+  unshare_all_partners?: boolean
   partner_org_ids?: string[]
 }
 ```
@@ -2493,6 +3519,7 @@ type TriggerWebhookActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -2543,6 +3570,7 @@ type InformERPActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -2590,6 +3618,7 @@ type TriggerEventActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -2640,6 +3669,7 @@ type FlowExecutionCancelActionConfig = {
   }
   condition_id?: string
   schedule_id?: string
+  loop_id?: string
 }
 ```
 
@@ -2660,7 +3690,7 @@ type FlowExecutionCancelAction = {
 
 ### `FlowExecutionCancelConfig`
 
-Configuration for cancelling a flow execution with selected reasons
+Configuration for cancelling a flow execution. The selected reasons are optional; a semi-automated step lets the person running it choose them when the execution starts.
 
 ```ts
 type FlowExecutionCancelConfig = {
@@ -2691,7 +3721,7 @@ type ConditionStatement = {
   source?: {
     id?: string
     origin?: "trigger" | "action"
-    originType?: "entity" | "workflow" | "journey_block"
+    originType?: "entity" | "workflow" | "journey_block" | "event"
     schema?: string
     attribute?: string
     attributeType?: "string" | "text" | "number" | "boolean" | "date" | "datetime" | "tags" | "country" | "email" | "phone" | "product" | "price" | "status" | "relation" | "multiselect" | "select" | "radio" | "relation_user" | "purpose" | "label" | "payment" | "relation_payment_method"
@@ -2710,7 +3740,16 @@ type ConditionStatement = {
 type ActionCondition = {
   id?: string
   schedule_id?: string
+  evaluation_order?: "AFTER_SCHEDULE" | "BEFORE_SCHEDULE"
   evaluationResult?: boolean
+  error_output?: {
+    error_code: "MAPPING_ERROR" | "REFRESH_RELATIONS_ERROR" | "DUPLICATE_ENTITY_ERROR" | "TRIGGER_WORKFLOW_ERROR" | "TIMEOUT_ERROR" | "BAD_CONFIG" | "INTERNAL_ERROR" | "TRIGGER_WEBHOOK_ERROR" | "TEMPLATE_ERROR" | "INVALID_PAYLOAD" | "INVALID_SCHEDULE_CONFIG" | "CUSTOM_ACTION_ERROR" | "ORDER_CREATION_ERROR" | "DOCUMENT_GENERATION_ERROR" | "BULK_EMAIL_ERROR" | "SHARING_ERROR" | "CANCEL_FLOW_EXECUTION_ERROR" | "METER_READING_NOT_FOUND" | "ENTITY_NOT_FOUND"
+    error_reason: string
+    error_info?: {
+      details?: { ... }
+    }
+  }
+  allow_failure?: boolean
   statements?: Array<{
     id?: string // uuid
     source?: {
@@ -2793,7 +3832,14 @@ type AutomationExecution = {
   conditions?: Array<{
     id?: string
     schedule_id?: string
+    evaluation_order?: "AFTER_SCHEDULE" | "BEFORE_SCHEDULE"
     evaluationResult?: boolean
+    error_output?: {
+      error_code: { ... }
+      error_reason: { ... }
+      error_info?: { ... }
+    }
+    allow_failure?: boolean
     statements?: Array<{
       id?: { ... }
       source?: { ... }
@@ -2819,11 +3865,13 @@ type AutomationExecution = {
     config?: {
       mapping_config?: { ... }
       target_schema: { ... }
+      use_uniqueness_criteria?: { ... }
       target_unique?: { ... }
       mapping_attributes?: { ... }
       relation_attributes?: { ... }
       linkback_relation_attribute?: { ... }
       linkback_relation_tags?: { ... }
+      graph_context?: { ... }
     }
   } | {
     type?: "trigger-workflow"
@@ -2837,6 +3885,8 @@ type AutomationExecution = {
   } | {
     type?: "trigger-share-entity"
     config?: {
+      operation?: { ... }
+      unshare_all_partners?: { ... }
       partner_org_ids?: { ... }
     }
   } | {
@@ -2859,18 +3909,16 @@ type AutomationExecution = {
     config?: {
       event_name: { ... }
       event_inputs?: { ... }
-    }
-  } | {
-    type?: "create-document"
-    config?: {
-      template_id?: { ... }
-      filename?: { ... }
-    }
-  } | {
-    type?: "send-email"
-    config?: {
-      email_template_id?: { ... }
   // ...
+}
+```
+
+### `AutomationLoopState`
+
+```ts
+type AutomationLoopState = {
+  current_index: number
+  total: number
 }
 ```
 
@@ -2886,6 +3934,37 @@ type WorkflowExecutionContext = {
     parent_task_id?: string
     depth?: number
   }
+  _automation_chain?: string[]
+  entity_contexts?: Array<{
+    entity_id?: string
+    entity_schema?: string
+    is_primary?: boolean
+  }>
+  resolved_input?: {
+    with_relations: boolean
+    also_pass: Array<{
+      entity_id: { ... }
+      entity_schema?: { ... }
+    }>
+  }
+  trigger_user_id?: string
+  run_by?: {
+    user_id: string
+    org_id?: string
+  }
+}
+```
+
+### `WorkflowWaitContext`
+
+Correlation stamped when the triggering submission entity carried workflow wait claims from a journey link. Consumed by svc-workflows to resume a task waiting on this journey submission.
+
+
+```ts
+type WorkflowWaitContext = {
+  workflow_execution_id: string
+  workflow_task_id: string
+  source?: string
 }
 ```
 
@@ -2955,7 +4034,7 @@ type TriggerEventEntityActivity = {
 
 ```ts
 type TriggerEventMessaging = {
-  type?: "new_email_thread"
+  type?: "new_email_thread" | "sent_email"
   org_id: string
   thread_id: string
   message_id: string
@@ -2971,7 +4050,43 @@ type TriggerEventEntityOperation = {
   entity_id: string
   org_id: string
   activity_id: string
-  operation_type: "createEntity" | "updateEntity" | "deleteEntity" | "softDeleteEntity" | "restoreEntity"
+  operation_type: "createEntity" | "updateEntity" | "deleteEntity" | "softDeleteEntity" | "restoreEntity" | "relationsAdded" | "relationsRemoved" | "relationsSoftDeleted" | "relationsRestored" | "relationsDeleted"
+}
+```
+
+### `TriggerEventEventCatalog`
+
+Set on executions started by an Event Catalog event (see EventCatalogTrigger). The full event payload is not stored inline (it may be up to 256 KB) but by reference in `payload_ref`; automation workers hydrate it before every action.
+
+
+```ts
+type TriggerEventEventCatalog = {
+  type: "event_catalog"
+  org_id: string
+  entity_id: string
+  entity_node_id: string
+  event_id: string
+  event_name: string
+  event_version: string
+  published_version?: string
+  event_time?: string // date-time
+  trigger_source_type?: string
+  trigger_source?: string
+  payload_ref?: {
+    bucket: string
+    key: string
+  }
+}
+```
+
+### `TriggerEventPayloadRef`
+
+S3 reference to the stored trigger event payload (`_downgrades` stripped, downgraded to the pinned version)
+
+```ts
+type TriggerEventPayloadRef = {
+  bucket: string
+  key: string
 }
 ```
 
@@ -3028,7 +4143,10 @@ type GetExecutionsResp = {
     conditions?: Array<{
       id?: { ... }
       schedule_id?: { ... }
+      evaluation_order?: { ... }
       evaluationResult?: { ... }
+      error_output?: { ... }
+      allow_failure?: { ... }
       statements?: { ... }
     }>
     schedules?: Array<{
@@ -3081,28 +4199,143 @@ type GetExecutionsResp = {
       reason?: { ... }
       condition_id?: { ... }
       schedule_id?: { ... }
+      loop_id?: { ... }
       execution_status?: { ... }
       started_at?: { ... }
       updated_at?: { ... }
       outputs?: { ... }
       error_output?: { ... }
       retry_strategy?: { ... }
+      iterations?: { ... }
     } | {
       type?: { ... }
       config?: { ... }
-    }>
-    resume_token?: string
-    trigger_context?: Record<string, string>
-    version?: number
-    trigger_event?: {
-      type?: { ... }
-      org_id: { ... }
-      entity_id: { ... }
-      caller?: { ... }
     } | {
       type?: { ... }
-      org_id: { ... }
-      activity_id: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+  // ...
+}
+```
+
+### `SearchExecutionsReq`
+
+```ts
+type SearchExecutionsReq = {
+  entity_id: string
+  include_flows?: boolean
+  size?: number
+  cursor?: string
+}
+```
+
+### `SearchExecutionsResp`
+
+```ts
+type SearchExecutionsResp = {
+  total: number
+  results: Array<{
+    id: string
+    execution_status?: "pending" | "starting" | "in_progress" | "paused" | "success" | "failed" | "cancelled" | "skipped" | "scheduled" | "hot"
+    entity_id: string
+    activity_id?: string
+    entity_snapshot?: {
+      _id: { ... }
+      _title: { ... }
+      _org: { ... }
+      _schema: { ... }
+      _tags?: { ... }
+      _created_at: { ... }
+      _updated_at: { ... }
+    }
+    org_id: string
+    flow_id: string
+    flow_name?: string
+    created_at?: string // date-time
+    updated_at?: string // date-time
+    current_action_id?: string
+    conditions?: Array<{
+      id?: { ... }
+      schedule_id?: { ... }
+      evaluation_order?: { ... }
+      evaluationResult?: { ... }
+      error_output?: { ... }
+      allow_failure?: { ... }
+      statements?: { ... }
+    }>
+    schedules?: Array<{
+      id: { ... }
+      scheduleApiId?: { ... }
+      numberOfUnits?: { ... }
+      timePeriod?: { ... }
+      timeRelation?: { ... }
+      source: { ... }
+    }>
+    actions: Array<{
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      id?: { ... }
+      flow_action_id?: { ... }
+      name?: { ... }
+      type?: { ... }
+      config?: { ... }
+      allow_failure?: { ... }
+      created_automatically?: { ... }
+      is_bulk_action?: { ... }
+      reason?: { ... }
+      condition_id?: { ... }
+      schedule_id?: { ... }
+      loop_id?: { ... }
+      execution_status?: { ... }
+      started_at?: { ... }
+      updated_at?: { ... }
+      outputs?: { ... }
+      error_output?: { ... }
+      retry_strategy?: { ... }
+      iterations?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
   // ...
 }
 ```
@@ -3122,9 +4355,89 @@ type StartExecutionRequest = {
       parent_task_id?: { ... }
       depth?: { ... }
     }
+    _automation_chain?: string[]
+    entity_contexts?: Array<{
+      entity_id?: { ... }
+      entity_schema?: { ... }
+      is_primary?: { ... }
+    }>
+    resolved_input?: {
+      with_relations: { ... }
+      also_pass: { ... }
+    }
+    trigger_user_id?: string
+    run_by?: {
+      user_id: { ... }
+      org_id?: { ... }
+    }
   }
   flow_execution_id?: string
   flow_automation_task_id?: string
+  action_inputs?: {
+    cancel-flow-execution?: {
+      selected_reasons: { ... }
+      extra_description?: { ... }
+    }
+    send-email?: {
+      subject?: { ... }
+      body?: { ... }
+      attachment_entity_ids?: { ... }
+    }
+  }
+}
+```
+
+### `ActionInputs`
+
+Internal. Run-time inputs for the actions of this execution, keyed by
+action type. An action reads the entry for its own type and treats it
+as replacing the matching configured values; an action whose type has
+no entry runs entirely from its configuration.
+
+Only the workflows service may set this fi
+
+```ts
+type ActionInputs = {
+  cancel-flow-execution?: {
+    selected_reasons: Array<{
+      id: { ... }
+      title: { ... }
+    }>
+    extra_description?: string
+  }
+  send-email?: {
+    subject?: string
+    body?: string
+    attachment_entity_ids?: string[]
+  }
+}
+```
+
+### `SendEmailInputs`
+
+Adjustments a person made to an email before sending it, replacing the rendered values the template produced. The template itself is untouched.
+
+`attachment_entity_ids` is a request, not an instruction: the worker keeps only the ids that are genuinely files of the entity this execution runs on, so a
+
+```ts
+type SendEmailInputs = {
+  subject?: string
+  body?: string
+  attachment_entity_ids?: string[]
+}
+```
+
+### `FlowExecutionCancelInputs`
+
+The cancellation reasons a person chose when running a semi-automated cancel step, replacing `selected_reasons` from the action's configuration.
+
+```ts
+type FlowExecutionCancelInputs = {
+  selected_reasons: Array<{
+    id: string
+    title: string
+  }>
+  extra_description?: string
 }
 ```
 
@@ -3132,8 +4445,8 @@ type StartExecutionRequest = {
 
 ```ts
 type PatchBulkJobRequest = {
-  action: "APPROVE" | "CANCEL"
-  task_token: string
+  action: "APPROVE" | "CANCEL" | "RESTART"
+  task_token?: string
 }
 ```
 
@@ -3171,36 +4484,9 @@ type BulkTriggerRequest = {
     exists?: {
       field: { ... }
     }
-    $and?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $or?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $not?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
+    $and?: { ... }
+    $or?: { ... }
+    $not?: { ... }
   }>
   trigger_context?: Record<string, string>
 }
@@ -3230,6 +4516,9 @@ type BulkTriggerJob = {
   trigger_context?: Record<string, string>
   task_token?: string
   report_file_entity_id?: string
+  last_error?: string
+  restart_count?: number
+  restarted_at?: string // date-time
   entity_query?: {
     type: "refs" | "query" | "filter"
     data: Array<{
@@ -3262,6 +4551,40 @@ type BulkTriggerJob = {
     timestamp?: string // date-time
     error?: string
   }>
+  execution_stats?: {
+    total: number
+    pending?: number
+    starting?: number
+    in_progress?: number
+    success?: number
+    failed?: number
+    cancelled?: number
+    skipped?: number
+    paused?: number
+    scheduled?: number
+    hot?: number
+  }
+  execution_summary_truncated?: boolean
+}
+```
+
+### `ExecutionStats`
+
+Number of execution items of a bulk trigger job per execution status. Always complete.
+
+```ts
+type ExecutionStats = {
+  total: number
+  pending?: number
+  starting?: number
+  in_progress?: number
+  success?: number
+  failed?: number
+  cancelled?: number
+  skipped?: number
+  paused?: number
+  scheduled?: number
+  hot?: number
 }
 ```
 
@@ -3328,8 +4651,7 @@ type AutomationTrigger = {
 type FlowsTrigger = {
   id?: string // uuid
   type: "flows_trigger"
-  configuration: {
-    source_id: string // uuid
+  configuration?: {
     journey_id?: string // uuid
   }
 }
@@ -3373,6 +4695,12 @@ type ApiSubmissionTrigger = {
 
 ### `NewEmailThreadTrigger`
 
+Starts the flow when an email starts a new thread. The thread is the execution's entity.
+
+For outbound threads, an email that failed to send or a bulk email does not start the flow,
+and neither does an email whose automation chain already contains the flow. A flow that
+sends emails itself (a send-em
+
 ```ts
 type NewEmailThreadTrigger = {
   id?: string // uuid
@@ -3396,6 +4724,23 @@ type ReceivedEmailTrigger = {
 }
 ```
 
+### `SentEmailTrigger`
+
+Starts the flow for every email sent from epilot: emails and replies sent from the inbox,
+including replies sent from a draft, and emails sent by automations or Flows, except sends
+that skip creating entities. The sent email is the execution's entity. The outgoing
+counterpart of `received_email`.
+
+O
+
+```ts
+type SentEmailTrigger = {
+  id?: string // uuid
+  type: "sent_email"
+  configuration: object
+}
+```
+
 ### `EntityOperationTrigger`
 
 - If provides filter_config, executes an automation based on the filtered configuration when an entity event occurs.
@@ -3408,7 +4753,7 @@ type EntityOperationTrigger = {
   type: "entity_operation"
   configuration: {
     schema?: string
-    operations?: "createEntity" | "updateEntity" | "deleteEntity" | "softDeleteEntity" | "restoreEntity"[]
+    operations?: "createEntity" | "updateEntity" | "deleteEntity" | "softDeleteEntity" | "restoreEntity" | "relationsAdded" | "relationsRemoved" | "relationsSoftDeleted" | "relationsRestored" | "relationsDeleted"[]
     include_activities?: string[]
     exclude_activities?: string[]
     filter_config?: {
@@ -3440,7 +4785,7 @@ type ActivityTrigger = {
 ### `EntityOperation`
 
 ```ts
-type EntityOperation = "createEntity" | "updateEntity" | "deleteEntity" | "softDeleteEntity" | "restoreEntity"
+type EntityOperation = "createEntity" | "updateEntity" | "deleteEntity" | "softDeleteEntity" | "restoreEntity" | "relationsAdded" | "relationsRemoved" | "relationsSoftDeleted" | "relationsRestored" | "relationsDeleted"
 ```
 
 ### `EntitySearchFilter`
@@ -3466,90 +4811,10 @@ type EntitySearchFilter = Array<{
   exists?: {
     field: string
   }
-  $and?: Array<{
-    term?: Record<string, string | number | boolean>
-    terms?: Record<string, string | number | boolean[]>
-    ids?: {
-      values?: { ... }
-    }
-    range?: Record<string, {
-      gt?: { ... }
-      gte?: { ... }
-      lt?: { ... }
-      lte?: { ... }
-      format?: { ... }
-      relation?: { ... }
-      time_zone?: { ... }
-    }>
-    exists?: {
-      field: { ... }
-    }
-    $and?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $or?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $not?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-  }>
-  $or?: Array<{
-    term?: Record<string, string | number | boolean>
-    terms?: Record<string, string | number | boolean[]>
-    ids?: {
-      values?: { ... }
-    }
-    range?: Record<string, {
-      gt?: { ... }
-      gte?: { ... }
-      lt?: { ... }
-      lte?: { ... }
-      format?: { ... }
-      relation?: { ... }
-      time_zone?: { ... }
-    }>
-    exists?: {
-      field: { ... }
-    }
-    $and?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $or?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-  // ...
-}
+  $and?: { ... }
+  $or?: { ... }
+  $not?: { ... }
+}>
 ```
 
 ### `EntitySearchFilterValue`
@@ -3568,6 +4833,25 @@ type EntityManualTrigger = {
   type: "entity_manual"
   configuration: {
     schema?: string
+  }
+}
+```
+
+### `EventCatalogTrigger`
+
+Starts the flow when an Event Catalog event is published for the organization. The execution runs in the context of one entity from the event's entity graph (`entity_node_id`), and the event payload is available to conditions and actions as the `event` variable context.
+
+
+```ts
+type EventCatalogTrigger = {
+  id?: string // uuid
+  type: "event_catalog"
+  configuration: {
+    event_name: string
+    event_version: string
+    entity_node_id: string
+    entity_schema: string
+    ignore_automation_triggered?: boolean
   }
 }
 ```
@@ -3592,39 +4876,7 @@ type Comparison = "equals" | "any_of" | "not_empty" | "is_empty"
 
 ```ts
 type FilterConditionOnEvent = {
-  $or?: Array<{
-    $or?: Array<{
-      $or?: { ... }
-    } | Record<string, Array<string | {
-      equals-ignore-case?: { ... }
-    } | {
-      anything-but?: { ... }
-    } | {
-      numeric?: { ... }
-    } | {
-      exists?: { ... }
-    } | {
-      prefix?: { ... }
-    } | {
-      suffix?: { ... }
-    } | {
-      wildcard?: { ... }
-    }>>>
-  } | Record<string, Array<string | {
-    equals-ignore-case?: string
-  } | {
-    anything-but?: string[]
-  } | {
-    numeric?: string | number[]
-  } | {
-    exists?: boolean
-  } | {
-    prefix?: string
-  } | {
-    suffix?: string
-  } | {
-    wildcard?: string
-  }>>>
+  $or?: { ... }[]
 } | Record<string, Array<string | {
   equals-ignore-case?: string
 } | {
@@ -3702,25 +4954,7 @@ type WildcardCondition = {
 
 ```ts
 type OrCondition = {
-  $or?: Array<{
-    $or?: Array<{
-      $or?: { ... }
-    } | Record<string, Array<string | {
-      equals-ignore-case?: { ... }
-    } | {
-      anything-but?: { ... }
-    } | {
-      numeric?: { ... }
-    } | {
-      exists?: { ... }
-    } | {
-      prefix?: { ... }
-    } | {
-      suffix?: { ... }
-    } | {
-      wildcard?: { ... }
-    }>>>
-  } | Record<string, Array<string | {
+  $or?: Array<{ ... } | Record<string, Array<string | {
     equals-ignore-case?: string
   } | {
     anything-but?: string[]
@@ -3742,39 +4976,7 @@ type OrCondition = {
 
 ```ts
 type DiffAdded = {
-  $or?: Array<{
-    $or?: Array<{
-      $or?: { ... }
-    } | Record<string, Array<string | {
-      equals-ignore-case?: { ... }
-    } | {
-      anything-but?: { ... }
-    } | {
-      numeric?: { ... }
-    } | {
-      exists?: { ... }
-    } | {
-      prefix?: { ... }
-    } | {
-      suffix?: { ... }
-    } | {
-      wildcard?: { ... }
-    }>>>
-  } | Record<string, Array<string | {
-    equals-ignore-case?: string
-  } | {
-    anything-but?: string[]
-  } | {
-    numeric?: string | number[]
-  } | {
-    exists?: boolean
-  } | {
-    prefix?: string
-  } | {
-    suffix?: string
-  } | {
-    wildcard?: string
-  }>>>
+  $or?: { ... }[]
 } | Record<string, Array<string | {
   equals-ignore-case?: string
 } | {
@@ -3796,39 +4998,7 @@ type DiffAdded = {
 
 ```ts
 type DiffUpdated = {
-  $or?: Array<{
-    $or?: Array<{
-      $or?: { ... }
-    } | Record<string, Array<string | {
-      equals-ignore-case?: { ... }
-    } | {
-      anything-but?: { ... }
-    } | {
-      numeric?: { ... }
-    } | {
-      exists?: { ... }
-    } | {
-      prefix?: { ... }
-    } | {
-      suffix?: { ... }
-    } | {
-      wildcard?: { ... }
-    }>>>
-  } | Record<string, Array<string | {
-    equals-ignore-case?: string
-  } | {
-    anything-but?: string[]
-  } | {
-    numeric?: string | number[]
-  } | {
-    exists?: boolean
-  } | {
-    prefix?: string
-  } | {
-    suffix?: string
-  } | {
-    wildcard?: string
-  }>>>
+  $or?: { ... }[]
 } | Record<string, Array<string | {
   equals-ignore-case?: string
 } | {
@@ -3850,39 +5020,7 @@ type DiffUpdated = {
 
 ```ts
 type DiffDeleted = {
-  $or?: Array<{
-    $or?: Array<{
-      $or?: { ... }
-    } | Record<string, Array<string | {
-      equals-ignore-case?: { ... }
-    } | {
-      anything-but?: { ... }
-    } | {
-      numeric?: { ... }
-    } | {
-      exists?: { ... }
-    } | {
-      prefix?: { ... }
-    } | {
-      suffix?: { ... }
-    } | {
-      wildcard?: { ... }
-    }>>>
-  } | Record<string, Array<string | {
-    equals-ignore-case?: string
-  } | {
-    anything-but?: string[]
-  } | {
-    numeric?: string | number[]
-  } | {
-    exists?: boolean
-  } | {
-    prefix?: string
-  } | {
-    suffix?: string
-  } | {
-    wildcard?: string
-  }>>>
+  $or?: { ... }[]
 } | Record<string, Array<string | {
   equals-ignore-case?: string
 } | {
@@ -3974,7 +5112,10 @@ type ResumeResp = {
     conditions?: Array<{
       id?: { ... }
       schedule_id?: { ... }
+      evaluation_order?: { ... }
       evaluationResult?: { ... }
+      error_output?: { ... }
+      allow_failure?: { ... }
       statements?: { ... }
     }>
     schedules?: Array<{
@@ -4027,29 +5168,26 @@ type ResumeResp = {
       reason?: { ... }
       condition_id?: { ... }
       schedule_id?: { ... }
+      loop_id?: { ... }
       execution_status?: { ... }
       started_at?: { ... }
       updated_at?: { ... }
       outputs?: { ... }
       error_output?: { ... }
       retry_strategy?: { ... }
+      iterations?: { ... }
     } | {
       type?: { ... }
       config?: { ... }
-    }>
-    resume_token?: string
-    trigger_context?: Record<string, string>
-    version?: number
-    trigger_event?: {
-      type?: { ... }
-      org_id: { ... }
-      entity_id: { ... }
-      caller?: { ... }
     } | {
       type?: { ... }
-      org_id: { ... }
-      activity_id: { ... }
-      activity_type: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
+    } | {
+      type?: { ... }
+      config?: { ... }
   // ...
 }
 ```

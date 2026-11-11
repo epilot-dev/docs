@@ -41,6 +41,10 @@ const { data } = await notesClient.createNote(...)
 **Pinning**
 - [`pinNote`](#pinnote)
 
+**Archive**
+- [`archiveNote`](#archivenote)
+- [`unarchiveNote`](#unarchivenote)
+
 **Reactions**
 - [`addNoteReaction`](#addnotereaction)
 - [`removeNoteReaction`](#removenotereaction)
@@ -58,6 +62,7 @@ const { data } = await notesClient.createNote(...)
 - [`NoteEntityParent`](#noteentityparent)
 - [`NotePutRequestBody`](#noteputrequestbody)
 - [`NoteSearchByContextRequestBody`](#notesearchbycontextrequestbody)
+- [`NotesListFilter`](#noteslistfilter)
 - [`NotesSearchRequestResponse`](#notessearchrequestresponse)
 - [`NoteContexts`](#notecontexts)
 - [`WorkflowExecution`](#workflowexecution)
@@ -184,16 +189,20 @@ const { data } = await client.updateNote(
       }
     ],
     pinned_at: '1970-01-01T00:00:00.000Z',
-    created_by: {
-      type: 'user',
-      user_id: 'string',
-      display_name: 'string',
-      org_id: 'string',
-      email: 'string',
-      phone: 'string'
-    },
+    edited_at: '1970-01-01T00:00:00.000Z',
+    created_by: [
+      {
+        type: 'user',
+        user_id: 'string',
+        display_name: 'string',
+        org_id: 'string',
+        email: 'string',
+        phone: 'string'
+      }
+    ],
     read_by: ['string'],
-    reactions: {}
+    reactions: {},
+    _archived_at: '1970-01-01T00:00:00.000Z'
   },
 )
 ```
@@ -230,6 +239,8 @@ const { data } = await client.searchNotesByContext(
         id: 'string'
       }
     ],
+    include_related_schemas: ['string'],
+    filter: 'active',
     from: 0,
     size: 10
   },
@@ -246,6 +257,34 @@ Pins a single Note entry based on it's Entity ID
 
 ```ts
 const { data } = await client.pinNote({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+---
+
+### `archiveNote`
+
+Archives a root Note entry by setting its `_archived_at` timestamp to the current server time. The same timestamp is cascaded to every comment under the note so the entire thread is hidden from defaul
+
+`POST /v1/note/{id}/archive`
+
+```ts
+const { data } = await client.archiveNote({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+---
+
+### `unarchiveNote`
+
+Unarchives a root Note entry by clearing its `_archived_at` value. The clear cascades to every comment under the note so the entire thread returns to the active view. Returns 400 if the supplied id is
+
+`POST /v1/note/{id}/unarchive`
+
+```ts
+const { data } = await client.unarchiveNote({
   id: '123e4567-e89b-12d3-a456-426614174000',
 })
 ```
@@ -481,16 +520,18 @@ type NotePatchRequestBody = {
     id: string
   }>
   pinned_at?: string // date-time
-  created_by?: {
+  edited_at?: string // date-time
+  created_by?: Array<{
     type: "user" | "group"
     user_id?: string
     display_name?: string
     org_id?: string
     email?: string
     phone?: string
-  }
+  }>
   read_by?: string[]
   reactions?: Record<string, string[]>
+  _archived_at?: string // date-time
 }
 ```
 
@@ -566,16 +607,18 @@ type NotePutRequestBody = {
     id: string
   }>
   pinned_at?: string // date-time
-  created_by?: {
+  edited_at?: string // date-time
+  created_by?: Array<{
     type: "user" | "group"
     user_id?: string
     display_name?: string
     org_id?: string
     email?: string
     phone?: string
-  }
+  }>
   read_by?: string[]
   reactions?: Record<string, string[]>
+  _archived_at?: string // date-time
 }
 ```
 
@@ -587,9 +630,19 @@ type NoteSearchByContextRequestBody = {
     type: "workflow_execution" | "workflow_task" | "workflow_configuration" | "journey_configuration" | "entity"
     id: string
   }>
+  include_related_schemas?: string[]
+  filter?: "all" | "active" | "archived"
   from?: number
   size?: number
 }
+```
+
+### `NotesListFilter`
+
+Archive-state filter. 'active' (default) returns non-archived notes only, 'archived' returns only archived notes, 'all' returns both.
+
+```ts
+type NotesListFilter = "all" | "active" | "archived"
 ```
 
 ### `NotesSearchRequestResponse`

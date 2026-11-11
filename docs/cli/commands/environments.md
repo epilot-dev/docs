@@ -42,9 +42,12 @@ epilot environments listEnvironmentVariables
 
 **environments**
 - [`listEnvironmentVariables`](#listenvironmentvariables) — List all environment variables for the organization. Returns metadata only, no secret values.
-- [`createEnvironmentVariable`](#createenvironmentvariable) — Create a new environment variable or secret for the organization.
-- [`getEnvironmentVariable`](#getenvironmentvariable) — Get an environment variable by key. Returns value only for String type, omitted for SecretString.
-- [`updateEnvironmentVariable`](#updateenvironmentvariable) — Create or update an environment variable. Acts as an upsert — creates the variable if it does not exist.
+- [`createEnvironmentVariable`](#createenvironmentvariable) — Create a new environment variable or secret for the organization. If `group` is provided and the group does not yet exis
+- [`listEnvironmentGroups`](#listenvironmentgroups) — List all environment groups for the organization.
+- [`putEnvironmentGroup`](#putenvironmentgroup) — Create or update an environment group by name. Acts as an upsert — creates the group if it does not exist.
+- [`deleteEnvironmentGroup`](#deleteenvironmentgroup) — Deletes a group. Variables assigned to this group become ungrouped.
+- [`getEnvironmentVariable`](#getenvironmentvariable) — Get an environment variable by key. Returns value for non-secret types, omitted for SecretString.
+- [`updateEnvironmentVariable`](#updateenvironmentvariable) — Create or update an environment variable. Acts as an upsert — creates the variable if it does not exist. If `group` is p
 - [`deleteEnvironmentVariable`](#deleteenvironmentvariable) — Delete an environment variable by key.
 
 ### `listEnvironmentVariables`
@@ -74,8 +77,11 @@ epilot environments listEnvironmentVariables --jsonata 'items[0]'
     {
       "key": "string",
       "type": "String",
+      "item_type": "String",
       "description": "string",
+      "group": "string",
       "value": "string",
+      "protected": true,
       "created_at": "1970-01-01T00:00:00.000Z",
       "updated_at": "1970-01-01T00:00:00.000Z"
     }
@@ -89,7 +95,7 @@ epilot environments listEnvironmentVariables --jsonata 'items[0]'
 
 ### `createEnvironmentVariable`
 
-Create a new environment variable or secret for the organization.
+Create a new environment variable or secret for the organization. If `group` is provided and the group does not yet exis
 
 `POST /v1/environments`
 
@@ -99,7 +105,7 @@ Create a new environment variable or secret for the organization.
 
 ```bash
 epilot environments createEnvironmentVariable \
-  -d '{"key":"string","type":"String","description":"string","value":"string"}'
+  -d '{"key":"string","type":"String","description":"string","group":"string","value":"string","protected":true}'
 ```
 
 Using stdin pipe:
@@ -121,8 +127,11 @@ epilot environments createEnvironmentVariable --jsonata 'key'
 {
   "key": "string",
   "type": "String",
+  "item_type": "String",
   "description": "string",
+  "group": "string",
   "value": "string",
+  "protected": true,
   "created_at": "1970-01-01T00:00:00.000Z",
   "updated_at": "1970-01-01T00:00:00.000Z"
 }
@@ -132,9 +141,136 @@ epilot environments createEnvironmentVariable --jsonata 'key'
 
 ---
 
+### `listEnvironmentGroups`
+
+List all environment groups for the organization.
+
+`GET /v1/environments/groups`
+
+**Sample Call**
+
+```bash
+epilot environments listEnvironmentGroups
+```
+
+With JSONata filter:
+
+```bash
+epilot environments listEnvironmentGroups --jsonata 'items[0]'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "items": [
+    {
+      "name": "string",
+      "description": "string",
+      "created_at": "1970-01-01T00:00:00.000Z",
+      "updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `putEnvironmentGroup`
+
+Create or update an environment group by name. Acts as an upsert — creates the group if it does not exist.
+
+`PUT /v1/environments/groups/{name}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `name` | path | string | Yes |  |
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot environments putEnvironmentGroup \
+  -p name=example \
+  -d '{"description":"string"}'
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot environments putEnvironmentGroup example
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot environments putEnvironmentGroup -p name=example
+```
+
+With JSONata filter:
+
+```bash
+epilot environments putEnvironmentGroup -p name=example --jsonata 'name'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `deleteEnvironmentGroup`
+
+Deletes a group. Variables assigned to this group become ungrouped.
+
+`DELETE /v1/environments/groups/{name}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `name` | path | string | Yes |  |
+
+**Sample Call**
+
+```bash
+epilot environments deleteEnvironmentGroup \
+  -p name=example
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot environments deleteEnvironmentGroup example
+```
+
+With JSONata filter:
+
+```bash
+epilot environments deleteEnvironmentGroup -p name=example --jsonata '$'
+```
+
+---
+
 ### `getEnvironmentVariable`
 
-Get an environment variable by key. Returns value only for String type, omitted for SecretString.
+Get an environment variable by key. Returns value for non-secret types, omitted for SecretString.
 
 `GET /v1/environments/{key}`
 
@@ -170,8 +306,11 @@ epilot environments getEnvironmentVariable -p key=example --jsonata 'key'
 {
   "key": "string",
   "type": "String",
+  "item_type": "String",
   "description": "string",
+  "group": "string",
   "value": "string",
+  "protected": true,
   "created_at": "1970-01-01T00:00:00.000Z",
   "updated_at": "1970-01-01T00:00:00.000Z"
 }
@@ -183,7 +322,7 @@ epilot environments getEnvironmentVariable -p key=example --jsonata 'key'
 
 ### `updateEnvironmentVariable`
 
-Create or update an environment variable. Acts as an upsert — creates the variable if it does not exist.
+Create or update an environment variable. Acts as an upsert — creates the variable if it does not exist. If `group` is p
 
 `PUT /v1/environments/{key}`
 
@@ -200,7 +339,7 @@ Create or update an environment variable. Acts as an upsert — creates the vari
 ```bash
 epilot environments updateEnvironmentVariable \
   -p key=example \
-  -d '{"type":"String","value":"string","description":"string"}'
+  -d '{"type":"String","value":"string","description":"string","group":"string","protected":true}'
 ```
 
 Using positional args for path parameters:
@@ -228,8 +367,11 @@ epilot environments updateEnvironmentVariable -p key=example --jsonata 'key'
 {
   "key": "string",
   "type": "String",
+  "item_type": "String",
   "description": "string",
+  "group": "string",
   "value": "string",
+  "protected": true,
   "created_at": "1970-01-01T00:00:00.000Z",
   "updated_at": "1970-01-01T00:00:00.000Z"
 }

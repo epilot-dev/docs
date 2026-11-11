@@ -151,6 +151,7 @@ const { data } = await client.getVariableContext(
       context_data: {},
       template_name: 'string',
       template_tags: ['string'],
+      template_id: 'string',
       variables_version: '2'
     }
   },
@@ -255,6 +256,7 @@ const { data } = await client.replaceTemplates(
       context_data: {},
       template_name: 'string',
       template_tags: ['string'],
+      template_id: 'string',
       variables_version: '2'
     }
   },
@@ -302,6 +304,7 @@ const { data } = await client.replaceTemplatesV2(
       context_data: {},
       template_name: 'string',
       template_tags: ['string'],
+      template_id: 'string',
       variables_version: '2'
     }
   },
@@ -346,6 +349,7 @@ const { data } = await client.getCustomVariables()
     "name": "My Custom table",
     "key": "my_custom_table",
     "_tags": ["string"],
+    "_manifest": ["string"],
     "helper_params": ["param1", "param2"],
     "helper_logic": "return param1 * param2;",
     "config": {
@@ -383,6 +387,7 @@ const { data } = await client.createCustomVariable(
     name: 'My Custom table',
     key: 'my_custom_table',
     _tags: ['string'],
+    _manifest: ['string'],
     helper_params: ['param1', 'param2'],
     helper_logic: 'return param1 * param2;',
     config: {
@@ -544,6 +549,7 @@ const { data } = await client.createCustomVariable(
   "name": "My Custom table",
   "key": "my_custom_table",
   "_tags": ["string"],
+  "_manifest": ["string"],
   "helper_params": ["param1", "param2"],
   "helper_logic": "return param1 * param2;",
   "config": {
@@ -624,6 +630,7 @@ const { data } = await client.searchCustomVariables(
       "name": "My Custom table",
       "key": "my_custom_table",
       "_tags": ["string"],
+      "_manifest": ["string"],
       "helper_params": ["param1", "param2"],
       "helper_logic": "return param1 * param2;",
       "config": {},
@@ -659,6 +666,7 @@ const { data } = await client.updateCustomVariable(
     name: 'My Custom table',
     key: 'my_custom_table',
     _tags: ['string'],
+    _manifest: ['string'],
     helper_params: ['param1', 'param2'],
     helper_logic: 'return param1 * param2;',
     config: {
@@ -820,6 +828,7 @@ const { data } = await client.updateCustomVariable(
   "name": "My Custom table",
   "key": "my_custom_table",
   "_tags": ["string"],
+  "_manifest": ["string"],
   "helper_params": ["param1", "param2"],
   "helper_logic": "return param1 * param2;",
   "config": {
@@ -889,6 +898,7 @@ const { data } = await client.getCustomVariable({
   "name": "My Custom table",
   "key": "my_custom_table",
   "_tags": ["string"],
+  "_manifest": ["string"],
   "helper_params": ["param1", "param2"],
   "helper_logic": "return param1 * param2;",
   "config": {
@@ -970,6 +980,7 @@ const { data } = await client.getBluePrintTableConfig()
   "name": "My Custom table",
   "key": "my_custom_table",
   "_tags": ["string"],
+  "_manifest": ["string"],
   "helper_params": ["param1", "param2"],
   "helper_logic": "return param1 * param2;",
   "config": {
@@ -1044,6 +1055,7 @@ type VariableParameters = {
   context_data?: object
   template_name?: string
   template_tags?: string[]
+  template_id?: string
   variables_version?: string
 }
 ```
@@ -1134,6 +1146,7 @@ type CustomVariable = {
   name?: string
   key: string
   _tags?: string[]
+  _manifest?: string[]
   helper_params?: string[]
   helper_logic?: string
   config?: object

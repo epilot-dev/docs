@@ -33,6 +33,16 @@ const { data } = await journeyClient.getJourneysByOrgId(...)
 - [`getJourneysByOrgId`](#getjourneysbyorgid)
 - [`getJourney`](#getjourney)
 - [`removeJourney`](#removejourney)
+- [`createJourneyRevision`](#createjourneyrevision)
+- [`listJourneyRevisions`](#listjourneyrevisions)
+- [`getJourneyRevision`](#getjourneyrevision)
+- [`updateJourneyRevisionMetadata`](#updatejourneyrevisionmetadata)
+- [`publishJourneyRevision`](#publishjourneyrevision)
+- [`getJourneyPublishState`](#getjourneypublishstate)
+- [`getJourneyEnvironment`](#getjourneyenvironment)
+- [`resolveJourneyExternalValues`](#resolvejourneyexternalvalues)
+- [`getJourneyEnvironmentVariables`](#getjourneyenvironmentvariables)
+- [`getJourneyTemplateVariables`](#getjourneytemplatevariables)
 - [`getJourneyProducts`](#getjourneyproducts)
 - [`createJourney`](#createjourney)
 - [`updateJourney`](#updatejourney)
@@ -50,6 +60,21 @@ const { data } = await journeyClient.getJourneysByOrgId(...)
 - [`removeJourneyV2`](#removejourneyv2)
 
 **Schemas**
+- [`EnvironmentMapEntry`](#environmentmapentry)
+- [`EnvironmentMap`](#environmentmap)
+- [`EnvironmentLink`](#environmentlink)
+- [`EnvironmentLinkList`](#environmentlinklist)
+- [`EnvironmentScalarList`](#environmentscalarlist)
+- [`JourneyEnvironmentResponse`](#journeyenvironmentresponse)
+- [`JourneyExternalValuesRequest`](#journeyexternalvaluesrequest)
+- [`JourneyExternalValuesResponse`](#journeyexternalvaluesresponse)
+- [`ExternalValueError`](#externalvalueerror)
+- [`JourneyTemplatingContext`](#journeytemplatingcontext)
+- [`JourneyTemplateVariablesResponse`](#journeytemplatevariablesresponse)
+- [`JourneyTemplating`](#journeytemplating)
+- [`JourneyTemplatingLink`](#journeytemplatinglink)
+- [`JourneyTemplatingTranslatable`](#journeytemplatingtranslatable)
+- [`JourneyEnvironmentVariablesResponse`](#journeyenvironmentvariablesresponse)
 - [`GetJourneysResponse`](#getjourneysresponse)
 - [`JourneyResponse`](#journeyresponse)
 - [`JourneyProductsResponse`](#journeyproductsresponse)
@@ -59,8 +84,21 @@ const { data } = await journeyClient.getJourneysByOrgId(...)
 - [`SearchJourneysQueryRequest`](#searchjourneysqueryrequest)
 - [`SearchJourneysResponse`](#searchjourneysresponse)
 - [`Journey`](#journey)
+- [`JourneyServedRevision`](#journeyservedrevision)
+- [`JourneyActivationGuarantee`](#journeyactivationguarantee)
 - [`JourneyFeatureFlags`](#journeyfeatureflags)
 - [`JourneyAuditInfo`](#journeyauditinfo)
+- [`JourneyRevisionRequest`](#journeyrevisionrequest)
+- [`PublishRevisionRequest`](#publishrevisionrequest)
+- [`RevisionMetadataUpdate`](#revisionmetadataupdate)
+- [`JourneyRevisionSummary`](#journeyrevisionsummary)
+- [`JourneyRevisionList`](#journeyrevisionlist)
+- [`JourneyRevision`](#journeyrevision)
+- [`JourneyRevisionConflict`](#journeyrevisionconflict)
+- [`JourneyPublishState`](#journeypublishstate)
+- [`PublishResult`](#publishresult)
+- [`JourneyValidationResponse`](#journeyvalidationresponse)
+- [`JourneyValidationError`](#journeyvalidationerror)
 - [`S3Reference`](#s3reference)
 - [`TemplateSettings`](#templatesettings)
 - [`GenerateDocumentResponse`](#generatedocumentresponse)
@@ -103,6 +141,8 @@ Get journey by id. Private journeys requires valid private token to be passed
 ```ts
 const { data } = await client.getJourney({
   id: '123e4567-e89b-12d3-a456-426614174000',
+  version: 1,
+  revision_id: 'example',
   source: 'example',
   orgId: 'example',
 })
@@ -125,7 +165,9 @@ const { data } = await client.getJourney({
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
+      "guestVisible": true,
       "name": "string",
       "stepId": "string",
       "schema": {},
@@ -160,10 +202,13 @@ const { data } = await client.getJourney({
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -179,6 +224,7 @@ const { data } = await client.getJourney({
     "templateId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "targetedCustomer": "string",
     "description": "string",
     "organizationSettings": {},
@@ -188,26 +234,43 @@ const { data } = await client.getJourney({
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "useAustrianLabels": true,
     "enableDarkMode": true,
     "accessMode": "PUBLIC",
+    "authGate": {
+      "stepId": "string"
+    },
     "isPublished": true,
     "status": "string",
     "isActive": true,
     "savingProgress": {
-      "savingMode": "auto",
-      "supportedVersion": 0
+      "mode": "auto",
+      "supportedRevision": 0
     },
-    "thirdPartyCookies": true
+    "thirdPartyCookies": true,
+    "betaFeatures": {
+      "modernProducts": true,
+      "modernLauncher": true
+    },
+    "offline": {
+      "enabled": true,
+      "packTtlHours": 24
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "createdBy": "string",
   "updatedBy": "string",
   "__lastModifiedAt": "string",
@@ -216,7 +279,14 @@ const { data } = await client.getJourney({
   "deletedAt": "string",
   "version": 0,
   "revisions": 0,
-  "featureFlags": {}
+  "featureFlags": {},
+  "templating": {
+    "customVariables": [
+      {}
+    ],
+    "env": {}
+  },
+  "revision_id": "42"
 }
 ```
 
@@ -235,6 +305,603 @@ const { data } = await client.removeJourney({
   id: '123e4567-e89b-12d3-a456-426614174000',
 })
 ```
+
+---
+
+### `createJourneyRevision`
+
+Creates a revision: an immutable copy of the complete journey configuration, identified by `revision_id`. Nothing customers receive changes; the revision only becomes the published version when it is 
+
+`POST /v1/journey/configuration/{id}/revisions`
+
+```ts
+const { data } = await client.createJourneyRevision(
+  {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+  },
+  {
+    journeyId: 'string',
+    organizationId: 'string',
+    brandId: 'string',
+    name: 'string',
+    steps: [
+      {
+        showStepName: true,
+        title: 'string',
+        subTitle: 'string',
+        showStepSubtitle: true,
+        showStepper: true,
+        showStepperLabels: true,
+        stepperType: 'numbers',
+        hideNextButton: true,
+        guestVisible: true,
+        name: 'string',
+        stepId: 'string',
+        schema: {},
+        uischema: {},
+        maxWidth: 'small'
+      }
+    ],
+    design: {
+      logoUrl: 'string',
+      theme: {},
+      designTokens: {}
+    },
+    rules: [
+      {
+        type: 'inject',
+        sourceType: 'journey',
+        source: 'string',
+        target: 'string'
+      }
+    ],
+    logics: [
+      {
+        autoGeneratedId: 'string',
+        conditions: ['string'],
+        actions: ['string']
+      }
+    ],
+    logicsV4: {},
+    contextSchema: [
+      {
+        id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        type: 'string',
+        paramKey: 'string',
+        isRequired: true,
+        shouldLoadEntity: true,
+        description: 'string'
+      }
+    ],
+    journey_type: 'Sales template (Premium)',
+    protected: true,
+    protectedEditable: ['string'],
+    settings: {
+      embedOptions: {
+        mode: 'full-screen',
+        lang: 'de',
+        width: 'string',
+        topBar: true,
+        scrollToTop: true,
+        button: { /* ... */ }
+      },
+      safeModeAutomation: true,
+      canary: true,
+      designId: 'string',
+      templateId: 'string',
+      entityId: 'string',
+      mappingsAutomationId: 'string',
+      newMappings: true,
+      targetedCustomer: 'string',
+      description: 'string',
+      organizationSettings: {},
+      publicToken: 'string',
+      runtimeEntities: ['ORDER'],
+      filePurposes: ['string'],
+      entityTags: ['string'],
+      addressSuggestionsFileUrl: 'string',
+      addressSuggestionsFileId: 'string',
+      addressSuggestionsCountryCode: 'string',
+      addressSuggestionsEnableAutoComplete: true,
+      addressSuggestionsSource: ['string'],
+      addressSuggestionsEnableFreeText: true,
+      useNewDesign: true,
+      useAustrianLabels: true,
+      enableDarkMode: true,
+      accessMode: 'PUBLIC',
+      authGate: {
+        stepId: 'string'
+      },
+      isPublished: true,
+      status: 'string',
+      isActive: true,
+      savingProgress: {
+        mode: 'auto',
+        supportedRevision: 0
+      },
+      thirdPartyCookies: true,
+      betaFeatures: {
+        modernProducts: true,
+        modernLauncher: true
+      },
+      offline: {
+        enabled: true,
+        packTtlHours: 24
+      }
+    },
+    validationRules: {
+      block1: 'rule123',
+      block2: ['rule456', 'rule789'],
+      block3: {
+        field1: 'rule101',
+        field2: ['rule102', 'rule103']
+      }
+    },
+    _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
+    createdBy: 'string',
+    updatedBy: 'string',
+    __lastModifiedAt: 'string',
+    parent_revision_id: '41',
+    based_on_revision_id: '37',
+    mapping_config_version: 12,
+    revision_name: 'Changes to Steps and Logic'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "revision_id": "42",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "created_by": "string",
+  "name": "Summer campaign",
+  "description": "string",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "is_published": true,
+  "metadata_updated_at": "1970-01-01T00:00:00.000Z",
+  "metadata_updated_by": "string",
+  "mapping_config_version": 12
+}
+```
+
+</details>
+
+---
+
+### `listJourneyRevisions`
+
+Lists the journey's revision history, newest first. Metadata only, no configuration payload. `is_published` says whether a revision is the published version right now, which is a different question fr
+
+`GET /v1/journey/configuration/{id}/revisions`
+
+```ts
+const { data } = await client.listJourneyRevisions({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+  limit: 1,
+  cursor: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "revision_id": "42",
+      "created_at": "1970-01-01T00:00:00.000Z",
+      "created_by": "string",
+      "name": "Summer campaign",
+      "description": "string",
+      "published_at": "1970-01-01T00:00:00.000Z",
+      "is_published": true,
+      "metadata_updated_at": "1970-01-01T00:00:00.000Z",
+      "metadata_updated_by": "string",
+      "mapping_config_version": 12
+    }
+  ],
+  "next_cursor": "string"
+}
+```
+
+</details>
+
+---
+
+### `getJourneyRevision`
+
+Returns one revision with its full configuration, in the shape the builder holds a journey in, so it can be loaded straight into the editor as unsaved changes. Reading a revision changes nothing; a cl
+
+`GET /v1/journey/configuration/{id}/revisions/{revision_id}`
+
+```ts
+const { data } = await client.getJourneyRevision({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+  revision_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "revision_id": "42",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "created_by": "string",
+  "name": "Summer campaign",
+  "description": "string",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "is_published": true,
+  "metadata_updated_at": "1970-01-01T00:00:00.000Z",
+  "metadata_updated_by": "string",
+  "mapping_config_version": 12,
+  "configuration": {
+    "journeyId": "string",
+    "organizationId": "string",
+    "brandId": "string",
+    "name": "string",
+    "steps": [
+      {}
+    ],
+    "design": {
+      "logoUrl": "string",
+      "theme": {},
+      "designTokens": {}
+    },
+    "rules": [
+      {}
+    ],
+    "logics": [
+      {}
+    ],
+    "logicsV4": {},
+    "contextSchema": [
+      {}
+    ],
+    "journey_type": "Sales template (Premium)",
+    "protected": true,
+    "protectedEditable": ["string"],
+    "settings": {
+      "embedOptions": {},
+      "safeModeAutomation": true,
+      "canary": true,
+      "designId": "string",
+      "templateId": "string",
+      "entityId": "string",
+      "mappingsAutomationId": "string",
+      "newMappings": true,
+      "targetedCustomer": "string",
+      "description": "string",
+      "organizationSettings": {},
+      "publicToken": "string",
+      "runtimeEntities": ["ORDER"],
+      "filePurposes": ["string"],
+      "entityTags": ["string"],
+      "addressSuggestionsFileUrl": "string",
+      "addressSuggestionsFileId": "string",
+      "addressSuggestionsCountryCode": "string",
+      "addressSuggestionsEnableAutoComplete": true,
+      "addressSuggestionsSource": ["string"],
+      "addressSuggestionsEnableFreeText": true,
+      "useNewDesign": true,
+      "useAustrianLabels": true,
+      "enableDarkMode": true,
+      "accessMode": "PUBLIC",
+      "authGate": {},
+      "isPublished": true,
+      "status": "string",
+      "isActive": true,
+      "savingProgress": {},
+      "thirdPartyCookies": true,
+      "betaFeatures": {},
+      "offline": {}
+    },
+    "validationRules": {
+      "block1": "rule123",
+      "block2": ["rule456", "rule789"],
+      "block3": {}
+    },
+    "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
+    "createdBy": "string",
+    "updatedBy": "string",
+    "__lastModifiedAt": "string",
+    "createdAt": "string",
+    "lastModifiedAt": "string",
+    "deletedAt": "string",
+    "version": 0,
+    "revisions": 0,
+    "featureFlags": {},
+    "templating": {
+      "customVariables": [],
+      "env": {}
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### `updateJourneyRevisionMetadata`
+
+Corrects the name and description of a revision that has been published, e.g. to fix a typo or add context after the fact. Metadata only: the revision's configuration, the journey record customers rec
+
+`PATCH /v1/journey/configuration/{id}/revisions/{revision_id}`
+
+```ts
+const { data } = await client.updateJourneyRevisionMetadata(
+  {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+    revision_id: 'example',
+  },
+  {
+    name: 'Summer campaign',
+    description: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "revision_id": "42",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "created_by": "string",
+  "name": "Summer campaign",
+  "description": "string",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "is_published": true,
+  "metadata_updated_at": "1970-01-01T00:00:00.000Z",
+  "metadata_updated_by": "string",
+  "mapping_config_version": 12
+}
+```
+
+</details>
+
+---
+
+### `publishJourneyRevision`
+
+Makes one revision the published version, the one customers receive, in a single transaction: the revision's configuration is copied onto the journey record, its datasource set onto the published data
+
+`POST /v1/journey/configuration/{id}/publish`
+
+```ts
+const { data } = await client.publishJourneyRevision(
+  {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+  },
+  {
+    revision_id: '42',
+    name: 'Summer campaign',
+    description: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "revision_id": "42",
+  "name": "Summer campaign",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "published_by": "string",
+  "post_publish_warnings": ["string"]
+}
+```
+
+</details>
+
+---
+
+### `getJourneyPublishState`
+
+Answers which revision is the published version without paging through the history. A journey that has not adopted versioning yet returns `200` with `published_revision_id: null`, not `404`.
+
+`GET /v1/journey/configuration/{id}/publish-state`
+
+```ts
+const { data } = await client.getJourneyPublishState({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "journey_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "published_revision_id": "42",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "published_by": "string"
+}
+```
+
+</details>
+
+---
+
+### `getJourneyEnvironment`
+
+Resolve the environment variables referenced by this journey: the environment-backed datasources declared in its steps, whether they source a block's options or supply the value an attached validation
+
+`GET /v1/journey/configuration/{id}/environment`
+
+```ts
+const { data } = await client.getJourneyEnvironment({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "items": [
+    {
+      "datasourceId": "string",
+      "type": "Text",
+      "value": "string"
+    }
+  ],
+  "errors": [
+    {
+      "datasourceId": "string",
+      "code": "not_found"
+    }
+  ],
+  "variables": [
+    {
+      "key": "string",
+      "type": "Text",
+      "value": "string"
+    }
+  ],
+  "variableErrors": [
+    {
+      "key": "string",
+      "code": "not_found"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `resolveJourneyExternalValues`
+
+Resolve the External Values hooks this journey's validation rules compare against.
+
+`POST /v1/journey/configuration/{id}/external-values`
+
+```ts
+const { data } = await client.resolveJourneyExternalValues(
+  {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+  },
+  {
+    items: [
+      {
+        datasourceId: 'string',
+        context: {}
+      }
+    ]
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "items": [
+    {
+      "datasourceId": "string",
+      "values": {},
+      "errors": [
+        {
+          "result_id": "string",
+          "code": "string",
+          "message": "string"
+        }
+      ],
+      "policy": {
+        "on_unavailable": "skip"
+      }
+    }
+  ],
+  "errors": [
+    {
+      "datasourceId": "string",
+      "code": "unknown_datasource"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `getJourneyEnvironmentVariables`
+
+List the organization's client-safe environment variables a journey may use: Map and List``<Link>`` as an options source; Text, Number, Boolean and lists of them in logic conditions. Only variables that c
+
+`GET /v1/journey/environment-variables`
+
+```ts
+const { data } = await client.getJourneyEnvironmentVariables()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "items": [
+    {
+      "key": "string",
+      "type": "Text",
+      "value": "string",
+      "description": "string"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `getJourneyTemplateVariables`
+
+List what a journey template can reference beyond the entity's own attributes: the organization's Custom Variables and its scalar environment variables (`String`, `Text`, `Number`, `Boolean`). Names o
+
+`GET /v1/journey/template-variables`
+
+```ts
+const { data } = await client.getJourneyTemplateVariables()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "customVariables": [
+    {
+      "key": "string",
+      "name": "string"
+    }
+  ],
+  "environment": [
+    {
+      "key": "string",
+      "type": "String",
+      "description": "string",
+      "group": "string"
+    }
+  ]
+}
+```
+
+</details>
 
 ---
 
@@ -269,10 +936,16 @@ const { data } = await client.getJourneyProducts({
     "_org": "string",
     "code": "string",
     "description": "string",
-    "feature": [],
-    "product_images": [],
+    "feature": [
+      {}
+    ],
+    "product_images": [
+      {}
+    ],
     "legal_footnote": "string",
-    "product_downloads": [],
+    "product_downloads": [
+      {}
+    ],
     "price": {}
   }
 ]
@@ -306,7 +979,9 @@ const { data } = await client.createJourney(
         showStepSubtitle: true,
         showStepper: true,
         showStepperLabels: true,
+        stepperType: 'numbers',
         hideNextButton: true,
+        guestVisible: true,
         name: 'string',
         stepId: 'string',
         schema: {},
@@ -341,10 +1016,13 @@ const { data } = await client.createJourney(
         type: 'string',
         paramKey: 'string',
         isRequired: true,
-        shouldLoadEntity: true
+        shouldLoadEntity: true,
+        description: 'string'
       }
     ],
     journey_type: 'Sales template (Premium)',
+    protected: true,
+    protectedEditable: ['string'],
     settings: {
       embedOptions: {
         mode: 'full-screen',
@@ -360,6 +1038,7 @@ const { data } = await client.createJourney(
       templateId: 'string',
       entityId: 'string',
       mappingsAutomationId: 'string',
+      newMappings: true,
       targetedCustomer: 'string',
       description: 'string',
       organizationSettings: {},
@@ -369,26 +1048,43 @@ const { data } = await client.createJourney(
       entityTags: ['string'],
       addressSuggestionsFileUrl: 'string',
       addressSuggestionsFileId: 'string',
+      addressSuggestionsCountryCode: 'string',
+      addressSuggestionsEnableAutoComplete: true,
+      addressSuggestionsSource: ['string'],
+      addressSuggestionsEnableFreeText: true,
       useNewDesign: true,
       useAustrianLabels: true,
       enableDarkMode: true,
       accessMode: 'PUBLIC',
+      authGate: {
+        stepId: 'string'
+      },
       isPublished: true,
       status: 'string',
       isActive: true,
       savingProgress: {
-        savingMode: 'auto',
-        supportedVersion: 0
+        mode: 'auto',
+        supportedRevision: 0
       },
-      thirdPartyCookies: true
+      thirdPartyCookies: true,
+      betaFeatures: {
+        modernProducts: true,
+        modernLauncher: true
+      },
+      offline: {
+        enabled: true,
+        packTtlHours: 24
+      }
     },
     validationRules: {
       block1: 'rule123',
-      block2: {
-        field1: 'rule456',
-        field2: 'rule789'
+      block2: ['rule456', 'rule789'],
+      block3: {
+        field1: 'rule101',
+        field2: ['rule102', 'rule103']
       }
     },
+    _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
     createdBy: 'string',
     updatedBy: 'string',
     __lastModifiedAt: 'string'
@@ -413,7 +1109,9 @@ const { data } = await client.createJourney(
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
+      "guestVisible": true,
       "name": "string",
       "stepId": "string",
       "schema": {},
@@ -448,10 +1146,13 @@ const { data } = await client.createJourney(
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -467,6 +1168,7 @@ const { data } = await client.createJourney(
     "templateId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "targetedCustomer": "string",
     "description": "string",
     "organizationSettings": {},
@@ -476,26 +1178,43 @@ const { data } = await client.createJourney(
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "useAustrianLabels": true,
     "enableDarkMode": true,
     "accessMode": "PUBLIC",
+    "authGate": {
+      "stepId": "string"
+    },
     "isPublished": true,
     "status": "string",
     "isActive": true,
     "savingProgress": {
-      "savingMode": "auto",
-      "supportedVersion": 0
+      "mode": "auto",
+      "supportedRevision": 0
     },
-    "thirdPartyCookies": true
+    "thirdPartyCookies": true,
+    "betaFeatures": {
+      "modernProducts": true,
+      "modernLauncher": true
+    },
+    "offline": {
+      "enabled": true,
+      "packTtlHours": 24
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "createdBy": "string",
   "updatedBy": "string",
   "__lastModifiedAt": "string",
@@ -504,7 +1223,13 @@ const { data } = await client.createJourney(
   "deletedAt": "string",
   "version": 0,
   "revisions": 0,
-  "featureFlags": {}
+  "featureFlags": {},
+  "templating": {
+    "customVariables": [
+      {}
+    ],
+    "env": {}
+  }
 }
 ```
 
@@ -534,7 +1259,9 @@ const { data } = await client.updateJourney(
         showStepSubtitle: true,
         showStepper: true,
         showStepperLabels: true,
+        stepperType: 'numbers',
         hideNextButton: true,
+        guestVisible: true,
         name: 'string',
         stepId: 'string',
         schema: {},
@@ -569,10 +1296,13 @@ const { data } = await client.updateJourney(
         type: 'string',
         paramKey: 'string',
         isRequired: true,
-        shouldLoadEntity: true
+        shouldLoadEntity: true,
+        description: 'string'
       }
     ],
     journey_type: 'Sales template (Premium)',
+    protected: true,
+    protectedEditable: ['string'],
     settings: {
       embedOptions: {
         mode: 'full-screen',
@@ -588,6 +1318,7 @@ const { data } = await client.updateJourney(
       templateId: 'string',
       entityId: 'string',
       mappingsAutomationId: 'string',
+      newMappings: true,
       targetedCustomer: 'string',
       description: 'string',
       organizationSettings: {},
@@ -597,26 +1328,43 @@ const { data } = await client.updateJourney(
       entityTags: ['string'],
       addressSuggestionsFileUrl: 'string',
       addressSuggestionsFileId: 'string',
+      addressSuggestionsCountryCode: 'string',
+      addressSuggestionsEnableAutoComplete: true,
+      addressSuggestionsSource: ['string'],
+      addressSuggestionsEnableFreeText: true,
       useNewDesign: true,
       useAustrianLabels: true,
       enableDarkMode: true,
       accessMode: 'PUBLIC',
+      authGate: {
+        stepId: 'string'
+      },
       isPublished: true,
       status: 'string',
       isActive: true,
       savingProgress: {
-        savingMode: 'auto',
-        supportedVersion: 0
+        mode: 'auto',
+        supportedRevision: 0
       },
-      thirdPartyCookies: true
+      thirdPartyCookies: true,
+      betaFeatures: {
+        modernProducts: true,
+        modernLauncher: true
+      },
+      offline: {
+        enabled: true,
+        packTtlHours: 24
+      }
     },
     validationRules: {
       block1: 'rule123',
-      block2: {
-        field1: 'rule456',
-        field2: 'rule789'
+      block2: ['rule456', 'rule789'],
+      block3: {
+        field1: 'rule101',
+        field2: ['rule102', 'rule103']
       }
     },
+    _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
     createdBy: 'string',
     updatedBy: 'string',
     __lastModifiedAt: 'string'
@@ -671,6 +1419,8 @@ const { data } = await client.patchUpdateJourney(
       {}
     ],
     "journey_type": "Sales template (Premium)",
+    "protected": true,
+    "protectedEditable": ["string"],
     "settings": {
       "embedOptions": {},
       "safeModeAutomation": true,
@@ -679,6 +1429,7 @@ const { data } = await client.patchUpdateJourney(
       "templateId": "string",
       "entityId": "string",
       "mappingsAutomationId": "string",
+      "newMappings": true,
       "targetedCustomer": "string",
       "description": "string",
       "organizationSettings": {},
@@ -688,20 +1439,29 @@ const { data } = await client.patchUpdateJourney(
       "entityTags": ["string"],
       "addressSuggestionsFileUrl": "string",
       "addressSuggestionsFileId": "string",
+      "addressSuggestionsCountryCode": "string",
+      "addressSuggestionsEnableAutoComplete": true,
+      "addressSuggestionsSource": ["string"],
+      "addressSuggestionsEnableFreeText": true,
       "useNewDesign": true,
       "useAustrianLabels": true,
       "enableDarkMode": true,
       "accessMode": "PUBLIC",
+      "authGate": {},
       "isPublished": true,
       "status": "string",
       "isActive": true,
       "savingProgress": {},
-      "thirdPartyCookies": true
+      "thirdPartyCookies": true,
+      "betaFeatures": {},
+      "offline": {}
     },
     "validationRules": {
       "block1": "rule123",
-      "block2": {}
+      "block2": ["rule456", "rule789"],
+      "block3": {}
     },
+    "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
     "createdBy": "string",
     "updatedBy": "string",
     "__lastModifiedAt": "string",
@@ -710,7 +1470,11 @@ const { data } = await client.patchUpdateJourney(
     "deletedAt": "string",
     "version": 0,
     "revisions": 0,
-    "featureFlags": {}
+    "featureFlags": {},
+    "templating": {
+      "customVariables": [],
+      "env": {}
+    }
   }
 }
 ```
@@ -786,6 +1550,7 @@ const { data } = await client.generateDocument(
     context_data: {
       additionalProperties: 'string'
     },
+    context_entity_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     language: 'de'
   },
 )
@@ -834,7 +1599,7 @@ const { data } = await client.generateDocument(
     "template_with_datatable": false,
     "enabled_template_settings_persistence": false,
     "misconfigured_margins": false,
-    "file_entity_id": "1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p"
+    "file_entity_id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
   }
 }
 ```
@@ -866,7 +1631,9 @@ const { data } = await client.createJourneyV2(
         showStepSubtitle: true,
         showStepper: true,
         showStepperLabels: true,
+        stepperType: 'numbers',
         hideNextButton: true,
+        guestVisible: true,
         name: 'string',
         stepId: 'string',
         schema: {},
@@ -901,10 +1668,13 @@ const { data } = await client.createJourneyV2(
         type: 'string',
         paramKey: 'string',
         isRequired: true,
-        shouldLoadEntity: true
+        shouldLoadEntity: true,
+        description: 'string'
       }
     ],
     journey_type: 'Sales template (Premium)',
+    protected: true,
+    protectedEditable: ['string'],
     settings: {
       embedOptions: {
         mode: 'full-screen',
@@ -912,15 +1682,13 @@ const { data } = await client.createJourneyV2(
         width: 'string',
         topBar: true,
         scrollToTop: true,
-        button: {
-          text: 'string',
-          align: 'left'
-        }
+        button: { /* ... */ }
       },
       safeModeAutomation: true,
       designId: 'string',
       entityId: 'string',
       mappingsAutomationId: 'string',
+      newMappings: true,
       templateId: 'string',
       targetedCustomer: 'string',
       description: 'string',
@@ -930,16 +1698,38 @@ const { data } = await client.createJourneyV2(
       entityTags: ['string'],
       addressSuggestionsFileUrl: 'string',
       addressSuggestionsFileId: 'string',
+      addressSuggestionsCountryCode: 'string',
+      addressSuggestionsEnableAutoComplete: true,
+      addressSuggestionsSource: ['string'],
+      addressSuggestionsEnableFreeText: true,
       useNewDesign: true,
       thirdPartyCookies: true,
       accessMode: 'PUBLIC',
-      enableDarkMode: true
+      authGate: {
+        stepId: 'string'
+      },
+      enableDarkMode: true,
+      useAustrianLabels: true,
+      isActive: true,
+      savingProgress: {
+        mode: 'auto',
+        supportedRevision: 0
+      },
+      betaFeatures: {
+        modernProducts: true,
+        modernLauncher: true
+      },
+      offline: {
+        enabled: true,
+        packTtlHours: 24
+      }
     },
     validationRules: {
       block1: 'rule123',
-      block2: {
-        field1: 'rule456',
-        field2: 'rule789'
+      block2: ['rule456', 'rule789'],
+      block3: {
+        field1: 'rule101',
+        field2: ['rule102', 'rule103']
       }
     },
     _manifest: ['123e4567-e89b-12d3-a456-426614174000']
@@ -963,7 +1753,9 @@ const { data } = await client.createJourneyV2(
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
+      "guestVisible": true,
       "name": "string",
       "stepId": "string",
       "schema": {},
@@ -998,10 +1790,13 @@ const { data } = await client.createJourneyV2(
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1009,15 +1804,13 @@ const { data } = await client.createJourneyV2(
       "width": "string",
       "topBar": true,
       "scrollToTop": true,
-      "button": {
-        "text": "string",
-        "align": "left"
-      }
+      "button": {}
     },
     "safeModeAutomation": true,
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1027,16 +1820,38 @@ const { data } = await client.createJourneyV2(
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    },
+    "betaFeatures": {
+      "modernProducts": true,
+      "modernLauncher": true
+    },
+    "offline": {
+      "enabled": true,
+      "packTtlHours": 24
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1068,7 +1883,9 @@ const { data } = await client.updateJourneyV2(
         showStepSubtitle: true,
         showStepper: true,
         showStepperLabels: true,
+        stepperType: 'numbers',
         hideNextButton: true,
+        guestVisible: true,
         name: 'string',
         stepId: 'string',
         schema: {},
@@ -1103,10 +1920,13 @@ const { data } = await client.updateJourneyV2(
         type: 'string',
         paramKey: 'string',
         isRequired: true,
-        shouldLoadEntity: true
+        shouldLoadEntity: true,
+        description: 'string'
       }
     ],
     journey_type: 'Sales template (Premium)',
+    protected: true,
+    protectedEditable: ['string'],
     settings: {
       embedOptions: {
         mode: 'full-screen',
@@ -1114,15 +1934,13 @@ const { data } = await client.updateJourneyV2(
         width: 'string',
         topBar: true,
         scrollToTop: true,
-        button: {
-          text: 'string',
-          align: 'left'
-        }
+        button: { /* ... */ }
       },
       safeModeAutomation: true,
       designId: 'string',
       entityId: 'string',
       mappingsAutomationId: 'string',
+      newMappings: true,
       templateId: 'string',
       targetedCustomer: 'string',
       description: 'string',
@@ -1132,16 +1950,38 @@ const { data } = await client.updateJourneyV2(
       entityTags: ['string'],
       addressSuggestionsFileUrl: 'string',
       addressSuggestionsFileId: 'string',
+      addressSuggestionsCountryCode: 'string',
+      addressSuggestionsEnableAutoComplete: true,
+      addressSuggestionsSource: ['string'],
+      addressSuggestionsEnableFreeText: true,
       useNewDesign: true,
       thirdPartyCookies: true,
       accessMode: 'PUBLIC',
-      enableDarkMode: true
+      authGate: {
+        stepId: 'string'
+      },
+      enableDarkMode: true,
+      useAustrianLabels: true,
+      isActive: true,
+      savingProgress: {
+        mode: 'auto',
+        supportedRevision: 0
+      },
+      betaFeatures: {
+        modernProducts: true,
+        modernLauncher: true
+      },
+      offline: {
+        enabled: true,
+        packTtlHours: 24
+      }
     },
     validationRules: {
       block1: 'rule123',
-      block2: {
-        field1: 'rule456',
-        field2: 'rule789'
+      block2: ['rule456', 'rule789'],
+      block3: {
+        field1: 'rule101',
+        field2: ['rule102', 'rule103']
       }
     },
     _manifest: ['123e4567-e89b-12d3-a456-426614174000']
@@ -1165,7 +2005,9 @@ const { data } = await client.updateJourneyV2(
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
+      "guestVisible": true,
       "name": "string",
       "stepId": "string",
       "schema": {},
@@ -1200,10 +2042,13 @@ const { data } = await client.updateJourneyV2(
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1211,15 +2056,13 @@ const { data } = await client.updateJourneyV2(
       "width": "string",
       "topBar": true,
       "scrollToTop": true,
-      "button": {
-        "text": "string",
-        "align": "left"
-      }
+      "button": {}
     },
     "safeModeAutomation": true,
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1229,16 +2072,38 @@ const { data } = await client.updateJourneyV2(
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    },
+    "betaFeatures": {
+      "modernProducts": true,
+      "modernLauncher": true
+    },
+    "offline": {
+      "enabled": true,
+      "packTtlHours": 24
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1281,7 +2146,9 @@ const { data } = await client.patchUpdateJourneyV2(
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
+      "guestVisible": true,
       "name": "string",
       "stepId": "string",
       "schema": {},
@@ -1316,10 +2183,13 @@ const { data } = await client.patchUpdateJourneyV2(
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1327,15 +2197,13 @@ const { data } = await client.patchUpdateJourneyV2(
       "width": "string",
       "topBar": true,
       "scrollToTop": true,
-      "button": {
-        "text": "string",
-        "align": "left"
-      }
+      "button": {}
     },
     "safeModeAutomation": true,
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1345,16 +2213,38 @@ const { data } = await client.patchUpdateJourneyV2(
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    },
+    "betaFeatures": {
+      "modernProducts": true,
+      "modernLauncher": true
+    },
+    "offline": {
+      "enabled": true,
+      "packTtlHours": 24
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1374,6 +2264,7 @@ Get journey by id
 ```ts
 const { data } = await client.getJourneyV2({
   id: '123e4567-e89b-12d3-a456-426614174000',
+  version: 1,
 })
 ```
 
@@ -1393,7 +2284,9 @@ const { data } = await client.getJourneyV2({
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
+      "guestVisible": true,
       "name": "string",
       "stepId": "string",
       "schema": {},
@@ -1428,10 +2321,13 @@ const { data } = await client.getJourneyV2({
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1439,15 +2335,13 @@ const { data } = await client.getJourneyV2({
       "width": "string",
       "topBar": true,
       "scrollToTop": true,
-      "button": {
-        "text": "string",
-        "align": "left"
-      }
+      "button": {}
     },
     "safeModeAutomation": true,
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1457,16 +2351,38 @@ const { data } = await client.getJourneyV2({
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    },
+    "betaFeatures": {
+      "modernProducts": true,
+      "modernLauncher": true
+    },
+    "offline": {
+      "enabled": true,
+      "packTtlHours": 24
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1510,7 +2426,8 @@ const { data } = await client.getSettingsForJourney({
 {
   "organizationId": "739224",
   "canary": true,
-  "thirdPartyCookies": true
+  "thirdPartyCookies": true,
+  "offline": true
 }
 ```
 
@@ -1548,6 +2465,249 @@ const { data } = await client.getButtonOptions({
 
 ## Schemas
 
+### `EnvironmentMapEntry`
+
+```ts
+type EnvironmentMapEntry = {
+  key: string
+  value: string | Record<string, string>
+}
+```
+
+### `EnvironmentMap`
+
+```ts
+type EnvironmentMap = {
+  fallbackLanguage?: string
+  options: Array<{
+    key: string
+    value: string | Record<string, string>
+  }>
+}
+```
+
+### `EnvironmentLink`
+
+One link a customer clicks. `label` and `description` are each either a
+plain string or one string per language, deciding that independently.
+Mirrors environments-api's `LinkFields`.
+
+
+```ts
+type EnvironmentLink = {
+  url: string
+  label: string | Record<string, string>
+  description?: string | Record<string, string>
+}
+```
+
+### `EnvironmentLinkList`
+
+A list of links, served under this service's own `List`<Link>`` type
+token. environments-api types the variable `List` and declares the
+element type inside the value; journey-api composes the two so a
+consumer needs only one discriminant.
+
+
+```ts
+type EnvironmentLinkList = {
+  itemType: "Link"
+  fallbackLanguage?: string
+  items: Array<{
+    url: string
+    label: string | Record<string, string>
+    description?: string | Record<string, string>
+  }>
+}
+```
+
+### `EnvironmentScalarList`
+
+A list of scalars, served under this service's own `List`<Text>``,
+`List`<Number>`` or `List`<Boolean>`` token (ER-5455). Read by logic
+conditions; flattened to `items` by the journey runtime.
+
+
+```ts
+type EnvironmentScalarList = {
+  itemType: "Text" | "Number" | "Boolean"
+  items: string | number | boolean[]
+}
+```
+
+### `JourneyEnvironmentResponse`
+
+```ts
+type JourneyEnvironmentResponse = {
+  items: Array<{
+    datasourceId: string
+    type: "Text" | "Number" | "Boolean" | "Map" | "List<Link>"
+    value: string | number | boolean | {
+      fallbackLanguage?: { ... }
+      options: { ... }
+    } | {
+      itemType: { ... }
+      fallbackLanguage?: { ... }
+      items: { ... }
+    }
+  }>
+  errors: Array<{
+    datasourceId: string
+    code: "not_found" | "unsupported_type" | "not_set" | "invalid_value" | "incompatible_consumer"
+  }>
+  variables?: Array<{
+    key: string
+    type: "Text" | "Number" | "Boolean" | "List<Text>" | "List<Number>" | "List<Boolean>"
+    value: string | number | boolean | {
+      itemType: { ... }
+      items: { ... }
+    }
+  }>
+  variableErrors?: Array<{
+    key: string
+    code: "not_found" | "unsupported_type" | "not_set" | "invalid_value"
+  }>
+}
+```
+
+### `JourneyExternalValuesRequest`
+
+```ts
+type JourneyExternalValuesRequest = {
+  items: Array<{
+    datasourceId: string
+    context: Record<string, unknown>
+  }>
+}
+```
+
+### `JourneyExternalValuesResponse`
+
+```ts
+type JourneyExternalValuesResponse = {
+  items: Array<{
+    datasourceId: string
+    values: Record<string, unknown>
+    errors?: Array<{
+      result_id?: { ... }
+      code: { ... }
+      message?: { ... }
+    }>
+    policy?: {
+      on_unavailable?: { ... }
+    }
+  }>
+  errors: Array<{
+    datasourceId: string
+    code: "unknown_datasource" | "resolver_unavailable"
+  }>
+}
+```
+
+### `ExternalValueError`
+
+```ts
+type ExternalValueError = {
+  result_id?: string
+  code: string
+  message?: string
+}
+```
+
+### `JourneyTemplatingContext`
+
+What the journey's Handlebars templates need from the organization, derived from the served configuration only. Present when the journey contains templates and templating is enabled for the organization. Read-only: like `featureFlags`, it is dropped from any write, so a client that sends the configu
+
+```ts
+type JourneyTemplatingContext = {
+  templating?: {
+    customVariables: Array<{
+      key: { ... }
+      template: { ... }
+    }>
+    env: Record<string, string | number | boolean | {
+      url: { ... }
+      label: { ... }
+      description?: { ... }
+    }>
+  }
+}
+```
+
+### `JourneyTemplateVariablesResponse`
+
+```ts
+type JourneyTemplateVariablesResponse = {
+  customVariables: Array<{
+    key: string
+    name: string
+  }>
+  environment: Array<{
+    key: string
+    type: "String" | "Text" | "Number" | "Boolean" | "Link"
+    description?: string
+    group?: string
+  }>
+}
+```
+
+### `JourneyTemplating`
+
+```ts
+type JourneyTemplating = {
+  customVariables: Array<{
+    key: string
+    template: string
+  }>
+  env: Record<string, string | number | boolean | {
+    url: string
+    label: string | Record<string, string>
+    description?: string | Record<string, string>
+  }>
+}
+```
+
+### `JourneyTemplatingLink`
+
+A Link variable; label and description are a string or per-language strings, resolved by the runtime
+
+```ts
+type JourneyTemplatingLink = {
+  url: string
+  label: string | Record<string, string>
+  description?: string | Record<string, string>
+}
+```
+
+### `JourneyTemplatingTranslatable`
+
+```ts
+type JourneyTemplatingTranslatable = string | Record<string, string>
+```
+
+### `JourneyEnvironmentVariablesResponse`
+
+```ts
+type JourneyEnvironmentVariablesResponse = {
+  items: Array<{
+    key: string
+    type: "Text" | "Number" | "Boolean" | "Map" | "List<Link>" | "List<Text>" | "List<Number>" | "List<Boolean>"
+    value: string | number | boolean | {
+      fallbackLanguage?: { ... }
+      options: { ... }
+    } | {
+      itemType: { ... }
+      fallbackLanguage?: { ... }
+      items: { ... }
+    } | {
+      itemType: { ... }
+      items: { ... }
+    }
+    description?: string
+  }>
+}
+```
+
 ### `GetJourneysResponse`
 
 ```ts
@@ -1570,7 +2730,9 @@ type JourneyResponse = {
       showStepSubtitle?: { ... }
       showStepper?: { ... }
       showStepperLabels?: { ... }
+      stepperType?: { ... }
       hideNextButton?: { ... }
+      guestVisible?: { ... }
       name: { ... }
       stepId?: { ... }
       schema: { ... }
@@ -1607,8 +2769,11 @@ type JourneyResponse = {
       paramKey: { ... }
       isRequired?: { ... }
       shouldLoadEntity?: { ... }
+      description?: { ... }
     }>
     journey_type?: string
+    protected?: boolean
+    protectedEditable?: string[]
     settings?: {
       embedOptions?: { ... }
       safeModeAutomation?: { ... }
@@ -1617,6 +2782,7 @@ type JourneyResponse = {
       templateId?: { ... }
       entityId?: { ... }
       mappingsAutomationId?: { ... }
+      newMappings?: { ... }
       targetedCustomer?: { ... }
       description?: { ... }
       organizationSettings?: { ... }
@@ -1626,27 +2792,32 @@ type JourneyResponse = {
       entityTags?: { ... }
       addressSuggestionsFileUrl?: { ... }
       addressSuggestionsFileId?: { ... }
+      addressSuggestionsCountryCode?: { ... }
+      addressSuggestionsEnableAutoComplete?: { ... }
+      addressSuggestionsSource?: { ... }
+      addressSuggestionsEnableFreeText?: { ... }
       useNewDesign?: { ... }
       useAustrianLabels?: { ... }
       enableDarkMode?: { ... }
       accessMode?: { ... }
+      authGate?: { ... }
       isPublished?: { ... }
       status?: { ... }
       isActive?: { ... }
       savingProgress?: { ... }
       thirdPartyCookies?: { ... }
+      betaFeatures?: { ... }
+      offline?: { ... }
     }
-    validationRules?: Record<string, string | Record<string, string>>
+    validationRules?: Record<string, string | string[] | Record<string, string | string[]>>
+    _manifest?: string // uuid[]
     createdBy?: string
     updatedBy?: string
     __lastModifiedAt?: string
     createdAt: string
     lastModifiedAt: string
     deletedAt?: string
-    version: number
-    revisions: number
-    featureFlags?: Record<string, unknown>
-  }
+  // ...
 }
 ```
 
@@ -1697,7 +2868,9 @@ type JourneyCreationRequest = {
     showStepSubtitle?: boolean
     showStepper?: boolean
     showStepperLabels?: boolean
+    stepperType?: "numbers" | "progress bar"
     hideNextButton?: boolean
+    guestVisible?: boolean
     name: string
     stepId?: string
     schema: unknown
@@ -1740,8 +2913,11 @@ type JourneyCreationRequest = {
     paramKey: string
     isRequired?: boolean
     shouldLoadEntity?: boolean
+    description?: string
   }>
   journey_type?: string
+  protected?: boolean
+  protectedEditable?: string[]
   settings?: {
     embedOptions?: {
       mode?: { ... }
@@ -1757,6 +2933,7 @@ type JourneyCreationRequest = {
     templateId?: string
     entityId?: string
     mappingsAutomationId?: string
+    newMappings?: boolean
     targetedCustomer?: string
     description?: string
     organizationSettings?: Record<string, boolean>
@@ -1766,23 +2943,20 @@ type JourneyCreationRequest = {
     entityTags?: string[]
     addressSuggestionsFileUrl?: string
     addressSuggestionsFileId?: string
+    addressSuggestionsCountryCode?: string
+    addressSuggestionsEnableAutoComplete?: boolean
+    addressSuggestionsSource?: string[]
+    addressSuggestionsEnableFreeText?: boolean
     useNewDesign?: boolean
     useAustrianLabels?: boolean
     enableDarkMode?: boolean
     accessMode?: "PUBLIC" | "PRIVATE"
+    authGate?: {
+      stepId: { ... }
+    }
     isPublished?: boolean
     status?: string
-    isActive?: boolean
-    savingProgress?: {
-      savingMode?: { ... }
-      supportedVersion?: { ... }
-    }
-    thirdPartyCookies?: boolean
-  }
-  validationRules?: Record<string, string | Record<string, string>>
-  createdBy?: string
-  updatedBy?: string
-  __lastModifiedAt?: string
+  // ...
 }
 ```
 
@@ -1800,7 +2974,9 @@ type JourneyCreationRequestV2 = {
     showStepSubtitle?: boolean
     showStepper?: boolean
     showStepperLabels?: boolean
+    stepperType?: "numbers" | "progress bar"
     hideNextButton?: boolean
+    guestVisible?: boolean
     name: string
     stepId?: string
     schema: unknown
@@ -1843,8 +3019,11 @@ type JourneyCreationRequestV2 = {
     paramKey: string
     isRequired?: boolean
     shouldLoadEntity?: boolean
+    description?: string
   }>
   journey_type?: string
+  protected?: boolean
+  protectedEditable?: string[]
   settings?: {
     embedOptions?: {
       mode?: { ... }
@@ -1858,6 +3037,7 @@ type JourneyCreationRequestV2 = {
     designId?: string
     entityId?: string
     mappingsAutomationId?: string
+    newMappings?: boolean
     templateId?: string
     targetedCustomer?: string
     description?: string
@@ -1867,13 +3047,23 @@ type JourneyCreationRequestV2 = {
     entityTags?: string[]
     addressSuggestionsFileUrl?: string
     addressSuggestionsFileId?: string
+    addressSuggestionsCountryCode?: string
+    addressSuggestionsEnableAutoComplete?: boolean
+    addressSuggestionsSource?: string[]
+    addressSuggestionsEnableFreeText?: boolean
     useNewDesign?: boolean
     thirdPartyCookies?: boolean
     accessMode?: "PUBLIC" | "PRIVATE"
+    authGate?: {
+      stepId: { ... }
+    }
     enableDarkMode?: boolean
-  }
-  validationRules?: Record<string, string | Record<string, string>>
-  _manifest?: string // uuid[]
+    useAustrianLabels?: boolean
+    isActive?: boolean
+    savingProgress?: {
+      mode?: { ... }
+      supportedRevision?: { ... }
+  // ...
 }
 ```
 
@@ -1929,7 +3119,9 @@ type Journey = {
     showStepSubtitle?: boolean
     showStepper?: boolean
     showStepperLabels?: boolean
+    stepperType?: "numbers" | "progress bar"
     hideNextButton?: boolean
+    guestVisible?: boolean
     name: string
     stepId?: string
     schema: unknown
@@ -1972,8 +3164,11 @@ type Journey = {
     paramKey: string
     isRequired?: boolean
     shouldLoadEntity?: boolean
+    description?: string
   }>
   journey_type?: string
+  protected?: boolean
+  protectedEditable?: string[]
   settings?: {
     embedOptions?: {
       mode?: { ... }
@@ -1989,6 +3184,7 @@ type Journey = {
     templateId?: string
     entityId?: string
     mappingsAutomationId?: string
+    newMappings?: boolean
     targetedCustomer?: string
     description?: string
     organizationSettings?: Record<string, boolean>
@@ -1998,26 +3194,44 @@ type Journey = {
     entityTags?: string[]
     addressSuggestionsFileUrl?: string
     addressSuggestionsFileId?: string
+    addressSuggestionsCountryCode?: string
+    addressSuggestionsEnableAutoComplete?: boolean
+    addressSuggestionsSource?: string[]
+    addressSuggestionsEnableFreeText?: boolean
     useNewDesign?: boolean
     useAustrianLabels?: boolean
     enableDarkMode?: boolean
     accessMode?: "PUBLIC" | "PRIVATE"
+    authGate?: {
+      stepId: { ... }
+    }
     isPublished?: boolean
     status?: string
-    isActive?: boolean
-    savingProgress?: {
-      savingMode?: { ... }
-      supportedVersion?: { ... }
-    }
-    thirdPartyCookies?: boolean
-  }
-  validationRules?: Record<string, string | Record<string, string>>
-  createdBy?: string
-  updatedBy?: string
-  __lastModifiedAt?: string
-  createdAt: string
-  lastModifiedAt: string
   // ...
+}
+```
+
+### `JourneyServedRevision`
+
+Which revision the runtime read served: the requested one, or the published version when no revision was requested. Absent while the journey has not adopted versioning and on legacy `version` reads.
+
+
+```ts
+type JourneyServedRevision = {
+  revision_id?: string
+}
+```
+
+### `JourneyActivationGuarantee`
+
+Journeys read from the API always carry an explicit `settings.isActive`. The flag remains optional in request bodies.
+
+
+```ts
+type JourneyActivationGuarantee = {
+  settings: {
+    isActive: boolean
+  }
 }
 ```
 
@@ -2038,6 +3252,362 @@ type JourneyAuditInfo = {
   deletedAt?: string
   version: number
   revisions: number
+}
+```
+
+### `JourneyRevisionRequest`
+
+The complete journey configuration a revision is created from, same shape as the `PUT` body. Server-managed attributes of the journey record (`revisions`, `version`, publish metadata) are ignored.
+
+
+```ts
+type JourneyRevisionRequest = {
+  journeyId?: string
+  organizationId: string
+  brandId?: string
+  name: string
+  steps: Array<{
+    showStepName?: boolean
+    title?: string
+    subTitle?: string
+    showStepSubtitle?: boolean
+    showStepper?: boolean
+    showStepperLabels?: boolean
+    stepperType?: "numbers" | "progress bar"
+    hideNextButton?: boolean
+    guestVisible?: boolean
+    name: string
+    stepId?: string
+    schema: unknown
+    uischema: unknown
+    maxWidth?: "small" | "medium" | "large" | "extra large"
+  }>
+  design?: {
+    logoUrl?: string
+    theme?: Record<string, unknown>
+    designTokens?: object
+  }
+  rules?: Array<{
+    type: "inject" | "injectWithKey"
+    sourceType: "journey" | "step" | "block"
+    source: string
+    target: string
+  }>
+  logics?: Array<{
+    autoGeneratedId?: string
+    conditions: string[]
+    actions: string[]
+  }>
+  logicsV4?: Record<string, {
+    id?: string // uuid
+    protected?: boolean
+    action?: string
+    triggeredOn?: string
+    conditions?: Array<Array<{
+      operator?: { ... }
+      functionName?: { ... }
+      fact?: { ... }
+      value?: { ... }
+      args?: { ... }
+    }>>
+    settings?: object
+  }>
+  contextSchema?: Array<{
+    id?: string // uuid
+    type: string
+    paramKey: string
+    isRequired?: boolean
+    shouldLoadEntity?: boolean
+    description?: string
+  }>
+  journey_type?: string
+  protected?: boolean
+  protectedEditable?: string[]
+  settings?: {
+    embedOptions?: {
+      mode?: { ... }
+      lang?: { ... }
+      width?: { ... }
+      topBar?: { ... }
+      scrollToTop?: { ... }
+      button?: { ... }
+    }
+    safeModeAutomation?: boolean
+    canary?: boolean
+    designId: string
+    templateId?: string
+    entityId?: string
+    mappingsAutomationId?: string
+    newMappings?: boolean
+    targetedCustomer?: string
+    description?: string
+    organizationSettings?: Record<string, boolean>
+    publicToken?: string
+    runtimeEntities?: "ORDER" | "OPPORTUNITY"[]
+    filePurposes?: string[]
+    entityTags?: string[]
+    addressSuggestionsFileUrl?: string
+    addressSuggestionsFileId?: string
+    addressSuggestionsCountryCode?: string
+    addressSuggestionsEnableAutoComplete?: boolean
+    addressSuggestionsSource?: string[]
+    addressSuggestionsEnableFreeText?: boolean
+    useNewDesign?: boolean
+    useAustrianLabels?: boolean
+    enableDarkMode?: boolean
+    accessMode?: "PUBLIC" | "PRIVATE"
+    authGate?: {
+      stepId: { ... }
+    }
+    isPublished?: boolean
+    status?: string
+  // ...
+}
+```
+
+### `PublishRevisionRequest`
+
+```ts
+type PublishRevisionRequest = {
+  revision_id: string
+  name?: string
+  description?: string
+}
+```
+
+### `RevisionMetadataUpdate`
+
+```ts
+type RevisionMetadataUpdate = {
+  name?: string
+  description?: string
+}
+```
+
+### `JourneyRevisionSummary`
+
+```ts
+type JourneyRevisionSummary = {
+  revision_id: string
+  created_at: string // date-time
+  created_by?: string
+  name?: string
+  description?: string
+  published_at?: string // date-time
+  is_published: boolean
+  metadata_updated_at?: string // date-time
+  metadata_updated_by?: string
+  mapping_config_version?: number
+}
+```
+
+### `JourneyRevisionList`
+
+```ts
+type JourneyRevisionList = {
+  results: Array<{
+    revision_id: string
+    created_at: string // date-time
+    created_by?: string
+    name?: string
+    description?: string
+    published_at?: string // date-time
+    is_published: boolean
+    metadata_updated_at?: string // date-time
+    metadata_updated_by?: string
+    mapping_config_version?: number
+  }>
+  next_cursor?: string
+}
+```
+
+### `JourneyRevision`
+
+```ts
+type JourneyRevision = {
+  revision_id: string
+  created_at: string // date-time
+  created_by?: string
+  name?: string
+  description?: string
+  published_at?: string // date-time
+  is_published: boolean
+  metadata_updated_at?: string // date-time
+  metadata_updated_by?: string
+  mapping_config_version?: number
+  configuration: {
+    journeyId?: string
+    organizationId: string
+    brandId?: string
+    name: string
+    steps: Array<{
+      showStepName?: { ... }
+      title?: { ... }
+      subTitle?: { ... }
+      showStepSubtitle?: { ... }
+      showStepper?: { ... }
+      showStepperLabels?: { ... }
+      stepperType?: { ... }
+      hideNextButton?: { ... }
+      guestVisible?: { ... }
+      name: { ... }
+      stepId?: { ... }
+      schema: { ... }
+      uischema: { ... }
+      maxWidth?: { ... }
+    }>
+    design?: {
+      logoUrl?: { ... }
+      theme?: { ... }
+      designTokens?: { ... }
+    }
+    rules?: Array<{
+      type: { ... }
+      sourceType: { ... }
+      source: { ... }
+      target: { ... }
+    }>
+    logics?: Array<{
+      autoGeneratedId?: { ... }
+      conditions: { ... }
+      actions: { ... }
+    }>
+    logicsV4?: Record<string, {
+      id?: { ... }
+      protected?: { ... }
+      action?: { ... }
+      triggeredOn?: { ... }
+      conditions?: { ... }
+      settings?: { ... }
+    }>
+    contextSchema?: Array<{
+      id?: { ... }
+      type: { ... }
+      paramKey: { ... }
+      isRequired?: { ... }
+      shouldLoadEntity?: { ... }
+      description?: { ... }
+    }>
+    journey_type?: string
+    protected?: boolean
+    protectedEditable?: string[]
+    settings?: {
+      embedOptions?: { ... }
+      safeModeAutomation?: { ... }
+      canary?: { ... }
+      designId: { ... }
+      templateId?: { ... }
+      entityId?: { ... }
+      mappingsAutomationId?: { ... }
+      newMappings?: { ... }
+      targetedCustomer?: { ... }
+      description?: { ... }
+      organizationSettings?: { ... }
+      publicToken?: { ... }
+      runtimeEntities?: { ... }
+      filePurposes?: { ... }
+      entityTags?: { ... }
+      addressSuggestionsFileUrl?: { ... }
+      addressSuggestionsFileId?: { ... }
+      addressSuggestionsCountryCode?: { ... }
+      addressSuggestionsEnableAutoComplete?: { ... }
+      addressSuggestionsSource?: { ... }
+      addressSuggestionsEnableFreeText?: { ... }
+      useNewDesign?: { ... }
+      useAustrianLabels?: { ... }
+      enableDarkMode?: { ... }
+      accessMode?: { ... }
+      authGate?: { ... }
+      isPublished?: { ... }
+      status?: { ... }
+      isActive?: { ... }
+      savingProgress?: { ... }
+      thirdPartyCookies?: { ... }
+      betaFeatures?: { ... }
+  // ...
+}
+```
+
+### `JourneyRevisionConflict`
+
+```ts
+type JourneyRevisionConflict = {
+  message: string
+  latest_revision: {
+    revision_id: string
+    created_at: string // date-time
+    created_by?: string
+    name?: string
+    description?: string
+    published_at?: string // date-time
+    is_published: boolean
+    metadata_updated_at?: string // date-time
+    metadata_updated_by?: string
+    mapping_config_version?: number
+  }
+}
+```
+
+### `JourneyPublishState`
+
+```ts
+type JourneyPublishState = {
+  journey_id: string // uuid
+  published_revision_id: string
+  published_at?: string // date-time
+  published_by?: string
+}
+```
+
+### `PublishResult`
+
+```ts
+type PublishResult = {
+  revision_id: string
+  name: string
+  published_at: string // date-time
+  published_by?: string
+  post_publish_warnings: string[]
+}
+```
+
+### `JourneyValidationResponse`
+
+```ts
+type JourneyValidationResponse = {
+  valid: boolean
+  errors: Array<{
+    type?: string
+    severity?: "critical" | "high" | "medium" | "low"
+    message?: string
+    affectedStepIds?: string[]
+    count?: number
+    autoFix?: {
+      feasible?: { ... }
+      confidence?: { ... }
+      reason?: { ... }
+      details?: { ... }
+    }
+  }>
+  warnings?: Array<{
+    type?: string
+    message?: string
+  }>
+}
+```
+
+### `JourneyValidationError`
+
+```ts
+type JourneyValidationError = {
+  error: string
+  message: string
+  details: Array<{
+    pattern?: string
+    severity?: "critical" | "high" | "medium" | "low"
+    message?: string
+    count?: number
+  }>
 }
 ```
 
@@ -2124,6 +3694,7 @@ type GenerateDocumentRequest = {
   context_data: {
     additionalProperties?: string
   }
+  context_entity_id?: string // uuid
   language?: string
 }
 ```
@@ -2135,6 +3706,7 @@ type GetSettingsForJourney = {
   organizationId?: string
   canary?: boolean
   thirdPartyCookies?: boolean
+  offline?: boolean
 }
 ```
 
@@ -2152,19 +3724,20 @@ type ButtonOption = {
 ### `ValidationRuleRef`
 
 References to validation rules organized by blocks and fields.
-Maps block IDs to either rule IDs (for block-level rules) or rule references (for field-level rules).
+Maps block IDs to either one or more ordered rule IDs (for block-level rules)
+or rule references (for field-level rules).
 
 
 ```ts
-type ValidationRuleRef = Record<string, string | Record<string, string>>
+type ValidationRuleRef = Record<string, string | string[] | Record<string, string | string[]>>
 ```
 
 ### `RuleRef`
 
 Field-level rule references within a block.
-Maps field names to rule IDs.
+Maps field names to one or more ordered rule IDs.
 
 
 ```ts
-type RuleRef = Record<string, string>
+type RuleRef = Record<string, string | string[]>
 ```

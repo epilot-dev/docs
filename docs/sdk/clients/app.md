@@ -37,6 +37,7 @@ const { data } = await appClient.getPublicFacingComponent(...)
 - [`patchInstallation`](#patchinstallation)
 - [`uninstall`](#uninstall)
 - [`promoteVersion`](#promoteversion)
+- [`resolveOptions`](#resolveoptions)
 
 **App Configuration**
 - [`listConfigurations`](#listconfigurations)
@@ -65,18 +66,29 @@ const { data } = await appClient.getPublicFacingComponent(...)
 - [`queryEvents`](#queryevents)
 - [`ingestEvent`](#ingestevent)
 
+**App Proxy**
+- [`publicProxyGet`](#publicproxyget)
+- [`publicProxyPost`](#publicproxypost)
+- [`publicProxyPut`](#publicproxyput)
+- [`publicProxyPatch`](#publicproxypatch)
+- [`publicProxyDelete`](#publicproxydelete)
+
 **Schemas**
 - [`Role`](#role)
 - [`Options`](#options)
+- [`ObjectField`](#objectfield)
 - [`Option`](#option)
 - [`OptionsRef`](#optionsref)
 - [`S3Reference`](#s3reference)
 - [`ComponentType`](#componenttype)
+- [`FunctionDefinition`](#functiondefinition)
 - [`Author`](#author)
 - [`NotificationConfig`](#notificationconfig)
 - [`NotificationEvent`](#notificationevent)
 - [`BaseComponentCommon`](#basecomponentcommon)
 - [`BaseComponent`](#basecomponent)
+- [`ApiProxyComponent`](#apiproxycomponent)
+- [`ExternalValuesComponent`](#externalvaluescomponent)
 - [`CustomCapabilityComponent`](#customcapabilitycomponent)
 - [`CustomPageComponent`](#custompagecomponent)
 - [`CustomPageConfig`](#custompageconfig)
@@ -86,7 +98,7 @@ const { data } = await appClient.getPublicFacingComponent(...)
 - [`CustomFlowActionComponent`](#customflowactioncomponent)
 - [`BaseCustomActionConfig`](#basecustomactionconfig)
 - [`ExternalIntegrationCustomActionConfig`](#externalintegrationcustomactionconfig)
-- [`SandboxCustomActionConfig`](#sandboxcustomactionconfig)
+- [`FunctionRefCustomActionConfig`](#functionrefcustomactionconfig)
 - [`CustomFlowConfig`](#customflowconfig)
 - [`ExternalProductCatalogComponent`](#externalproductcatalogcomponent)
 - [`ExternalProductCatalogConfig`](#externalproductcatalogconfig)
@@ -99,9 +111,15 @@ const { data } = await appClient.getPublicFacingComponent(...)
 - [`PortalExtensionHookMeterReadingPlausibilityCheck`](#portalextensionhookmeterreadingplausibilitycheck)
 - [`PortalExtensionHookPriceDataRetrieval`](#portalextensionhookpricedataretrieval)
 - [`PortalExtensionHookConsumptionDataRetrieval`](#portalextensionhookconsumptiondataretrieval)
+- [`PortalExtensionHookDataExport`](#portalextensionhookdataexport)
+- [`PortalExtensionHookVisualizationMetadata`](#portalextensionhookvisualizationmetadata)
 - [`PortalExtensionHookCostDataRetrieval`](#portalextensionhookcostdataretrieval)
+- [`PortalExtensionHookChangeEmail`](#portalextensionhookchangeemail)
+- [`PortalExtensionHookChangePassword`](#portalextensionhookchangepassword)
+- [`PortalExtensionHookDeleteAccount`](#portalextensionhookdeleteaccount)
 - [`PortalExtensionSeamlessLink`](#portalextensionseamlesslink)
 - [`PortalExtensionAuthBlock`](#portalextensionauthblock)
+- [`PortalExtensionSecureProxy`](#portalextensionsecureproxy)
 - [`ExternalProductCatalogAuthBlock`](#externalproductcatalogauthblock)
 - [`OverrideDevMode`](#overridedevmode)
 - [`JourneyBlockConfig`](#journeyblockconfig)
@@ -111,13 +129,22 @@ const { data } = await appClient.getPublicFacingComponent(...)
 - [`JourneyBlockComponentArgs`](#journeyblockcomponentargs)
 - [`TextArg`](#textarg)
 - [`BooleanArg`](#booleanarg)
+- [`BlockReferenceArg`](#blockreferencearg)
 - [`EnumArg`](#enumarg)
 - [`BillingFrequency`](#billingfrequency)
 - [`Pricing`](#pricing)
 - [`Audit`](#audit)
 - [`Review`](#review)
+- [`InternalReview`](#internalreview)
 - [`ConfigurationMetadata`](#configurationmetadata)
 - [`ConfigurationVersion`](#configurationversion)
+- [`ApiProxyConfig`](#apiproxyconfig)
+- [`ExternalValuesConfig`](#externalvaluesconfig)
+- [`ExternalValuesHook`](#externalvalueshook)
+- [`ContextRequirement`](#contextrequirement)
+- [`EntityContextRequirement`](#entitycontextrequirement)
+- [`ValueContextRequirement`](#valuecontextrequirement)
+- [`ExternalValuesResult`](#externalvaluesresult)
 - [`Grants`](#grants)
 - [`BlueprintRef`](#blueprintref)
 - [`Installation`](#installation)
@@ -392,6 +419,35 @@ const { data } = await client.getPublicConfiguration({
       "configuration": {}
     }
   ],
+  "functions": [
+    {
+      "name": "string",
+      "type": "workflow",
+      "label": {},
+      "description": {},
+      "code": "string",
+      "schedule": "rate(30 minutes)",
+      "schedule_timezone": "Europe/Berlin",
+      "schedule_overlap": "skip",
+      "secrets": ["string"]
+    }
+  ],
+  "options": [
+    {
+      "key": "string",
+      "label": "string",
+      "required": true,
+      "description": "string",
+      "repeatable": true,
+      "fields": [],
+      "value": {},
+      "type": "text",
+      "sensitive": true,
+      "configured": true,
+      "lifted": true,
+      "value_updated_at": "string"
+    }
+  ],
   "is_beta": true,
   "deprecated_at": "string",
   "version": "string",
@@ -403,7 +459,8 @@ const { data } = await client.getPublicConfiguration({
   },
   "blueprint_ref": {
     "manifest_id": "string",
-    "job_id": "string"
+    "job_id": "string",
+    "source_blueprint_file": "string"
   },
   "latest_version": "string",
   "public": true,
@@ -412,6 +469,8 @@ const { data } = await client.getPublicConfiguration({
       "app_id": "string",
       "owner_org_id": "string",
       "components": [],
+      "functions": [],
+      "options": [],
       "visibility": "private",
       "public": false,
       "pending": false,
@@ -488,20 +547,36 @@ const { data } = await client.getConfiguration({
   "components": [
     {
       "component_type": "CUSTOM_JOURNEY_BLOCK",
-      "configuration": {
-        "override_dev_mode": {
-          "override_url": "http://localhost:3000"
-        },
-        "component_url": "https://cdn.apps.com/123/v1.0.0/bundle.js",
-        "component_tag": "string",
-        "component_args": [
-          {
-            "type": "text"
-          }
-        ],
-        "component_size": 0,
-        "component_mapping": {}
-      }
+      "configuration": {}
+    }
+  ],
+  "functions": [
+    {
+      "name": "string",
+      "type": "workflow",
+      "label": {},
+      "description": {},
+      "code": "string",
+      "schedule": "rate(30 minutes)",
+      "schedule_timezone": "Europe/Berlin",
+      "schedule_overlap": "skip",
+      "secrets": ["string"]
+    }
+  ],
+  "options": [
+    {
+      "key": "string",
+      "label": "string",
+      "required": true,
+      "description": "string",
+      "repeatable": true,
+      "fields": [],
+      "value": {},
+      "type": "text",
+      "sensitive": true,
+      "configured": true,
+      "lifted": true,
+      "value_updated_at": "string"
     }
   ],
   "visibility": "private",
@@ -515,15 +590,13 @@ const { data } = await client.getConfiguration({
   "role": {
     "id": "string",
     "grants": [
-      {
-        "action": "string",
-        "resource": "string"
-      }
+      {}
     ]
   },
   "blueprint_ref": {
     "manifest_id": "string",
-    "job_id": "string"
+    "job_id": "string",
+    "source_blueprint_file": "string"
   },
   "version_audit": {
     "created_at": "string",
@@ -611,7 +684,8 @@ const { data } = await client.queryEvents(
       source: ['CUSTOM_JOURNEY_BLOCK'],
       component_id: ['string'],
       event_type: ['ERROR'],
-      correlation_id: 'string'
+      correlation_id: 'string',
+      search: 'string'
     },
     aggregation: {
       group_by: ['source'],
@@ -619,7 +693,8 @@ const { data } = await client.queryEvents(
     },
     pagination: {
       page: 1,
-      page_size: 100
+      page_size: 100,
+      before: '1970-01-01T00:00:00.000Z'
     },
     sort: {
       field: 'timestamp',
@@ -644,7 +719,8 @@ const { data } = await client.queryEvents(
       "source": ["CUSTOM_JOURNEY_BLOCK"],
       "component_id": ["string"],
       "event_type": ["ERROR"],
-      "correlation_id": "string"
+      "correlation_id": "string",
+      "search": "string"
     },
     "aggregation": {
       "group_by": ["source"],
@@ -652,7 +728,8 @@ const { data } = await client.queryEvents(
     },
     "pagination": {
       "page": 1,
-      "page_size": 100
+      "page_size": 100,
+      "before": "1970-01-01T00:00:00.000Z"
     },
     "sort": {
       "field": "timestamp",
@@ -843,25 +920,9 @@ const { data } = await client.listVersions({
     {
       "app_id": "string",
       "owner_org_id": "string",
-      "components": [
-        {
-          "component_type": "CUSTOM_JOURNEY_BLOCK",
-          "configuration": {
-            "override_dev_mode": {
-              "override_url": "http://localhost:3000"
-            },
-            "component_url": "https://cdn.apps.com/123/v1.0.0/bundle.js",
-            "component_tag": "string",
-            "component_args": [
-              {
-                "type": "text"
-              }
-            ],
-            "component_size": 0,
-            "component_mapping": {}
-          }
-        }
-      ],
+      "components": [],
+      "functions": [],
+      "options": [],
       "visibility": "private",
       "public": false,
       "pending": false,
@@ -870,27 +931,9 @@ const { data } = await client.listVersions({
       "deprecated_at": "string",
       "changelog": "string",
       "review_status": "approved",
-      "role": {
-        "id": "string",
-        "grants": [
-          {
-            "action": "string",
-            "resource": "string"
-          }
-        ]
-      },
-      "blueprint_ref": {
-        "manifest_id": "string",
-        "job_id": "string"
-      },
-      "version_audit": {
-        "created_at": "string",
-        "created_by": "string",
-        "updated_at": "string",
-        "updated_by": "string",
-        "versioned_at": "string",
-        "versioned_by": "string"
-      }
+      "role": {},
+      "blueprint_ref": {},
+      "version_audit": {}
     }
   ],
   "pagination": {
@@ -961,20 +1004,36 @@ const { data } = await client.getVersion({
   "components": [
     {
       "component_type": "CUSTOM_JOURNEY_BLOCK",
-      "configuration": {
-        "override_dev_mode": {
-          "override_url": "http://localhost:3000"
-        },
-        "component_url": "https://cdn.apps.com/123/v1.0.0/bundle.js",
-        "component_tag": "string",
-        "component_args": [
-          {
-            "type": "text"
-          }
-        ],
-        "component_size": 0,
-        "component_mapping": {}
-      }
+      "configuration": {}
+    }
+  ],
+  "functions": [
+    {
+      "name": "string",
+      "type": "workflow",
+      "label": {},
+      "description": {},
+      "code": "string",
+      "schedule": "rate(30 minutes)",
+      "schedule_timezone": "Europe/Berlin",
+      "schedule_overlap": "skip",
+      "secrets": ["string"]
+    }
+  ],
+  "options": [
+    {
+      "key": "string",
+      "label": "string",
+      "required": true,
+      "description": "string",
+      "repeatable": true,
+      "fields": [],
+      "value": {},
+      "type": "text",
+      "sensitive": true,
+      "configured": true,
+      "lifted": true,
+      "value_updated_at": "string"
     }
   ],
   "visibility": "private",
@@ -988,15 +1047,13 @@ const { data } = await client.getVersion({
   "role": {
     "id": "string",
     "grants": [
-      {
-        "action": "string",
-        "resource": "string"
-      }
+      {}
     ]
   },
   "blueprint_ref": {
     "manifest_id": "string",
-    "job_id": "string"
+    "job_id": "string",
+    "source_blueprint_file": "string"
   },
   "version_audit": {
     "created_at": "string",
@@ -1048,7 +1105,51 @@ const { data } = await client.patchVersion(
         action: 'string',
         resource: 'string'
       }
-    ]
+    ],
+    functions: [
+      {
+        name: 'string',
+        type: 'workflow',
+        label: {
+          en: 'string',
+          de: 'string'
+        },
+        description: {
+          en: 'string',
+          de: 'string'
+        },
+        code: 'string',
+        schedule: 'rate(30 minutes)',
+        schedule_timezone: 'Europe/Berlin',
+        schedule_overlap: 'skip',
+        secrets: ['string']
+      }
+    ],
+    options: [
+      {
+        key: 'string',
+        label: 'string',
+        required: true,
+        description: 'string',
+        repeatable: true,
+        fields: [
+          {
+            key: 'string',
+            label: 'string',
+            description: 'string',
+            required: true,
+            type: 'text'
+          }
+        ],
+        value: {},
+        type: 'text',
+        sensitive: true,
+        configured: true,
+        lifted: true,
+        value_updated_at: 'string'
+      }
+    ],
+    changelog: 'string'
   },
 )
 ```
@@ -1249,11 +1350,16 @@ Clone an existing app version to create a new version
 `POST /v1/app-configurations/{appId}/versions/{sourceVersion}/clone-to/{targetVersion}`
 
 ```ts
-const { data } = await client.cloneVersion({
-  appId: 'example',
-  sourceVersion: 'example',
-  targetVersion: 'example',
-})
+const { data } = await client.cloneVersion(
+  {
+    appId: 'example',
+    sourceVersion: 'example',
+    targetVersion: 'example',
+  },
+  {
+    changelog: 'string'
+  },
+)
 ```
 
 <details>
@@ -1298,48 +1404,15 @@ const { data } = await client.listInstallations({
       "owner_org_id": "string",
       "enabled": true,
       "name": "string",
-      "option_values": [
-        {
-          "component_id": "string",
-          "options": [
-            {
-              "key": "string",
-              "value": {}
-            }
-          ]
-        }
-      ],
-      "components": [
-        {
-          "component_type": "CUSTOM_JOURNEY_BLOCK",
-          "configuration": {
-            "override_dev_mode": {
-              "override_url": "http://localhost:3000"
-            },
-            "component_url": "https://cdn.apps.com/123/v1.0.0/bundle.js",
-            "component_tag": "string",
-            "component_args": [
-              {
-                "type": "text"
-              }
-            ],
-            "component_size": 0,
-            "component_mapping": {}
-          }
-        }
-      ],
+      "icon_url": "string",
+      "option_values": [],
+      "components": [],
+      "functions": [],
+      "options": [],
       "installed_version": "string",
       "role": "string",
-      "blueprint_ref": {
-        "manifest_id": "string",
-        "job_id": "string"
-      },
-      "installation_audit": {
-        "created_at": "string",
-        "created_by": "string",
-        "updated_at": "string",
-        "updated_by": "string"
-      },
+      "blueprint_ref": {},
+      "installation_audit": {},
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
     }
   ],
@@ -1377,6 +1450,7 @@ const { data } = await client.getInstallation({
   "owner_org_id": "string",
   "enabled": true,
   "name": "string",
+  "icon_url": "string",
   "option_values": [
     {
       "component_id": "string",
@@ -1407,11 +1481,55 @@ const { data } = await client.getInstallation({
       }
     }
   ],
+  "functions": [
+    {
+      "name": "string",
+      "type": "workflow",
+      "label": {
+        "en": "string",
+        "de": "string"
+      },
+      "description": {
+        "en": "string",
+        "de": "string"
+      },
+      "code": "string",
+      "schedule": "rate(30 minutes)",
+      "schedule_timezone": "Europe/Berlin",
+      "schedule_overlap": "skip",
+      "secrets": ["string"]
+    }
+  ],
+  "options": [
+    {
+      "key": "string",
+      "label": "string",
+      "required": true,
+      "description": "string",
+      "repeatable": true,
+      "fields": [
+        {
+          "key": "string",
+          "label": "string",
+          "description": "string",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "value": {},
+      "type": "text",
+      "sensitive": true,
+      "configured": true,
+      "lifted": true,
+      "value_updated_at": "string"
+    }
+  ],
   "installed_version": "string",
   "role": "string",
   "blueprint_ref": {
     "manifest_id": "string",
-    "job_id": "string"
+    "job_id": "string",
+    "source_blueprint_file": "string"
   },
   "installation_audit": {
     "created_at": "string",
@@ -1466,6 +1584,7 @@ const { data } = await client.install(
   "owner_org_id": "string",
   "enabled": true,
   "name": "string",
+  "icon_url": "string",
   "option_values": [
     {
       "component_id": "string",
@@ -1496,11 +1615,55 @@ const { data } = await client.install(
       }
     }
   ],
+  "functions": [
+    {
+      "name": "string",
+      "type": "workflow",
+      "label": {
+        "en": "string",
+        "de": "string"
+      },
+      "description": {
+        "en": "string",
+        "de": "string"
+      },
+      "code": "string",
+      "schedule": "rate(30 minutes)",
+      "schedule_timezone": "Europe/Berlin",
+      "schedule_overlap": "skip",
+      "secrets": ["string"]
+    }
+  ],
+  "options": [
+    {
+      "key": "string",
+      "label": "string",
+      "required": true,
+      "description": "string",
+      "repeatable": true,
+      "fields": [
+        {
+          "key": "string",
+          "label": "string",
+          "description": "string",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "value": {},
+      "type": "text",
+      "sensitive": true,
+      "configured": true,
+      "lifted": true,
+      "value_updated_at": "string"
+    }
+  ],
   "installed_version": "string",
   "role": "string",
   "blueprint_ref": {
     "manifest_id": "string",
-    "job_id": "string"
+    "job_id": "string",
+    "source_blueprint_file": "string"
   },
   "installation_audit": {
     "created_at": "string",
@@ -1584,6 +1747,7 @@ const { data } = await client.promoteVersion({
   "owner_org_id": "string",
   "enabled": true,
   "name": "string",
+  "icon_url": "string",
   "option_values": [
     {
       "component_id": "string",
@@ -1614,11 +1778,55 @@ const { data } = await client.promoteVersion({
       }
     }
   ],
+  "functions": [
+    {
+      "name": "string",
+      "type": "workflow",
+      "label": {
+        "en": "string",
+        "de": "string"
+      },
+      "description": {
+        "en": "string",
+        "de": "string"
+      },
+      "code": "string",
+      "schedule": "rate(30 minutes)",
+      "schedule_timezone": "Europe/Berlin",
+      "schedule_overlap": "skip",
+      "secrets": ["string"]
+    }
+  ],
+  "options": [
+    {
+      "key": "string",
+      "label": "string",
+      "required": true,
+      "description": "string",
+      "repeatable": true,
+      "fields": [
+        {
+          "key": "string",
+          "label": "string",
+          "description": "string",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "value": {},
+      "type": "text",
+      "sensitive": true,
+      "configured": true,
+      "lifted": true,
+      "value_updated_at": "string"
+    }
+  ],
   "installed_version": "string",
   "role": "string",
   "blueprint_ref": {
     "manifest_id": "string",
-    "job_id": "string"
+    "job_id": "string",
+    "source_blueprint_file": "string"
   },
   "installation_audit": {
     "created_at": "string",
@@ -1627,6 +1835,59 @@ const { data } = await client.promoteVersion({
     "updated_by": "string"
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
+}
+```
+
+</details>
+
+---
+
+### `resolveOptions`
+
+Resolve the effective app-level options of an installation, including decrypted sensitive values (secrets). This endpoint accepts epilot internal-auth tokens exclusively (internal service calls, e.g. 
+
+`POST /v1/app/{appId}/options/resolve`
+
+```ts
+const { data } = await client.resolveOptions(
+  {
+    appId: 'example',
+  },
+  {
+    keys: ['string']
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "options": [
+    {
+      "key": "string",
+      "label": "string",
+      "required": true,
+      "description": "string",
+      "repeatable": true,
+      "fields": [
+        {
+          "key": "string",
+          "label": "string",
+          "description": "string",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "value": {},
+      "type": "text",
+      "sensitive": true,
+      "configured": true,
+      "lifted": true,
+      "value_updated_at": "string"
+    }
+  ]
 }
 ```
 
@@ -1664,6 +1925,100 @@ const { data } = await client.ingestEvent(
 
 ---
 
+### `publicProxyGet`
+
+Forward a GET request to a registered proxy target from a public-facing component (e.g. journey blocks)
+
+`GET /v1/public/app/{appId}/proxy/{proxyName}/{path}`
+
+```ts
+const { data } = await client.publicProxyGet({
+  appId: 'example',
+  proxyName: 'example',
+  path: 'example',
+  query: 'example',
+})
+```
+
+---
+
+### `publicProxyPost`
+
+Forward a POST request to a registered proxy target from a public-facing component (e.g. journey blocks)
+
+`POST /v1/public/app/{appId}/proxy/{proxyName}/{path}`
+
+```ts
+const { data } = await client.publicProxyPost(
+  {
+    appId: 'example',
+    proxyName: 'example',
+    path: 'example',
+    query: 'example',
+  },
+  {},
+)
+```
+
+---
+
+### `publicProxyPut`
+
+Forward a PUT request to a registered proxy target from a public-facing component
+
+`PUT /v1/public/app/{appId}/proxy/{proxyName}/{path}`
+
+```ts
+const { data } = await client.publicProxyPut(
+  {
+    appId: 'example',
+    proxyName: 'example',
+    path: 'example',
+    query: 'example',
+  },
+  {},
+)
+```
+
+---
+
+### `publicProxyPatch`
+
+Forward a PATCH request to a registered proxy target from a public-facing component
+
+`PATCH /v1/public/app/{appId}/proxy/{proxyName}/{path}`
+
+```ts
+const { data } = await client.publicProxyPatch(
+  {
+    appId: 'example',
+    proxyName: 'example',
+    path: 'example',
+    query: 'example',
+  },
+  {},
+)
+```
+
+---
+
+### `publicProxyDelete`
+
+Forward a DELETE request to a registered proxy target from a public-facing component
+
+`DELETE /v1/public/app/{appId}/proxy/{proxyName}/{path}`
+
+```ts
+const { data } = await client.publicProxyDelete({
+  appId: 'example',
+  proxyName: 'example',
+  path: 'example',
+  query: 'example',
+})
+```
+
+---
+
 ## Schemas
 
 ### `Role`
@@ -1680,7 +2035,7 @@ type Role = {
 
 ### `Options`
 
-Options for the component configuration
+An option declaration — a setting the installing org fills in. Declared at app level.
 
 ```ts
 type Options = {
@@ -1688,7 +2043,35 @@ type Options = {
   label?: string
   required?: boolean
   description?: string
+  repeatable?: boolean
+  fields?: Array<{
+    key: string
+    label?: string
+    description?: string
+    required?: boolean
+    type: "text" | "number" | "boolean" | "secret"
+  }>
   value?: unknown
+  type: "text" | "number" | "boolean" | "secret" | "object"
+  sensitive?: boolean
+  configured?: boolean
+  lifted?: boolean
+  value_updated_at?: string
+}
+```
+
+### `ObjectField`
+
+One declared field inside a `type: object` option. Fields are primitives — object nesting
+is not supported.
+
+
+```ts
+type ObjectField = {
+  key: string
+  label?: string
+  description?: string
+  required?: boolean
   type: "text" | "number" | "boolean" | "secret"
 }
 ```
@@ -1728,7 +2111,32 @@ type S3Reference = {
 Type of app component
 
 ```ts
-type ComponentType = "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE"
+type ComponentType = "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE" | "API_PROXY" | "EXTERNAL_VALUES" | "APP_FUNCTION"
+```
+
+### `FunctionDefinition`
+
+A named server-side function belonging to the app. Runs in the epilot code-execution sandbox with an installation-scoped app token. Functions with a schedule are executed automatically once per installation.
+
+
+```ts
+type FunctionDefinition = {
+  name: string
+  type: "workflow" | "scheduled"
+  label?: {
+    en?: string
+    de: string
+  }
+  description?: {
+    en?: string
+    de: string
+  }
+  code: string
+  schedule?: string
+  schedule_timezone?: string
+  schedule_overlap?: "skip"
+  secrets?: string[]
+}
 ```
 
 ### `Author`
@@ -1774,9 +2182,22 @@ type BaseComponentCommon = {
     label?: string
     required?: boolean
     description?: string
+    repeatable?: boolean
+    fields?: Array<{
+      key: { ... }
+      label?: { ... }
+      description?: { ... }
+      required?: { ... }
+      type: { ... }
+    }>
     value?: unknown
-    type: "text" | "number" | "boolean" | "secret"
+    type: "text" | "number" | "boolean" | "secret" | "object"
+    sensitive?: boolean
+    configured?: boolean
+    lifted?: boolean
+    value_updated_at?: string
   }>
+  uses_options?: string[]
   surfaces?: object
 }
 ```
@@ -1799,10 +2220,67 @@ type BaseComponent = {
     label?: string
     required?: boolean
     description?: string
+    repeatable?: boolean
+    fields?: Array<{
+      key: { ... }
+      label?: { ... }
+      description?: { ... }
+      required?: { ... }
+      type: { ... }
+    }>
     value?: unknown
-    type: "text" | "number" | "boolean" | "secret"
+    type: "text" | "number" | "boolean" | "secret" | "object"
+    sensitive?: boolean
+    configured?: boolean
+    lifted?: boolean
+    value_updated_at?: string
   }>
+  uses_options?: string[]
   surfaces?: object
+}
+```
+
+### `ApiProxyComponent`
+
+```ts
+type ApiProxyComponent = {
+  component_type: "API_PROXY"
+  configuration: {
+    name: string
+    target: string
+    auth_type: "header" | "bearer" | "basic" | "oauth2" | "none"
+    auth_header?: string
+    token_url?: string // uri
+    headers?: Record<string, string>
+  }
+}
+```
+
+### `ExternalValuesComponent`
+
+Exposes typed values resolved from an external system at runtime (e.g. a meter reading prediction). Consumers such as validation rules reference a hook and one of its results by id. Resolution is performed by the external-values-api on behalf of authenticated epilot 360 users and portal end customer
+
+```ts
+type ExternalValuesComponent = {
+  component_type: "EXTERNAL_VALUES"
+  configuration: {
+    hooks: Array<{
+      id: { ... }
+      name: { ... }
+      description?: { ... }
+      auth_type?: { ... }
+      auth_header?: { ... }
+      auth_secret?: { ... }
+      auth?: { ... }
+      call: { ... }
+      result: { ... }
+      timeout_ms?: { ... }
+      on_unavailable?: { ... }
+      contexts?: { ... }
+      cache?: { ... }
+      secure_proxy?: { ... }
+    }>
+  }
 }
 ```
 
@@ -1812,7 +2290,7 @@ type BaseComponent = {
 type CustomCapabilityComponent = {
   component_type: "CUSTOM_CAPABILITY"
   configuration: {
-    type?: "tab" | "group"
+    type?: "tab" | "group" | "widget"
     allowed_schemas?: string[]
   }
   surfaces?: {
@@ -1892,7 +2370,7 @@ type PortalBlockComponent = {
       app_url?: { ... }
       zip_url?: { ... }
       override_url?: { ... }
-      section?: { ... }
+      supported_surfaces?: { ... }
     }
   }
 }
@@ -1927,10 +2405,8 @@ type CustomFlowActionComponent = {
     name?: string
     description?: string
     wait_for_callback?: boolean
-    type: "sandbox"
-    sandbox_settings?: {
-      code?: { ... }
-    }
+    type: "function"
+    function_name: string
   }
   surfaces?: {
     flow_action_config?: {
@@ -1967,21 +2443,22 @@ type ExternalIntegrationCustomActionConfig = {
 }
 ```
 
-### `SandboxCustomActionConfig`
+### `FunctionRefCustomActionConfig`
 
 ```ts
-type SandboxCustomActionConfig = {
+type FunctionRefCustomActionConfig = {
   name?: string
   description?: string
   wait_for_callback?: boolean
-  type: "sandbox"
-  sandbox_settings?: {
-    code?: string
-  }
+  type: "function"
+  function_name: string
 }
 ```
 
 ### `CustomFlowConfig`
+
+Configuration of a flow action component. `external_integration` calls an external HTTP endpoint; `function` runs a workflow-type app function in the epilot sandbox.
+
 
 ```ts
 type CustomFlowConfig = {
@@ -1997,10 +2474,8 @@ type CustomFlowConfig = {
   name?: string
   description?: string
   wait_for_callback?: boolean
-  type: "sandbox"
-  sandbox_settings?: {
-    code?: string
-  }
+  type: "function"
+  function_name: string
 }
 ```
 
@@ -2149,17 +2624,21 @@ type PortalExtensionComponent = {
       type: { ... }
       auth?: { ... }
       call: { ... }
+      resolved?: { ... }
       use_static_ips?: { ... }
+      secure_proxy?: { ... }
     } | {
       id: { ... }
       name?: { ... }
       type: { ... }
       auth?: { ... }
       call: { ... }
+      resolved?: { ... }
       assignment_mode?: { ... }
       contact_relation_attribute?: { ... }
       explanation?: { ... }
       use_static_ips?: { ... }
+      secure_proxy?: { ... }
     } | {
       id: { ... }
       name?: { ... }
@@ -2169,6 +2648,7 @@ type PortalExtensionComponent = {
       call: { ... }
       resolved?: { ... }
       use_static_ips?: { ... }
+      secure_proxy?: { ... }
     } | {
       id: { ... }
       name?: { ... }
@@ -2178,6 +2658,17 @@ type PortalExtensionComponent = {
       call: { ... }
       resolved?: { ... }
       use_static_ips?: { ... }
+      secure_proxy?: { ... }
+    } | {
+      id: { ... }
+      name?: { ... }
+      type: { ... }
+      block_types?: { ... }
+      auth?: { ... }
+      call: { ... }
+      resolved?: { ... }
+      use_static_ips?: { ... }
+      secure_proxy?: { ... }
     } | {
       id: { ... }
       name?: { ... }
@@ -2187,6 +2678,7 @@ type PortalExtensionComponent = {
       call: { ... }
       resolved?: { ... }
       use_static_ips?: { ... }
+      secure_proxy?: { ... }
     } | {
       id: { ... }
       name?: { ... }
@@ -2196,17 +2688,34 @@ type PortalExtensionComponent = {
       call: { ... }
       resolved: { ... }
       use_static_ips?: { ... }
-    }>
-    links?: Array<{
+      secure_proxy?: { ... }
+    } | {
       id: { ... }
-      name: { ... }
-      description?: { ... }
+      name?: { ... }
       type: { ... }
-      condition?: { ... }
       auth?: { ... }
-      redirect: { ... }
-    }>
-  }
+      call: { ... }
+      resolved?: { ... }
+      use_static_ips?: { ... }
+      secure_proxy?: { ... }
+    } | {
+      id: { ... }
+      name?: { ... }
+      type: { ... }
+      change_mode?: { ... }
+      require_password_confirmation?: { ... }
+      explanation?: { ... }
+      auth?: { ... }
+      call: { ... }
+      resolved?: { ... }
+      secure_proxy?: { ... }
+    } | {
+      id: { ... }
+      name?: { ... }
+      type: { ... }
+      require_new_password?: { ... }
+      explanation?: { ... }
+  // ...
 }
 ```
 
@@ -2236,8 +2745,18 @@ type PortalExtensionConfig = {
       headers: { ... }
       body?: { ... }
       result: { ... }
+      result_correlation_id?: { ... }
+    }
+    resolved?: {
+      result?: { ... }
+      result_correlation_id?: { ... }
+      error_message_path?: { ... }
     }
     use_static_ips?: boolean
+    secure_proxy?: {
+      integration_id: { ... }
+      use_case_slug: { ... }
+    }
   } | {
     id: string
     name?: {
@@ -2260,6 +2779,12 @@ type PortalExtensionConfig = {
       headers: { ... }
       body?: { ... }
       result?: { ... }
+      result_correlation_id?: { ... }
+    }
+    resolved?: {
+      result?: { ... }
+      result_correlation_id?: { ... }
+      error_message_path?: { ... }
     }
     assignment_mode?: "contracts" | "contact_to_contracts" | "contact_to_portal_user"
     contact_relation_attribute?: string
@@ -2267,6 +2792,10 @@ type PortalExtensionConfig = {
       en: { ... }
     }
     use_static_ips?: boolean
+    secure_proxy?: {
+      integration_id: { ... }
+      use_case_slug: { ... }
+    }
   } | {
     id: string
     name?: {
@@ -2274,7 +2803,7 @@ type PortalExtensionConfig = {
       de: { ... }
     }
     type: "priceDataRetrieval"
-    intervals?: "PT15M" | "PT1H" | "P1D" | "P1M"[]
+    intervals?: "PT15M" | "PT1H" | "P1D" | "P1M" | "P1Y" | "custom"[]
     auth?: {
       method?: { ... }
       url: { ... }
@@ -2291,28 +2820,8 @@ type PortalExtensionConfig = {
       body?: { ... }
     }
     resolved?: {
+      data_path?: { ... }
       dataPath?: { ... }
-    }
-    use_static_ips?: boolean
-  } | {
-    id: string
-    name?: {
-      en?: { ... }
-      de: { ... }
-    }
-    type: "consumptionDataRetrieval"
-    intervals?: "PT15M" | "PT1H" | "P1D" | "P1M"[]
-    auth?: {
-      method?: { ... }
-      url: { ... }
-      params?: { ... }
-      headers?: { ... }
-      body?: { ... }
-      cache?: { ... }
-    }
-    call: {
-      method?: { ... }
-      url: { ... }
   // ...
 }
 ```
@@ -2349,8 +2858,18 @@ type PortalExtensionHookRegistrationIdentifiersCheck = {
     headers: Record<string, string>
     body?: object
     result: string
+    result_correlation_id?: string
+  }
+  resolved?: {
+    result?: string
+    result_correlation_id?: string
+    error_message_path?: string
   }
   use_static_ips?: boolean
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
 }
 ```
 
@@ -2389,6 +2908,12 @@ type PortalExtensionHookContractIdentification = {
     headers: Record<string, string>
     body?: object
     result?: string
+    result_correlation_id?: string
+  }
+  resolved?: {
+    result?: string
+    result_correlation_id?: string
+    error_message_path?: string
   }
   assignment_mode?: "contracts" | "contact_to_contracts" | "contact_to_portal_user"
   contact_relation_attribute?: string
@@ -2396,6 +2921,10 @@ type PortalExtensionHookContractIdentification = {
     en: string
   }
   use_static_ips?: boolean
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
 }
 ```
 
@@ -2433,13 +2962,19 @@ type PortalExtensionHookMeterReadingPlausibilityCheck = {
     headers: Record<string, string>
   }
   resolved: {
+    data_path?: string
     dataPath?: string
     counter_identifiers?: Record<string, string>
     valid?: string
     upper_limit?: string
     lower_limit?: string
+    error_message_path?: string
   }
   use_static_ips?: boolean
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
 }
 ```
 
@@ -2457,7 +2992,7 @@ type PortalExtensionHookPriceDataRetrieval = {
     de: string
   }
   type: "priceDataRetrieval"
-  intervals?: "PT15M" | "PT1H" | "P1D" | "P1M"[]
+  intervals?: "PT15M" | "PT1H" | "P1D" | "P1M" | "P1Y" | "custom"[]
   auth?: {
     method?: string
     url: string
@@ -2477,9 +3012,15 @@ type PortalExtensionHookPriceDataRetrieval = {
     body?: Record<string, unknown>
   }
   resolved?: {
+    data_path?: string
     dataPath?: string
+    error_message_path?: string
   }
   use_static_ips?: boolean
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
 }
 ```
 
@@ -2497,7 +3038,7 @@ type PortalExtensionHookConsumptionDataRetrieval = {
     de: string
   }
   type: "consumptionDataRetrieval"
-  intervals?: "PT15M" | "PT1H" | "P1D" | "P1M"[]
+  intervals?: "PT15M" | "PT1H" | "P1D" | "P1M" | "P1Y" | "custom"[]
   auth?: {
     method?: string
     url: string
@@ -2517,9 +3058,100 @@ type PortalExtensionHookConsumptionDataRetrieval = {
     body?: Record<string, unknown>
   }
   resolved?: {
+    data_path?: string
     dataPath?: string
+    error_message_path?: string
   }
   use_static_ips?: boolean
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
+}
+```
+
+### `PortalExtensionHookDataExport`
+
+Generic data export hook. When configured on blocks that support it, the portal delegates the export action (e.g. CSV/Excel/PDF download) to the configured external source instead of generating the file itself. Can be used by any block that supports export — consumption charts, dynamic tariff charts
+
+```ts
+type PortalExtensionHookDataExport = {
+  id: string
+  name?: {
+    en?: string
+    de: string
+  }
+  type: "dataExport"
+  block_types?: string[]
+  auth?: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers?: Record<string, string>
+    body?: Record<string, unknown>
+    cache?: {
+      key: { ... }
+      ttl: { ... }
+    }
+  }
+  call: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers?: Record<string, string>
+    body?: Record<string, unknown>
+  }
+  resolved?: {
+    error_message_path?: string
+  }
+  use_static_ips?: boolean
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
+}
+```
+
+### `PortalExtensionHookVisualizationMetadata`
+
+Hook that returns runtime metadata describing how a visualization (consumption / price / cost chart) should be rendered for a given portal context (meter, contract, etc). It is invoked by the portal before fetching data, with the same context the data hook would receive, so that the discovery shape 
+
+```ts
+type PortalExtensionHookVisualizationMetadata = {
+  id: string
+  name?: {
+    en?: string
+    de: string
+  }
+  type: "visualizationMetadata"
+  auth?: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers?: Record<string, string>
+    body?: Record<string, unknown>
+    cache?: {
+      key: { ... }
+      ttl: { ... }
+    }
+  }
+  call: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers?: Record<string, string>
+    body?: Record<string, unknown>
+  }
+  resolved?: {
+    data_path?: string
+    dataPath?: string
+    error_message_path?: string
+  }
+  use_static_ips?: boolean
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
 }
 ```
 
@@ -2537,7 +3169,7 @@ type PortalExtensionHookCostDataRetrieval = {
     de: string
   }
   type: "costDataRetrieval"
-  intervals?: "PT15M" | "PT1H" | "P1D" | "P1M"[]
+  intervals?: "PT15M" | "PT1H" | "P1D" | "P1M" | "P1Y" | "custom"[]
   auth?: {
     method?: string
     url: string
@@ -2557,9 +3189,151 @@ type PortalExtensionHookCostDataRetrieval = {
     body?: Record<string, unknown>
   }
   resolved?: {
+    data_path?: string
     dataPath?: string
+    error_message_path?: string
   }
   use_static_ips?: boolean
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
+}
+```
+
+### `PortalExtensionHookChangeEmail`
+
+Hook that replaces the built-in change email functionality for portal users. When configured, the portal does not run its own change email flow. Instead, this hook makes an HTTP call to the third-party system, which is expected to handle the email change.
+The `change_mode` controls what the portal d
+
+```ts
+type PortalExtensionHookChangeEmail = {
+  id: string
+  name?: {
+    en?: string
+    de: string
+  }
+  type: "changeEmail"
+  change_mode?: "synchronous" | "asynchronous"
+  require_password_confirmation?: boolean
+  explanation?: {
+    en: string
+  }
+  auth?: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers?: Record<string, string>
+    body?: Record<string, unknown>
+    cache?: {
+      key: { ... }
+      ttl: { ... }
+    }
+  }
+  call: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers: Record<string, string>
+    body?: object
+  }
+  resolved?: {
+    error_message_path?: string
+  }
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
+}
+```
+
+### `PortalExtensionHookChangePassword`
+
+Hook that replaces the built-in change password functionality for portal users. When configured, the portal does not change the user's password itself. Instead, this hook makes an HTTP call to the third-party system, which is expected to handle the password change (most likely by sending the user in
+
+```ts
+type PortalExtensionHookChangePassword = {
+  id: string
+  name?: {
+    en?: string
+    de: string
+  }
+  type: "changePassword"
+  require_new_password?: boolean
+  explanation?: {
+    en: string
+  }
+  auth?: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers?: Record<string, string>
+    body?: Record<string, unknown>
+    cache?: {
+      key: { ... }
+      ttl: { ... }
+    }
+  }
+  call: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers: Record<string, string>
+    body?: object
+  }
+  resolved?: {
+    error_message_path?: string
+  }
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
+}
+```
+
+### `PortalExtensionHookDeleteAccount`
+
+Hook that replaces the built-in delete account functionality for portal users. When configured, the portal does not delete the user itself. Instead, this hook makes an HTTP call to the third-party system, which is expected to handle the deletion.
+The `deletion_mode` controls what the portal does aft
+
+```ts
+type PortalExtensionHookDeleteAccount = {
+  id: string
+  name?: {
+    en?: string
+    de: string
+  }
+  type: "deleteAccount"
+  deletion_mode?: "synchronous" | "asynchronous"
+  delete_contact?: "none" | "soft" | "hard"
+  explanation?: {
+    en: string
+  }
+  auth?: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers?: Record<string, string>
+    body?: Record<string, unknown>
+    cache?: {
+      key: { ... }
+      ttl: { ... }
+    }
+  }
+  call: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers: Record<string, string>
+    body?: object
+  }
+  resolved?: {
+    error_message_path?: string
+  }
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
 }
 ```
 
@@ -2612,6 +3386,17 @@ type PortalExtensionAuthBlock = {
 }
 ```
 
+### `PortalExtensionSecureProxy`
+
+If set, requests are routed through the ERP Integration secure proxy. Mutually exclusive with use_static_ips.
+
+```ts
+type PortalExtensionSecureProxy = {
+  integration_id: string // uuid
+  use_case_slug: string
+}
+```
+
 ### `ExternalProductCatalogAuthBlock`
 
 ```ts
@@ -2645,7 +3430,7 @@ type JourneyBlockConfig = {
   component_tag: string
   component_args?: Array<{
     key: string
-    type: "text" | "boolean" | "enum"
+    type: "text" | "boolean" | "enum" | "block_reference"
     required?: boolean
     description?: {
       en?: { ... }
@@ -2684,7 +3469,7 @@ type PortalBlockSurfaceConfig = {
   app_url?: string
   zip_url?: string
   override_url?: string
-  section?: "main" | "footer"
+  supported_surfaces?: "main" | "footer_inline" | "footer_left_absolute" | "footer_right_absolute"[]
 }
 ```
 
@@ -2693,7 +3478,7 @@ type PortalBlockSurfaceConfig = {
 ```ts
 type JourneyBlockComponentArgs = {
   key: string
-  type: "text" | "boolean" | "enum"
+  type: "text" | "boolean" | "enum" | "block_reference"
   required?: boolean
   description?: {
     en?: string
@@ -2719,6 +3504,21 @@ type TextArg = {
 ```ts
 type BooleanArg = {
   type?: "boolean"
+}
+```
+
+### `BlockReferenceArg`
+
+References another journey block by its ID. The configuring user picks
+a block from the journey via a dropdown in the journey-builder; the
+chosen block's ID is stored as the arg value (a string). The bundle can
+then call `subscribe(blockId, cb)` / `getValue(blockId)` against that ID.
+
+
+```ts
+type BlockReferenceArg = {
+  type?: "block_reference"
+  allowed_types?: string[]
 }
 ```
 
@@ -2777,6 +3577,26 @@ type Review = {
   technical_contact?: string
   marketing_contact?: string
   demo_url?: string
+}
+```
+
+### `InternalReview`
+
+Review entry including app ownership info, used by internal admin endpoints
+
+```ts
+type InternalReview = {
+  version?: string
+  review_status?: "approved" | "rejected" | "pending"
+  requested_at?: string
+  requested_by?: string
+  technical_contact?: string
+  marketing_contact?: string
+  demo_url?: string
+  app_id?: string
+  org_id?: string
+  reviewed_by?: string
+  reviewed_at?: string
 }
 ```
 
@@ -2847,10 +3667,54 @@ type ConfigurationVersion = {
       label?: { ... }
       required?: { ... }
       description?: { ... }
+      repeatable?: { ... }
+      fields?: { ... }
       value?: { ... }
       type: { ... }
+      sensitive?: { ... }
+      configured?: { ... }
+      lifted?: { ... }
+      value_updated_at?: { ... }
     }>
+    uses_options?: string[]
     surfaces?: object
+  }>
+  functions?: Array<{
+    name: string
+    type: "workflow" | "scheduled"
+    label?: {
+      en?: { ... }
+      de: { ... }
+    }
+    description?: {
+      en?: { ... }
+      de: { ... }
+    }
+    code: string
+    schedule?: string
+    schedule_timezone?: string
+    schedule_overlap?: "skip"
+    secrets?: string[]
+  }>
+  options?: Array<{
+    key: string
+    label?: string
+    required?: boolean
+    description?: string
+    repeatable?: boolean
+    fields?: Array<{
+      key: { ... }
+      label?: { ... }
+      description?: { ... }
+      required?: { ... }
+      type: { ... }
+    }>
+    value?: unknown
+    type: "text" | "number" | "boolean" | "secret" | "object"
+    sensitive?: boolean
+    configured?: boolean
+    lifted?: boolean
+    value_updated_at?: string
   }>
   visibility?: "public" | "private"
   public?: boolean
@@ -2870,6 +3734,7 @@ type ConfigurationVersion = {
   blueprint_ref?: {
     manifest_id?: string
     job_id?: string
+    source_blueprint_file?: string
   }
   version_audit: {
     created_at?: string
@@ -2879,6 +3744,212 @@ type ConfigurationVersion = {
     versioned_at?: string
     versioned_by?: string
   }
+}
+```
+
+### `ApiProxyConfig`
+
+Configuration for an API proxy component
+
+```ts
+type ApiProxyConfig = {
+  name: string
+  target: string
+  auth_type: "header" | "bearer" | "basic" | "oauth2" | "none"
+  auth_header?: string
+  token_url?: string // uri
+  headers?: Record<string, string>
+}
+```
+
+### `ExternalValuesConfig`
+
+Configuration for an EXTERNAL_VALUES component
+
+```ts
+type ExternalValuesConfig = {
+  hooks: Array<{
+    id: string
+    name: {
+      en?: { ... }
+      de: { ... }
+    }
+    description?: {
+      en?: { ... }
+      de: { ... }
+    }
+    auth_type?: "none" | "header" | "bearer" | "hmac"
+    auth_header?: string
+    auth_secret?: string
+    auth?: {
+      method?: { ... }
+      url: { ... }
+      params?: { ... }
+      headers?: { ... }
+      body?: { ... }
+      cache?: { ... }
+    }
+    call: {
+      method?: { ... }
+      url: { ... }
+      headers?: { ... }
+      params?: { ... }
+      body?: { ... }
+    }
+    result: Array<{
+      id: { ... }
+      type: { ... }
+      name: { ... }
+      template?: { ... }
+      path?: { ... }
+      jsonata?: { ... }
+    }>
+    timeout_ms?: number
+    on_unavailable?: "skip" | "block"
+    contexts?: Array<{
+      type: { ... }
+      schema: { ... }
+    } | {
+      type: { ... }
+      name: { ... }
+      value_type: { ... }
+    }>
+    cache?: {
+      ttl_seconds: { ... }
+      key?: { ... }
+    }
+    secure_proxy?: {
+      integration_id: { ... }
+      use_case_slug: { ... }
+    }
+  }>
+}
+```
+
+### `ExternalValuesHook`
+
+One external call that returns one or more typed results. Interpolated templates (Liquid) have access to `Context`, `Consumer`, `Options`, `Env` and — for `result` templates — `Response` and `AuthResponse` (each is also available snake_case, e.g. `{{ context.contract }}`).
+
+`Context` is the name → v
+
+```ts
+type ExternalValuesHook = {
+  id: string
+  name: {
+    en?: string
+    de: string
+  }
+  description?: {
+    en?: string
+    de: string
+  }
+  auth_type?: "none" | "header" | "bearer" | "hmac"
+  auth_header?: string
+  auth_secret?: string
+  auth?: {
+    method?: string
+    url: string
+    params?: Record<string, string>
+    headers?: Record<string, string>
+    body?: Record<string, unknown>
+    cache?: {
+      key: { ... }
+      ttl: { ... }
+    }
+  }
+  call: {
+    method?: "GET" | "POST" | "PUT" | "PATCH"
+    url: string
+    headers?: Record<string, string>
+    params?: Record<string, string>
+    body?: Record<string, unknown>
+  }
+  result: Array<{
+    id: string
+    type: "number" | "text" | "date" | "boolean"
+    name: {
+      en?: { ... }
+      de: { ... }
+    }
+    template?: string
+    path?: string
+    jsonata?: string
+  }>
+  timeout_ms?: number
+  on_unavailable?: "skip" | "block"
+  contexts?: Array<{
+    type: "entity"
+    schema: string
+  } | {
+    type: "value"
+    name: string
+    value_type: "number" | "text" | "date" | "boolean"
+  }>
+  cache?: {
+    ttl_seconds: number
+    key?: string
+  }
+  secure_proxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
+}
+```
+
+### `ContextRequirement`
+
+A requirement a hook reads from `Context`, discriminated by `type`. More types will be added later; consumers must ignore types they do not know.
+
+```ts
+type ContextRequirement = {
+  type: "entity"
+  schema: string
+} | {
+  type: "value"
+  name: string
+  value_type: "number" | "text" | "date" | "boolean"
+}
+```
+
+### `EntityContextRequirement`
+
+The consumer supplies the bound entities of `schema` under `Context.`<schema>``.
+
+```ts
+type EntityContextRequirement = {
+  type: "entity"
+  schema: string
+}
+```
+
+### `ValueContextRequirement`
+
+The consumer supplies one scalar value under `Context.`<name>``, e.g. a date the customer entered in a journey block. A value input is optional: the consumer sends it when it has a value and omits it otherwise, so the hook's templates must cope with its absence, e.g. `{{ Context.reading_date | default
+
+```ts
+type ValueContextRequirement = {
+  type: "value"
+  name: string
+  value_type: "number" | "text" | "date" | "boolean"
+}
+```
+
+### `ExternalValuesResult`
+
+A single typed value extracted from the hook response. Exactly one of `template`, `path` or `jsonata` must be set.
+
+
+```ts
+type ExternalValuesResult = {
+  id: string
+  type: "number" | "text" | "date" | "boolean"
+  name: {
+    en?: string
+    de: string
+  }
+  template?: string
+  path?: string
+  jsonata?: string
 }
 ```
 
@@ -2899,6 +3970,7 @@ type Grants = Array<{
 type BlueprintRef = {
   manifest_id?: string
   job_id?: string
+  source_blueprint_file?: string
 }
 ```
 
@@ -2913,6 +3985,7 @@ type Installation = {
   owner_org_id?: string
   enabled: boolean
   name: string
+  icon_url?: string
   option_values?: Array<{
     component_id: string
     options: Array<{
@@ -2935,16 +4008,61 @@ type Installation = {
       label?: { ... }
       required?: { ... }
       description?: { ... }
+      repeatable?: { ... }
+      fields?: { ... }
       value?: { ... }
       type: { ... }
+      sensitive?: { ... }
+      configured?: { ... }
+      lifted?: { ... }
+      value_updated_at?: { ... }
     }>
+    uses_options?: string[]
     surfaces?: object
+  }>
+  functions?: Array<{
+    name: string
+    type: "workflow" | "scheduled"
+    label?: {
+      en?: { ... }
+      de: { ... }
+    }
+    description?: {
+      en?: { ... }
+      de: { ... }
+    }
+    code: string
+    schedule?: string
+    schedule_timezone?: string
+    schedule_overlap?: "skip"
+    secrets?: string[]
+  }>
+  options?: Array<{
+    key: string
+    label?: string
+    required?: boolean
+    description?: string
+    repeatable?: boolean
+    fields?: Array<{
+      key: { ... }
+      label?: { ... }
+      description?: { ... }
+      required?: { ... }
+      type: { ... }
+    }>
+    value?: unknown
+    type: "text" | "number" | "boolean" | "secret" | "object"
+    sensitive?: boolean
+    configured?: boolean
+    lifted?: boolean
+    value_updated_at?: string
   }>
   installed_version: string
   role?: string
   blueprint_ref?: {
     manifest_id?: string
     job_id?: string
+    source_blueprint_file?: string
   }
   installation_audit?: {
     created_at?: string
@@ -2998,10 +4116,54 @@ type PublicConfiguration = {
       label?: { ... }
       required?: { ... }
       description?: { ... }
+      repeatable?: { ... }
+      fields?: { ... }
       value?: { ... }
       type: { ... }
+      sensitive?: { ... }
+      configured?: { ... }
+      lifted?: { ... }
+      value_updated_at?: { ... }
     }>
+    uses_options?: string[]
     surfaces?: object
+  }>
+  functions?: Array<{
+    name: string
+    type: "workflow" | "scheduled"
+    label?: {
+      en?: { ... }
+      de: { ... }
+    }
+    description?: {
+      en?: { ... }
+      de: { ... }
+    }
+    code: string
+    schedule?: string
+    schedule_timezone?: string
+    schedule_overlap?: "skip"
+    secrets?: string[]
+  }>
+  options?: Array<{
+    key: string
+    label?: string
+    required?: boolean
+    description?: string
+    repeatable?: boolean
+    fields?: Array<{
+      key: { ... }
+      label?: { ... }
+      description?: { ... }
+      required?: { ... }
+      type: { ... }
+    }>
+    value?: unknown
+    type: "text" | "number" | "boolean" | "secret" | "object"
+    sensitive?: boolean
+    configured?: boolean
+    lifted?: boolean
+    value_updated_at?: string
   }>
   is_beta?: boolean
   deprecated_at?: string
@@ -3016,44 +4178,8 @@ type PublicConfiguration = {
   blueprint_ref?: {
     manifest_id?: string
     job_id?: string
-  }
-  latest_version?: string
-  public?: boolean
-  versions?: Array<{
-    app_id: string
-    owner_org_id: string
-    components: Array<{
-      id: { ... }
-      name?: { ... }
-      description?: { ... }
-      options?: { ... }
-      surfaces?: { ... }
-    }>
-    visibility?: "public" | "private"
-    public?: boolean
-    pending?: boolean
-    version: string
-    is_beta?: boolean
-    deprecated_at?: string
-    changelog?: string
-    review_status?: "approved" | "rejected" | "pending"
-    role?: {
-      id?: { ... }
-      grants?: { ... }
-    }
-    blueprint_ref?: {
-      manifest_id?: { ... }
-      job_id?: { ... }
-    }
-    version_audit: {
-      created_at?: { ... }
-      created_by?: { ... }
-      updated_at?: { ... }
-      updated_by?: { ... }
-      versioned_at?: { ... }
-      versioned_by?: { ... }
-    }
-  }>
+    source_blueprint_file?: string
+  // ...
 }
 ```
 
@@ -3113,38 +4239,56 @@ type Configuration = {
       label?: { ... }
       required?: { ... }
       description?: { ... }
+      repeatable?: { ... }
+      fields?: { ... }
       value?: { ... }
       type: { ... }
+      sensitive?: { ... }
+      configured?: { ... }
+      lifted?: { ... }
+      value_updated_at?: { ... }
     }>
+    uses_options?: string[]
     surfaces?: object
   }>
-  visibility?: "public" | "private"
-  public?: boolean
-  pending?: boolean
-  version: string
-  is_beta?: boolean
-  deprecated_at?: string
-  changelog?: string
-  review_status?: "approved" | "rejected" | "pending"
-  role?: {
-    id?: string
-    grants?: Array<{
-      action: { ... }
-      resource?: { ... }
+  functions?: Array<{
+    name: string
+    type: "workflow" | "scheduled"
+    label?: {
+      en?: { ... }
+      de: { ... }
+    }
+    description?: {
+      en?: { ... }
+      de: { ... }
+    }
+    code: string
+    schedule?: string
+    schedule_timezone?: string
+    schedule_overlap?: "skip"
+    secrets?: string[]
+  }>
+  options?: Array<{
+    key: string
+    label?: string
+    required?: boolean
+    description?: string
+    repeatable?: boolean
+    fields?: Array<{
+      key: { ... }
+      label?: { ... }
+      description?: { ... }
+      required?: { ... }
+      type: { ... }
     }>
-  }
-  blueprint_ref?: {
-    manifest_id?: string
-    job_id?: string
-  }
-  version_audit: {
-    created_at?: string
-    created_by?: string
-    updated_at?: string
-    updated_by?: string
-    versioned_at?: string
-    versioned_by?: string
-  }
+    value?: unknown
+    type: "text" | "number" | "boolean" | "secret" | "object"
+    sensitive?: boolean
+    configured?: boolean
+    lifted?: boolean
+    value_updated_at?: string
+  }>
+  // ...
 }
 ```
 
@@ -3180,7 +4324,7 @@ type BatchEventRequest = {
     timestamp?: string
     correlation_id?: string
     event_type: "ERROR" | "WARNING" | "INFO"
-    source: "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE"
+    source: "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE" | "API_PROXY" | "EXTERNAL_VALUES" | "APP_FUNCTION"
     actor: {
       org_id?: { ... }
       user_id?: { ... }
@@ -3212,7 +4356,7 @@ type AppEventData = {
   timestamp?: string
   correlation_id?: string
   event_type: "ERROR" | "WARNING" | "INFO"
-  source: "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE"
+  source: "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE" | "API_PROXY" | "EXTERNAL_VALUES" | "APP_FUNCTION"
   actor: {
     org_id?: string
     user_id?: string
@@ -3232,10 +4376,11 @@ type EventsQuery = {
     preset?: "1h" | "6h" | "24h" | "7d" | "30d"
   }
   filters?: {
-    source?: "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE"[]
+    source?: "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE" | "API_PROXY" | "EXTERNAL_VALUES" | "APP_FUNCTION"[]
     component_id?: string[]
     event_type?: "ERROR" | "WARNING" | "INFO"[]
     correlation_id?: string
+    search?: string
   }
   aggregation?: {
     group_by?: "source" | "component_id" | "event_type" | "hour" | "day"[]
@@ -3244,6 +4389,7 @@ type EventsQuery = {
   pagination?: {
     page?: number
     page_size?: number
+    before?: string // date-time
   }
   sort?: {
     field?: "timestamp" | "event_type" | "component_id"
@@ -3267,6 +4413,7 @@ type EventsQueryResponse = {
       component_id?: { ... }
       event_type?: { ... }
       correlation_id?: { ... }
+      search?: { ... }
     }
     aggregation?: {
       group_by?: { ... }
@@ -3275,6 +4422,7 @@ type EventsQueryResponse = {
     pagination?: {
       page?: { ... }
       page_size?: { ... }
+      before?: { ... }
     }
     sort?: {
       field?: { ... }
@@ -3324,7 +4472,7 @@ type RawEvents = {
     timestamp?: string
     correlation_id?: string
     event_type: "ERROR" | "WARNING" | "INFO"
-    source: "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE"
+    source: "CUSTOM_JOURNEY_BLOCK" | "CUSTOM_PORTAL_BLOCK" | "PORTAL_EXTENSION" | "CUSTOM_FLOW_ACTION" | "ERP_INFORM_TOOLKIT" | "CUSTOM_CAPABILITY" | "EXTERNAL_PRODUCT_CATALOG" | "CUSTOM_PAGE" | "API_PROXY" | "EXTERNAL_VALUES" | "APP_FUNCTION"
     actor: {
       org_id?: { ... }
       user_id?: { ... }

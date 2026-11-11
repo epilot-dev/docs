@@ -53,13 +53,17 @@ epilot message sendMessage
 - [`markReadMessageV2`](#markreadmessagev2) — Mark message as read within a scope
 - [`markUnreadMessage`](#markunreadmessage) — Mark message as unread
 - [`getUnread`](#getunread) — Get all unread messages by actor
+- [`getUnreadCounts`](#getunreadcounts) — Unread counts for several named scopes in one request.
 - [`markUnreadMessageV2`](#markunreadmessagev2) — Mark message as unread within a scope
+- [`spamMessage`](#spammessage) — Mark a single message as spam. Also marks the parent thread as spam if all messages in the thread are spam.
+- [`unspamMessage`](#unspammessage) — Remove spam marking from a single message. Also removes spam from the parent thread if no other messages are spam.
 - [`getMessageV2`](#getmessagev2) — - Fetches message by ID
 
 **Threads**
 - [`searchThreads`](#searchthreads) — Search for threads of email messages.
 - [`searchThreadsV2`](#searchthreadsv2) — Search for threads of email messages.
 - [`searchIds`](#searchids) — Return all thread id's that match a criteria
+- [`getAssigneeWorkload`](#getassigneeworkload) — Return the open-thread workload for a set of user ids.
 - [`updateThread`](#updatethread) — Modify thread metadata
 - [`deleteThread`](#deletethread) — Immediately and permanently delete a thread. This operation cannot be undone.
 - [`moveThread`](#movethread) — Move thread to a different Inbox
@@ -68,6 +72,10 @@ epilot message sendMessage
 - [`getThreadTimeline`](#getthreadtimeline) — Get thread timeline
 - [`trashThread`](#trashthread) — Move a thread to trash
 - [`untrashThread`](#untrashthread) — Restore a trashed thread
+- [`spamThread`](#spamthread) — Mark a thread as spam
+- [`unspamThread`](#unspamthread) — Remove spam marking from a thread
+- [`bulkMoveThreads`](#bulkmovethreads) — Move many threads to a different inbox
+- [`bulkAssignThreads`](#bulkassignthreads) — Assign many threads
 - [`threadBulkActionsRead`](#threadbulkactionsread) — Perform a bulk action of marking an array of thread ids as read
 - [`threadBulkActionsUnread`](#threadbulkactionsunread) — Perform a bulk action of marking an array of thread ids as unread
 - [`threadBulkActionsFavorite`](#threadbulkactionsfavorite) — Perform a bulk action of marking an array of thread ids favorite
@@ -168,6 +176,7 @@ epilot message updateMessage --jsonata '$'
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -221,7 +230,8 @@ epilot message updateMessage --jsonata '$'
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },
@@ -284,6 +294,7 @@ epilot message getMessage -p id=4d74976d-fb64-47fd-85e2-65eea140f5eb --jsonata '
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -337,7 +348,8 @@ epilot message getMessage -p id=4d74976d-fb64-47fd-85e2-65eea140f5eb --jsonata '
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },
@@ -442,6 +454,24 @@ epilot message searchMessages \
   -d '{
   "inbox_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3",
   "q": "subject:\"Request for solar panel price\" AND _tags:INBOX",
+  "view": {
+    "folder": "inbox",
+    "mailbox": "organization",
+    "labels": ["string"],
+    "purposes": ["string"],
+    "filters": ["unread"],
+    "from": ["string"],
+    "to": ["string"],
+    "assigned_to": ["string"],
+    "include_unassigned": true,
+    "date_from_days_ago": 0,
+    "date_to_days_ago": 0,
+    "email_filter": ["string"],
+    "text": "string",
+    "thread_ids": ["string"],
+    "pinned_by": "string"
+  },
+  "user_groups": ["string"],
   "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"],
   "from": 0,
   "size": 10,
@@ -481,63 +511,16 @@ epilot message searchMessages --jsonata 'results[0]'
       "_updated_at": "2021-02-10T09:14:31.990Z",
       "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
       "sender": "206801",
+      "updated_by": "206801",
       "subject": "Request for solar panel price",
       "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
       "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
-      "from": {
-        "name": "epilot",
-        "address": "messaging@epilot.cloud",
-        "email_type": "INTERNAL",
-        "send_status": "SEND",
-        "send_error": {}
-      },
-      "reply_to": {
-        "name": "epilot",
-        "address": "messaging@epilot.cloud",
-        "email_type": "INTERNAL",
-        "send_status": "SEND",
-        "send_error": {}
-      },
-      "to": [
-        {
-          "name": "epilot",
-          "address": "messaging@epilot.cloud",
-          "email_type": "INTERNAL",
-          "send_status": "SEND",
-          "send_error": {}
-        }
-      ],
-      "cc": [
-        {
-          "name": "epilot",
-          "address": "messaging@epilot.cloud",
-          "email_type": "INTERNAL",
-          "send_status": "SEND",
-          "send_error": {}
-        }
-      ],
-      "bcc": [
-        {
-          "name": "epilot",
-          "address": "messaging@epilot.cloud",
-          "email_type": "INTERNAL",
-          "send_status": "SEND",
-          "send_error": {}
-        }
-      ],
-      "file": {
-        "$relation": [
-          {
-            "entity_id": "f820ce3b-07b0-45ae-bcc6-babb2f53f79f",
-            "filename": "Produktinformationen_epilot360_Double_Opt_in.pdf",
-            "is_message_attachment": true,
-            "may_be_signature_attachment": true,
-            "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
-            "inline": false,
-            "send_as_link": false
-          }
-        ]
-      },
+      "from": {},
+      "reply_to": {},
+      "to": [],
+      "cc": [],
+      "bcc": [],
+      "file": {},
       "references": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com> <CALHgQpziyxW9NaFUs+nRMykzr6Ljq6vjq4WO9SaihAuMasuDyg@mail.gmail.com>",
       "in_reply_to": "<CALHgQpziyxW9NaFUs+nRMykzr6Ljq6vjq4WO9SaihAuMasuDyg@mail.gmail.com>",
       "user_read_message": ["206801", "200109"],
@@ -768,7 +751,69 @@ epilot message getUnread -p actor=example --jsonata 'count'
   "count": 14,
   "unread": 0,
   "drafts": 12,
-  "unassigned": 1
+  "unassigned": 1,
+  "spam": 3
+}
+```
+
+</details>
+
+---
+
+### `getUnreadCounts`
+
+Unread counts for several named scopes in one request.
+
+`POST /v1/message/unread:counts`
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot message getUnreadCounts
+```
+
+With request body:
+
+```bash
+epilot message getUnreadCounts \
+  -d '{
+  "actor": "organization",
+  "email_filter": ["string"],
+  "user_groups": ["string"],
+  "scopes": [
+    {
+      "name": "inbox-support",
+      "type": "organization",
+      "q": "_tags.keyword:inbox AND !_tags.keyword:trash",
+      "view_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3",
+      "inbox_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3"
+    }
+  ]
+}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot message getUnreadCounts
+```
+
+With JSONata filter:
+
+```bash
+epilot message getUnreadCounts --jsonata 'enabled'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "enabled": true,
+  "counts": {},
+  "omitted": ["string"]
 }
 ```
 
@@ -897,6 +942,24 @@ epilot message searchThreadsV2 \
   -d '{
   "inbox_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3",
   "q": "subject:\"Request for solar panel price\" AND _tags:INBOX",
+  "view": {
+    "folder": "inbox",
+    "mailbox": "organization",
+    "labels": ["string"],
+    "purposes": ["string"],
+    "filters": ["unread"],
+    "from": ["string"],
+    "to": ["string"],
+    "assigned_to": ["string"],
+    "include_unassigned": true,
+    "date_from_days_ago": 0,
+    "date_to_days_ago": 0,
+    "email_filter": ["string"],
+    "text": "string",
+    "thread_ids": ["string"],
+    "pinned_by": "string"
+  },
+  "user_groups": ["string"],
   "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"],
   "from": 0,
   "size": 10,
@@ -961,8 +1024,35 @@ Return all thread id's that match a criteria
 **Sample Call**
 
 ```bash
+epilot message searchIds
+```
+
+With request body:
+
+```bash
 epilot message searchIds \
-  -d '{"q":"subject:\"Request for solar panel price\" AND _tags:INBOX"}'
+  -d '{
+  "view": {
+    "folder": "inbox",
+    "mailbox": "organization",
+    "labels": ["string"],
+    "purposes": ["string"],
+    "filters": ["unread"],
+    "from": ["string"],
+    "to": ["string"],
+    "assigned_to": ["string"],
+    "include_unassigned": true,
+    "date_from_days_ago": 0,
+    "date_to_days_ago": 0,
+    "email_filter": ["string"],
+    "text": "string",
+    "thread_ids": ["string"],
+    "pinned_by": "string"
+  },
+  "user_groups": ["string"],
+  "inbox_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3",
+  "q": "subject:\"Request for solar panel price\" AND _tags:INBOX"
+}'
 ```
 
 Using stdin pipe:
@@ -984,6 +1074,51 @@ epilot message searchIds --jsonata 'results[0]'
 {
   "hits": 14,
   "results": ["string"]
+}
+```
+
+</details>
+
+---
+
+### `getAssigneeWorkload`
+
+Return the open-thread workload for a set of user ids.
+
+`POST /v2/message/threads:workload`
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot message getAssigneeWorkload \
+  -d '{"user_ids":["11000902","11001053"]}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot message getAssigneeWorkload
+```
+
+With JSONata filter:
+
+```bash
+epilot message getAssigneeWorkload --jsonata 'workloads'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "workloads": [
+    {
+      "user_id": "11000902",
+      "open_threads": 2
+    }
+  ]
 }
 ```
 
@@ -1028,6 +1163,7 @@ epilot message updateThread --jsonata '$'
   "latest_message": {
     "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
     "sender": "206801",
+    "updated_by": "206801",
     "subject": "Request for solar panel price",
     "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
     "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -1068,6 +1204,7 @@ epilot message updateThread --jsonata '$'
   "latest_trash_message": {
     "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
     "sender": "206801",
+    "updated_by": "206801",
     "subject": "Request for solar panel price",
     "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
     "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -1292,12 +1429,24 @@ epilot message getThreadTimeline -p id=123e4567-e89b-12d3-a456-426614174000 --js
 {
   "events": [
     {
+      "id": "string",
       "data": {
         "type": "THREAD_DONE",
         "user_id": "123",
         "organization_id": "456"
       },
-      "timestamp": "2024-01-01T00:00:00.000Z"
+      "timestamp": "2024-01-01T00:00:00.000Z",
+      "message_id": "string",
+      "source": "user",
+      "automated": true,
+      "actor": {
+        "user_id": "string",
+        "email": "string"
+      },
+      "automation": {
+        "id": "string",
+        "name": "string"
+      }
     }
   ]
 }
@@ -1373,6 +1522,218 @@ epilot message untrashThread -p id=123e4567-e89b-12d3-a456-426614174000 --jsonat
 
 ---
 
+### `spamThread`
+
+Mark a thread as spam
+
+`POST /v1/message/threads/{id}/spam`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string | Yes | Thread ID |
+
+**Sample Call**
+
+```bash
+epilot message spamThread \
+  -p id=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot message spamThread 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot message spamThread -p id=123e4567-e89b-12d3-a456-426614174000 --jsonata '$'
+```
+
+---
+
+### `unspamThread`
+
+Remove spam marking from a thread
+
+`POST /v1/message/threads/{id}/unspam`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string | Yes | Thread ID |
+
+**Sample Call**
+
+```bash
+epilot message unspamThread \
+  -p id=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot message unspamThread 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot message unspamThread -p id=123e4567-e89b-12d3-a456-426614174000 --jsonata '$'
+```
+
+---
+
+### `spamMessage`
+
+Mark a single message as spam. Also marks the parent thread as spam if all messages in the thread are spam.
+
+`POST /v1/message/messages/{id}/spam`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string | Yes | Message ID |
+
+**Sample Call**
+
+```bash
+epilot message spamMessage \
+  -p id=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot message spamMessage 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot message spamMessage -p id=123e4567-e89b-12d3-a456-426614174000 --jsonata '$'
+```
+
+---
+
+### `unspamMessage`
+
+Remove spam marking from a single message. Also removes spam from the parent thread if no other messages are spam.
+
+`POST /v1/message/messages/{id}/unspam`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string | Yes | Message ID |
+
+**Sample Call**
+
+```bash
+epilot message unspamMessage \
+  -p id=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot message unspamMessage 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot message unspamMessage -p id=123e4567-e89b-12d3-a456-426614174000 --jsonata '$'
+```
+
+---
+
+### `bulkMoveThreads`
+
+Move many threads to a different inbox
+
+`POST /v1/message/threads/bulk:move`
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot message bulkMoveThreads
+```
+
+With request body:
+
+```bash
+epilot message bulkMoveThreads \
+  -d '{
+  "ids": ["6b299eda-4018-4554-8965-c4b5598e6531"],
+  "assign_to": ["206801"],
+  "inbox_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3",
+  "scopes": ["organization", "user"]
+}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot message bulkMoveThreads
+```
+
+With JSONata filter:
+
+```bash
+epilot message bulkMoveThreads --jsonata '$'
+```
+
+---
+
+### `bulkAssignThreads`
+
+Assign many threads
+
+`POST /v1/message/threads/bulk:assign`
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot message bulkAssignThreads
+```
+
+With request body:
+
+```bash
+epilot message bulkAssignThreads \
+  -d '{
+  "ids": ["6b299eda-4018-4554-8965-c4b5598e6531"],
+  "assign_to": ["206801"],
+  "inbox_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3",
+  "scopes": ["organization", "user"]
+}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot message bulkAssignThreads
+```
+
+With JSONata filter:
+
+```bash
+epilot message bulkAssignThreads --jsonata '$'
+```
+
+---
+
 ### `threadBulkActionsRead`
 
 Perform a bulk action of marking an array of thread ids as read
@@ -1384,8 +1745,19 @@ Perform a bulk action of marking an array of thread ids as read
 **Sample Call**
 
 ```bash
+epilot message threadBulkActionsRead
+```
+
+With request body:
+
+```bash
 epilot message threadBulkActionsRead \
-  -d '{"ids":["6b299eda-4018-4554-8965-c4b5598e6531"],"scopes":["organization","user"]}'
+  -d '{
+  "ids": ["6b299eda-4018-4554-8965-c4b5598e6531"],
+  "assign_to": ["206801"],
+  "inbox_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3",
+  "scopes": ["organization", "user"]
+}'
 ```
 
 Using stdin pipe:
@@ -1413,8 +1785,19 @@ Perform a bulk action of marking an array of thread ids as unread
 **Sample Call**
 
 ```bash
+epilot message threadBulkActionsUnread
+```
+
+With request body:
+
+```bash
 epilot message threadBulkActionsUnread \
-  -d '{"ids":["6b299eda-4018-4554-8965-c4b5598e6531"],"scopes":["organization","user"]}'
+  -d '{
+  "ids": ["6b299eda-4018-4554-8965-c4b5598e6531"],
+  "assign_to": ["206801"],
+  "inbox_id": "3f34ce73-089c-4d45-a5ee-c161234e41c3",
+  "scopes": ["organization", "user"]
+}'
 ```
 
 Using stdin pipe:
@@ -1837,6 +2220,7 @@ Unassign thread from entities
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string | Yes | Thread ID |
+| `unlink_mapped_entities` | query | boolean | No | When true, also removes unassigned entities from mapped_entities on related source entities |
 
 **Request Body** (required)
 
@@ -2059,6 +2443,7 @@ epilot message createDraft --jsonata '$'
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -2112,7 +2497,8 @@ epilot message createDraft --jsonata '$'
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },
@@ -2162,6 +2548,7 @@ epilot message sendDraft --jsonata '$'
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -2215,7 +2602,8 @@ epilot message sendDraft --jsonata '$'
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },
@@ -2280,6 +2668,7 @@ epilot message getMessageV2 -p id=4d74976d-fb64-47fd-85e2-65eea140f5eb --jsonata
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -2333,7 +2722,8 @@ epilot message getMessageV2 -p id=4d74976d-fb64-47fd-85e2-65eea140f5eb --jsonata
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },

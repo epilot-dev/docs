@@ -37,6 +37,21 @@ const { data } = await fileClient.uploadFileV2(...)
 - [`downloadFile`](#downloadfile)
 - [`downloadS3File`](#downloads3file)
 - [`downloadFiles`](#downloadfiles)
+- [`createZipJob`](#createzipjob)
+- [`getZipJob`](#getzipjob)
+- [`getFileSummary`](#getfilesummary)
+- [`getFileSummaryFeedback`](#getfilesummaryfeedback)
+- [`putFileSummaryFeedback`](#putfilesummaryfeedback)
+- [`createFileSummaryJob`](#createfilesummaryjob)
+- [`getCurrentFileSummaryJob`](#getcurrentfilesummaryjob)
+- [`getFileSummaryJob`](#getfilesummaryjob)
+- [`generateFileSummary`](#generatefilesummary)
+- [`createFileAttributeSuggestionJob`](#createfileattributesuggestionjob)
+- [`getLatestFileAttributeSuggestions`](#getlatestfileattributesuggestions)
+- [`getFileAttributeSuggestionJob`](#getfileattributesuggestionjob)
+- [`updateFileAttributeSuggestionStatus`](#updatefileattributesuggestionstatus)
+- [`getFileText`](#getfiletext)
+- [`validateFile`](#validatefile)
 - [`verifyCustomDownloadUrl`](#verifycustomdownloadurl)
 - [`uploadFilePublic`](#uploadfilepublic)
 
@@ -71,7 +86,35 @@ const { data } = await fileClient.uploadFileV2(...)
 - [`FileEntityId`](#fileentityid)
 - [`FileAttributes`](#fileattributes)
 - [`FileType`](#filetype)
+- [`FileSummaryJobStatus`](#filesummaryjobstatus)
+- [`FileSummaryJob`](#filesummaryjob)
+- [`FileSummary`](#filesummary)
+- [`FileSummaryFeedback`](#filesummaryfeedback)
+- [`FileSummaryFeedbackResponse`](#filesummaryfeedbackresponse)
+- [`PutFileSummaryFeedbackRequest`](#putfilesummaryfeedbackrequest)
+- [`FileAttributeSuggestionJobStatus`](#fileattributesuggestionjobstatus)
+- [`FileAttributeSuggestion`](#fileattributesuggestion)
+- [`FileAttributeSuggestionsPayload`](#fileattributesuggestionspayload)
+- [`FileAttributeSuggestionJob`](#fileattributesuggestionjob)
+- [`CreateFileAttributeSuggestionJobRequest`](#createfileattributesuggestionjobrequest)
+- [`UpdateFileAttributeSuggestionStatusRequest`](#updatefileattributesuggestionstatusrequest)
+- [`FileAttributeSuggestionError`](#fileattributesuggestionerror)
+- [`FileTextStatus`](#filetextstatus)
+- [`FileValidationRequest`](#filevalidationrequest)
+- [`FileValidationFileReference`](#filevalidationfilereference)
+- [`FileValidation`](#filevalidation)
+- [`FileValidationFile`](#filevalidationfile)
+- [`FileValidationObservation`](#filevalidationobservation)
+- [`FileValidationJudgement`](#filevalidationjudgement)
+- [`FileValidationFacts`](#filevalidationfacts)
+- [`FileValidationRuleResult`](#filevalidationruleresult)
+- [`FileValidationConditionResult`](#filevalidationconditionresult)
+- [`FileText`](#filetext)
+- [`FileTextReady`](#filetextready)
+- [`FileTextNotReady`](#filetextnotready)
+- [`FileTextUnsupported`](#filetextunsupported)
 - [`CustomDownloadUrl`](#customdownloadurl)
+- [`CustomDownloadUrlAuth`](#customdownloadurlauth)
 - [`FileEntity`](#fileentity)
 - [`CommonSaveFilePayload`](#commonsavefilepayload)
 - [`SaveS3FilePayload`](#saves3filepayload)
@@ -83,6 +126,8 @@ const { data } = await fileClient.uploadFileV2(...)
 - [`UploadFilePayload`](#uploadfilepayload)
 - [`FileUpload`](#fileupload)
 - [`DownloadFilesPayload`](#downloadfilespayload)
+- [`CreateZipJobPayload`](#createzipjobpayload)
+- [`ZipJob`](#zipjob)
 - [`VerifyCustomDownloadUrlPayload`](#verifycustomdownloadurlpayload)
 - [`S3Reference`](#s3reference)
 - [`S3Ref`](#s3ref)
@@ -171,9 +216,16 @@ const { data } = await client.saveFileV2(
     mime_type: 'application/pdf',
     size_bytes: 1234,
     readable_size: '1.2 MB',
+    etag: '9bb58f26192e4ba00f01e2e7b136bbd8',
     access_control: 'private',
     public_url: 'https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/4d689aeb-1497-4410-a9fe-b36ca9ac4389/document.pdf',
     custom_download_url: 'https://some-api-url.com/download?file_id=123',
+    custom_download_url_auth: 'token',
+    preview_summary_de: 'string',
+    short_summary_de: 'string',
+    preview_summary_en: 'string',
+    short_summary_en: 'string',
+    file_summary_execution_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     s3ref: {}
   },
 )
@@ -196,9 +248,16 @@ const { data } = await client.saveFileV2(
   "mime_type": "application/pdf",
   "size_bytes": 1234,
   "readable_size": "1.2 MB",
+  "etag": "9bb58f26192e4ba00f01e2e7b136bbd8",
   "access_control": "private",
   "public_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/4d689aeb-1497-4410-a9fe-b36ca9ac4389/document.pdf",
   "custom_download_url": "https://some-api-url.com/download?file_id=123",
+  "custom_download_url_auth": "token",
+  "preview_summary_de": "string",
+  "short_summary_de": "string",
+  "preview_summary_en": "string",
+  "short_summary_en": "string",
+  "file_summary_execution_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "source_url": "https://productengineer-content.s3.eu-west-1.amazonaws.com/product-engineer-checklist.pdf",
   "s3ref": {},
   "versions": [
@@ -207,7 +266,8 @@ const { data } = await client.saveFileV2(
       "filename": "document.pdf",
       "size_bytes": 1234,
       "readable_size": "1.2 MB",
-      "mime_type": "image/jpeg"
+      "mime_type": "image/jpeg",
+      "etag": "9bb58f26192e4ba00f01e2e7b136bbd8"
     }
   ],
   "_updated_at": "1970-01-01T00:00:00.000Z",
@@ -263,9 +323,16 @@ const { data } = await client.getFile({
   "mime_type": "application/pdf",
   "size_bytes": 1234,
   "readable_size": "1.2 MB",
+  "etag": "9bb58f26192e4ba00f01e2e7b136bbd8",
   "access_control": "private",
   "public_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/4d689aeb-1497-4410-a9fe-b36ca9ac4389/document.pdf",
   "custom_download_url": "https://some-api-url.com/download?file_id=123",
+  "custom_download_url_auth": "token",
+  "preview_summary_de": "string",
+  "short_summary_de": "string",
+  "preview_summary_en": "string",
+  "short_summary_en": "string",
+  "file_summary_execution_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "source_url": "https://productengineer-content.s3.eu-west-1.amazonaws.com/product-engineer-checklist.pdf",
   "s3ref": {},
   "versions": [
@@ -274,7 +341,8 @@ const { data } = await client.getFile({
       "filename": "document.pdf",
       "size_bytes": 1234,
       "readable_size": "1.2 MB",
-      "mime_type": "image/jpeg"
+      "mime_type": "image/jpeg",
+      "etag": "9bb58f26192e4ba00f01e2e7b136bbd8"
     }
   ],
   "_updated_at": "1970-01-01T00:00:00.000Z",
@@ -330,9 +398,16 @@ const { data } = await client.deleteFile({
   "mime_type": "application/pdf",
   "size_bytes": 1234,
   "readable_size": "1.2 MB",
+  "etag": "9bb58f26192e4ba00f01e2e7b136bbd8",
   "access_control": "private",
   "public_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/4d689aeb-1497-4410-a9fe-b36ca9ac4389/document.pdf",
   "custom_download_url": "https://some-api-url.com/download?file_id=123",
+  "custom_download_url_auth": "token",
+  "preview_summary_de": "string",
+  "short_summary_de": "string",
+  "preview_summary_en": "string",
+  "short_summary_en": "string",
+  "file_summary_execution_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "source_url": "https://productengineer-content.s3.eu-west-1.amazonaws.com/product-engineer-checklist.pdf",
   "s3ref": {},
   "versions": [
@@ -341,7 +416,8 @@ const { data } = await client.deleteFile({
       "filename": "document.pdf",
       "size_bytes": 1234,
       "readable_size": "1.2 MB",
-      "mime_type": "image/jpeg"
+      "mime_type": "image/jpeg",
+      "etag": "9bb58f26192e4ba00f01e2e7b136bbd8"
     }
   ],
   "_updated_at": "1970-01-01T00:00:00.000Z",
@@ -376,6 +452,7 @@ const { data } = await client.downloadFile({
   id: '123e4567-e89b-12d3-a456-426614174000',
   version: 1,
   attachment: true,
+  x-track: 'example',
 })
 ```
 
@@ -453,6 +530,561 @@ const { data } = await client.downloadFiles(
 
 ---
 
+### `createZipJob`
+
+Create a background job to ZIP multiple files and send a download link via email.
+
+`POST /v1/files:zipJob`
+
+```ts
+const { data } = await client.createZipJob(
+  null,
+  {},
+)
+```
+
+---
+
+### `getZipJob`
+
+Get the status of a ZIP job
+
+`GET /v1/files:zipJob/{job_id}`
+
+```ts
+const { data } = await client.getZipJob({
+  job_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "job_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "status": "completed",
+  "progress": {
+    "total_files": 100,
+    "downloaded_files": 75,
+    "failed_files": 2
+  },
+  "result": {
+    "file_entity_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8",
+    "download_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/files.zip?X-Amz-...",
+    "expires_at": "2024-01-02T12:00:00Z",
+    "zip_size_bytes": 104857600
+  },
+  "error": "Failed to download file: access denied",
+  "created_at": "2024-01-01T12:00:00Z",
+  "created_by": "10234",
+  "org_id": "123",
+  "updated_at": "2024-01-01T12:05:00Z"
+}
+```
+
+</details>
+
+---
+
+### `getFileSummary`
+
+Get summary text for a file entity together with the current summary job status when available.
+
+`GET /v1/files/{id}/summary`
+
+```ts
+const { data } = await client.getFileSummary({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "status": "queued",
+  "job_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "feedback_available": true,
+  "preview_summary_de": "string",
+  "short_summary_de": "string",
+  "preview_summary_en": "string",
+  "short_summary_en": "string"
+}
+```
+
+</details>
+
+---
+
+### `getFileSummaryFeedback`
+
+Get file summary feedback
+
+`GET /v1/files/{id}/summary/feedback`
+
+```ts
+const { data } = await client.getFileSummaryFeedback({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "feedback": {
+    "rating": "up",
+    "comment": "string",
+    "user_id": "string",
+    "submitted_at": "1970-01-01T00:00:00.000Z"
+  }
+}
+```
+
+</details>
+
+---
+
+### `putFileSummaryFeedback`
+
+Submit file summary feedback
+
+`PUT /v1/files/{id}/summary/feedback`
+
+```ts
+const { data } = await client.putFileSummaryFeedback(
+  {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+  },
+  {
+    rating: 'up',
+    comment: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "feedback": {
+    "rating": "up",
+    "comment": "string",
+    "user_id": "string",
+    "submitted_at": "1970-01-01T00:00:00.000Z"
+  }
+}
+```
+
+</details>
+
+---
+
+### `createFileSummaryJob`
+
+Create or return the current AI summary job for a file entity.
+
+`POST /v1/files/{id}/summary-jobs`
+
+```ts
+const { data } = await client.createFileSummaryJob({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+---
+
+### `getCurrentFileSummaryJob`
+
+Get the latest AI summary job for the file entity's current source.
+
+`GET /v1/files/{id}/summary-jobs/current`
+
+```ts
+const { data } = await client.getCurrentFileSummaryJob({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "job_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "file_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8",
+  "status": "queued",
+  "error": "string",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "completed_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `getFileSummaryJob`
+
+Get an AI summary job by id.
+
+`GET /v1/files/{id}/summary-jobs/{job_id}`
+
+```ts
+const { data } = await client.getFileSummaryJob({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+  job_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "job_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "file_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8",
+  "status": "queued",
+  "error": "string",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "completed_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `generateFileSummary`
+
+Compatibility alias for creating or returning the current AI summary job for a file entity.
+
+`POST /v1/files/{id}/summary:generate`
+
+```ts
+const { data } = await client.generateFileSummary({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+---
+
+### `createFileAttributeSuggestionJob`
+
+Start an auto-fill job that reads the file's extracted text and suggests values for the related entity's attributes. Requires `entity:view` on the file and on the related entity. Returns 404 with `err
+
+`POST /v1/files/{id}/attribute-suggestion-jobs`
+
+```ts
+const { data } = await client.createFileAttributeSuggestionJob(
+  {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+  },
+  {
+    entity_slug: 'opportunity',
+    entity_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+  },
+)
+```
+
+---
+
+### `getLatestFileAttributeSuggestions`
+
+Get the most recent attribute suggestion job of any status for the file and the given entity. Returns 404 with `error_code: no_file_attribute_suggestions_job` when auto-fill has not run yet.
+
+`GET /v1/files/{id}/attribute-suggestion-jobs/latest`
+
+```ts
+const { data } = await client.getLatestFileAttributeSuggestions({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+  entity_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "jobId": "string",
+  "jobStatus": {
+    "status": "INITIATED",
+    "progress": 0,
+    "error": "string"
+  },
+  "payload": {
+    "file_id": "string",
+    "entity_id": "string",
+    "entity_slug": "string",
+    "generated_by": "string",
+    "generated_at": 0,
+    "suggestions": [
+      {
+        "attribute_name": "string",
+        "attribute_label": "string",
+        "attribute_type": "date",
+        "suggested_value": "string",
+        "confidence": "high",
+        "source_page": 0,
+        "evidence": "string",
+        "status": "suggested",
+        "status_updated_by": "string",
+        "status_updated_at": 0,
+        "discard_reason": "string",
+        "is_copied": true,
+        "copied_by": "string",
+        "copied_at": 0,
+        "suggestion_type": "new_value"
+      }
+    ]
+  },
+  "createdAt": 0,
+  "updatedAt": 0
+}
+```
+
+</details>
+
+---
+
+### `getFileAttributeSuggestionJob`
+
+Get an attribute suggestion job of the file. Poll until `jobStatus.status` is `COMPLETED` or `FAILED`.
+
+`GET /v1/files/{id}/attribute-suggestion-jobs/{job_id}`
+
+```ts
+const { data } = await client.getFileAttributeSuggestionJob({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+  job_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "jobId": "string",
+  "jobStatus": {
+    "status": "INITIATED",
+    "progress": 0,
+    "error": "string"
+  },
+  "payload": {
+    "file_id": "string",
+    "entity_id": "string",
+    "entity_slug": "string",
+    "generated_by": "string",
+    "generated_at": 0,
+    "suggestions": [
+      {
+        "attribute_name": "string",
+        "attribute_label": "string",
+        "attribute_type": "date",
+        "suggested_value": "string",
+        "confidence": "high",
+        "source_page": 0,
+        "evidence": "string",
+        "status": "suggested",
+        "status_updated_by": "string",
+        "status_updated_at": 0,
+        "discard_reason": "string",
+        "is_copied": true,
+        "copied_by": "string",
+        "copied_at": 0,
+        "suggestion_type": "new_value"
+      }
+    ]
+  },
+  "createdAt": 0,
+  "updatedAt": 0
+}
+```
+
+</details>
+
+---
+
+### `updateFileAttributeSuggestionStatus`
+
+Record that suggestions were accepted, discarded or copied. Only the suggestion entries named in the request change; unknown attribute names are ignored. Applying a value to the entity stays with the 
+
+`PATCH /v1/files/{id}/attribute-suggestion-jobs/{job_id}`
+
+```ts
+const { data } = await client.updateFileAttributeSuggestionStatus(
+  {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+    job_id: 'example',
+  },
+  {
+    suggestionStatusUpdates: [
+      {},
+      {}
+    ]
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "jobId": "string",
+  "jobStatus": {
+    "status": "INITIATED",
+    "progress": 0,
+    "error": "string"
+  },
+  "payload": {
+    "file_id": "string",
+    "entity_id": "string",
+    "entity_slug": "string",
+    "generated_by": "string",
+    "generated_at": 0,
+    "suggestions": [
+      {
+        "attribute_name": "string",
+        "attribute_label": "string",
+        "attribute_type": "date",
+        "suggested_value": "string",
+        "confidence": "high",
+        "source_page": 0,
+        "evidence": "string",
+        "status": "suggested",
+        "status_updated_by": "string",
+        "status_updated_at": 0,
+        "discard_reason": "string",
+        "is_copied": true,
+        "copied_by": "string",
+        "copied_at": 0,
+        "suggestion_type": "new_value"
+      }
+    ]
+  },
+  "createdAt": 0,
+  "updatedAt": 0
+}
+```
+
+</details>
+
+---
+
+### `getFileText`
+
+Get the plain-text representation of a file entity. Returns status `not_ready` while text is being prepared and `unsupported` when text is unavailable for the file or organization.
+
+`GET /v1/files/{id}/text`
+
+```ts
+const { data } = await client.getFileText({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "status": "ready",
+  "text": "string",
+  "truncated": true,
+  "total_chars": 0
+}
+```
+
+</details>
+
+---
+
+### `validateFile`
+
+Validate an uploaded file against one or more document validation rules
+(validation-rules-api rules with `input_type: document`).
+
+`POST /v1/files/validations`
+
+```ts
+const { data } = await client.validateFile(
+  null,
+  {
+    file: {
+      entity_id: 'ef7d985c-2385-44f4-9c71-ae06a52264f8'
+    },
+    rule_ids: ['string']
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "id": "string",
+  "status": "completed",
+  "file": {
+    "entity_id": "ef7d985c-2385-44f4-9c71-ae06a52264f8",
+    "s3ref": {},
+    "filename": "string",
+    "mime_type": "string",
+    "size_bytes": 0
+  },
+  "observation": {
+    "facts": {
+      "mime_type": "string",
+      "size_bytes": 0,
+      "page_count": 0,
+      "longer_edge_px": 0,
+      "is_blank": true,
+      "is_password_protected": true
+    },
+    "judgements": {},
+    "document_type": {
+      "slug": "string",
+      "confidence": 0
+    }
+  },
+  "results": [
+    {
+      "rule_id": "string",
+      "rule_title": "string",
+      "level": "basic",
+      "is_valid": true,
+      "failed_parts": ["string"],
+      "warnings": ["string"],
+      "conditions": [
+        {
+          "id": "string",
+          "operator": "string",
+          "outcome": "pass",
+          "blocking": true,
+          "message": "string",
+          "evidence": "string",
+          "explanation": "string"
+        }
+      ]
+    }
+  ],
+  "created_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
 ### `previewFile`
 
 Generate a thumbnail preview for a file entity.
@@ -517,6 +1149,7 @@ const { data } = await client.previewPublicFile({
   version: 1,
   w: 1,
   h: 1,
+  keep_original: true,
   org_id: 'example',
 })
 ```
@@ -572,7 +1205,7 @@ const { data } = await client.generatePublicLink({
 
 ### `listPublicLinksForFile`
 
-**Not yet implemented.**
+Fetches all public links previously generated for a file
 
 `GET /v1/files/{id}/public/links`
 
@@ -619,7 +1252,7 @@ const { data } = await client.accessPublicLink({
 
 ### `revokePublicLink`
 
-**Not yet implemented.**
+Revokes a given public link by ID
 
 `DELETE /v1/files/public/links/{id}`
 
@@ -866,9 +1499,16 @@ const { data } = await client.getFilesInCollection({
     "mime_type": "application/pdf",
     "size_bytes": 1234,
     "readable_size": "1.2 MB",
+    "etag": "9bb58f26192e4ba00f01e2e7b136bbd8",
     "access_control": "private",
     "public_url": "https://epilot-prod-user-content.s3.eu-central-1.amazonaws.com/123/4d689aeb-1497-4410-a9fe-b36ca9ac4389/document.pdf",
     "custom_download_url": "https://some-api-url.com/download?file_id=123",
+    "custom_download_url_auth": "token",
+    "preview_summary_de": "string",
+    "short_summary_de": "string",
+    "preview_summary_en": "string",
+    "short_summary_en": "string",
+    "file_summary_execution_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "source_url": "https://productengineer-content.s3.eu-west-1.amazonaws.com/product-engineer-checklist.pdf",
     "s3ref": {},
     "versions": [
@@ -877,7 +1517,8 @@ const { data } = await client.getFilesInCollection({
         "filename": "document.pdf",
         "size_bytes": 1234,
         "readable_size": "1.2 MB",
-        "mime_type": "image/jpeg"
+        "mime_type": "image/jpeg",
+        "etag": "9bb58f26192e4ba00f01e2e7b136bbd8"
       }
     ],
     "_updated_at": "1970-01-01T00:00:00.000Z",
@@ -980,9 +1621,16 @@ type FileAttributes = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
 }
 ```
 
@@ -992,12 +1640,451 @@ type FileAttributes = {
 type FileType = "document" | "document_template" | "text" | "image" | "video" | "audio" | "spreadsheet" | "presentation" | "font" | "archive" | "application" | "unknown"
 ```
 
+### `FileSummaryJobStatus`
+
+Current state of a file summary job.
+
+```ts
+type FileSummaryJobStatus = "queued" | "waiting_for_extraction" | "processing" | "completed" | "failed" | "unsupported" | "stale"
+```
+
+### `FileSummaryJob`
+
+```ts
+type FileSummaryJob = {
+  job_id: string // uuid
+  file_id: string | string // uuid
+  status: "queued" | "waiting_for_extraction" | "processing" | "completed" | "failed" | "unsupported" | "stale"
+  error?: string
+  created_at: string // date-time
+  updated_at: string // date-time
+  completed_at?: string // date-time
+}
+```
+
+### `FileSummary`
+
+```ts
+type FileSummary = {
+  status?: "queued" | "waiting_for_extraction" | "processing" | "completed" | "failed" | "unsupported" | "stale"
+  job_id?: string // uuid
+  feedback_available?: boolean
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+}
+```
+
+### `FileSummaryFeedback`
+
+```ts
+type FileSummaryFeedback = {
+  rating: "up" | "down"
+  comment?: string
+  user_id: string
+  submitted_at: string // date-time
+}
+```
+
+### `FileSummaryFeedbackResponse`
+
+```ts
+type FileSummaryFeedbackResponse = {
+  feedback: {
+    rating: "up" | "down"
+    comment?: string
+    user_id: string
+    submitted_at: string // date-time
+  }
+}
+```
+
+### `PutFileSummaryFeedbackRequest`
+
+```ts
+type PutFileSummaryFeedbackRequest = {
+  rating: "up" | "down"
+  comment?: string
+}
+```
+
+### `FileAttributeSuggestionJobStatus`
+
+```ts
+type FileAttributeSuggestionJobStatus = {
+  status: "INITIATED" | "IN_PROGRESS" | "COMPLETED" | "FAILED"
+  progress: number
+  error?: string
+}
+```
+
+### `FileAttributeSuggestion`
+
+```ts
+type FileAttributeSuggestion = {
+  attribute_name?: string
+  attribute_label?: string
+  attribute_type?: "date" | "number" | "boolean" | "select" | "string"
+  suggested_value?: string | number | boolean
+  confidence?: "high" | "medium" | "low"
+  source_page?: number
+  evidence?: string
+  status?: "suggested" | "accepted" | "discarded"
+  status_updated_by?: string
+  status_updated_at?: number
+  discard_reason?: string
+  is_copied?: boolean
+  copied_by?: string
+  copied_at?: number
+  suggestion_type?: "new_value" | "update"
+}
+```
+
+### `FileAttributeSuggestionsPayload`
+
+```ts
+type FileAttributeSuggestionsPayload = {
+  file_id: string
+  entity_id: string
+  entity_slug: string
+  generated_by?: string
+  generated_at?: number
+  suggestions: Array<{
+    attribute_name?: string
+    attribute_label?: string
+    attribute_type?: "date" | "number" | "boolean" | "select" | "string"
+    suggested_value?: string | number | boolean
+    confidence?: "high" | "medium" | "low"
+    source_page?: number
+    evidence?: string
+    status?: "suggested" | "accepted" | "discarded"
+    status_updated_by?: string
+    status_updated_at?: number
+    discard_reason?: string
+    is_copied?: boolean
+    copied_by?: string
+    copied_at?: number
+    suggestion_type?: "new_value" | "update"
+  }>
+}
+```
+
+### `FileAttributeSuggestionJob`
+
+```ts
+type FileAttributeSuggestionJob = {
+  jobId: string
+  jobStatus: {
+    status: "INITIATED" | "IN_PROGRESS" | "COMPLETED" | "FAILED"
+    progress: number
+    error?: string
+  }
+  payload: {
+    file_id: string
+    entity_id: string
+    entity_slug: string
+    generated_by?: string
+    generated_at?: number
+    suggestions: Array<{
+      attribute_name?: { ... }
+      attribute_label?: { ... }
+      attribute_type?: { ... }
+      suggested_value?: { ... }
+      confidence?: { ... }
+      source_page?: { ... }
+      evidence?: { ... }
+      status?: { ... }
+      status_updated_by?: { ... }
+      status_updated_at?: { ... }
+      discard_reason?: { ... }
+      is_copied?: { ... }
+      copied_by?: { ... }
+      copied_at?: { ... }
+      suggestion_type?: { ... }
+    }>
+  }
+  createdAt: number
+  updatedAt: number
+}
+```
+
+### `CreateFileAttributeSuggestionJobRequest`
+
+```ts
+type CreateFileAttributeSuggestionJobRequest = {
+  entity_slug: string
+  entity_id: string // uuid
+}
+```
+
+### `UpdateFileAttributeSuggestionStatusRequest`
+
+```ts
+type UpdateFileAttributeSuggestionStatusRequest = {
+  suggestionStatusUpdates: unknown | unknown[]
+}
+```
+
+### `FileAttributeSuggestionError`
+
+```ts
+type FileAttributeSuggestionError = {
+  status?: number
+  error?: string
+  error_code?: "entity_or_schema_unavailable" | "file_not_extracted" | "extraction_unsupported" | "extraction_failed" | "extraction_status_unavailable" | "processing_enqueue_failed" | "no_file_attribute_suggestions_job" | "job_not_found"
+}
+```
+
+### `FileTextStatus`
+
+Availability of the plain-text representation for a file entity.
+
+```ts
+type FileTextStatus = "ready" | "not_ready" | "unsupported"
+```
+
+### `FileValidationRequest`
+
+```ts
+type FileValidationRequest = {
+  file: {
+    entity_id: string | string // uuid
+  } | {
+    s3ref: unknown
+  }
+  rule_ids: string[]
+}
+```
+
+### `FileValidationFileReference`
+
+The file to validate - a saved file entity, or an uploaded object not saved as an entity yet.
+
+```ts
+type FileValidationFileReference = {
+  entity_id: string | string // uuid
+} | {
+  s3ref: unknown
+}
+```
+
+### `FileValidation`
+
+```ts
+type FileValidation = {
+  id: string
+  status: "completed" | "pending" | "failed" | "skipped"
+  file: {
+    entity_id?: string | string // uuid
+    s3ref?: unknown
+    filename?: string
+    mime_type?: string
+    size_bytes?: number
+  }
+  observation: {
+    facts: {
+      mime_type?: { ... }
+      size_bytes?: { ... }
+      page_count?: { ... }
+      longer_edge_px?: { ... }
+      is_blank?: { ... }
+      is_password_protected?: { ... }
+    }
+    judgements?: Record<string, {
+      result: { ... }
+      confidence?: { ... }
+      evidence?: { ... }
+      explanation?: { ... }
+    }>
+    document_type?: {
+      slug?: { ... }
+      confidence?: { ... }
+    }
+  }
+  results: Array<{
+    rule_id: string
+    rule_title?: string
+    level: "basic" | "standard" | "advanced"
+    is_valid: boolean
+    failed_parts?: string[]
+    warnings?: string[]
+    conditions: Array<{
+      id: { ... }
+      operator: { ... }
+      outcome: { ... }
+      blocking: { ... }
+      message: { ... }
+      evidence?: { ... }
+      explanation?: { ... }
+    }>
+  }>
+  created_at: string // date-time
+}
+```
+
+### `FileValidationFile`
+
+The file that was validated, with the identity facts collected from its content.
+
+```ts
+type FileValidationFile = {
+  entity_id?: string | string // uuid
+  s3ref?: unknown
+  filename?: string
+  mime_type?: string
+  size_bytes?: number
+}
+```
+
+### `FileValidationObservation`
+
+Everything observed about the file, as passed to the validation rules engine.
+
+```ts
+type FileValidationObservation = {
+  facts: {
+    mime_type?: string
+    size_bytes?: number
+    page_count?: number
+    longer_edge_px?: number
+    is_blank?: boolean
+    is_password_protected?: boolean
+  }
+  judgements?: Record<string, {
+    result: "pass" | "fail" | "uncertain"
+    confidence?: number
+    evidence?: string
+    explanation?: string
+  }>
+  document_type?: {
+    slug?: string
+    confidence?: number
+  }
+}
+```
+
+### `FileValidationJudgement`
+
+```ts
+type FileValidationJudgement = {
+  result: "pass" | "fail" | "uncertain"
+  confidence?: number
+  evidence?: string
+  explanation?: string
+}
+```
+
+### `FileValidationFacts`
+
+Deterministic properties of the file. A property that is absent could not be determined
+(for example the resolution of an image the service cannot decode); conditions that need it
+are skipped rather than failed.
+
+
+```ts
+type FileValidationFacts = {
+  mime_type?: string
+  size_bytes?: number
+  page_count?: number
+  longer_edge_px?: number
+  is_blank?: boolean
+  is_password_protected?: boolean
+}
+```
+
+### `FileValidationRuleResult`
+
+```ts
+type FileValidationRuleResult = {
+  rule_id: string
+  rule_title?: string
+  level: "basic" | "standard" | "advanced"
+  is_valid: boolean
+  failed_parts?: string[]
+  warnings?: string[]
+  conditions: Array<{
+    id: string
+    operator: string
+    outcome: "pass" | "fail" | "uncertain" | "skipped"
+    blocking: boolean
+    message: string
+    evidence?: string
+    explanation?: string
+  }>
+}
+```
+
+### `FileValidationConditionResult`
+
+```ts
+type FileValidationConditionResult = {
+  id: string
+  operator: string
+  outcome: "pass" | "fail" | "uncertain" | "skipped"
+  blocking: boolean
+  message: string
+  evidence?: string
+  explanation?: string
+}
+```
+
+### `FileText`
+
+```ts
+type FileText = {
+  status: "ready"
+  text: string
+  truncated: boolean
+  total_chars: number
+} | {
+  status: "not_ready"
+} | {
+  status: "unsupported"
+}
+```
+
+### `FileTextReady`
+
+```ts
+type FileTextReady = {
+  status: "ready"
+  text: string
+  truncated: boolean
+  total_chars: number
+}
+```
+
+### `FileTextNotReady`
+
+```ts
+type FileTextNotReady = {
+  status: "not_ready"
+}
+```
+
+### `FileTextUnsupported`
+
+```ts
+type FileTextUnsupported = {
+  status: "unsupported"
+}
+```
+
 ### `CustomDownloadUrl`
 
 Custom external download url used for the file
 
 ```ts
 type CustomDownloadUrl = string // uri
+```
+
+### `CustomDownloadUrlAuth`
+
+Authorization mode for the custom_download_url. `presigned` (the default) uses an HMAC-signed URL; `token` authorizes the download via the caller's bearer token, matched against the exact stored custom_download_url. In token mode the File API returns the unsigned custom_download_url (no expires_at/s
+
+```ts
+type CustomDownloadUrlAuth = "presigned" | "token"
 ```
 
 ### `FileEntity`
@@ -1016,9 +2103,16 @@ type FileEntity = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
   source_url?: string
   s3ref?: object
   versions: Array<{
@@ -1027,6 +2121,7 @@ type FileEntity = {
     size_bytes?: number
     readable_size?: string
     mime_type?: string
+    etag?: string
   }>
   _updated_at?: string // date-time
   _created_at?: string // date-time
@@ -1076,9 +2171,16 @@ type SaveS3FilePayload = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
   s3ref?: unknown
 }
 ```
@@ -1102,9 +2204,16 @@ type SaveFileFromSourceURLPayload = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
   source_url?: string // uri
 }
 ```
@@ -1128,9 +2237,16 @@ type SaveCustomFilePayload = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
 }
 ```
 
@@ -1153,9 +2269,16 @@ type SaveFilePayload = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
   s3ref?: unknown
 } | {
   _id?: object
@@ -1173,9 +2296,16 @@ type SaveFilePayload = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
   source_url?: string // uri
 } | {
   _id?: object
@@ -1193,9 +2323,16 @@ type SaveFilePayload = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
 }
 ```
 
@@ -1218,9 +2355,16 @@ type SaveFilePayloadV2 = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
   s3ref?: unknown
 } | {
   _id?: object
@@ -1238,9 +2382,16 @@ type SaveFilePayloadV2 = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
   source_url?: string // uri
 } | {
   _id?: object
@@ -1258,9 +2409,16 @@ type SaveFilePayloadV2 = {
   mime_type?: string
   size_bytes?: number
   readable_size?: string
+  etag?: string
   access_control?: "private" | "public-read"
   public_url?: string // url
   custom_download_url?: string // uri
+  custom_download_url_auth?: "presigned" | "token"
+  preview_summary_de?: string
+  short_summary_de?: string
+  preview_summary_en?: string
+  short_summary_en?: string
+  file_summary_execution_id?: string // uuid
 }
 ```
 
@@ -1309,6 +2467,44 @@ type DownloadFilesPayload = Array<{
 }>
 ```
 
+### `CreateZipJobPayload`
+
+Request payload to create a ZIP job for bulk file download.
+Provide either an explicit list of `file_entity_ids` (up to 1000) or an
+`entity_query` that resolves to file entities (up to 10000).
+
+
+```ts
+type CreateZipJobPayload = unknown | unknown
+```
+
+### `ZipJob`
+
+ZIP job status and result
+
+```ts
+type ZipJob = {
+  job_id?: string // uuid
+  status?: "queued" | "downloading" | "zipping" | "uploading" | "sending_notification" | "completed" | "failed"
+  progress?: {
+    total_files?: number
+    downloaded_files?: number
+    failed_files?: number
+  }
+  result?: {
+    file_entity_id?: string // uuid
+    download_url?: string // uri
+    expires_at?: string // date-time
+    zip_size_bytes?: number
+  }
+  error?: string
+  created_at?: string // date-time
+  created_by?: string
+  org_id?: string
+  updated_at?: string // date-time
+}
+```
+
 ### `VerifyCustomDownloadUrlPayload`
 
 ```ts
@@ -1344,6 +2540,7 @@ type FileItem = {
   size_bytes?: number
   readable_size?: string
   mime_type?: string
+  etag?: string
 }
 ```
 

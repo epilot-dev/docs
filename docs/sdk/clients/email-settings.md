@@ -51,14 +51,35 @@ const { data } = await emailSettingsClient.provisionEpilotEmailAddress(...)
 **O365 Outlook Connection**
 - [`connectOutlook`](#connectoutlook)
 - [`getOutlookConnectionStatus`](#getoutlookconnectionstatus)
+- [`getCalendarAdminConsentStatus`](#getcalendaradminconsentstatus)
+- [`getMyCalendarConnection`](#getmycalendarconnection)
+- [`disconnectMyCalendar`](#disconnectmycalendar)
 - [`disconnectOutlook`](#disconnectoutlook)
 - [`connectOutlookMailbox`](#connectoutlookmailbox)
 - [`disconnectOutlookMailbox`](#disconnectoutlookmailbox)
 - [`startMailboxSync`](#startmailboxsync)
 - [`getMailboxSyncStatus`](#getmailboxsyncstatus)
+- [`getMailboxSyncEstimate`](#getmailboxsyncestimate)
 - [`retryMailboxSync`](#retrymailboxsync)
+- [`cancelMailboxSync`](#cancelmailboxsync)
 - [`getConnectedOutlookEmails`](#getconnectedoutlookemails)
 - [`outlookOAuthCallback`](#outlookoauthcallback)
+
+**Channels**
+- [`connectMsTeams`](#connectmsteams)
+- [`disconnectMsTeams`](#disconnectmsteams)
+- [`getMsTeamsStatus`](#getmsteamsstatus)
+
+**Custom SMTP**
+- [`listSmtpConnections`](#listsmtpconnections)
+- [`createSmtpConnection`](#createsmtpconnection)
+- [`getSmtpConnection`](#getsmtpconnection)
+- [`updateSmtpConnection`](#updatesmtpconnection)
+- [`deleteSmtpConnection`](#deletesmtpconnection)
+- [`testSmtpConnection`](#testsmtpconnection)
+- [`listSmtpSenders`](#listsmtpsenders)
+- [`connectSmtpSender`](#connectsmtpsender)
+- [`disconnectSmtpSender`](#disconnectsmtpsender)
 
 **Settings**
 - [`getSettings`](#getsettings)
@@ -69,13 +90,17 @@ const { data } = await emailSettingsClient.provisionEpilotEmailAddress(...)
 **Domains**
 - [`addDomain`](#adddomain)
 - [`deleteDomain`](#deletedomain)
+- [`getDomains`](#getdomains)
 - [`verifyNameServers`](#verifynameservers)
+- [`verifyDnsRecords`](#verifydnsrecords)
 - [`verifyDomain`](#verifydomain)
 
 **Schemas**
+- [`ConnectOutlookRequest`](#connectoutlookrequest)
 - [`MailboxSyncStatus`](#mailboxsyncstatus)
 - [`MailboxSyncStatuses`](#mailboxsyncstatuses)
 - [`MailboxSyncFolderStatuses`](#mailboxsyncfolderstatuses)
+- [`MailboxSyncEstimate`](#mailboxsyncestimate)
 - [`MailboxSyncTimeframePeriods`](#mailboxsynctimeframeperiods)
 - [`InboxBucketResponse`](#inboxbucketresponse)
 - [`ProvisionEpilotEmailAddressPayload`](#provisionepilotemailaddresspayload)
@@ -83,6 +108,7 @@ const { data } = await emailSettingsClient.provisionEpilotEmailAddress(...)
 - [`UpdateEmailAddressPayload`](#updateemailaddresspayload)
 - [`CreateEmailAddressPayload`](#createemailaddresspayload)
 - [`EmailAddressResponse`](#emailaddressresponse)
+- [`OutlookDisconnectError`](#outlookdisconnecterror)
 - [`ErrorResponse`](#errorresponse)
 - [`SettingMeta`](#settingmeta)
 - [`UpdateSharedInboxPayload`](#updatesharedinboxpayload)
@@ -91,12 +117,24 @@ const { data } = await emailSettingsClient.provisionEpilotEmailAddress(...)
 - [`SettingsResponse`](#settingsresponse)
 - [`ConnectedOutlookEmail`](#connectedoutlookemail)
 - [`OutlookConnectionError`](#outlookconnectionerror)
+- [`CalendarAdminConsentStatus`](#calendaradminconsentstatus)
+- [`MyCalendarConnectionResponse`](#mycalendarconnectionresponse)
+- [`CalendarConnectionInfo`](#calendarconnectioninfo)
 - [`OutlookConnectionStatus`](#outlookconnectionstatus)
+- [`SmtpConnection`](#smtpconnection)
+- [`CreateSmtpConnectionRequest`](#createsmtpconnectionrequest)
+- [`UpdateSmtpConnectionRequest`](#updatesmtpconnectionrequest)
+- [`SmtpSender`](#smtpsender)
+- [`ConnectSmtpSenderRequest`](#connectsmtpsenderrequest)
+- [`SmtpTestResult`](#smtptestresult)
 - [`SignatureSetting`](#signaturesetting)
 - [`EmailDomainSetting`](#emaildomainsetting)
 - [`EmailAddressSetting`](#emailaddresssetting)
 - [`WhitelistEmailAddressSetting`](#whitelistemailaddresssetting)
 - [`RestrictDuplicatesWithinSetting`](#restrictduplicateswithinsetting)
+- [`AllowedRecipientDomainsSetting`](#allowedrecipientdomainssetting)
+- [`AutoLinkIdentifierAttributesSetting`](#autolinkidentifierattributessetting)
+- [`AutoLinkIdentifierAttribute`](#autolinkidentifierattribute)
 - [`SettingType`](#settingtype)
 - [`Setting`](#setting)
 - [`Domain`](#domain)
@@ -134,7 +172,8 @@ const { data } = await client.provisionEpilotEmailAddress(
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -175,7 +214,8 @@ const { data } = await client.setEmailAddressPrimary(
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -213,7 +253,8 @@ const { data } = await client.getEmailAddress({
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -275,7 +316,8 @@ const { data } = await client.updateEmailAddress(
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -312,7 +354,8 @@ const { data } = await client.listEmailAddresses()
     "shared_inbox_id": "inbox-xyz",
     "is_active": true,
     "is_primary": false,
-    "is_epilot_email_address": false
+    "is_epilot_email_address": false,
+    "provider": "outlook"
   }
 ]
 ```
@@ -359,7 +402,8 @@ const { data } = await client.addEmailAddress(
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -561,12 +605,19 @@ const { data } = await client.listInboxBuckets()
 
 ### `connectOutlook`
 
-Returns Microsoft authorization URL for Outlook OAuth.
+Returns the Microsoft authorization URL for Outlook OAuth.
 
-`GET /v2/outlook/connect`
+`POST /v2/outlook/connect`
 
 ```ts
-const { data } = await client.connectOutlook()
+const { data } = await client.connectOutlook(
+  null,
+  {
+    mail: true,
+    calendar: true,
+    return_to: 'string'
+  },
+)
 ```
 
 <details>
@@ -602,6 +653,7 @@ const { data } = await client.getOutlookConnectionStatus()
     {
       "status": "connected",
       "action": "connect",
+      "action_reason": "expired",
       "connected_by_display_name": "string",
       "connected_by_email": "user@example.com",
       "connected_by_user_id": "string",
@@ -613,11 +665,83 @@ const { data } = await client.getOutlookConnectionStatus()
       "is_token_valid": true
     }
   ],
-  "has_connections": true
+  "has_connections": true,
+  "teams_enabled": true
 }
 ```
 
 </details>
+
+---
+
+### `getCalendarAdminConsentStatus`
+
+Reports whether the caller's organization can connect personal Outlook
+calendars.
+
+`GET /v2/outlook/calendar/admin-consent-status`
+
+```ts
+const { data } = await client.getCalendarAdminConsentStatus()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "admin_consented": true,
+  "admin_consent_url": "https://example.com/path"
+}
+```
+
+</details>
+
+---
+
+### `getMyCalendarConnection`
+
+Returns the calling user's personal Outlook calendar connection,
+or null when the user hasn't connected yet.
+
+`GET /v2/outlook/calendar/me`
+
+```ts
+const { data } = await client.getMyCalendarConnection()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "connection": {
+    "user_id": "string",
+    "tenant_id": "string",
+    "status": "connected",
+    "scopes": ["string"],
+    "connected_by_display_name": "string",
+    "connected_by_email": "user@example.com",
+    "connected_at": "1970-01-01T00:00:00.000Z",
+    "updated_at": "1970-01-01T00:00:00.000Z",
+    "expires_at": "1970-01-01T00:00:00.000Z"
+  }
+}
+```
+
+</details>
+
+---
+
+### `disconnectMyCalendar`
+
+Removes the calling user's personal calendar connection.
+
+`DELETE /v2/outlook/calendar/me`
+
+```ts
+const { data } = await client.disconnectMyCalendar()
+```
 
 ---
 
@@ -652,6 +776,79 @@ const { data } = await client.disconnectOutlook(
 
 ---
 
+### `connectMsTeams`
+
+Connects Microsoft Teams channel (click-to-call deep links, meetings) for the organization.
+Independent of the Microsoft 365 / Outlook connection.
+
+`POST /v2/channels/msteams/connect`
+
+```ts
+const { data } = await client.connectMsTeams()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "connected": true,
+  "connected_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `disconnectMsTeams`
+
+Disconnects Microsoft Teams channel for the organization.
+
+`POST /v2/channels/msteams/disconnect`
+
+```ts
+const { data } = await client.disconnectMsTeams()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "connected": true
+}
+```
+
+</details>
+
+---
+
+### `getMsTeamsStatus`
+
+Returns the connection status of the Microsoft Teams channel for the organization.
+
+`GET /v2/channels/msteams/status`
+
+```ts
+const { data } = await client.getMsTeamsStatus()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "connected": true,
+  "connected_at": "1970-01-01T00:00:00.000Z",
+  "connected_by_user_id": "string"
+}
+```
+
+</details>
+
+---
+
 ### `connectOutlookMailbox`
 
 Connects an Outlook mailbox:
@@ -667,6 +864,10 @@ const { data } = await client.connectOutlookMailbox(
   {
     email: 'user@example.com',
     shared_inbox_id: 'default',
+    name: 'string',
+    user_ids: ['string'],
+    group_ids: ['string'],
+    default_signature_id: 'string',
     mailboxSyncTimeframe: '5m'
   },
 )
@@ -691,7 +892,8 @@ const { data } = await client.connectOutlookMailbox(
     "shared_inbox_id": "inbox-xyz",
     "is_active": true,
     "is_primary": false,
-    "is_epilot_email_address": false
+    "is_epilot_email_address": false,
+    "provider": "outlook"
   },
   "outlook_email": "user@example.com",
   "tenant_id": "string",
@@ -741,7 +943,8 @@ const { data } = await client.startMailboxSync(
     email: 'example',
   },
   {
-    timeframe: '5m'
+    timeframe: '5m',
+    since: '1970-01-01T00:00:00.000Z'
   },
 )
 ```
@@ -768,6 +971,7 @@ const { data } = await client.getMailboxSyncStatus({
   "execution_id": "string",
   "status": "RUNNING",
   "timeframe": "5m",
+  "timeframe_start": "1970-01-01T00:00:00.000Z",
   "started_at": "1970-01-01T00:00:00.000Z",
   "completed_at": "1970-01-01T00:00:00.000Z",
   "inbox": {
@@ -782,6 +986,42 @@ const { data } = await client.getMailboxSyncStatus({
     "processed_messages": 0,
     "failed_messages": 0
   }
+}
+```
+
+</details>
+
+---
+
+### `getMailboxSyncEstimate`
+
+Estimate Mailbox Sync
+
+`GET /v2/outlook/mailbox/{email}/sync/estimate`
+
+```ts
+const { data } = await client.getMailboxSyncEstimate({
+  email: 'example',
+  timeframes: 'example',
+  since: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "estimates": [
+    {
+      "timeframe": "5m",
+      "since": "1970-01-01T00:00:00.000Z",
+      "inbox_messages": 0,
+      "sent_messages": 0,
+      "total_messages": 0,
+      "estimated_duration_seconds": 0
+    }
+  ]
 }
 ```
 
@@ -807,6 +1047,32 @@ const { data } = await client.retryMailboxSync(
   },
 )
 ```
+
+---
+
+### `cancelMailboxSync`
+
+Stop Mailbox Sync
+
+`POST /v2/outlook/mailbox/{email}/sync/cancel`
+
+```ts
+const { data } = await client.cancelMailboxSync({
+  email: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "execution_id": "string",
+  "status": "RUNNING"
+}
+```
+
+</details>
 
 ---
 
@@ -842,6 +1108,357 @@ const { data } = await client.getConnectedOutlookEmails()
 
 ---
 
+### `listSmtpConnections`
+
+Returns all custom SMTP connections configured for the organization.
+Passwords are never returned.
+
+`GET /v2/smtp/connections`
+
+```ts
+const { data } = await client.listSmtpConnections()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "connections": [
+    {
+      "connection_id": "string",
+      "smtp_host": "string",
+      "smtp_port": "string",
+      "smtp_secure": "tls",
+      "smtp_username": "string",
+      "smtp_password": "string",
+      "connected_by_display_name": "string",
+      "connected_by_email": "user@example.com",
+      "connected_by_user_id": "string",
+      "connected_at": "1970-01-01T00:00:00.000Z",
+      "updated_at": "1970-01-01T00:00:00.000Z",
+      "last_tested_at": "1970-01-01T00:00:00.000Z",
+      "last_test_status": "ok",
+      "last_test_error": "string"
+    }
+  ],
+  "has_connections": true
+}
+```
+
+</details>
+
+---
+
+### `createSmtpConnection`
+
+Creates a new custom SMTP connection. Runs a live verify against the SMTP server
+before persisting; on failure the request is rejected and nothing is saved. Pass
+`skip_test=true` to store the configur
+
+`POST /v2/smtp/connections`
+
+```ts
+const { data } = await client.createSmtpConnection(
+  {
+    skip_test: true,
+  },
+  {
+    smtp_host: 'string',
+    smtp_port: 'string',
+    smtp_secure: 'tls',
+    smtp_username: 'string',
+    smtp_password: '{{ env.smtp_password }}'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "connection_id": "string",
+  "smtp_host": "string",
+  "smtp_port": "string",
+  "smtp_secure": "tls",
+  "smtp_username": "string",
+  "smtp_password": "string",
+  "connected_by_display_name": "string",
+  "connected_by_email": "user@example.com",
+  "connected_by_user_id": "string",
+  "connected_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "last_tested_at": "1970-01-01T00:00:00.000Z",
+  "last_test_status": "ok",
+  "last_test_error": "string"
+}
+```
+
+</details>
+
+---
+
+### `getSmtpConnection`
+
+Returns a single custom SMTP connection by id. The password is never returned.
+
+`GET /v2/smtp/connections/{connectionId}`
+
+```ts
+const { data } = await client.getSmtpConnection({
+  connectionId: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "connection_id": "string",
+  "smtp_host": "string",
+  "smtp_port": "string",
+  "smtp_secure": "tls",
+  "smtp_username": "string",
+  "smtp_password": "string",
+  "connected_by_display_name": "string",
+  "connected_by_email": "user@example.com",
+  "connected_by_user_id": "string",
+  "connected_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "last_tested_at": "1970-01-01T00:00:00.000Z",
+  "last_test_status": "ok",
+  "last_test_error": "string"
+}
+```
+
+</details>
+
+---
+
+### `updateSmtpConnection`
+
+Partial update; omitted fields keep their existing values. The merged
+configuration is verified against the SMTP server before persisting. Pass
+`skip_test=true` to store it untested instead, which als
+
+`PUT /v2/smtp/connections/{connectionId}`
+
+```ts
+const { data } = await client.updateSmtpConnection(
+  {
+    connectionId: 'example',
+    skip_test: true,
+  },
+  {
+    smtp_host: 'string',
+    smtp_port: 'string',
+    smtp_secure: 'tls',
+    smtp_username: 'string',
+    smtp_password: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "connection_id": "string",
+  "smtp_host": "string",
+  "smtp_port": "string",
+  "smtp_secure": "tls",
+  "smtp_username": "string",
+  "smtp_password": "string",
+  "connected_by_display_name": "string",
+  "connected_by_email": "user@example.com",
+  "connected_by_user_id": "string",
+  "connected_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "last_tested_at": "1970-01-01T00:00:00.000Z",
+  "last_test_status": "ok",
+  "last_test_error": "string"
+}
+```
+
+</details>
+
+---
+
+### `deleteSmtpConnection`
+
+Deletes a custom SMTP connection. Messages already sent are unaffected.
+
+`DELETE /v2/smtp/connections/{connectionId}`
+
+```ts
+const { data } = await client.deleteSmtpConnection({
+  connectionId: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "success": true,
+  "connection_id": "string"
+}
+```
+
+</details>
+
+---
+
+### `testSmtpConnection`
+
+Re-runs a live SMTP verify against the saved configuration (EHLO + AUTH + NOOP + QUIT)
+and updates `last_test_status` / `last_tested_at` on the connection.
+
+`POST /v2/smtp/connections/{connectionId}/test`
+
+```ts
+const { data } = await client.testSmtpConnection({
+  connectionId: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "status": "ok",
+  "error": "string",
+  "tested_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `listSmtpSenders`
+
+Returns every address registered to send through a custom SMTP connection.
+
+`GET /v2/smtp/senders`
+
+```ts
+const { data } = await client.listSmtpSenders()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "senders": [
+    {
+      "email": "user@example.com",
+      "connection_id": "string",
+      "reply_to_email": "string",
+      "connected_at": "1970-01-01T00:00:00.000Z",
+      "connected_by_user_id": "string"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `connectSmtpSender`
+
+Registers an address as a sender on a custom SMTP connection:
+  1. Creates the email address so it can be picked in the composer
+  2. Binds it to the connection, so outgoing mail from it is routed the
+
+`POST /v2/smtp/senders`
+
+```ts
+const { data } = await client.connectSmtpSender(
+  null,
+  {
+    email: 'user@example.com',
+    connection_id: 'string',
+    name: 'string',
+    reply_to_email: 'string',
+    shared_inbox_id: 'default',
+    user_ids: ['string'],
+    group_ids: ['string'],
+    default_signature_id: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "email_address": {
+    "id": "a10bd0ff-4391-4cfc-88ee-b19d718a9bf7",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-20T14:45:00Z",
+    "created_by": "user-123",
+    "updated_by": "user-456",
+    "address": "sales@yourcompany.com",
+    "name": "Sales Team",
+    "user_ids": ["user-123", "user-456"],
+    "group_ids": ["group-789"],
+    "default_signature_id": "sig-abc",
+    "shared_inbox_id": "inbox-xyz",
+    "is_active": true,
+    "is_primary": false,
+    "is_epilot_email_address": false,
+    "provider": "outlook"
+  },
+  "sender": {
+    "email": "user@example.com",
+    "connection_id": "string",
+    "reply_to_email": "string",
+    "connected_at": "1970-01-01T00:00:00.000Z",
+    "connected_by_user_id": "string"
+  }
+}
+```
+
+</details>
+
+---
+
+### `disconnectSmtpSender`
+
+Removes a sender address: deletes the email address and its binding to the SMTP
+connection. The connection itself and messages already sent are unaffected.
+
+`DELETE /v2/smtp/senders/{email}`
+
+```ts
+const { data } = await client.disconnectSmtpSender({
+  email: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "success": true,
+  "email": "user@example.com"
+}
+```
+
+</details>
+
+---
+
 ### `outlookOAuthCallback`
 
 Exchanges authorization code for tokens and stores them.
@@ -860,6 +1477,7 @@ const { data } = await client.outlookOAuthCallback({
   error_uri: 'example',
   admin_consent: 'example',
   tenant: 'example',
+  clientdata: 'example',
 })
 ```
 
@@ -903,6 +1521,8 @@ const { data } = await client.getSettings({
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -931,6 +1551,8 @@ const { data } = await client.addSetting(
     type: 'signature',
     value: 'Best regards, The Team',
     html: '<p>Best regards,<br/><strong>The Team</strong></p>',
+    schemas: {},
+    excluded_senders: ['newsletter@partner.de', '@noreply.example.com'],
     created_at: '2024-01-15T10:30:00Z',
     updated_at: '2024-01-20T14:45:00Z',
     created_by: 'user-123',
@@ -951,6 +1573,8 @@ const { data } = await client.addSetting(
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -979,26 +1603,6 @@ const { data } = await client.deleteSetting(
 )
 ```
 
-<details>
-<summary>Response</summary>
-
-```json
-{
-  "id": "a10bd0ff-4391-4cfc-88ee-b19d718a9bf7",
-  "name": "Default Signature",
-  "org_id": "org-123",
-  "type": "signature",
-  "value": "Best regards, The Team",
-  "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
-  "created_at": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-20T14:45:00Z",
-  "created_by": "user-123",
-  "updated_by": "user-456"
-}
-```
-
-</details>
-
 ---
 
 ### `updateSetting`
@@ -1019,6 +1623,8 @@ const { data } = await client.updateSetting(
     type: 'signature',
     value: 'Best regards, The Team',
     html: '<p>Best regards,<br/><strong>The Team</strong></p>',
+    schemas: {},
+    excluded_senders: ['newsletter@partner.de', '@noreply.example.com'],
     created_at: '2024-01-15T10:30:00Z',
     updated_at: '2024-01-20T14:45:00Z',
     created_by: 'user-123',
@@ -1038,6 +1644,8 @@ const { data } = await client.updateSetting(
   "type": "signature",
   "value": "Best regards, The Team",
   "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+  "schemas": {},
+  "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
   "created_at": "2024-01-15T10:30:00Z",
   "updated_at": "2024-01-20T14:45:00Z",
   "created_by": "user-123",
@@ -1076,6 +1684,8 @@ const { data } = await client.addDomain(
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -1102,6 +1712,27 @@ const { data } = await client.deleteDomain(
   },
 )
 ```
+
+---
+
+### `getDomains`
+
+Retrieves all custom email domains for the organization.
+
+`GET /v1/email-settings/domain`
+
+```ts
+const { data } = await client.getDomains()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+["string"]
+```
+
+</details>
 
 ---
 
@@ -1132,6 +1763,50 @@ const { data } = await client.verifyNameServers(
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-20T14:45:00Z",
+    "created_by": "user-123",
+    "updated_by": "user-456"
+  }
+]
+```
+
+</details>
+
+---
+
+### `verifyDnsRecords`
+
+Verifies that the domain's DNS records (MX, TXT, CNAME) are correctly configured
+in the customer's DNS provider.
+
+`POST /v1/email-settings/domain/dns-records:verify`
+
+```ts
+const { data } = await client.verifyDnsRecords(
+  null,
+  {
+    domain: 'mail.yourcompany.com'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+[
+  {
+    "id": "a10bd0ff-4391-4cfc-88ee-b19d718a9bf7",
+    "name": "Default Signature",
+    "org_id": "org-123",
+    "type": "signature",
+    "value": "Best regards, The Team",
+    "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -1171,6 +1846,8 @@ const { data } = await client.verifyDomain(
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -1185,13 +1862,29 @@ const { data } = await client.verifyDomain(
 
 ## Schemas
 
+### `ConnectOutlookRequest`
+
+Feature flags selecting which Microsoft Graph scopes to request.
+At least one flag must be true. Passing a superset of previously
+granted features triggers incremental consent for the delta only.
+
+
+```ts
+type ConnectOutlookRequest = {
+  mail?: boolean
+  calendar?: boolean
+  return_to?: string
+}
+```
+
 ### `MailboxSyncStatus`
 
 ```ts
 type MailboxSyncStatus = {
   execution_id: string
   status: "RUNNING" | "COMPLETED" | "COMPLETED_WITH_ERRORS" | "FAILED" | "CANCELLED"
-  timeframe: "5m" | "1w" | "2w" | "1m"
+  timeframe: "5m" | "1d" | "1w" | "2w" | "1m" | "3m" | "6m" | "1y" | "2y" | "custom"
+  timeframe_start?: string // date-time
   started_at: string // date-time
   completed_at?: string // date-time
   inbox?: {
@@ -1221,10 +1914,25 @@ type MailboxSyncStatuses = "RUNNING" | "COMPLETED" | "COMPLETED_WITH_ERRORS" | "
 type MailboxSyncFolderStatuses = "PENDING" | "RUNNING" | "COMPLETED" | "FAILED" | "SKIPPED"
 ```
 
-### `MailboxSyncTimeframePeriods`
+### `MailboxSyncEstimate`
 
 ```ts
-type MailboxSyncTimeframePeriods = "5m" | "1w" | "2w" | "1m"
+type MailboxSyncEstimate = {
+  timeframe: "5m" | "1d" | "1w" | "2w" | "1m" | "3m" | "6m" | "1y" | "2y" | "custom"
+  since: string // date-time
+  inbox_messages: number
+  sent_messages: number
+  total_messages: number
+  estimated_duration_seconds: number
+}
+```
+
+### `MailboxSyncTimeframePeriods`
+
+Mailbox sync period. `custom` is a sync started with an explicit `since`.
+
+```ts
+type MailboxSyncTimeframePeriods = "5m" | "1d" | "1w" | "2w" | "1m" | "3m" | "6m" | "1y" | "2y" | "custom"
 ```
 
 ### `InboxBucketResponse`
@@ -1310,6 +2018,19 @@ type EmailAddressResponse = {
   is_active?: boolean
   is_primary?: boolean
   is_epilot_email_address?: boolean
+  provider?: "outlook" | "smtp"
+}
+```
+
+### `OutlookDisconnectError`
+
+Why an Outlook mailbox or connection was not disconnected. Nothing was removed.
+
+```ts
+type OutlookDisconnectError = {
+  error: "email_address_in_use" | "email_address_deletion_failed"
+  message: string
+  email_addresses?: string // email[]
 }
 ```
 
@@ -1393,9 +2114,14 @@ type SettingsResponse = Array<{
   id?: string
   name?: string
   org_id?: string
-  type: "signature" | "email_domain" | "email_address" | "whitelist_email_address" | "restrict_duplicates_within"
+  type: "signature" | "email_domain" | "email_address" | "whitelist_email_address" | "restrict_duplicates_within" | "allowed_recipient_domains" | "auto_link_identifier_attributes"
   value?: string
   html?: string
+  schemas?: Record<string, Array<{
+    name: string
+    labels?: string[]
+  }>>
+  excluded_senders?: string[]
   created_at?: string
   updated_at?: string
   created_by?: string
@@ -1404,9 +2130,14 @@ type SettingsResponse = Array<{
   id?: string
   name?: string
   org_id?: string
-  type: "signature" | "email_domain" | "email_address" | "whitelist_email_address" | "restrict_duplicates_within"
+  type: "signature" | "email_domain" | "email_address" | "whitelist_email_address" | "restrict_duplicates_within" | "allowed_recipient_domains" | "auto_link_identifier_attributes"
   value?: string
   html?: string
+  schemas?: Record<string, Array<{
+    name: string
+    labels?: string[]
+  }>>
+  excluded_senders?: string[]
   created_at?: string
   updated_at?: string
   created_by?: string
@@ -1440,12 +2171,60 @@ type OutlookConnectionError = {
 }
 ```
 
+### `CalendarAdminConsentStatus`
+
+```ts
+type CalendarAdminConsentStatus = {
+  admin_consented: boolean
+  admin_consent_url?: string // uri
+}
+```
+
+### `MyCalendarConnectionResponse`
+
+Per-user calendar connection metadata, or null when the caller has
+not connected their personal calendar yet.
+
+
+```ts
+type MyCalendarConnectionResponse = {
+  connection?: {
+    user_id: string
+    tenant_id: string
+    status: "connected" | "expired"
+    scopes?: string[]
+    connected_by_display_name?: string
+    connected_by_email?: string // email
+    connected_at?: string // date-time
+    updated_at?: string // date-time
+    expires_at?: string // date-time
+  }
+}
+```
+
+### `CalendarConnectionInfo`
+
+```ts
+type CalendarConnectionInfo = {
+  user_id: string
+  tenant_id: string
+  status: "connected" | "expired"
+  scopes?: string[]
+  connected_by_display_name?: string
+  connected_by_email?: string // email
+  connected_at?: string // date-time
+  updated_at?: string // date-time
+  expires_at?: string // date-time
+}
+```
+
 ### `OutlookConnectionStatus`
 
 ```ts
 type OutlookConnectionStatus = {
   status: "connected" | "expired" | "pending_auth" | "not_connected"
   action: "connect" | "authorize" | "reconnect" | "none"
+  action_reason?: "expired" | "permission_update"
   connected_by_display_name?: string
   connected_by_email?: string // email
   connected_by_user_id?: string
@@ -1455,6 +2234,95 @@ type OutlookConnectionStatus = {
   scopes?: string[]
   expires_at?: string // date-time
   is_token_valid?: boolean
+}
+```
+
+### `SmtpConnection`
+
+```ts
+type SmtpConnection = {
+  connection_id: string
+  smtp_host: string
+  smtp_port: string
+  smtp_secure: "tls" | "starttls"
+  smtp_username: string
+  smtp_password?: string
+  connected_by_display_name?: string
+  connected_by_email?: string // email
+  connected_by_user_id?: string
+  connected_at?: string // date-time
+  updated_at?: string // date-time
+  last_tested_at?: string // date-time
+  last_test_status?: "ok" | "auth_failed" | "tls_failed" | "host_unreachable" | "timeout" | "secret_missing" | "unknown"
+  last_test_error?: string
+}
+```
+
+### `CreateSmtpConnectionRequest`
+
+```ts
+type CreateSmtpConnectionRequest = {
+  smtp_host: string
+  smtp_port: string | number
+  smtp_secure: "tls" | "starttls"
+  smtp_username: string
+  smtp_password: string
+}
+```
+
+### `UpdateSmtpConnectionRequest`
+
+Partial update; omitted fields keep their existing values.
+
+```ts
+type UpdateSmtpConnectionRequest = {
+  smtp_host?: string
+  smtp_port?: string | number
+  smtp_secure?: "tls" | "starttls"
+  smtp_username?: string
+  smtp_password?: string
+}
+```
+
+### `SmtpSender`
+
+An address allowed to send through a custom SMTP connection. Mirrors an Outlook
+mailbox: the address, its display name and its assignees live on the shared
+email-address record, while this row binds it to a set of SMTP credentials.
+
+
+```ts
+type SmtpSender = {
+  email: string // email
+  connection_id: string
+  reply_to_email?: string
+  connected_at?: string // date-time
+  connected_by_user_id?: string
+}
+```
+
+### `ConnectSmtpSenderRequest`
+
+```ts
+type ConnectSmtpSenderRequest = {
+  email: string // email
+  connection_id: string
+  name?: string
+  reply_to_email?: string
+  shared_inbox_id?: string
+  user_ids?: string[]
+  group_ids?: string[]
+  default_signature_id?: string
+}
+```
+
+### `SmtpTestResult`
+
+```ts
+type SmtpTestResult = {
+  status: "ok" | "auth_failed" | "tls_failed" | "host_unreachable" | "timeout" | "secret_missing" | "unknown"
+  error?: string
+  tested_at: string // date-time
 }
 ```
 
@@ -1508,10 +2376,41 @@ type WhitelistEmailAddressSetting = "whitelist_email_address"
 type RestrictDuplicatesWithinSetting = "restrict_duplicates_within"
 ```
 
+### `AllowedRecipientDomainsSetting`
+
+- Extra recipient domain allowed for outbound email from a sandbox organization.
+- Sandbox orgs (organization_use) with the sandbox recipient allowlist enabled may only
+  send unattended emails (workflow/automation/bulk/system) to epilot domains, the
+  verified sending domains of the org and its par
+
+```ts
+type AllowedRecipientDomainsSetting = "allowed_recipient_domains"
+```
+
+### `AutoLinkIdentifierAttributesSetting`
+
+- Extra attributes, per entity schema, that inbound email auto-linking treats as identifiers,
+  on top of the built-in ones (e.g. `contract_number`).
+- Stored in `schemas`: entity schema slug → attributes of that schema.
+- Only one value per organization: posting again replaces it, and listing retur
+
+```ts
+type AutoLinkIdentifierAttributesSetting = "auto_link_identifier_attributes"
+```
+
+### `AutoLinkIdentifierAttribute`
+
+```ts
+type AutoLinkIdentifierAttribute = {
+  name: string
+  labels?: string[]
+}
+```
+
 ### `SettingType`
 
 ```ts
-type SettingType = "signature" | "email_domain" | "email_address" | "whitelist_email_address" | "restrict_duplicates_within"
+type SettingType = "signature" | "email_domain" | "email_address" | "whitelist_email_address" | "restrict_duplicates_within" | "allowed_recipient_domains" | "auto_link_identifier_attributes"
 ```
 
 ### `Setting`
@@ -1528,9 +2427,14 @@ type Setting = {
   id?: string
   name?: string
   org_id?: string
-  type: "signature" | "email_domain" | "email_address" | "whitelist_email_address" | "restrict_duplicates_within"
+  type: "signature" | "email_domain" | "email_address" | "whitelist_email_address" | "restrict_duplicates_within" | "allowed_recipient_domains" | "auto_link_identifier_attributes"
   value?: string
   html?: string
+  schemas?: Record<string, Array<{
+    name: string
+    labels?: string[]
+  }>>
+  excluded_senders?: string[]
   created_at?: string
   updated_at?: string
   created_by?: string

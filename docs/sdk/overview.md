@@ -108,6 +108,7 @@ See [Client Usage](client-usage.md) for all import patterns.
 | `epilot.consent` | `@epilot/sdk/consent` | [SDK](clients/consent.md) · [API](/api/consent) |
 | `epilot.customerPortal` | `@epilot/sdk/customer-portal` | [SDK](clients/customer-portal.md) · [API](/api/customer-portal) |
 | `epilot.dashboard` | `@epilot/sdk/dashboard` | [SDK](clients/dashboard.md) · [API](/api/dashboard) |
+| `epilot.dataGovernance` | `@epilot/sdk/data-governance` | [SDK](clients/data-governance.md) · [API](/api/data-governance) |
 | `epilot.design` | `@epilot/sdk/design` | [SDK](clients/design.md) · [API](/api/design) |
 | `epilot.document` | `@epilot/sdk/document` | [SDK](clients/document.md) · [API](/api/document) |
 | `epilot.emailSettings` | `@epilot/sdk/email-settings` | [SDK](clients/email-settings.md) · [API](/api/email-settings) |
@@ -115,7 +116,6 @@ See [Client Usage](client-usage.md) for all import patterns.
 | `epilot.entity` | `@epilot/sdk/entity` | [SDK](clients/entity.md) · [API](/api/entity) |
 | `epilot.entityMapping` | `@epilot/sdk/entity-mapping` | [SDK](clients/entity-mapping.md) · [API](/api/entity-mapping) |
 | `epilot.environments` | `@epilot/sdk/environments` | [SDK](clients/environments.md) · [API](/api/environments) |
-| `epilot.erpIntegration` | `@epilot/sdk/erp-integration` | [SDK](clients/erp-integration.md) · [API](/api/erp-integration) |
 | `epilot.eventCatalog` | `@epilot/sdk/event-catalog` | [SDK](clients/event-catalog.md) · [API](/api/event-catalog) |
 | `epilot.file` | `@epilot/sdk/file` | [SDK](clients/file.md) · [API](/api/file) |
 | `epilot.journey` | `@epilot/sdk/journey` | [SDK](clients/journey.md) · [API](/api/journey) |
@@ -129,7 +129,9 @@ See [Client Usage](client-usage.md) for all import patterns.
 | `epilot.permissions` | `@epilot/sdk/permissions` | [SDK](clients/permissions.md) · [API](/api/permissions) |
 | `epilot.pricing` | `@epilot/sdk/pricing` | [SDK](clients/pricing.md) · [API](/api/pricing) |
 | `epilot.purpose` | `@epilot/sdk/purpose` | [SDK](clients/purpose.md) · [API](/api/purpose) |
+| `epilot.query` | `@epilot/sdk/query` | [SDK](clients/query.md) · [API](/api/query) |
 | `epilot.sharing` | `@epilot/sdk/sharing` | [SDK](clients/sharing.md) · [API](/api/sharing) |
+| `epilot.snapshot` | `@epilot/sdk/snapshot` | [SDK](clients/snapshot.md) · [API](/api/snapshot) |
 | `epilot.submission` | `@epilot/sdk/submission` | [SDK](clients/submission.md) · [API](/api/submission) |
 | `epilot.targeting` | `@epilot/sdk/targeting` | [SDK](clients/targeting.md) · [API](/api/targeting) |
 | `epilot.templateVariables` | `@epilot/sdk/template-variables` | [SDK](clients/template-variables.md) · [API](/api/template-variables) |

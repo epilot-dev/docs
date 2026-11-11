@@ -102,7 +102,8 @@ epilot permissions listCurrentRoles --jsonata 'roles'
           ]
         }
       ],
-      "parent_role": "123:owner"
+      "parent_role": "123:owner",
+      "vendor_created": true
     }
   ]
 }
@@ -157,7 +158,8 @@ epilot permissions listAllRoles --jsonata 'roles'
           ]
         }
       ],
-      "parent_role": "123:owner"
+      "parent_role": "123:owner",
+      "vendor_created": true
     }
   ]
 }
@@ -219,7 +221,8 @@ epilot permissions createRole --jsonata '$'
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }
 ```
 
@@ -295,7 +298,8 @@ epilot permissions searchRoles --jsonata 'results[0]'
           ]
         }
       ],
-      "parent_role": "123:owner"
+      "parent_role": "123:owner",
+      "vendor_created": true
     }
   ]
 }
@@ -361,7 +365,8 @@ epilot permissions getRole -p roleId=123:owner --jsonata '$'
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }
 ```
 
@@ -416,7 +421,8 @@ epilot permissions putRole \
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }'
 ```
 
@@ -463,7 +469,8 @@ epilot permissions putRole -p roleId=123:owner --jsonata '$'
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }
 ```
 
@@ -527,7 +534,8 @@ epilot permissions deleteRole -p roleId=123:owner --jsonata '$'
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }
 ```
 

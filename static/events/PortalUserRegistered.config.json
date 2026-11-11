@@ -1,0 +1,157 @@
+{
+  "event_name": "PortalUserRegistered",
+  "event_title": "Portal User Registered",
+  "event_description": "Triggered when a user completes the registration to a customer or partner portal (confirmed email, SSO sign-up or accepted invite). Carries the portal user, its primary contact, the related contacts and the accounts of the primary contact.",
+  "event_version": "1.0",
+  "event_tags": [
+    "builtin",
+    "portal",
+    "portal_user",
+    "contact",
+    "registration"
+  ],
+  "schema_fields": {
+    "operation": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "createEntity",
+          "updateEntity"
+        ],
+        "description": "The entity operation type that triggered this event"
+      },
+      "required": true
+    },
+    "activity_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Activity ID associated with this operation (ULID)",
+        "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
+      },
+      "required": false
+    },
+    "activity_type": {
+      "json_schema": {
+        "type": "string",
+        "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
+        "example": "EntityUpdated"
+      },
+      "required": false
+    },
+    "trigger_entity": {
+      "json_schema": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Entity ID of the entity that triggered this event"
+      },
+      "required": true
+    },
+    "portal_user_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "ID of the portal user entity"
+      },
+      "required": true,
+      "graph_source": "portal_user._id"
+    },
+    "portal_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "ID of the portal the user belongs to (end customer portal or partner portal)"
+      },
+      "required": false,
+      "graph_source": "portal_user.portal_id"
+    },
+    "email": {
+      "json_schema": {
+        "type": "string",
+        "description": "Login email address of the portal user"
+      },
+      "required": false,
+      "graph_source": "portal_user.email[0].email"
+    },
+    "contact_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "ID of the primary contact the portal user is mapped to. Absent while the portal user is not mapped to a contact"
+      },
+      "required": false,
+      "graph_source": "portal_user.mapped_contact.`$relation`[0].entity_id"
+    },
+    "registration_source": {
+      "json_schema": {
+        "type": "string",
+        "description": "How the user registered: `portal` (email + password) or `sso` (single sign-on)"
+      },
+      "required": false,
+      "graph_source": "portal_user.source"
+    }
+  },
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "portal_user",
+        "schema": "portal_user",
+        "cardinality": "one",
+        "fields": [
+          "!password"
+        ]
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "contacts",
+        "schema": "contact",
+        "cardinality": "many"
+      },
+      {
+        "id": "accounts",
+        "schema": "account",
+        "cardinality": "many"
+      },
+      {
+        "id": "account_contacts",
+        "schema": "contact",
+        "cardinality": "many"
+      }
+    ],
+    "edges": [
+      {
+        "from": "portal_user",
+        "to": "contact"
+      },
+      {
+        "from": "portal_user",
+        "to": "contacts"
+      },
+      {
+        "from": "contact",
+        "to": "accounts"
+      },
+      {
+        "from": "accounts",
+        "to": "account_contacts"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": [
+      "createEntity",
+      "updateEntity"
+    ],
+    "schema": [
+      "portal_user"
+    ],
+    "attribute": [
+      "registration_status"
+    ],
+    "attribute_values": {
+      "registration_status": [
+        "Registered"
+      ]
+    }
+  }
+}

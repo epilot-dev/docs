@@ -32,14 +32,22 @@ const { data } = await userClient.signUpUser(...)
 **User V2**
 - [`signUpUser`](#signupuser)
 - [`getMeV2`](#getmev2)
+- [`listUserSettings`](#listusersettings)
+- [`getUserSettingsScope`](#getusersettingsscope)
+- [`getUserSetting`](#getusersetting)
+- [`putUserSetting`](#putusersetting)
+- [`deleteUserSetting`](#deleteusersetting)
 - [`listUsersV2`](#listusersv2)
 - [`getUserV2`](#getuserv2)
 - [`updateUserV2`](#updateuserv2)
 - [`deleteUserV2`](#deleteuserv2)
 - [`inviteUser`](#inviteuser)
 - [`resendUserInvitation`](#resenduserinvitation)
+- [`sendUserPasswordReset`](#senduserpasswordreset)
 - [`getGroupsForUser`](#getgroupsforuser)
 - [`verifyEmailWithToken`](#verifyemailwithtoken)
+- [`requestPasswordReset`](#requestpasswordreset)
+- [`resetPassword`](#resetpassword)
 - [`checkInviteToken`](#checkinvitetoken)
 - [`activateUser`](#activateuser)
 - [`rejectInvite`](#rejectinvite)
@@ -96,6 +104,7 @@ const { data } = await userClient.signUpUser(...)
 - [`UserV2`](#userv2)
 - [`User`](#user)
 - [`LoginParameters`](#loginparameters)
+- [`GroupImageUri`](#groupimageuri)
 - [`CreateGroupReq`](#creategroupreq)
 - [`UpdateGroupReq`](#updategroupreq)
 - [`Group`](#group)
@@ -106,6 +115,12 @@ const { data } = await userClient.signUpUser(...)
 - [`Organization`](#organization)
 - [`DataPointsResponse`](#datapointsresponse)
 - [`DataPoint`](#datapoint)
+- [`UserSettingScope`](#usersettingscope)
+- [`UserSettingKey`](#usersettingkey)
+- [`UserSettingValue`](#usersettingvalue)
+- [`UserSetting`](#usersetting)
+- [`UserSettingsListResponse`](#usersettingslistresponse)
+- [`UserSettingsScopeResponse`](#usersettingsscoperesponse)
 - [`Passkey`](#passkey)
 - [`PasskeyAuthenticationOptions`](#passkeyauthenticationoptions)
 - [`PasskeyRegistrationOptions`](#passkeyregistrationoptions)
@@ -224,10 +239,14 @@ const { data } = await client.getMeV2()
   "status": "Active",
   "email": "user@example.com",
   "draft_email": "user@example.com",
+  "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+  "password_reset_token_hash": "string",
+  "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
   "department": "Sales",
   "phone": 1234567890,
   "secondary_phone": 1234567890,
   "mfa_enabled": false,
+  "has_passkeys": false,
   "phone_verified": true,
   "token": "string",
   "signature": "<p>Thanks</p>",
@@ -264,16 +283,159 @@ const { data } = await client.getMeV2()
     "created_opportunity_auto": true,
     "deleted_opportunity": true
   },
+  "in_app_notification_setting": {
+    "integration_critical_error": true,
+    "integration_error_threshold": true,
+    "assigned_opportunity": true,
+    "assigned_task": true
+  },
   "properties": [
     {
       "name": "profileImageName",
       "value": "avatar.png"
+    }
+  ],
+  "tags": ["non-billable"]
+}
+```
+
+</details>
+
+---
+
+### `listUserSettings`
+
+List all setting scopes and keys available for the currently logged in user. Does not return setting values.
+
+`GET /v2/users/me/settings`
+
+```ts
+const { data } = await client.listUserSettings()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "scope": "calendar",
+      "keys": ["visible_calendars"]
     }
   ]
 }
 ```
 
 </details>
+
+---
+
+### `getUserSettingsScope`
+
+Get all setting values for one scope for the currently logged in user.
+
+`GET /v2/users/me/settings/{scope}`
+
+```ts
+const { data } = await client.getUserSettingsScope({
+  scope: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "scope": "calendar",
+  "settings": {
+    "visible_calendars": {
+      "calendar_ids": ["holidays"]
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### `getUserSetting`
+
+Get one setting value by scope and key for the currently logged in user.
+
+`GET /v2/users/me/settings/{scope}/{key}`
+
+```ts
+const { data } = await client.getUserSetting({
+  scope: 'example',
+  key: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "scope": "calendar",
+  "key": "visible_calendars",
+  "value": {},
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `putUserSetting`
+
+Create or replace one setting value for the currently logged in user.
+
+`PUT /v2/users/me/settings/{scope}/{key}`
+
+```ts
+const { data } = await client.putUserSetting(
+  {
+    scope: 'example',
+    key: 'example',
+  },
+  {},
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "scope": "calendar",
+  "key": "visible_calendars",
+  "value": {},
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `deleteUserSetting`
+
+Delete one setting value for the currently logged in user.
+
+`DELETE /v2/users/me/settings/{scope}/{key}`
+
+```ts
+const { data } = await client.deleteUserSetting({
+  scope: 'example',
+  key: 'example',
+})
+```
 
 ---
 
@@ -306,10 +468,14 @@ const { data } = await client.listUsersV2({
       "status": "Active",
       "email": "user@example.com",
       "draft_email": "user@example.com",
+      "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+      "password_reset_token_hash": "string",
+      "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
       "department": "Sales",
       "phone": 1234567890,
       "secondary_phone": 1234567890,
       "mfa_enabled": false,
+      "has_passkeys": false,
       "phone_verified": true,
       "token": "string",
       "signature": "<p>Thanks</p>",
@@ -346,12 +512,19 @@ const { data } = await client.listUsersV2({
         "created_opportunity_auto": true,
         "deleted_opportunity": true
       },
+      "in_app_notification_setting": {
+        "integration_critical_error": true,
+        "integration_error_threshold": true,
+        "assigned_opportunity": true,
+        "assigned_task": true
+      },
       "properties": [
         {
           "name": "profileImageName",
           "value": "avatar.png"
         }
-      ]
+      ],
+      "tags": ["non-billable"]
     }
   ]
 }
@@ -386,10 +559,14 @@ const { data } = await client.getUserV2({
   "status": "Active",
   "email": "user@example.com",
   "draft_email": "user@example.com",
+  "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+  "password_reset_token_hash": "string",
+  "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
   "department": "Sales",
   "phone": 1234567890,
   "secondary_phone": 1234567890,
   "mfa_enabled": false,
+  "has_passkeys": false,
   "phone_verified": true,
   "token": "string",
   "signature": "<p>Thanks</p>",
@@ -426,12 +603,19 @@ const { data } = await client.getUserV2({
     "created_opportunity_auto": true,
     "deleted_opportunity": true
   },
+  "in_app_notification_setting": {
+    "integration_critical_error": true,
+    "integration_error_threshold": true,
+    "assigned_opportunity": true,
+    "assigned_task": true
+  },
   "properties": [
     {
       "name": "profileImageName",
       "value": "avatar.png"
     }
-  ]
+  ],
+  "tags": ["non-billable"]
 }
 ```
 
@@ -459,10 +643,14 @@ const { data } = await client.updateUserV2(
     status: 'Active',
     email: 'user@example.com',
     draft_email: 'user@example.com',
+    draft_email_expires_at: '1970-01-01T00:00:00.000Z',
+    password_reset_token_hash: 'string',
+    password_reset_token_expires_at: '1970-01-01T00:00:00.000Z',
     department: 'Sales',
     phone: 1234567890,
     secondary_phone: 1234567890,
     mfa_enabled: false,
+    has_passkeys: false,
     phone_verified: true,
     token: 'string',
     signature: '<p>Thanks</p>',
@@ -499,12 +687,19 @@ const { data } = await client.updateUserV2(
       created_opportunity_auto: true,
       deleted_opportunity: true
     },
+    in_app_notification_setting: {
+      integration_critical_error: true,
+      integration_error_threshold: true,
+      assigned_opportunity: true,
+      assigned_task: true
+    },
     properties: [
       {
         name: 'profileImageName',
         value: 'avatar.png'
       }
-    ]
+    ],
+    tags: ['non-billable']
   },
 )
 ```
@@ -522,10 +717,14 @@ const { data } = await client.updateUserV2(
   "status": "Active",
   "email": "user@example.com",
   "draft_email": "user@example.com",
+  "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+  "password_reset_token_hash": "string",
+  "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
   "department": "Sales",
   "phone": 1234567890,
   "secondary_phone": 1234567890,
   "mfa_enabled": false,
+  "has_passkeys": false,
   "phone_verified": true,
   "token": "string",
   "signature": "<p>Thanks</p>",
@@ -562,12 +761,19 @@ const { data } = await client.updateUserV2(
     "created_opportunity_auto": true,
     "deleted_opportunity": true
   },
+  "in_app_notification_setting": {
+    "integration_critical_error": true,
+    "integration_error_threshold": true,
+    "assigned_opportunity": true,
+    "assigned_task": true
+  },
   "properties": [
     {
       "name": "profileImageName",
       "value": "avatar.png"
     }
-  ]
+  ],
+  "tags": ["non-billable"]
 }
 ```
 
@@ -648,10 +854,14 @@ const { data } = await client.inviteUser(
   "status": "Active",
   "email": "user@example.com",
   "draft_email": "user@example.com",
+  "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+  "password_reset_token_hash": "string",
+  "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
   "department": "Sales",
   "phone": 1234567890,
   "secondary_phone": 1234567890,
   "mfa_enabled": false,
+  "has_passkeys": false,
   "phone_verified": true,
   "token": "string",
   "signature": "<p>Thanks</p>",
@@ -688,12 +898,19 @@ const { data } = await client.inviteUser(
     "created_opportunity_auto": true,
     "deleted_opportunity": true
   },
+  "in_app_notification_setting": {
+    "integration_critical_error": true,
+    "integration_error_threshold": true,
+    "assigned_opportunity": true,
+    "assigned_task": true
+  },
   "properties": [
     {
       "name": "profileImageName",
       "value": "avatar.png"
     }
-  ]
+  ],
+  "tags": ["non-billable"]
 }
 ```
 
@@ -730,10 +947,14 @@ const { data } = await client.resendUserInvitation(
   "status": "Active",
   "email": "user@example.com",
   "draft_email": "user@example.com",
+  "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+  "password_reset_token_hash": "string",
+  "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
   "department": "Sales",
   "phone": 1234567890,
   "secondary_phone": 1234567890,
   "mfa_enabled": false,
+  "has_passkeys": false,
   "phone_verified": true,
   "token": "string",
   "signature": "<p>Thanks</p>",
@@ -770,12 +991,48 @@ const { data } = await client.resendUserInvitation(
     "created_opportunity_auto": true,
     "deleted_opportunity": true
   },
+  "in_app_notification_setting": {
+    "integration_critical_error": true,
+    "integration_error_threshold": true,
+    "assigned_opportunity": true,
+    "assigned_task": true
+  },
   "properties": [
     {
       "name": "profileImageName",
       "value": "avatar.png"
     }
-  ]
+  ],
+  "tags": ["non-billable"]
+}
+```
+
+</details>
+
+---
+
+### `sendUserPasswordReset`
+
+Send a password reset email to a user in your organization.
+Requires `user:edit` on the target user.
+
+`POST /v2/users:sendPasswordReset`
+
+```ts
+const { data } = await client.sendUserPasswordReset(
+  null,
+  {
+    email: 'test@example.com'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "success": true
 }
 ```
 
@@ -816,10 +1073,14 @@ const { data } = await client.getGroupsForUser({
       "status": "Active",
       "email": "user@example.com",
       "draft_email": "user@example.com",
+      "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+      "password_reset_token_hash": "string",
+      "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
       "department": "Sales",
       "phone": 1234567890,
       "secondary_phone": 1234567890,
       "mfa_enabled": false,
+      "has_passkeys": false,
       "phone_verified": true,
       "token": "string",
       "signature": "<p>Thanks</p>",
@@ -832,12 +1093,18 @@ const { data } = await client.getGroupsForUser({
       "image_uri": {},
       "favorites": {},
       "email_notification_setting": {},
+      "in_app_notification_setting": {},
       "properties": [],
+      "tags": ["non-billable"],
       "crt_index": 3
     },
     "users": [
       {}
-    ]
+    ],
+    "image_uri": {
+      "gradient_colors": ["#0588f0", "#3358d4"]
+    },
+    "abbreviation": "FN"
   }
 ]
 ```
@@ -876,7 +1143,9 @@ const { data } = await client.getGroups({
       "updated_at": "2024-02-08T04:44:32.246Z",
       "created_by": "123",
       "crt_assignee": {},
-      "users": []
+      "users": [],
+      "image_uri": {},
+      "abbreviation": "FN"
     }
   ]
 }
@@ -897,7 +1166,11 @@ const { data } = await client.createGroup(
   null,
   {
     name: 'Finance',
-    user_ids: ['123', '456']
+    user_ids: ['123', '456'],
+    image_uri: {
+      gradient_colors: ['#0588f0', '#3358d4']
+    },
+    abbreviation: 'FN'
   },
 )
 ```
@@ -922,10 +1195,14 @@ const { data } = await client.createGroup(
     "status": "Active",
     "email": "user@example.com",
     "draft_email": "user@example.com",
+    "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+    "password_reset_token_hash": "string",
+    "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
     "department": "Sales",
     "phone": 1234567890,
     "secondary_phone": 1234567890,
     "mfa_enabled": false,
+    "has_passkeys": false,
     "phone_verified": true,
     "token": "string",
     "signature": "<p>Thanks</p>",
@@ -959,9 +1236,16 @@ const { data } = await client.createGroup(
       "created_opportunity_auto": true,
       "deleted_opportunity": true
     },
+    "in_app_notification_setting": {
+      "integration_critical_error": true,
+      "integration_error_threshold": true,
+      "assigned_opportunity": true,
+      "assigned_task": true
+    },
     "properties": [
       {}
     ],
+    "tags": ["non-billable"],
     "crt_index": 3
   },
   "users": [
@@ -974,10 +1258,14 @@ const { data } = await client.createGroup(
       "status": "Active",
       "email": "user@example.com",
       "draft_email": "user@example.com",
+      "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+      "password_reset_token_hash": "string",
+      "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
       "department": "Sales",
       "phone": 1234567890,
       "secondary_phone": 1234567890,
       "mfa_enabled": false,
+      "has_passkeys": false,
       "phone_verified": true,
       "token": "string",
       "signature": "<p>Thanks</p>",
@@ -990,9 +1278,15 @@ const { data } = await client.createGroup(
       "image_uri": {},
       "favorites": {},
       "email_notification_setting": {},
-      "properties": []
+      "in_app_notification_setting": {},
+      "properties": [],
+      "tags": ["non-billable"]
     }
-  ]
+  ],
+  "image_uri": {
+    "gradient_colors": ["#0588f0", "#3358d4"]
+  },
+  "abbreviation": "FN"
 }
 ```
 
@@ -1033,10 +1327,14 @@ const { data } = await client.getGroup({
     "status": "Active",
     "email": "user@example.com",
     "draft_email": "user@example.com",
+    "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+    "password_reset_token_hash": "string",
+    "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
     "department": "Sales",
     "phone": 1234567890,
     "secondary_phone": 1234567890,
     "mfa_enabled": false,
+    "has_passkeys": false,
     "phone_verified": true,
     "token": "string",
     "signature": "<p>Thanks</p>",
@@ -1070,9 +1368,16 @@ const { data } = await client.getGroup({
       "created_opportunity_auto": true,
       "deleted_opportunity": true
     },
+    "in_app_notification_setting": {
+      "integration_critical_error": true,
+      "integration_error_threshold": true,
+      "assigned_opportunity": true,
+      "assigned_task": true
+    },
     "properties": [
       {}
     ],
+    "tags": ["non-billable"],
     "crt_index": 3
   },
   "users": [
@@ -1085,10 +1390,14 @@ const { data } = await client.getGroup({
       "status": "Active",
       "email": "user@example.com",
       "draft_email": "user@example.com",
+      "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+      "password_reset_token_hash": "string",
+      "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
       "department": "Sales",
       "phone": 1234567890,
       "secondary_phone": 1234567890,
       "mfa_enabled": false,
+      "has_passkeys": false,
       "phone_verified": true,
       "token": "string",
       "signature": "<p>Thanks</p>",
@@ -1101,9 +1410,15 @@ const { data } = await client.getGroup({
       "image_uri": {},
       "favorites": {},
       "email_notification_setting": {},
-      "properties": []
+      "in_app_notification_setting": {},
+      "properties": [],
+      "tags": ["non-billable"]
     }
-  ]
+  ],
+  "image_uri": {
+    "gradient_colors": ["#0588f0", "#3358d4"]
+  },
+  "abbreviation": "FN"
 }
 ```
 
@@ -1124,7 +1439,11 @@ const { data } = await client.updateGroup(
   },
   {
     name: 'Finance',
-    user_ids: ['123', '456']
+    user_ids: ['123', '456'],
+    image_uri: {
+      gradient_colors: ['#0588f0', '#3358d4']
+    },
+    abbreviation: 'FN'
   },
 )
 ```
@@ -1149,10 +1468,14 @@ const { data } = await client.updateGroup(
     "status": "Active",
     "email": "user@example.com",
     "draft_email": "user@example.com",
+    "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+    "password_reset_token_hash": "string",
+    "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
     "department": "Sales",
     "phone": 1234567890,
     "secondary_phone": 1234567890,
     "mfa_enabled": false,
+    "has_passkeys": false,
     "phone_verified": true,
     "token": "string",
     "signature": "<p>Thanks</p>",
@@ -1186,9 +1509,16 @@ const { data } = await client.updateGroup(
       "created_opportunity_auto": true,
       "deleted_opportunity": true
     },
+    "in_app_notification_setting": {
+      "integration_critical_error": true,
+      "integration_error_threshold": true,
+      "assigned_opportunity": true,
+      "assigned_task": true
+    },
     "properties": [
       {}
     ],
+    "tags": ["non-billable"],
     "crt_index": 3
   },
   "users": [
@@ -1201,10 +1531,14 @@ const { data } = await client.updateGroup(
       "status": "Active",
       "email": "user@example.com",
       "draft_email": "user@example.com",
+      "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+      "password_reset_token_hash": "string",
+      "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
       "department": "Sales",
       "phone": 1234567890,
       "secondary_phone": 1234567890,
       "mfa_enabled": false,
+      "has_passkeys": false,
       "phone_verified": true,
       "token": "string",
       "signature": "<p>Thanks</p>",
@@ -1217,9 +1551,15 @@ const { data } = await client.updateGroup(
       "image_uri": {},
       "favorites": {},
       "email_notification_setting": {},
-      "properties": []
+      "in_app_notification_setting": {},
+      "properties": [],
+      "tags": ["non-billable"]
     }
-  ]
+  ],
+  "image_uri": {
+    "gradient_colors": ["#0588f0", "#3358d4"]
+  },
+  "abbreviation": "FN"
 }
 ```
 
@@ -1273,10 +1613,14 @@ const { data } = await client.advanceUserAssignment({
     "status": "Active",
     "email": "user@example.com",
     "draft_email": "user@example.com",
+    "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+    "password_reset_token_hash": "string",
+    "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
     "department": "Sales",
     "phone": 1234567890,
     "secondary_phone": 1234567890,
     "mfa_enabled": false,
+    "has_passkeys": false,
     "phone_verified": true,
     "token": "string",
     "signature": "<p>Thanks</p>",
@@ -1310,9 +1654,16 @@ const { data } = await client.advanceUserAssignment({
       "created_opportunity_auto": true,
       "deleted_opportunity": true
     },
+    "in_app_notification_setting": {
+      "integration_critical_error": true,
+      "integration_error_threshold": true,
+      "assigned_opportunity": true,
+      "assigned_task": true
+    },
     "properties": [
       {}
     ],
+    "tags": ["non-billable"],
     "crt_index": 3
   },
   "users": [
@@ -1325,10 +1676,14 @@ const { data } = await client.advanceUserAssignment({
       "status": "Active",
       "email": "user@example.com",
       "draft_email": "user@example.com",
+      "draft_email_expires_at": "1970-01-01T00:00:00.000Z",
+      "password_reset_token_hash": "string",
+      "password_reset_token_expires_at": "1970-01-01T00:00:00.000Z",
       "department": "Sales",
       "phone": 1234567890,
       "secondary_phone": 1234567890,
       "mfa_enabled": false,
+      "has_passkeys": false,
       "phone_verified": true,
       "token": "string",
       "signature": "<p>Thanks</p>",
@@ -1341,9 +1696,15 @@ const { data } = await client.advanceUserAssignment({
       "image_uri": {},
       "favorites": {},
       "email_notification_setting": {},
-      "properties": []
+      "in_app_notification_setting": {},
+      "properties": [],
+      "tags": ["non-billable"]
     }
-  ]
+  ],
+  "image_uri": {
+    "gradient_colors": ["#0588f0", "#3358d4"]
+  },
+  "abbreviation": "FN"
 }
 ```
 
@@ -1504,6 +1865,67 @@ const { data } = await client.verifyEmailWithToken(
 
 ---
 
+### `requestPasswordReset`
+
+Request a password reset email for the given email address. Always
+returns a success response whether or not an account exists with that
+email.
+
+`POST /v2/users/public/requestPasswordReset`
+
+```ts
+const { data } = await client.requestPasswordReset(
+  null,
+  {
+    email: 'test@example.com'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "message": "If an account exists, a password reset email has been sent."
+}
+```
+
+</details>
+
+---
+
+### `resetPassword`
+
+Set a new password using a reset token from the password reset email.
+The token is single-use and time-limited.
+
+`POST /v2/users/public/resetPassword`
+
+```ts
+const { data } = await client.resetPassword(
+  null,
+  {
+    email: 'test@example.com',
+    token: 'string',
+    password: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "success": true
+}
+```
+
+</details>
+
+---
+
 ### `checkInviteToken`
 
 Check an invite token
@@ -1608,7 +2030,8 @@ const { data } = await client.getUserLoginParametersV2({
       "cognito_oauth_domain": "epilot-org-123",
       "cognito_oauth_scopes": ["openid"],
       "oauth_response_type": "code",
-      "passkey_enabled": true
+      "passkey_enabled": true,
+      "passkeys_registered": true
     }
   ]
 }
@@ -1707,7 +2130,8 @@ const { data } = await client.resolveDiscoverableCredential(
       "cognito_oauth_domain": "epilot-org-123",
       "cognito_oauth_scopes": ["openid"],
       "oauth_response_type": "code",
-      "passkey_enabled": true
+      "passkey_enabled": true,
+      "passkeys_registered": true
     }
   ]
 }
@@ -2016,7 +2440,8 @@ const { data } = await client.getUserLoginParameters({
       "cognito_oauth_domain": "epilot-org-123",
       "cognito_oauth_scopes": ["openid"],
       "oauth_response_type": "code",
-      "passkey_enabled": true
+      "passkey_enabled": true,
+      "passkeys_registered": true
     }
   ]
 }
@@ -2240,10 +2665,14 @@ type UserV2 = {
   status?: "Active" | "Pending" | "Deactivated" | "Deleted"
   email?: string // email
   draft_email?: string // email
+  draft_email_expires_at?: string // date-time
+  password_reset_token_hash?: string
+  password_reset_token_expires_at?: string // date-time
   department?: string
   phone?: string
   secondary_phone?: string
   mfa_enabled?: boolean
+  has_passkeys?: boolean
   phone_verified?: boolean
   token?: string
   signature?: string
@@ -2259,10 +2688,12 @@ type UserV2 = {
   }
   favorites?: Record<string, unknown>
   email_notification_setting?: Record<string, unknown>
+  in_app_notification_setting?: Record<string, unknown>
   properties?: Array<{
     name: string
     value: string
   }>
+  tags?: string[]
 }
 ```
 
@@ -2305,6 +2736,20 @@ type LoginParameters = {
   cognito_oauth_scopes?: string[]
   oauth_response_type?: "code" | "token"
   passkey_enabled?: boolean
+  passkeys_registered?: boolean
+}
+```
+
+### `GroupImageUri`
+
+Group's profile image or gradient colors. Supports uploaded image URLs and generated gradient avatars.
+
+```ts
+type GroupImageUri = {
+  original?: string // uri
+  thumbnail_32?: string // uri
+  thumbnail_64?: string // uri
+  gradient_colors?: string[]
 }
 ```
 
@@ -2314,6 +2759,13 @@ type LoginParameters = {
 type CreateGroupReq = {
   name: string
   user_ids?: string[]
+  image_uri?: {
+    original?: string // uri
+    thumbnail_32?: string // uri
+    thumbnail_64?: string // uri
+    gradient_colors?: string[]
+  }
+  abbreviation?: string
 }
 ```
 
@@ -2323,6 +2775,13 @@ type CreateGroupReq = {
 type UpdateGroupReq = {
   name?: string
   user_ids?: string[]
+  image_uri?: {
+    original?: string // uri
+    thumbnail_32?: string // uri
+    thumbnail_64?: string // uri
+    gradient_colors?: string[]
+  }
+  abbreviation?: string
 }
 ```
 
@@ -2345,10 +2804,14 @@ type Group = {
     status?: "Active" | "Pending" | "Deactivated" | "Deleted"
     email?: string // email
     draft_email?: string // email
+    draft_email_expires_at?: string // date-time
+    password_reset_token_hash?: string
+    password_reset_token_expires_at?: string // date-time
     department?: string
     phone?: string
     secondary_phone?: string
     mfa_enabled?: boolean
+    has_passkeys?: boolean
     phone_verified?: boolean
     token?: string
     signature?: string
@@ -2364,10 +2827,12 @@ type Group = {
     }
     favorites?: Record<string, unknown>
     email_notification_setting?: Record<string, unknown>
+    in_app_notification_setting?: Record<string, unknown>
     properties?: Array<{
       name: { ... }
       value: { ... }
     }>
+    tags?: string[]
     crt_index?: number
   }
   users?: Array<{
@@ -2379,10 +2844,14 @@ type Group = {
     status?: "Active" | "Pending" | "Deactivated" | "Deleted"
     email?: string // email
     draft_email?: string // email
+    draft_email_expires_at?: string // date-time
+    password_reset_token_hash?: string
+    password_reset_token_expires_at?: string // date-time
     department?: string
     phone?: string
     secondary_phone?: string
     mfa_enabled?: boolean
+    has_passkeys?: boolean
     phone_verified?: boolean
     token?: string
     signature?: string
@@ -2398,11 +2867,20 @@ type Group = {
     }
     favorites?: Record<string, unknown>
     email_notification_setting?: Record<string, unknown>
+    in_app_notification_setting?: Record<string, unknown>
     properties?: Array<{
       name: { ... }
       value: { ... }
     }>
+    tags?: string[]
   }>
+  image_uri?: {
+    original?: string // uri
+    thumbnail_32?: string // uri
+    thumbnail_64?: string // uri
+    gradient_colors?: string[]
+  }
+  abbreviation?: string
 }
 ```
 
@@ -2516,6 +2994,62 @@ type DataPoint = {
   actual_users?: number
   max_users_last_month?: number
   non_billable_users_last_month?: number
+}
+```
+
+### `UserSettingScope`
+
+User setting scope. Values are limited to 64 characters.
+
+```ts
+type UserSettingScope = string
+```
+
+### `UserSettingKey`
+
+User setting key. Values are limited to 128 characters.
+
+```ts
+type UserSettingKey = string
+```
+
+### `UserSettingValue`
+
+The JSON value of a user setting. Objects are recommended for extensibility, but any JSON value is accepted up to 64 KiB when serialized as JSON.
+
+```ts
+type UserSettingValue = unknown
+```
+
+### `UserSetting`
+
+```ts
+type UserSetting = {
+  scope: string
+  key: string
+  value: unknown
+  created_at: string // date-time
+  updated_at: string // date-time
+}
+```
+
+### `UserSettingsListResponse`
+
+```ts
+type UserSettingsListResponse = {
+  results: Array<{
+    scope: string
+    keys: string[]
+  }>
+}
+```
+
+### `UserSettingsScopeResponse`
+
+```ts
+type UserSettingsScopeResponse = {
+  scope: string
+  settings: Record<string, unknown>
 }
 ```
 

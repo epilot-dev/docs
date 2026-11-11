@@ -33,7 +33,9 @@ const { data } = await targetingClient.changeCampaignStatus(...)
 - [`changeCampaignStatus`](#changecampaignstatus)
 - [`getCampaignJobStatus`](#getcampaignjobstatus)
 - [`getCampaignPortals`](#getcampaignportals)
+- [`setupCampaign`](#setupcampaign)
 - [`matchCampaigns`](#matchcampaigns)
+- [`discoverCampaigns`](#discovercampaigns)
 
 **Campaign Delivery**
 - [`retriggerCampaignAutomations`](#retriggercampaignautomations)
@@ -46,7 +48,10 @@ const { data } = await targetingClient.changeCampaignStatus(...)
 - [`createRecipient`](#createrecipient)
 - [`updateRecipient`](#updaterecipient)
 - [`updateRecipientPortalStatus`](#updaterecipientportalstatus)
+- [`updateRecipientEntityUiStatus`](#updaterecipiententityuistatus)
+- [`restoreRecipientEntityUiStatus`](#restorerecipiententityuistatus)
 - [`getRecipients`](#getrecipients)
+- [`getEmailStats`](#getemailstats)
 
 **Schemas**
 - [`BaseError`](#baseerror)
@@ -66,12 +71,20 @@ const { data } = await targetingClient.changeCampaignStatus(...)
 - [`JobStatus`](#jobstatus)
 - [`Campaign`](#campaign)
 - [`Target`](#target)
+- [`TargetEntityFilters`](#targetentityfilters)
+- [`TargetSortItem`](#targetsortitem)
 - [`MatchCampaignParams`](#matchcampaignparams)
+- [`NextBestAction`](#nextbestaction)
+- [`DiscoverCampaignsParams`](#discovercampaignsparams)
+- [`DiscoverResult`](#discoverresult)
 - [`MatchTargetParams`](#matchtargetparams)
 - [`GetTargetQueriesParams`](#gettargetqueriesparams)
 - [`TargetQueryResult`](#targetqueryresult)
 - [`AutomationStatus`](#automationstatus)
 - [`PortalStatus`](#portalstatus)
+- [`EntityUiStatus`](#entityuistatus)
+- [`EmailStatus`](#emailstatus)
+- [`EmailBounceType`](#emailbouncetype)
 - [`Recipient`](#recipient)
 - [`BaseRecipientPayload`](#baserecipientpayload)
 - [`AutomationRecipientPayload`](#automationrecipientpayload)
@@ -81,10 +94,14 @@ const { data } = await targetingClient.changeCampaignStatus(...)
 - [`RetriggerAutomationsRequest`](#retriggerautomationsrequest)
 - [`RetriggerAutomationsResult`](#retriggerautomationsresult)
 - [`UpdatePortalStatusRequest`](#updateportalstatusrequest)
+- [`UpdateEntityUiStatusRequest`](#updateentityuistatusrequest)
+- [`SetupCampaignRequest`](#setupcampaignrequest)
+- [`SetupTariffChangeCampaignRequest`](#setuptariffchangecampaignrequest)
+- [`SetupTariffChangeCampaignResponse`](#setuptariffchangecampaignresponse)
 
 ### `changeCampaignStatus`
 
-Change the status of a campaign
+Moves a campaign to its next status, depending on its current one:
 
 `POST /v1/campaign/{campaign_id}/status`
 
@@ -121,8 +138,8 @@ const { data } = await client.changeCampaignStatus({
     "name": "string",
     "goal": "string",
     "status": "draft",
-    "start_date": "string",
-    "end_date": "string",
+    "start_date": "1970-01-01T00:00:00.000Z",
+    "end_date": "1970-01-01T00:00:00.000Z",
     "flow_id": "string",
     "job_id": "string",
     "target": {
@@ -174,7 +191,7 @@ const { data } = await client.getCampaignJobStatus({
 
 ### `getCampaignPortals`
 
-Get portals usage info for a campaign
+Get the list of portals and its widgets where the campaign is used.
 
 `GET /v1/campaign/{campaign_id}/portals`
 
@@ -214,7 +231,7 @@ const { data } = await client.getCampaignPortals({
 
 ### `retriggerCampaignAutomations`
 
-Retrigger automations for campaign recipients
+Retrigger automation executions for specific campaign recipients that have failed.
 
 `POST /v1/campaign/{campaign_id}/automations:retrigger`
 
@@ -250,9 +267,100 @@ const { data } = await client.retriggerCampaignAutomations(
 
 ---
 
+### `setupCampaign`
+
+Creates a `campaign` entity together with its related entities and configurations in a single call.
+Used by the campaign wizard UI, but not restricted to it.
+
+`POST /v1/campaign:setup`
+
+```ts
+const { data } = await client.setupCampaign(
+  null,
+  {
+    type: 'tariff_change',
+    product_recommendation: {
+      name: 'string',
+      source_product_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84',
+      source_price_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84',
+      offers: [
+        {
+          target_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84',
+          items: [
+            {
+              product_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84',
+              price_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84',
+              highlight_config: {}
+            }
+          ]
+        }
+      ]
+    },
+    campaign: {
+      name: 'string',
+      goal: 'string',
+      target_ids: ['b8c01433-5556-4e2b-aad4-6f5348d1df84'],
+      start_date: '1970-01-01T00:00:00.000Z',
+      end_date: '1970-01-01T00:00:00.000Z'
+    },
+    journey: {
+      journey_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84'
+    },
+    channels: {
+      portal_widget: {
+        portal_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84',
+        block_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84'
+      },
+      email: {
+        automation_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84',
+        template_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84'
+      },
+      entity_ui: {
+        category: 'string',
+        icon: {
+          name: 'string',
+          color: 'string'
+        },
+        title: 'string',
+        body: 'string',
+        priority: 'medium',
+        is_dismissable: true,
+        cta: {
+          type: 'journey',
+          target: 'string',
+          context_params: [
+            {
+              key: 'string',
+              value: 'string'
+            }
+          ]
+        }
+      }
+    }
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "type": "tariff_change",
+  "product_recommendation_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84",
+  "campaign_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84",
+  "journey_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84",
+  "portal_widget_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84"
+}
+```
+
+</details>
+
+---
+
 ### `matchCampaigns`
 
-Match campaigns
+Match campaigns based on target entities.
 
 `POST /v1/campaign:match`
 
@@ -301,8 +409,8 @@ const { data } = await client.matchCampaigns(
         "name": "string",
         "goal": "string",
         "status": "draft",
-        "start_date": "string",
-        "end_date": "string",
+        "start_date": "1970-01-01T00:00:00.000Z",
+        "end_date": "1970-01-01T00:00:00.000Z",
         "flow_id": "string",
         "job_id": "string",
         "target": {
@@ -323,9 +431,94 @@ const { data } = await client.matchCampaigns(
 
 ---
 
+### `discoverCampaigns`
+
+Given an entity, returns the Next Best Actions it should see on the Entity-UI channel.
+
+`POST /v1/campaign:discover`
+
+```ts
+const { data } = await client.discoverCampaigns(
+  null,
+  {
+    entity_id: 'b8c01433-5556-4e2b-aad4-6f5348d1df84',
+    entity_schema: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "hits": 0,
+  "results": [
+    {
+      "campaign_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84",
+      "nba": {
+        "category": "string",
+        "icon": {
+          "name": "string",
+          "color": "string"
+        },
+        "title": "string",
+        "body": "string",
+        "priority": "medium",
+        "is_dismissable": true,
+        "cta": {
+          "type": "journey",
+          "target": "string",
+          "context_params": [
+            {
+              "key": "string",
+              "value": "string"
+            }
+          ]
+        }
+      },
+      "status": "seen",
+      "status_updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "dismissed": [
+    {
+      "campaign_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84",
+      "nba": {
+        "category": "string",
+        "icon": {
+          "name": "string",
+          "color": "string"
+        },
+        "title": "string",
+        "body": "string",
+        "priority": "medium",
+        "is_dismissable": true,
+        "cta": {
+          "type": "journey",
+          "target": "string",
+          "context_params": [
+            {
+              "key": "string",
+              "value": "string"
+            }
+          ]
+        }
+      },
+      "status": "seen",
+      "status_updated_at": "1970-01-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
 ### `matchTargets`
 
-Match targets
+Find targets from the provided list that include the provide entities.
 
 `POST /v1/target:match`
 
@@ -374,7 +567,17 @@ const { data } = await client.matchTargets(
         "name": "string",
         "description": "string",
         "entity_schema": "string",
-        "entity_filters": {}
+        "entity_filters": {
+          "filter": {},
+          "search": "string",
+          "sort": [
+            {
+              "key": "billing_address.postal_code",
+              "order": "asc"
+            }
+          ],
+          "limit": 1
+        }
       }
     }
   ]
@@ -387,7 +590,9 @@ const { data } = await client.matchTargets(
 
 ### `getTargetQueries`
 
-Get target queries
+Transform target filters into Lucene queries for the provided target IDs.
+Returns the transformed query string for each target along with any errors encountered.
+If the target defines a sort order or 
 
 `POST /v1/target/queries`
 
@@ -409,7 +614,9 @@ const { data } = await client.getTargetQueries(
     {
       "target_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84",
       "query": "string",
-      "error": "string"
+      "error": "string",
+      "sort": ["billing_date:desc", "_title.keyword:asc", "_id:desc"],
+      "limit": 1
     }
   ]
 }
@@ -421,7 +628,7 @@ const { data } = await client.getTargetQueries(
 
 ### `createRecipient`
 
-Create a recipient associated with a campaign
+Creates a new recipient associated with a campaign.
 
 `POST /v1/campaign/{campaign_id}/recipient`
 
@@ -452,6 +659,29 @@ const { data } = await client.createRecipient(
   "portal_status": "sent",
   "portal_status_updated_at": "1970-01-01T00:00:00.000Z",
   "portal_state": {},
+  "entity_ui_status": "seen",
+  "entity_ui_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "entity_ui_status_before_dismiss": "seen",
+  "message_entity_id": "string",
+  "email_status": "sent",
+  "email_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "email_bounce_type": "permanent",
+  "email_bounce_subtype": "string",
+  "email_complaint_type": "string",
+  "email_bounce_reason": "string",
+  "email_send_error": {},
+  "email_unsubscribed_at": "1970-01-01T00:00:00.000Z",
+  "email_open_count": 0,
+  "email_first_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_last_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_click_count": 0,
+  "email_first_clicked_at": "1970-01-01T00:00:00.000Z",
+  "email_clicked_links": [
+    {
+      "url": "string",
+      "clicked_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
   "updated_at": "1970-01-01T00:00:00.000Z"
 }
 ```
@@ -462,7 +692,7 @@ const { data } = await client.createRecipient(
 
 ### `updateRecipient`
 
-Update a recipient
+Updates a recipient's attributes.
 
 `PATCH /v1/campaign/{campaign_id}/recipient/{recipient_id}`
 
@@ -494,6 +724,29 @@ const { data } = await client.updateRecipient(
   "portal_status": "sent",
   "portal_status_updated_at": "1970-01-01T00:00:00.000Z",
   "portal_state": {},
+  "entity_ui_status": "seen",
+  "entity_ui_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "entity_ui_status_before_dismiss": "seen",
+  "message_entity_id": "string",
+  "email_status": "sent",
+  "email_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "email_bounce_type": "permanent",
+  "email_bounce_subtype": "string",
+  "email_complaint_type": "string",
+  "email_bounce_reason": "string",
+  "email_send_error": {},
+  "email_unsubscribed_at": "1970-01-01T00:00:00.000Z",
+  "email_open_count": 0,
+  "email_first_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_last_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_click_count": 0,
+  "email_first_clicked_at": "1970-01-01T00:00:00.000Z",
+  "email_clicked_links": [
+    {
+      "url": "string",
+      "clicked_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
   "updated_at": "1970-01-01T00:00:00.000Z"
 }
 ```
@@ -504,7 +757,8 @@ const { data } = await client.updateRecipient(
 
 ### `updateRecipientPortalStatus`
 
-Update portal status for a campaign recipient
+Updates the portal status for a specific campaign recipient.
+The portal_status_updated_at timestamp is automatically set when the status changes.
 
 `PATCH /v1/campaign/{campaign_id}/recipient/{recipient_id}/portal:status`
 
@@ -533,6 +787,149 @@ const { data } = await client.updateRecipientPortalStatus(
   "portal_status": "sent",
   "portal_status_updated_at": "1970-01-01T00:00:00.000Z",
   "portal_state": {},
+  "entity_ui_status": "seen",
+  "entity_ui_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "entity_ui_status_before_dismiss": "seen",
+  "message_entity_id": "string",
+  "email_status": "sent",
+  "email_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "email_bounce_type": "permanent",
+  "email_bounce_subtype": "string",
+  "email_complaint_type": "string",
+  "email_bounce_reason": "string",
+  "email_send_error": {},
+  "email_unsubscribed_at": "1970-01-01T00:00:00.000Z",
+  "email_open_count": 0,
+  "email_first_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_last_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_click_count": 0,
+  "email_first_clicked_at": "1970-01-01T00:00:00.000Z",
+  "email_clicked_links": [
+    {
+      "url": "string",
+      "clicked_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "updated_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `updateRecipientEntityUiStatus`
+
+Records a Next Best Action interaction for a recipient on the Entity-UI channel.
+
+`PATCH /v1/campaign/{campaign_id}/recipient/{recipient_id}/entity_ui:status`
+
+```ts
+const { data } = await client.updateRecipientEntityUiStatus(
+  {
+    campaign_id: 'example',
+    recipient_id: 'example',
+  },
+  {
+    status: 'seen',
+    entity_schema: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "entity_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84",
+  "entity_schema": "string",
+  "title": "string",
+  "automation_status": "pending",
+  "automation_execution_id": "string",
+  "portal_status": "sent",
+  "portal_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "portal_state": {},
+  "entity_ui_status": "seen",
+  "entity_ui_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "entity_ui_status_before_dismiss": "seen",
+  "message_entity_id": "string",
+  "email_status": "sent",
+  "email_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "email_bounce_type": "permanent",
+  "email_bounce_subtype": "string",
+  "email_complaint_type": "string",
+  "email_bounce_reason": "string",
+  "email_send_error": {},
+  "email_unsubscribed_at": "1970-01-01T00:00:00.000Z",
+  "email_open_count": 0,
+  "email_first_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_last_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_click_count": 0,
+  "email_first_clicked_at": "1970-01-01T00:00:00.000Z",
+  "email_clicked_links": [
+    {
+      "url": "string",
+      "clicked_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "updated_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `restoreRecipientEntityUiStatus`
+
+Undo a dismissal on the Entity-UI (Next Best Action) channel
+
+`POST /v1/campaign/{campaign_id}/recipient/{recipient_id}/entity_ui:restore`
+
+```ts
+const { data } = await client.restoreRecipientEntityUiStatus({
+  campaign_id: 'example',
+  recipient_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "entity_id": "b8c01433-5556-4e2b-aad4-6f5348d1df84",
+  "entity_schema": "string",
+  "title": "string",
+  "automation_status": "pending",
+  "automation_execution_id": "string",
+  "portal_status": "sent",
+  "portal_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "portal_state": {},
+  "entity_ui_status": "seen",
+  "entity_ui_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "entity_ui_status_before_dismiss": "seen",
+  "message_entity_id": "string",
+  "email_status": "sent",
+  "email_status_updated_at": "1970-01-01T00:00:00.000Z",
+  "email_bounce_type": "permanent",
+  "email_bounce_subtype": "string",
+  "email_complaint_type": "string",
+  "email_bounce_reason": "string",
+  "email_send_error": {},
+  "email_unsubscribed_at": "1970-01-01T00:00:00.000Z",
+  "email_open_count": 0,
+  "email_first_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_last_opened_at": "1970-01-01T00:00:00.000Z",
+  "email_click_count": 0,
+  "email_first_clicked_at": "1970-01-01T00:00:00.000Z",
+  "email_clicked_links": [
+    {
+      "url": "string",
+      "clicked_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
   "updated_at": "1970-01-01T00:00:00.000Z"
 }
 ```
@@ -543,7 +940,7 @@ const { data } = await client.updateRecipientPortalStatus(
 
 ### `getRecipients`
 
-Get campaign recipients
+Get a paginated list of recipients for a campaign.
 
 `GET /v1/campaign/{campaign_id}/recipients`
 
@@ -553,8 +950,10 @@ const { data } = await client.getRecipients({
   limit: 1,
   next: 'example',
   q: 'example',
-  automation_status: 'example',
+  automation_status: ['...'],
   portal_status: 'example',
+  email_status: 'example',
+  entity_ui_status: 'example',
 })
 ```
 
@@ -573,11 +972,73 @@ const { data } = await client.getRecipients({
       "portal_status": "sent",
       "portal_status_updated_at": "1970-01-01T00:00:00.000Z",
       "portal_state": {},
+      "entity_ui_status": "seen",
+      "entity_ui_status_updated_at": "1970-01-01T00:00:00.000Z",
+      "entity_ui_status_before_dismiss": "seen",
+      "message_entity_id": "string",
+      "email_status": "sent",
+      "email_status_updated_at": "1970-01-01T00:00:00.000Z",
+      "email_bounce_type": "permanent",
+      "email_bounce_subtype": "string",
+      "email_complaint_type": "string",
+      "email_bounce_reason": "string",
+      "email_send_error": {},
+      "email_unsubscribed_at": "1970-01-01T00:00:00.000Z",
+      "email_open_count": 0,
+      "email_first_opened_at": "1970-01-01T00:00:00.000Z",
+      "email_last_opened_at": "1970-01-01T00:00:00.000Z",
+      "email_click_count": 0,
+      "email_first_clicked_at": "1970-01-01T00:00:00.000Z",
+      "email_clicked_links": [
+        {
+          "url": "string",
+          "clicked_at": "1970-01-01T00:00:00.000Z"
+        }
+      ],
       "updated_at": "1970-01-01T00:00:00.000Z"
     }
   ],
   "next": "string",
   "total": 0
+}
+```
+
+</details>
+
+---
+
+### `getEmailStats`
+
+Aggregate email delivery counts for a campaign, for the KPI summary on the campaign UI.
+Counts cover the email (automation) channel only; `total_emailed` is the number of
+recipients with a recorded em
+
+`GET /v1/campaign/{campaign_id}/email-stats`
+
+```ts
+const { data } = await client.getEmailStats({
+  campaign_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "total_emailed": 0,
+  "sent": 0,
+  "delivered": 0,
+  "bounced": 0,
+  "bounced_hard": 0,
+  "bounced_soft": 0,
+  "complained": 0,
+  "failed": 0,
+  "unsubscribed": 0,
+  "opened": 0,
+  "clicked": 0,
+  "total_opens": 0,
+  "total_clicks": 0
 }
 ```
 
@@ -616,7 +1077,7 @@ Describes the structure of a client error response, which can be one of several 
 type ClientError = {
   message: string
 } | {
-  code: "CAMPAIGN_NOT_FOUND" | "CAMPAIGN_HAS_NO_TARGET" | "CAMPAIGN_HAS_NO_DELIVERY_METHOD" | "CAMPAIGN_HAS_JOB_IN_PROGRESS" | "CAMPAIGN_HAS_UNEXPECTED_STATUS" | "JOB_TOKEN_MISSING" | "TARGET_WITHOUT_FILTERS"
+  code: "CAMPAIGN_NOT_FOUND" | "CAMPAIGN_HAS_NO_TARGET" | "CAMPAIGN_HAS_NO_DELIVERY_METHOD" | "INVALID_NEXT_BEST_ACTION" | "CAMPAIGN_HAS_JOB_IN_PROGRESS" | "CAMPAIGN_HAS_UNEXPECTED_STATUS" | "JOB_TOKEN_MISSING" | "TARGET_WITHOUT_FILTERS"
 } | {
   error: string
   status: number
@@ -717,8 +1178,16 @@ type BaseSystemFieldsRequired = object
 
 ### `CampaignStatus`
 
+Lifecycle status of a campaign.
+
+- `draft`: not launched yet.
+- `scheduled`: launched with a `start_date` still in the future. It collects no recipients and
+  appears through no delivery method until it starts on its own at `start_date`.
+- `activating`: launching; recipients are being collected.
+- `
+
 ```ts
-type CampaignStatus = "draft" | "activating" | "active" | "inactive"
+type CampaignStatus = "draft" | "scheduled" | "activating" | "active" | "inactive"
 ```
 
 ### `ExecutionSummaryItem`
@@ -764,9 +1233,9 @@ type Campaign = {
   }
   name?: string
   goal?: string
-  status?: "draft" | "activating" | "active" | "inactive"
-  start_date?: string // date
-  end_date?: string // date
+  status?: "draft" | "scheduled" | "activating" | "active" | "inactive"
+  start_date?: string // date-time
+  end_date?: string // date-time
   flow_id?: string
   job_id?: string
   target?: {
@@ -801,7 +1270,42 @@ type Target = {
   name?: string
   description?: string
   entity_schema?: string
-  entity_filters?: Record<string, unknown>
+  entity_filters?: {
+    filter?: Record<string, unknown>
+    search?: string
+    sort?: Array<{
+      key: { ... }
+      order: { ... }
+    }>
+    limit?: number
+  }
+}
+```
+
+### `TargetEntityFilters`
+
+Search state of the target. `filter` and `search` use the same shape as the search state of entity views.
+Besides the filters, it optionally defines the order and maximum number of results.
+
+
+```ts
+type TargetEntityFilters = {
+  filter?: Record<string, unknown>
+  search?: string
+  sort?: Array<{
+    key: string
+    order: "asc" | "desc"
+  }>
+  limit?: number
+}
+```
+
+### `TargetSortItem`
+
+```ts
+type TargetSortItem = {
+  key: string
+  order: "asc" | "desc"
 }
 ```
 
@@ -814,6 +1318,72 @@ type MatchCampaignParams = {
     entity_schema: string
   }>
   campaign_ids: string // uuid[]
+}
+```
+
+### `NextBestAction`
+
+A Next Best Action configured on a campaign's Entity-UI channel.
+This is the canonical NBA contract shared by discovery (this API), authoring, and rendering.
+NBA content is single-language in v1; text fields may contain `{{placeholders}}` resolved at render time.
+
+
+```ts
+type NextBestAction = {
+  category?: string
+  icon?: {
+    name: string
+    color?: string
+  }
+  title: string
+  body?: string
+  priority?: "low" | "medium" | "high"
+  is_dismissable?: boolean
+  cta: {
+    type: "journey" | "workflow" | "flow"
+    target: string
+    context_params?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+  }
+}
+```
+
+### `DiscoverCampaignsParams`
+
+```ts
+type DiscoverCampaignsParams = {
+  entity_id: string // uuid
+  entity_schema: string
+}
+```
+
+### `DiscoverResult`
+
+One discovered Next Best Action, plus this entity's interaction state for it.
+
+```ts
+type DiscoverResult = {
+  campaign_id: string // uuid
+  nba: {
+    category?: string
+    icon?: {
+      name: { ... }
+      color?: { ... }
+    }
+    title: string
+    body?: string
+    priority?: "low" | "medium" | "high"
+    is_dismissable?: boolean
+    cta: {
+      type: { ... }
+      target: { ... }
+      context_params?: { ... }
+    }
+  }
+  status?: "seen" | "dismissed" | "clicked"
+  status_updated_at?: string // date-time
 }
 ```
 
@@ -844,6 +1414,8 @@ type TargetQueryResult = {
   target_id: string // uuid
   query: string
   error?: string
+  sort?: string[]
+  limit?: number
 }
 ```
 
@@ -859,6 +1431,36 @@ type AutomationStatus = "pending" | "in_progress" | "success" | "failed" | "canc
 type PortalStatus = "sent" | "seen" | "dismissed" | "clicked"
 ```
 
+### `EntityUiStatus`
+
+Lifecycle status of a Next Best Action on the Entity-UI channel. Unlike the portal
+channel there is no `sent` state: an NBA recipient is born at `seen`, the moment the
+action is first rendered to an agent.
+
+
+```ts
+type EntityUiStatus = "seen" | "dismissed" | "clicked"
+```
+
+### `EmailStatus`
+
+Delivery status of the email a campaign's automation sends to a recipient. Set to `sent`
+once the automation hands the email off, then updated asynchronously as SES notifications
+arrive (`bounced` / `complained`; an SES Reject maps to `bounced`). `failed` is a send-time
+failure (the automation execu
+
+```ts
+type EmailStatus = "sent" | "delivered" | "bounced" | "complained" | "failed"
+```
+
+### `EmailBounceType`
+
+SES bounce classification: `permanent` (hard) or `transient` (soft).
+
+```ts
+type EmailBounceType = "permanent" | "transient"
+```
+
 ### `Recipient`
 
 ```ts
@@ -871,6 +1473,27 @@ type Recipient = {
   portal_status?: "sent" | "seen" | "dismissed" | "clicked"
   portal_status_updated_at?: string // date-time
   portal_state?: Record<string, unknown>
+  entity_ui_status?: "seen" | "dismissed" | "clicked"
+  entity_ui_status_updated_at?: string // date-time
+  entity_ui_status_before_dismiss?: "seen" | "dismissed" | "clicked"
+  message_entity_id?: string
+  email_status?: "sent" | "delivered" | "bounced" | "complained" | "failed"
+  email_status_updated_at?: string // date-time
+  email_bounce_type?: "permanent" | "transient"
+  email_bounce_subtype?: string
+  email_complaint_type?: string
+  email_bounce_reason?: string
+  email_send_error?: Record<string, unknown>
+  email_unsubscribed_at?: string // date-time
+  email_open_count?: number
+  email_first_opened_at?: string // date-time
+  email_last_opened_at?: string // date-time
+  email_click_count?: number
+  email_first_clicked_at?: string // date-time
+  email_clicked_links?: Array<{
+    url: string
+    clicked_at: string // date-time
+  }>
   updated_at?: string // date-time
 }
 ```
@@ -960,5 +1583,122 @@ type RetriggerAutomationsResult = {
 ```ts
 type UpdatePortalStatusRequest = {
   status: "sent" | "seen" | "dismissed" | "clicked"
+}
+```
+
+### `UpdateEntityUiStatusRequest`
+
+```ts
+type UpdateEntityUiStatusRequest = {
+  status: "seen" | "dismissed" | "clicked"
+  entity_schema?: string
+}
+```
+
+### `SetupCampaignRequest`
+
+Discriminated by `type`. Each campaign variant has its own request shape;
+new variants are added by introducing a new schema and extending the `oneOf` list.
+
+
+```ts
+type SetupCampaignRequest = {
+  type: "tariff_change"
+  product_recommendation: {
+    name?: string
+    source_product_id?: string // uuid
+    source_price_id?: string // uuid
+    offers?: Array<{
+      target_id?: { ... }
+      items: { ... }
+    }>
+  }
+  campaign: {
+    name: string
+    goal?: string
+    target_ids: string // uuid[]
+    start_date?: string // date-time
+    end_date?: string // date-time
+  }
+  journey?: {
+    journey_id: string // uuid
+  }
+  channels?: {
+    portal_widget?: {
+      portal_id: { ... }
+      block_id: { ... }
+    }
+    email?: {
+      automation_id?: { ... }
+      template_id?: { ... }
+    }
+    entity_ui?: {
+      category?: { ... }
+      icon?: { ... }
+      title: { ... }
+      body?: { ... }
+      priority?: { ... }
+      is_dismissable?: { ... }
+      cta: { ... }
+    }
+  }
+}
+```
+
+### `SetupTariffChangeCampaignRequest`
+
+```ts
+type SetupTariffChangeCampaignRequest = {
+  type: "tariff_change"
+  product_recommendation: {
+    name?: string
+    source_product_id?: string // uuid
+    source_price_id?: string // uuid
+    offers?: Array<{
+      target_id?: { ... }
+      items: { ... }
+    }>
+  }
+  campaign: {
+    name: string
+    goal?: string
+    target_ids: string // uuid[]
+    start_date?: string // date-time
+    end_date?: string // date-time
+  }
+  journey?: {
+    journey_id: string // uuid
+  }
+  channels?: {
+    portal_widget?: {
+      portal_id: { ... }
+      block_id: { ... }
+    }
+    email?: {
+      automation_id?: { ... }
+      template_id?: { ... }
+    }
+    entity_ui?: {
+      category?: { ... }
+      icon?: { ... }
+      title: { ... }
+      body?: { ... }
+      priority?: { ... }
+      is_dismissable?: { ... }
+      cta: { ... }
+    }
+  }
+}
+```
+
+### `SetupTariffChangeCampaignResponse`
+
+```ts
+type SetupTariffChangeCampaignResponse = {
+  type: "tariff_change"
+  product_recommendation_id: string // uuid
+  campaign_id: string // uuid
+  journey_id?: string // uuid
+  portal_widget_id?: string // uuid
 }
 ```

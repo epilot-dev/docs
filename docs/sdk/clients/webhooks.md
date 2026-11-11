@@ -37,6 +37,7 @@ const { data } = await webhooksClient.getPublicKey(...)
 - [`getConfig`](#getconfig)
 - [`updateConfig`](#updateconfig)
 - [`deleteConfig`](#deleteconfig)
+- [`testOAuth`](#testoauth)
 - [`triggerWebhook`](#triggerwebhook)
 - [`batchReplayEvents`](#batchreplayevents)
 - [`getEventById`](#geteventbyid)
@@ -53,6 +54,8 @@ const { data } = await webhooksClient.getPublicKey(...)
 - [`HttpMethod`](#httpmethod)
 - [`AuthType`](#authtype)
 - [`Filter`](#filter)
+- [`WebhookCondition`](#webhookcondition)
+- [`WebhookConditionGroup`](#webhookconditiongroup)
 - [`Auth`](#auth)
 - [`BasicAuthConfig`](#basicauthconfig)
 - [`OAuthConfig`](#oauthconfig)
@@ -70,6 +73,8 @@ const { data } = await webhooksClient.getPublicKey(...)
 - [`WebhookEvent`](#webhookevent)
 - [`ExampleRequest`](#examplerequest)
 - [`ExampleResponse`](#exampleresponse)
+- [`TestOAuthResponse`](#testoauthresponse)
+- [`ReplayRequest`](#replayrequest)
 - [`BatchReplayRequest`](#batchreplayrequest)
 
 ### `getPublicKey`
@@ -334,6 +339,34 @@ const { data } = await client.deleteConfig({
 
 ---
 
+### `testOAuth`
+
+Test OAuth connection
+
+`POST /v1/webhooks/configs/{configId}/test-oauth`
+
+```ts
+const { data } = await client.testOAuth({
+  configId: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "success": true,
+  "expires_in": 3600,
+  "token_type": "Bearer",
+  "message": "OAuth token exchange successful"
+}
+```
+
+</details>
+
+---
+
 ### `triggerWebhook`
 
 triggers a webhook event either async or sync
@@ -396,7 +429,8 @@ const { data } = await client.batchReplayEvents(
     configId: 'example',
   },
   {
-    eventIds: ['2f1b7cf8-ff55-4359-966f-e56f39a52c94', '48c984bf-466b-470b-b743-d07cea168243']
+    eventIds: ['2f1b7cf8-ff55-4359-966f-e56f39a52c94', '48c984bf-466b-470b-b743-d07cea168243'],
+    reapply_transform: false
   },
 )
 ```
@@ -448,7 +482,11 @@ const { data } = await client.getEventById({
   },
   "status": "succeeded",
   "http_method": "GET",
-  "payload": "string"
+  "payload": "string",
+  "original_payload": "string",
+  "retry_attempt": 0,
+  "can_reapply_transform": true,
+  "can_reapply_transform_reason": "available"
 }
 ```
 
@@ -463,10 +501,15 @@ Replay a webhook event
 `POST /v1/webhooks/configs/{configId}/events/{eventId}/replay`
 
 ```ts
-const { data } = await client.replayEvent({
-  configId: 'example',
-  eventId: 'example',
-})
+const { data } = await client.replayEvent(
+  {
+    configId: 'example',
+    eventId: 'example',
+  },
+  {
+    reapply_transform: false
+  },
+)
 ```
 
 ---
@@ -578,7 +621,11 @@ const { data } = await client.getWebhookEventsV2(
       },
       "status": "succeeded",
       "http_method": "GET",
-      "payload": "string"
+      "payload": "string",
+      "original_payload": "string",
+      "retry_attempt": 0,
+      "can_reapply_transform": true,
+      "can_reapply_transform_reason": "available"
     }
   ],
   "next_cursor": {
@@ -619,7 +666,7 @@ type SearchOptions = {
     to?: string // date-time
   }
   event_id?: string
-  status?: "succeeded" | "failed"
+  status?: "succeeded" | "failed" | "skipped"
 }
 ```
 
@@ -653,9 +700,13 @@ type EventListResponse = {
       execution_id?: { ... }
       action_id?: { ... }
     }
-    status?: "succeeded" | "failed" | "in_progress"
+    status?: "succeeded" | "failed" | "in_progress" | "skipped"
     http_method?: "GET" | "POST" | "PUT"
     payload?: string
+    original_payload?: string
+    retry_attempt?: number
+    can_reapply_transform?: boolean
+    can_reapply_transform_reason?: "available" | "no_transform_configured" | "no_original_source"
   }>
   next_cursor?: {
     created_at?: string // date-time
@@ -683,6 +734,41 @@ type AuthType = "BASIC" | "OAUTH_CLIENT_CREDENTIALS" | "API_KEY" | "NONE"
 type Filter = {
   keyToFilter: string
   supportedValues: string[]
+}
+```
+
+### `WebhookCondition`
+
+A condition that must be met for the webhook to fire. A condition is EITHER a classic field + operation comparison OR a single jsonata_expression evaluated against the event payload — the two forms are mutually exclusive.
+
+```ts
+type WebhookCondition = {
+  field?: string
+  operation?: "equals" | "not_equals" | "any_of" | "none_of" | "contains" | "not_contains" | "starts_with" | "ends_with" | "greater_than" | "less_than" | "greater_than_or_equals" | "less_than_or_equals" | "is_empty" | "is_not_empty" | "length_equals" | "length_not_equals" | "length_greater_than" | "length_less_than" | "length_greater_than_or_equals" | "length_less_than_or_equals"
+  values?: string[]
+  field_type?: "string" | "number" | "boolean" | "date" | "datetime"
+  is_array_field?: boolean
+  repeatable_item_op?: boolean
+  jsonata_expression?: string
+}
+```
+
+### `WebhookConditionGroup`
+
+A group of conditions with a logical operator. Multiple conditions are AND-ed by default.
+
+```ts
+type WebhookConditionGroup = {
+  conditions?: Array<{
+    field?: string
+    operation?: "equals" | "not_equals" | "any_of" | "none_of" | "contains" | "not_contains" | "starts_with" | "ends_with" | "greater_than" | "less_than" | "greater_than_or_equals" | "less_than_or_equals" | "is_empty" | "is_not_empty" | "length_equals" | "length_not_equals" | "length_greater_than" | "length_less_than" | "length_greater_than_or_equals" | "length_less_than_or_equals"
+    values?: string[]
+    field_type?: "string" | "number" | "boolean" | "date" | "datetime"
+    is_array_field?: boolean
+    repeatable_item_op?: boolean
+    jsonata_expression?: string
+  }>
+  logical_operator?: "AND" | "OR"
 }
 ```
 
@@ -766,8 +852,10 @@ type WebhookConfig = {
   id?: string
   name: string
   eventName: string
+  eventVersion?: string
   url?: string
   creationTime?: string
+  updatedTime?: string
   httpMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS" | "HEAD"
   enabled?: boolean
   auth?: {
@@ -800,11 +888,40 @@ type WebhookConfig = {
     include_relations?: boolean
     include_activity?: boolean
     include_changed_attributes?: boolean
+    apply_changesets?: boolean
     custom_headers?: Record<string, string>
   }
   enableStaticIP?: boolean
+  protected?: boolean
+  secureProxy?: {
+    integration_id: string // uuid
+    use_case_slug: string
+  }
   status?: "active" | "inactive" | "incomplete"
   jsonataExpression?: string
+  deliveryMode?: "json_base64" | "binary_multipart"
+  multipartConfig?: {
+    fileFieldName?: string
+    fileFieldStrategy?: "single" | "multi"
+    fileSource?: string
+    extraFields?: Record<string, string>
+  }
+  retryPolicy?: {
+    enabled: boolean
+    maxAttempts?: number
+  }
+  filterConditions?: {
+    conditions?: Array<{
+      field?: { ... }
+      operation?: { ... }
+      values?: { ... }
+      field_type?: { ... }
+      is_array_field?: { ... }
+      repeatable_item_op?: { ... }
+      jsonata_expression?: { ... }
+    }>
+    logical_operator?: "AND" | "OR"
+  }
   _manifest?: string // uuid[]
   signingSecret?: string
 }
@@ -861,6 +978,7 @@ type PayloadConfiguration = {
   include_relations?: boolean
   include_activity?: boolean
   include_changed_attributes?: boolean
+  apply_changesets?: boolean
   custom_headers?: Record<string, string>
 }
 ```
@@ -956,9 +1074,13 @@ type WebhookEvent = {
     execution_id?: string
     action_id?: string
   }
-  status?: "succeeded" | "failed" | "in_progress"
+  status?: "succeeded" | "failed" | "in_progress" | "skipped"
   http_method?: "GET" | "POST" | "PUT"
   payload?: string
+  original_payload?: string
+  retry_attempt?: number
+  can_reapply_transform?: boolean
+  can_reapply_transform_reason?: "available" | "no_transform_configured" | "no_original_source"
 }
 ```
 
@@ -992,22 +1114,30 @@ type ExampleResponse = {
 }
 ```
 
+### `TestOAuthResponse`
+
+```ts
+type TestOAuthResponse = {
+  success: boolean
+  expires_in?: number
+  token_type?: string
+  message: string
+}
+```
+
+### `ReplayRequest`
+
+```ts
+type ReplayRequest = {
+  reapply_transform?: boolean
+}
+```
+
 ### `BatchReplayRequest`
 
 ```ts
 type BatchReplayRequest = {
   eventIds: string[]
+  reapply_transform?: boolean
 }
 ```
-
-### `Using Webhooks in Blueprints`
-If webhooks are always reset to their default settings after a blueprint sync, this is because the blueprint overwrites the webhook data. To prevent this, we have introduced environment variables, which remain unchanged during a blueprint sync.
-
-Here is how to set them up:
-1. Click the gear icon in the top bar to open the environment variables and secrets.
-2. Add a variable for your webhook password by entering the key (variable name), the type (String or Secret), and the value.
-3. Navigate to "Integrations" and select "Webhooks".
-4. Change the authentication setting from "Default" to e.g. "Basic Auth".
-5. Enter your username.
-6. Click the brackets in the password field — the input will change accordingly. You can now select the relevant environment variable you defined for the password.
-7. Save your settings.

@@ -8,6 +8,8 @@ description: "epilot CLI commands for the Kanban API: quick start, common flags 
 - **Base URL:** `https://kanban.sls.epilot.io`
 - **API Docs:** [https://docs.epilot.io/api/kanban](https://docs.epilot.io/api/kanban)
 
+The Kanban API provides board management and data query capabilities for epilot's Kanban view feature.
+
 ## Quick Start
 
 ```bash
@@ -39,26 +41,26 @@ epilot kanban createKanbanBoard
 ## Operations
 
 **Kanban**
-- [`createKanbanBoard`](#createkanbanboard) — Create a Kanban board
-- [`getKanbanBoards`](#getkanbanboards) — Get all Kanban boards
-- [`getKanbanBoard`](#getkanbanboard) — Get a Kanban board by ID. Use "default" as the boardId to get the organization's default board.
-- [`updateKanbanBoard`](#updatekanbanboard) — Update a Kanban board
-- [`patchKanbanBoard`](#patchkanbanboard) — Patch a Kanban board
-- [`deleteKanbanBoard`](#deletekanbanboard) — Delete a Kanban board
-- [`setDefaultKanbanBoard`](#setdefaultkanbanboard) — Set a board as the default board for the organization
-- [`clearDefaultKanbanBoard`](#cleardefaultkanbanboard) — Remove the default board setting for the organization
+- [`createKanbanBoard`](#createkanbanboard) — Creates a new Kanban board with the provided configuration.
+- [`getKanbanBoards`](#getkanbanboards) — Returns a list of all Kanban boards accessible to the authenticated user.
+- [`getKanbanBoard`](#getkanbanboard) — Retrieves a Kanban board by ID, including its full configuration (swimlanes, filters, sorting, card fields).
+- [`updateKanbanBoard`](#updatekanbanboard) — Fully replaces the configuration of an existing Kanban board by ID.
+- [`patchKanbanBoard`](#patchkanbanboard) — Partially updates fields of an existing Kanban board by ID.
+- [`deleteKanbanBoard`](#deletekanbanboard) — Permanently deletes a Kanban board by ID. This action is irreversible.
+- [`setDefaultKanbanBoard`](#setdefaultkanbanboard) — Sets a Kanban board as the default board for the organization.
+- [`clearDefaultKanbanBoard`](#cleardefaultkanbanboard) — Removes the default board configuration for the organization.
 
 **Query**
-- [`flowsAutocomplete`](#flowsautocomplete) — Autocomplete flows data
-- [`executeFlowsQuery`](#executeflowsquery) — Query Flows Data for Kanban View.
+- [`flowsAutocomplete`](#flowsautocomplete) — Returns autocomplete suggestions for a given attribute in the Flows dataset.
+- [`executeFlowsQuery`](#executeflowsquery) — Executes a query against the Flows dataset and returns paginated results for use in Kanban card rendering.
 
 ### `createKanbanBoard`
 
-Create a Kanban board
+Creates a new Kanban board with the provided configuration.
 
 `POST /v1/kanban/board`
 
-**Request Body**
+**Request Body** (required)
 
 **Sample Call**
 
@@ -120,6 +122,9 @@ epilot kanban createKanbanBoard \
     "sorting": {
       "field": "created_at",
       "direction": "asc"
+    },
+    "group_by": {
+      "field": "context_entity"
     },
     "search_query": "task 1"
   }
@@ -193,6 +198,9 @@ epilot kanban createKanbanBoard --jsonata '$'
       "field": "created_at",
       "direction": "asc"
     },
+    "group_by": {
+      "field": "context_entity"
+    },
     "search_query": "task 1"
   }
 }
@@ -204,7 +212,7 @@ epilot kanban createKanbanBoard --jsonata '$'
 
 ### `getKanbanBoards`
 
-Get all Kanban boards
+Returns a list of all Kanban boards accessible to the authenticated user.
 
 `GET /v1/kanban/boards`
 
@@ -253,7 +261,7 @@ epilot kanban getKanbanBoards --jsonata '$'
 
 ### `getKanbanBoard`
 
-Get a Kanban board by ID. Use "default" as the boardId to get the organization's default board.
+Retrieves a Kanban board by ID, including its full configuration (swimlanes, filters, sorting, card fields).
 
 `GET /v1/kanban/board/{boardId}`
 
@@ -338,6 +346,9 @@ epilot kanban getKanbanBoard -p boardId=board-123 --jsonata '$'
       "field": "created_at",
       "direction": "asc"
     },
+    "group_by": {
+      "field": "context_entity"
+    },
     "search_query": "task 1"
   }
 }
@@ -349,7 +360,7 @@ epilot kanban getKanbanBoard -p boardId=board-123 --jsonata '$'
 
 ### `updateKanbanBoard`
 
-Update a Kanban board
+Fully replaces the configuration of an existing Kanban board by ID.
 
 `PUT /v1/kanban/board/{boardId}`
 
@@ -357,9 +368,9 @@ Update a Kanban board
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `boardId` | path | string | Yes |  |
+| `boardId` | path | string | Yes | The ID of the board to update. |
 
-**Request Body**
+**Request Body** (required)
 
 **Sample Call**
 
@@ -423,6 +434,9 @@ epilot kanban updateKanbanBoard \
     "sorting": {
       "field": "created_at",
       "direction": "asc"
+    },
+    "group_by": {
+      "field": "context_entity"
     },
     "search_query": "task 1"
   }
@@ -502,6 +516,9 @@ epilot kanban updateKanbanBoard -p boardId=123e4567-e89b-12d3-a456-426614174000 
       "field": "created_at",
       "direction": "asc"
     },
+    "group_by": {
+      "field": "context_entity"
+    },
     "search_query": "task 1"
   }
 }
@@ -513,7 +530,7 @@ epilot kanban updateKanbanBoard -p boardId=123e4567-e89b-12d3-a456-426614174000 
 
 ### `patchKanbanBoard`
 
-Patch a Kanban board
+Partially updates fields of an existing Kanban board by ID.
 
 `PATCH /v1/kanban/board/{boardId}`
 
@@ -521,9 +538,9 @@ Patch a Kanban board
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `boardId` | path | string | Yes |  |
+| `boardId` | path | string | Yes | The ID of the board to patch. |
 
-**Request Body**
+**Request Body** (required)
 
 **Sample Call**
 
@@ -619,6 +636,9 @@ epilot kanban patchKanbanBoard -p boardId=123e4567-e89b-12d3-a456-426614174000 -
       "field": "created_at",
       "direction": "asc"
     },
+    "group_by": {
+      "field": "context_entity"
+    },
     "search_query": "task 1"
   }
 }
@@ -630,7 +650,7 @@ epilot kanban patchKanbanBoard -p boardId=123e4567-e89b-12d3-a456-426614174000 -
 
 ### `deleteKanbanBoard`
 
-Delete a Kanban board
+Permanently deletes a Kanban board by ID. This action is irreversible.
 
 `DELETE /v1/kanban/board/{boardId}`
 
@@ -638,7 +658,7 @@ Delete a Kanban board
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `boardId` | path | string | Yes |  |
+| `boardId` | path | string | Yes | The ID of the board to delete. |
 
 **Sample Call**
 
@@ -663,7 +683,7 @@ epilot kanban deleteKanbanBoard -p boardId=123e4567-e89b-12d3-a456-426614174000 
 
 ### `setDefaultKanbanBoard`
 
-Set a board as the default board for the organization
+Sets a Kanban board as the default board for the organization.
 
 `PUT /v1/kanban/org/default-board`
 
@@ -677,13 +697,13 @@ Set a board as the default board for the organization
 
 ```bash
 epilot kanban setDefaultKanbanBoard \
-  -p boardId=123e4567-e89b-12d3-a456-426614174000
+  -p boardId=board-abc123
 ```
 
 With JSONata filter:
 
 ```bash
-epilot kanban setDefaultKanbanBoard -p boardId=123e4567-e89b-12d3-a456-426614174000 --jsonata 'message'
+epilot kanban setDefaultKanbanBoard -p boardId=board-abc123 --jsonata 'message'
 ```
 
 <details>
@@ -702,7 +722,7 @@ epilot kanban setDefaultKanbanBoard -p boardId=123e4567-e89b-12d3-a456-426614174
 
 ### `clearDefaultKanbanBoard`
 
-Remove the default board setting for the organization
+Removes the default board configuration for the organization.
 
 `DELETE /v1/kanban/org/default-board`
 
@@ -734,7 +754,7 @@ epilot kanban clearDefaultKanbanBoard --jsonata 'message'
 
 ### `flowsAutocomplete`
 
-Autocomplete flows data
+Returns autocomplete suggestions for a given attribute in the Flows dataset.
 
 `GET /v1/kanban/query/flows:autocomplete`
 
@@ -742,8 +762,8 @@ Autocomplete flows data
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `input` | query | string | No | Input to autocomplete |
-| `attribute` | query | string | Yes | Autocomplete attribute |
+| `input` | query | string | No | Typed input string to filter autocomplete suggestions |
+| `attribute` | query | string | Yes | The field name to autocomplete values for |
 | `size` | query | number | No | Maximum number of results to return |
 | `from` | query | number | No | Starting offset for pagination |
 
@@ -776,11 +796,11 @@ epilot kanban flowsAutocomplete -p attribute=name --jsonata 'results[0]'
 
 ### `executeFlowsQuery`
 
-Query Flows Data for Kanban View.
+Executes a query against the Flows dataset and returns paginated results for use in Kanban card rendering.
 
 `POST /v1/kanban/query/flows:execute`
 
-**Request Body**
+**Request Body** (required)
 
 **Sample Call**
 
@@ -808,6 +828,9 @@ epilot kanban executeFlowsQuery \
     "field": "created_at",
     "direction": "asc"
   },
+  "group_by": {
+    "field": "context_entity"
+  },
   "from": 0,
   "size": 10
 }'
@@ -833,10 +856,10 @@ epilot kanban executeFlowsQuery --jsonata 'results[0]'
   "results": [
     {}
   ],
-  "hits": 0,
-  "page_number": 0,
-  "page_size": 0,
-  "total_pages": 0
+  "hits": 42,
+  "page_number": 1,
+  "page_size": 10,
+  "total_pages": 5
 }
 ```
 

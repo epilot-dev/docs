@@ -42,21 +42,30 @@ const { data } = await messageClient.sendMessage(...)
 - [`markReadMessageV2`](#markreadmessagev2)
 - [`markUnreadMessage`](#markunreadmessage)
 - [`getUnread`](#getunread)
+- [`getUnreadCounts`](#getunreadcounts)
 - [`markUnreadMessageV2`](#markunreadmessagev2)
+- [`spamMessage`](#spammessage)
+- [`unspamMessage`](#unspammessage)
 - [`getMessageV2`](#getmessagev2)
 
 **Threads**
 - [`searchThreads`](#searchthreads)
 - [`searchThreadsV2`](#searchthreadsv2)
 - [`searchIds`](#searchids)
+- [`getAssigneeWorkload`](#getassigneeworkload)
 - [`updateThread`](#updatethread)
 - [`deleteThread`](#deletethread)
 - [`moveThread`](#movethread)
 - [`markThreadAsDone`](#markthreadasdone)
 - [`markThreadAsOpen`](#markthreadasopen)
 - [`getThreadTimeline`](#getthreadtimeline)
+- [`getThreadSummary`](#getthreadsummary)
 - [`trashThread`](#trashthread)
 - [`untrashThread`](#untrashthread)
+- [`spamThread`](#spamthread)
+- [`unspamThread`](#unspamthread)
+- [`bulkMoveThreads`](#bulkmovethreads)
+- [`bulkAssignThreads`](#bulkassignthreads)
 - [`threadBulkActionsRead`](#threadbulkactionsread)
 - [`threadBulkActionsUnread`](#threadbulkactionsunread)
 - [`threadBulkActionsFavorite`](#threadbulkactionsfavorite)
@@ -71,6 +80,7 @@ const { data } = await messageClient.sendMessage(...)
 - [`markUnreadThread`](#markunreadthread)
 - [`markUnreadThreadV2`](#markunreadthreadv2)
 - [`assignThread`](#assignthread)
+- [`dismissThreadLinkSuggestions`](#dismissthreadlinksuggestions)
 - [`unassignThread`](#unassignthread)
 - [`assignUsers`](#assignusers)
 - [`assignUsersV2`](#assignusersv2)
@@ -92,14 +102,49 @@ const { data } = await messageClient.sendMessage(...)
 - [`AttachmentsRelation`](#attachmentsrelation)
 - [`File`](#file)
 - [`MessageRequestParams`](#messagerequestparams)
+- [`ThreadView`](#threadview)
+- [`UnreadCountScope`](#unreadcountscope)
+- [`UnreadCountsPayload`](#unreadcountspayload)
+- [`UnreadCountsResult`](#unreadcountsresult)
+- [`UnreadCountBuckets`](#unreadcountbuckets)
 - [`SearchParamsV2`](#searchparamsv2)
 - [`SearchParams`](#searchparams)
 - [`SearchIDParams`](#searchidparams)
+- [`AssigneeWorkloadParams`](#assigneeworkloadparams)
+- [`AssigneeWorkload`](#assigneeworkload)
+- [`AssigneeWorkloadResults`](#assigneeworkloadresults)
 - [`ReadMessagePayload`](#readmessagepayload)
 - [`ReadingScope`](#readingscope)
+- [`ThreadReplyContext`](#threadreplycontext)
+- [`ReplyContextMessage`](#replycontextmessage)
+- [`ReplyContextEntityRef`](#replycontextentityref)
+- [`ThreadSummary`](#threadsummary)
+- [`ThreadSummaryPayload`](#threadsummarypayload)
+- [`ThreadSummaryEntityRef`](#threadsummaryentityref)
+- [`ThreadSummaryContext`](#threadsummarycontext)
+- [`SimilarSentMessagesRequest`](#similarsentmessagesrequest)
+- [`SimilarSentMessagesResponse`](#similarsentmessagesresponse)
+- [`SimilarSentMessage`](#similarsentmessage)
 - [`ThreadTimeline`](#threadtimeline)
 - [`ThreadDoneEvent`](#threaddoneevent)
 - [`ThreadOpenEvent`](#threadopenevent)
+- [`WorkflowStartedEvent`](#workflowstartedevent)
+- [`ThreadUserAssignedEvent`](#threaduserassignedevent)
+- [`MessageLabelAddedEvent`](#messagelabeladdedevent)
+- [`MessageLabelRemovedEvent`](#messagelabelremovedevent)
+- [`MessageEntityLinkedEvent`](#messageentitylinkedevent)
+- [`MessageEntityUnlinkedEvent`](#messageentityunlinkedevent)
+- [`MessageAutoReplySentEvent`](#messageautoreplysentevent)
+- [`ThreadMovedToInboxEvent`](#threadmovedtoinboxevent)
+- [`ThreadTrashedEvent`](#threadtrashedevent)
+- [`ThreadRestoredEvent`](#threadrestoredevent)
+- [`LinkSuggestionCandidate`](#linksuggestioncandidate)
+- [`LinkSuggestion`](#linksuggestion)
+- [`TimelineLinkSuggestion`](#timelinelinksuggestion)
+- [`MessageEntityLinkSuggestedEvent`](#messageentitylinksuggestedevent)
+- [`MessageEntityLinkSuggestionDismissedEvent`](#messageentitylinksuggestiondismissedevent)
+- [`TimelineLinkedEntity`](#timelinelinkedentity)
+- [`TimelineActor`](#timelineactor)
 - [`TimelineEventData`](#timelineeventdata)
 - [`TimelineEvent`](#timelineevent)
 - [`BulkActionsPayloadWithScopes`](#bulkactionspayloadwithscopes)
@@ -156,6 +201,7 @@ const { data } = await client.updateMessage()
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -209,7 +255,8 @@ const { data } = await client.updateMessage()
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },
@@ -253,6 +300,7 @@ const { data } = await client.getMessage({
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -306,7 +354,8 @@ const { data } = await client.getMessage({
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },
@@ -365,6 +414,24 @@ const { data } = await client.searchMessages(
   {
     inbox_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3',
     q: 'subject:"Request for solar panel price" AND _tags:INBOX',
+    view: {
+      folder: 'inbox',
+      mailbox: 'organization',
+      labels: ['string'],
+      purposes: ['string'],
+      filters: ['unread'],
+      from: ['string'],
+      to: ['string'],
+      assigned_to: ['string'],
+      include_unassigned: true,
+      date_from_days_ago: 0,
+      date_to_days_ago: 0,
+      email_filter: ['string'],
+      text: 'string',
+      thread_ids: ['string'],
+      pinned_by: 'string'
+    },
+    user_groups: ['string'],
     fields: ['_id', '_title', 'first_name', 'account', '!account.*._files', '**._product'],
     from: 0,
     size: 10,
@@ -393,6 +460,7 @@ const { data } = await client.searchMessages(
       "_updated_at": "2021-02-10T09:14:31.990Z",
       "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
       "sender": "206801",
+      "updated_by": "206801",
       "subject": "Request for solar panel price",
       "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
       "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -446,7 +514,8 @@ const { data } = await client.searchMessages(
             "may_be_signature_attachment": true,
             "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
             "inline": false,
-            "send_as_link": false
+            "send_as_link": false,
+            "save_to_entity": true
           }
         ]
       },
@@ -562,7 +631,49 @@ const { data } = await client.getUnread({
   "count": 14,
   "unread": 0,
   "drafts": 12,
-  "unassigned": 1
+  "unassigned": 1,
+  "spam": 3
+}
+```
+
+</details>
+
+---
+
+### `getUnreadCounts`
+
+Unread counts for several named scopes in one request.
+
+`POST /v1/message/unread:counts`
+
+```ts
+const { data } = await client.getUnreadCounts(
+  null,
+  {
+    actor: 'organization',
+    email_filter: ['string'],
+    user_groups: ['string'],
+    scopes: [
+      {
+        name: 'inbox-support',
+        type: 'organization',
+        q: '_tags.keyword:inbox AND !_tags.keyword:trash',
+        view_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3',
+        inbox_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3'
+      }
+    ]
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "enabled": true,
+  "counts": {},
+  "omitted": ["string"]
 }
 ```
 
@@ -650,6 +761,24 @@ const { data } = await client.searchThreadsV2(
   {
     inbox_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3',
     q: 'subject:"Request for solar panel price" AND _tags:INBOX',
+    view: {
+      folder: 'inbox',
+      mailbox: 'organization',
+      labels: ['string'],
+      purposes: ['string'],
+      filters: ['unread'],
+      from: ['string'],
+      to: ['string'],
+      assigned_to: ['string'],
+      include_unassigned: true,
+      date_from_days_ago: 0,
+      date_to_days_ago: 0,
+      email_filter: ['string'],
+      text: 'string',
+      thread_ids: ['string'],
+      pinned_by: 'string'
+    },
+    user_groups: ['string'],
     fields: ['_id', '_title', 'first_name', 'account', '!account.*._files', '**._product'],
     from: 0,
     size: 10,
@@ -702,6 +831,25 @@ Search threads and return all id's
 const { data } = await client.searchIds(
   null,
   {
+    view: {
+      folder: 'inbox',
+      mailbox: 'organization',
+      labels: ['string'],
+      purposes: ['string'],
+      filters: ['unread'],
+      from: ['string'],
+      to: ['string'],
+      assigned_to: ['string'],
+      include_unassigned: true,
+      date_from_days_ago: 0,
+      date_to_days_ago: 0,
+      email_filter: ['string'],
+      text: 'string',
+      thread_ids: ['string'],
+      pinned_by: 'string'
+    },
+    user_groups: ['string'],
+    inbox_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3',
     q: 'subject:"Request for solar panel price" AND _tags:INBOX'
   },
 )
@@ -714,6 +862,39 @@ const { data } = await client.searchIds(
 {
   "hits": 14,
   "results": ["string"]
+}
+```
+
+</details>
+
+---
+
+### `getAssigneeWorkload`
+
+Return the open-thread workload for a set of user ids.
+
+`POST /v2/message/threads:workload`
+
+```ts
+const { data } = await client.getAssigneeWorkload(
+  null,
+  {
+    user_ids: ['11000902', '11001053']
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "workloads": [
+    {
+      "user_id": "11000902",
+      "open_threads": 2
+    }
+  ]
 }
 ```
 
@@ -750,6 +931,7 @@ const { data } = await client.updateThread()
   "latest_message": {
     "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
     "sender": "206801",
+    "updated_by": "206801",
     "subject": "Request for solar panel price",
     "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
     "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -790,6 +972,7 @@ const { data } = await client.updateThread()
   "latest_trash_message": {
     "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
     "sender": "206801",
+    "updated_by": "206801",
     "subject": "Request for solar panel price",
     "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
     "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -915,14 +1098,72 @@ const { data } = await client.getThreadTimeline({
 {
   "events": [
     {
+      "id": "string",
       "data": {
         "type": "THREAD_DONE",
         "user_id": "123",
         "organization_id": "456"
       },
-      "timestamp": "2024-01-01T00:00:00.000Z"
+      "timestamp": "2024-01-01T00:00:00Z",
+      "message_id": "string",
+      "source": "user",
+      "automated": true,
+      "actor": {
+        "user_id": "string",
+        "email": "string"
+      },
+      "automation": {
+        "id": "string",
+        "name": "string"
+      }
     }
   ]
+}
+```
+
+</details>
+
+---
+
+### `getThreadSummary`
+
+AI summary of a thread. Returns `202` while it is generated; poll until `jobStatus.status` is `COMPLETED` or `FAILED`.
+
+`GET /v1/message/threads/{id}/summary`
+
+```ts
+const { data } = await client.getThreadSummary({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+  message_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "orgId": "string",
+  "jobId": "string",
+  "executionId": "string",
+  "jobStatus": {
+    "status": "INITIATED",
+    "error": "string"
+  },
+  "payload": {
+    "summary": ["string"],
+    "topics": ["string"],
+    "next_steps": ["string"],
+    "refs": [
+      {
+        "id": "string",
+        "displayText": "Raven GmbH",
+        "schema": "contact"
+      }
+    ]
+  },
+  "createdAt": "1970-01-01T00:00:00.000Z",
+  "updatedAt": "1970-01-01T00:00:00.000Z"
 }
 ```
 
@@ -958,6 +1199,102 @@ const { data } = await client.untrashThread({
 
 ---
 
+### `spamThread`
+
+Mark a thread as spam
+
+`POST /v1/message/threads/{id}/spam`
+
+```ts
+const { data } = await client.spamThread({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+---
+
+### `unspamThread`
+
+Remove spam marking from a thread
+
+`POST /v1/message/threads/{id}/unspam`
+
+```ts
+const { data } = await client.unspamThread({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+---
+
+### `spamMessage`
+
+Mark a single message as spam. Also marks the parent thread as spam if all messages in the thread are spam.
+
+`POST /v1/message/messages/{id}/spam`
+
+```ts
+const { data } = await client.spamMessage({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+---
+
+### `unspamMessage`
+
+Remove spam marking from a single message. Also removes spam from the parent thread if no other messages are spam.
+
+`POST /v1/message/messages/{id}/unspam`
+
+```ts
+const { data } = await client.unspamMessage({
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+---
+
+### `bulkMoveThreads`
+
+Move many threads to a different inbox
+
+`POST /v1/message/threads/bulk:move`
+
+```ts
+const { data } = await client.bulkMoveThreads(
+  null,
+  {
+    ids: ['6b299eda-4018-4554-8965-c4b5598e6531'],
+    assign_to: ['206801'],
+    inbox_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3',
+    scopes: ['organization', 'user']
+  },
+)
+```
+
+---
+
+### `bulkAssignThreads`
+
+Assign many threads
+
+`POST /v1/message/threads/bulk:assign`
+
+```ts
+const { data } = await client.bulkAssignThreads(
+  null,
+  {
+    ids: ['6b299eda-4018-4554-8965-c4b5598e6531'],
+    assign_to: ['206801'],
+    inbox_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3',
+    scopes: ['organization', 'user']
+  },
+)
+```
+
+---
+
 ### `threadBulkActionsRead`
 
 Perform a bulk action of marking an array of thread ids as read
@@ -969,6 +1306,8 @@ const { data } = await client.threadBulkActionsRead(
   null,
   {
     ids: ['6b299eda-4018-4554-8965-c4b5598e6531'],
+    assign_to: ['206801'],
+    inbox_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3',
     scopes: ['organization', 'user']
   },
 )
@@ -987,6 +1326,8 @@ const { data } = await client.threadBulkActionsUnread(
   null,
   {
     ids: ['6b299eda-4018-4554-8965-c4b5598e6531'],
+    assign_to: ['206801'],
+    inbox_id: '3f34ce73-089c-4d45-a5ee-c161234e41c3',
     scopes: ['organization', 'user']
   },
 )
@@ -1203,6 +1544,37 @@ const { data } = await client.assignThread(
 
 ---
 
+### `dismissThreadLinkSuggestions`
+
+Dismiss pending candidates of entity-link suggestions on a thread. A suggestion is recorded on a message when an identifier in it matched entities of different customers, so nothing was linked automat
+
+`POST /v1/message/threads/{id}/link-suggestions/dismiss`
+
+```ts
+const { data } = await client.dismissThreadLinkSuggestions(
+  {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+  },
+  {
+    suggestion_ids: ['string'],
+    entity_ids: ['string']
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "dismissed": ["string"]
+}
+```
+
+</details>
+
+---
+
 ### `unassignThread`
 
 Unassign thread from entities
@@ -1213,6 +1585,7 @@ Unassign thread from entities
 const { data } = await client.unassignThread(
   {
     id: '123e4567-e89b-12d3-a456-426614174000',
+    unlink_mapped_entities: true,
   },
   [
     {
@@ -1320,6 +1693,7 @@ const { data } = await client.createDraft(
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -1373,7 +1747,8 @@ const { data } = await client.createDraft(
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },
@@ -1393,7 +1768,7 @@ const { data } = await client.createDraft(
 
 ### `sendDraft`
 
-Send the existing draft to the recipients
+Send the existing draft to the recipients.
 
 `POST /v1/message/drafts:send`
 
@@ -1415,6 +1790,7 @@ const { data } = await client.sendDraft()
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -1468,7 +1844,8 @@ const { data } = await client.sendDraft()
         "may_be_signature_attachment": true,
         "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
         "inline": false,
-        "send_as_link": false
+        "send_as_link": false,
+        "save_to_entity": true
       }
     ]
   },
@@ -1508,6 +1885,19 @@ const { data } = await client.getMessageV2({
 
 ```json
 {
+  "link_suggestions": [
+    {
+      "id": "string",
+      "identifier": "string",
+      "found_in": "string",
+      "status": "pending",
+      "candidates": [],
+      "accepted_entity_ids": ["string"],
+      "resolved_by": {},
+      "resolved_at": "1970-01-01T00:00:00.000Z",
+      "created_at": "1970-01-01T00:00:00.000Z"
+    }
+  ],
   "html_omitted": false,
   "html_download_url": "https://s3.eu-central-1.amazonaws.com/epilot-attachments/3f34ce73-089c-4d45-a5ee-c161234e41c3/3f34ce73-089c-4d45-a5ee-c161234e41c3.html",
   "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -1519,6 +1909,7 @@ const { data } = await client.getMessageV2({
   "_updated_at": "2021-02-10T09:14:31.990Z",
   "message_id": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com>",
   "sender": "206801",
+  "updated_by": "206801",
   "subject": "Request for solar panel price",
   "html": "<div>We at ABC GmbH would like to request a price quote for the solar panel.</div>",
   "text": "We at ABC GmbH would like to request a price quote for the solar panel.",
@@ -1565,15 +1956,7 @@ const { data } = await client.getMessageV2({
   ],
   "file": {
     "$relation": [
-      {
-        "entity_id": "f820ce3b-07b0-45ae-bcc6-babb2f53f79f",
-        "filename": "Produktinformationen_epilot360_Double_Opt_in.pdf",
-        "is_message_attachment": true,
-        "may_be_signature_attachment": true,
-        "cid": "fb222496-a1a5-4639-94f2-07b5e35e4068",
-        "inline": false,
-        "send_as_link": false
-      }
+      {}
     ]
   },
   "references": "<0102017b97a502f8-a67f01c2-68cc-4928-b91b-45853f34e259-000000@eu-west-1.amazonses.com> <CALHgQpziyxW9NaFUs+nRMykzr6Ljq6vjq4WO9SaihAuMasuDyg@mail.gmail.com>",
@@ -1635,6 +2018,7 @@ type Thread = {
   latest_message?: {
     message_id?: string
     sender?: string
+    updated_by?: string
     subject: string
     html?: string
     text?: string
@@ -1687,6 +2071,7 @@ type Thread = {
   latest_trash_message?: {
     message_id?: string
     sender?: string
+    updated_by?: string
     subject: string
     html?: string
     text?: string
@@ -1725,8 +2110,6 @@ type Thread = {
       send_status?: { ... }
       send_error?: { ... }
     }>
-    file?: {
-      $relation?: { ... }
   // ...
 }
 ```
@@ -1737,6 +2120,7 @@ type Thread = {
 type Message = {
   message_id?: string
   sender?: string
+  updated_by?: string
   subject: string
   html?: string
   text?: string
@@ -1784,6 +2168,7 @@ type Message = {
       cid?: { ... }
       inline?: { ... }
       send_as_link?: { ... }
+      save_to_entity?: { ... }
     }>
   }
   references?: string
@@ -1809,6 +2194,7 @@ type MessageV2 = {
   _updated_at: string // date-time
   message_id?: string
   sender?: string
+  updated_by?: string
   subject: string
   html?: string
   text?: string
@@ -1856,6 +2242,7 @@ type MessageV2 = {
       cid?: { ... }
       inline?: { ... }
       send_as_link?: { ... }
+      save_to_entity?: { ... }
     }>
   }
   references?: string
@@ -1894,6 +2281,7 @@ type AttachmentsRelation = {
     cid?: string
     inline?: boolean
     send_as_link?: boolean
+    save_to_entity?: boolean
   }>
 }
 ```
@@ -1909,6 +2297,7 @@ type File = {
   cid?: string
   inline?: boolean
   send_as_link?: boolean
+  save_to_entity?: boolean
 }
 ```
 
@@ -1917,6 +2306,7 @@ type File = {
 ```ts
 type MessageRequestParams = {
   complete_thread?: boolean
+  mark_thread_as_read?: boolean
   thread?: {
     topic: string
     assigned_to?: string[]
@@ -1969,9 +2359,94 @@ type MessageRequestParams = {
       cid?: { ... }
       inline?: { ... }
       send_as_link?: { ... }
+      save_to_entity?: { ... }
     }>
   }
   template_id?: string
+  source?: "manual" | "automation" | "workflow" | "partner" | "bulk" | "system"
+}
+```
+
+### `ThreadView`
+
+A central-inbox view, described structurally so the server compiles the query for it. Both the
+thread list and the unread count for a view are compiled from the same description, so the two
+cannot disagree about what the view means.
+
+Every field is optional and an omitted field adds no condition, so
+
+```ts
+type ThreadView = {
+  folder?: "inbox" | "favorite" | "sent" | "trash" | "spam" | "unassignable" | "draft"
+  mailbox?: "organization" | "agent"
+  labels?: string[]
+  purposes?: string[]
+  filters?: "unread" | "resolved" | "trash"[]
+  from?: string[]
+  to?: string[]
+  assigned_to?: string[]
+  include_unassigned?: boolean
+  date_from_days_ago?: number
+  date_to_days_ago?: number
+  email_filter?: string[]
+  text?: string
+  thread_ids?: string[]
+  pinned_by?: string
+}
+```
+
+### `UnreadCountScope`
+
+```ts
+type UnreadCountScope = {
+  name: string
+  type: "organization" | "shared_inbox" | "saved_view"
+  q?: string
+  view_id?: string
+  inbox_id?: string | string[]
+}
+```
+
+### `UnreadCountsPayload`
+
+```ts
+type UnreadCountsPayload = {
+  actor: "organization" | "user"
+  email_filter?: string[]
+  user_groups?: string[]
+  scopes: Array<{
+    name: string
+    type: "organization" | "shared_inbox" | "saved_view"
+    q?: string
+    view_id?: string
+    inbox_id?: string | string[]
+  }>
+}
+```
+
+### `UnreadCountsResult`
+
+```ts
+type UnreadCountsResult = {
+  enabled: boolean
+  counts: Record<string, {
+    unread: number
+    drafts?: number
+    unassigned?: number
+    spam?: number
+  }>
+  omitted?: string[]
+}
+```
+
+### `UnreadCountBuckets`
+
+```ts
+type UnreadCountBuckets = {
+  unread: number
+  drafts?: number
+  unassigned?: number
+  spam?: number
 }
 ```
 
@@ -1980,7 +2455,25 @@ type MessageRequestParams = {
 ```ts
 type SearchParamsV2 = {
   inbox_id?: string | string[]
-  q: string
+  q?: string
+  view?: {
+    folder?: "inbox" | "favorite" | "sent" | "trash" | "spam" | "unassignable" | "draft"
+    mailbox?: "organization" | "agent"
+    labels?: string[]
+    purposes?: string[]
+    filters?: "unread" | "resolved" | "trash"[]
+    from?: string[]
+    to?: string[]
+    assigned_to?: string[]
+    include_unassigned?: boolean
+    date_from_days_ago?: number
+    date_to_days_ago?: number
+    email_filter?: string[]
+    text?: string
+    thread_ids?: string[]
+    pinned_by?: string
+  }
+  user_groups?: string[]
   fields?: string[]
   from?: number
   size?: number
@@ -2006,7 +2499,54 @@ type SearchParams = {
 
 ```ts
 type SearchIDParams = {
+  view?: {
+    folder?: "inbox" | "favorite" | "sent" | "trash" | "spam" | "unassignable" | "draft"
+    mailbox?: "organization" | "agent"
+    labels?: string[]
+    purposes?: string[]
+    filters?: "unread" | "resolved" | "trash"[]
+    from?: string[]
+    to?: string[]
+    assigned_to?: string[]
+    include_unassigned?: boolean
+    date_from_days_ago?: number
+    date_to_days_ago?: number
+    email_filter?: string[]
+    text?: string
+    thread_ids?: string[]
+    pinned_by?: string
+  }
+  user_groups?: string[]
+  inbox_id?: string | string[]
   q?: string
+}
+```
+
+### `AssigneeWorkloadParams`
+
+```ts
+type AssigneeWorkloadParams = {
+  user_ids: string[]
+}
+```
+
+### `AssigneeWorkload`
+
+```ts
+type AssigneeWorkload = {
+  user_id: string
+  open_threads: number
+}
+```
+
+### `AssigneeWorkloadResults`
+
+```ts
+type AssigneeWorkloadResults = {
+  workloads: Array<{
+    user_id: string
+    open_threads: number
+  }>
 }
 ```
 
@@ -2026,11 +2566,167 @@ Who is marking an item as read or unread.
 type ReadingScope = "organization" | "user"
 ```
 
+### `ThreadReplyContext`
+
+```ts
+type ThreadReplyContext = {
+  thread_id: string
+  topic?: string
+  reply_to_message_id?: string
+  messages: Array<{
+    id: string
+    created_at?: string // date-time
+    type: "RECEIVED" | "SENT"
+    role: "customer" | "agent" | "partner"
+    subject?: string
+    from?: {
+      address?: { ... }
+      name?: { ... }
+    }
+    text: string
+  }>
+  related_entities: Array<{
+    _id: string
+    _schema: string
+  }>
+}
+```
+
+### `ReplyContextMessage`
+
+```ts
+type ReplyContextMessage = {
+  id: string
+  created_at?: string // date-time
+  type: "RECEIVED" | "SENT"
+  role: "customer" | "agent" | "partner"
+  subject?: string
+  from?: {
+    address?: string
+    name?: string
+  }
+  text: string
+}
+```
+
+### `ReplyContextEntityRef`
+
+```ts
+type ReplyContextEntityRef = {
+  _id: string
+  _schema: string
+}
+```
+
+### `ThreadSummary`
+
+```ts
+type ThreadSummary = {
+  orgId: string
+  jobId: string
+  executionId?: string
+  jobStatus: {
+    status: "INITIATED" | "IN_PROGRESS" | "COMPLETED" | "FAILED"
+    error?: string
+  }
+  payload?: {
+    summary?: string[]
+    topics?: string[]
+    next_steps?: string[]
+    refs?: Array<{
+      id: { ... }
+      displayText: { ... }
+      schema: { ... }
+    }>
+  }
+  createdAt: string // date-time
+  updatedAt: string // date-time
+}
+```
+
+### `ThreadSummaryPayload`
+
+Present once the summary is generated
+
+```ts
+type ThreadSummaryPayload = {
+  summary?: string[]
+  topics?: string[]
+  next_steps?: string[]
+  refs?: Array<{
+    id: string
+    displayText: string
+    schema: string
+  }>
+}
+```
+
+### `ThreadSummaryEntityRef`
+
+```ts
+type ThreadSummaryEntityRef = {
+  id: string
+  displayText: string
+  schema: string
+}
+```
+
+### `ThreadSummaryContext`
+
+```ts
+type ThreadSummaryContext = {
+  thread_id: string
+  message_id: string
+  subject: string
+  conversation: string
+  entity_context: string
+}
+```
+
+### `SimilarSentMessagesRequest`
+
+```ts
+type SimilarSentMessagesRequest = {
+  queries: string[]
+  limit?: number
+  min_score?: number
+}
+```
+
+### `SimilarSentMessagesResponse`
+
+```ts
+type SimilarSentMessagesResponse = {
+  results: Array<{
+    message_id: string
+    thread_id?: string
+    subject?: string
+    text: string
+    created_at?: string
+    score: number
+  }>
+}
+```
+
+### `SimilarSentMessage`
+
+```ts
+type SimilarSentMessage = {
+  message_id: string
+  thread_id?: string
+  subject?: string
+  text: string
+  created_at?: string
+  score: number
+}
+```
+
 ### `ThreadTimeline`
 
 ```ts
 type ThreadTimeline = {
   events: Array<{
+    id?: string
     data: {
       type: { ... }
       user_id: { ... }
@@ -2039,8 +2735,62 @@ type ThreadTimeline = {
       type: { ... }
       user_id: { ... }
       organization_id: { ... }
+    } | {
+      type: { ... }
+      workflow_id?: { ... }
+      workflow_name?: { ... }
+    } | {
+      type: { ... }
+      added?: { ... }
+      removed?: { ... }
+    } | {
+      type: { ... }
+      label: { ... }
+      label_name?: { ... }
+    } | {
+      type: { ... }
+      label: { ... }
+      label_name?: { ... }
+    } | {
+      type: { ... }
+      entities?: { ... }
+      link_kind?: { ... }
+      from_suggestion?: { ... }
+    } | {
+      type: { ... }
+      entities?: { ... }
+      link_kind?: { ... }
+    } | {
+      type: { ... }
+      suggestions?: { ... }
+    } | {
+      type: { ... }
+      suggestions?: { ... }
+    } | {
+      type: { ... }
+      reply_message_id?: { ... }
+      parent_message_id?: { ... }
+    } | {
+      type: { ... }
+      target_inbox_id?: { ... }
+      target_inbox_name?: { ... }
+    } | {
+      type: { ... }
+    } | {
+      type: { ... }
     }
     timestamp: string
+    message_id?: string
+    source?: "user" | "automation" | "system"
+    automated?: boolean
+    actor?: {
+      user_id?: { ... }
+      email?: { ... }
+    }
+    automation?: {
+      id?: { ... }
+      name?: { ... }
+    }
   }>
 }
 ```
@@ -2065,6 +2815,221 @@ type ThreadOpenEvent = {
 }
 ```
 
+### `WorkflowStartedEvent`
+
+```ts
+type WorkflowStartedEvent = {
+  type: "WORKFLOW_STARTED"
+  workflow_id?: string
+  workflow_name?: string
+}
+```
+
+### `ThreadUserAssignedEvent`
+
+```ts
+type ThreadUserAssignedEvent = {
+  type: "THREAD_USER_ASSIGNED"
+  added?: string[]
+  removed?: string[]
+}
+```
+
+### `MessageLabelAddedEvent`
+
+```ts
+type MessageLabelAddedEvent = {
+  type: "MESSAGE_LABEL_ADDED"
+  label: string
+  label_name?: string
+}
+```
+
+### `MessageLabelRemovedEvent`
+
+```ts
+type MessageLabelRemovedEvent = {
+  type: "MESSAGE_LABEL_REMOVED"
+  label: string
+  label_name?: string
+}
+```
+
+### `MessageEntityLinkedEvent`
+
+```ts
+type MessageEntityLinkedEvent = {
+  type: "MESSAGE_ENTITY_LINKED"
+  entities?: Array<{
+    entity_id: string
+    schema?: string
+  }>
+  link_kind?: "manual" | "auto"
+  from_suggestion?: boolean
+}
+```
+
+### `MessageEntityUnlinkedEvent`
+
+```ts
+type MessageEntityUnlinkedEvent = {
+  type: "MESSAGE_ENTITY_UNLINKED"
+  entities?: Array<{
+    entity_id: string
+    schema?: string
+  }>
+  link_kind?: "manual" | "auto"
+}
+```
+
+### `MessageAutoReplySentEvent`
+
+```ts
+type MessageAutoReplySentEvent = {
+  type: "MESSAGE_AUTO_REPLY_SENT"
+  reply_message_id?: string
+  parent_message_id?: string
+}
+```
+
+### `ThreadMovedToInboxEvent`
+
+```ts
+type ThreadMovedToInboxEvent = {
+  type: "THREAD_MOVED_TO_INBOX"
+  target_inbox_id?: string
+  target_inbox_name?: string
+}
+```
+
+### `ThreadTrashedEvent`
+
+```ts
+type ThreadTrashedEvent = {
+  type: "THREAD_TRASHED"
+}
+```
+
+### `ThreadRestoredEvent`
+
+```ts
+type ThreadRestoredEvent = {
+  type: "THREAD_RESTORED"
+}
+```
+
+### `LinkSuggestionCandidate`
+
+```ts
+type LinkSuggestionCandidate = {
+  entity_id: string
+  schema: string
+  attribute?: string
+  attribute_value?: string
+  title?: string
+  status?: "pending" | "linked" | "dismissed"
+  resolved_by?: {
+    user_id?: string
+    email?: string
+  }
+  resolved_at?: string // date-time
+}
+```
+
+### `LinkSuggestion`
+
+```ts
+type LinkSuggestion = {
+  id: string
+  identifier: string
+  found_in?: string
+  status: "pending" | "accepted" | "dismissed"
+  candidates: Array<{
+    entity_id: string
+    schema: string
+    attribute?: string
+    attribute_value?: string
+    title?: string
+    status?: "pending" | "linked" | "dismissed"
+    resolved_by?: {
+      user_id?: { ... }
+      email?: { ... }
+    }
+    resolved_at?: string // date-time
+  }>
+  accepted_entity_ids?: string[]
+  resolved_by?: {
+    user_id?: string
+    email?: string
+  }
+  resolved_at?: string // date-time
+  created_at?: string // date-time
+}
+```
+
+### `TimelineLinkSuggestion`
+
+```ts
+type TimelineLinkSuggestion = {
+  id?: string
+  identifier: string
+  candidates?: Array<{
+    entity_id: string
+    schema?: string
+  }>
+}
+```
+
+### `MessageEntityLinkSuggestedEvent`
+
+```ts
+type MessageEntityLinkSuggestedEvent = {
+  type: "MESSAGE_ENTITY_LINK_SUGGESTED"
+  suggestions?: Array<{
+    id?: string
+    identifier: string
+    candidates?: Array<{
+      entity_id: { ... }
+      schema?: { ... }
+    }>
+  }>
+}
+```
+
+### `MessageEntityLinkSuggestionDismissedEvent`
+
+```ts
+type MessageEntityLinkSuggestionDismissedEvent = {
+  type: "MESSAGE_ENTITY_LINK_SUGGESTION_DISMISSED"
+  suggestions?: Array<{
+    id?: string
+    identifier: string
+    candidates?: Array<{
+      entity_id: { ... }
+      schema?: { ... }
+    }>
+  }>
+}
+```
+
+### `TimelineLinkedEntity`
+
+```ts
+type TimelineLinkedEntity = {
+  entity_id: string
+  schema?: string
+}
+```
+
+### `TimelineActor`
+
+```ts
+type TimelineActor = {
+  user_id?: string
+  email?: string
+}
+```
+
 ### `TimelineEventData`
 
 ```ts
@@ -2076,6 +3041,69 @@ type TimelineEventData = {
   type: "THREAD_OPEN"
   user_id: string
   organization_id: string
+} | {
+  type: "WORKFLOW_STARTED"
+  workflow_id?: string
+  workflow_name?: string
+} | {
+  type: "THREAD_USER_ASSIGNED"
+  added?: string[]
+  removed?: string[]
+} | {
+  type: "MESSAGE_LABEL_ADDED"
+  label: string
+  label_name?: string
+} | {
+  type: "MESSAGE_LABEL_REMOVED"
+  label: string
+  label_name?: string
+} | {
+  type: "MESSAGE_ENTITY_LINKED"
+  entities?: Array<{
+    entity_id: string
+    schema?: string
+  }>
+  link_kind?: "manual" | "auto"
+  from_suggestion?: boolean
+} | {
+  type: "MESSAGE_ENTITY_UNLINKED"
+  entities?: Array<{
+    entity_id: string
+    schema?: string
+  }>
+  link_kind?: "manual" | "auto"
+} | {
+  type: "MESSAGE_ENTITY_LINK_SUGGESTED"
+  suggestions?: Array<{
+    id?: string
+    identifier: string
+    candidates?: Array<{
+      entity_id: { ... }
+      schema?: { ... }
+    }>
+  }>
+} | {
+  type: "MESSAGE_ENTITY_LINK_SUGGESTION_DISMISSED"
+  suggestions?: Array<{
+    id?: string
+    identifier: string
+    candidates?: Array<{
+      entity_id: { ... }
+      schema?: { ... }
+    }>
+  }>
+} | {
+  type: "MESSAGE_AUTO_REPLY_SENT"
+  reply_message_id?: string
+  parent_message_id?: string
+} | {
+  type: "THREAD_MOVED_TO_INBOX"
+  target_inbox_id?: string
+  target_inbox_name?: string
+} | {
+  type: "THREAD_TRASHED"
+} | {
+  type: "THREAD_RESTORED"
 }
 ```
 
@@ -2083,6 +3111,7 @@ type TimelineEventData = {
 
 ```ts
 type TimelineEvent = {
+  id?: string
   data: {
     type: "THREAD_DONE"
     user_id: string
@@ -2091,8 +3120,76 @@ type TimelineEvent = {
     type: "THREAD_OPEN"
     user_id: string
     organization_id: string
+  } | {
+    type: "WORKFLOW_STARTED"
+    workflow_id?: string
+    workflow_name?: string
+  } | {
+    type: "THREAD_USER_ASSIGNED"
+    added?: string[]
+    removed?: string[]
+  } | {
+    type: "MESSAGE_LABEL_ADDED"
+    label: string
+    label_name?: string
+  } | {
+    type: "MESSAGE_LABEL_REMOVED"
+    label: string
+    label_name?: string
+  } | {
+    type: "MESSAGE_ENTITY_LINKED"
+    entities?: Array<{
+      entity_id: { ... }
+      schema?: { ... }
+    }>
+    link_kind?: "manual" | "auto"
+    from_suggestion?: boolean
+  } | {
+    type: "MESSAGE_ENTITY_UNLINKED"
+    entities?: Array<{
+      entity_id: { ... }
+      schema?: { ... }
+    }>
+    link_kind?: "manual" | "auto"
+  } | {
+    type: "MESSAGE_ENTITY_LINK_SUGGESTED"
+    suggestions?: Array<{
+      id?: { ... }
+      identifier: { ... }
+      candidates?: { ... }
+    }>
+  } | {
+    type: "MESSAGE_ENTITY_LINK_SUGGESTION_DISMISSED"
+    suggestions?: Array<{
+      id?: { ... }
+      identifier: { ... }
+      candidates?: { ... }
+    }>
+  } | {
+    type: "MESSAGE_AUTO_REPLY_SENT"
+    reply_message_id?: string
+    parent_message_id?: string
+  } | {
+    type: "THREAD_MOVED_TO_INBOX"
+    target_inbox_id?: string
+    target_inbox_name?: string
+  } | {
+    type: "THREAD_TRASHED"
+  } | {
+    type: "THREAD_RESTORED"
   }
   timestamp: string
+  message_id?: string
+  source?: "user" | "automation" | "system"
+  automated?: boolean
+  actor?: {
+    user_id?: string
+    email?: string
+  }
+  automation?: {
+    id?: string
+    name?: string
+  }
 }
 ```
 
@@ -2101,6 +3198,8 @@ type TimelineEvent = {
 ```ts
 type BulkActionsPayloadWithScopes = {
   ids: string[]
+  assign_to?: string[]
+  inbox_id?: string
   scopes?: "organization" | "user"[]
 }
 ```

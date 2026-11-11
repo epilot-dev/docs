@@ -8,7 +8,10 @@ description: "epilot CLI commands for the Workflows Executions: quick start, com
 - **Base URL:** `https://workflows-execution.sls.epilot.io`
 - **API Docs:** [https://docs.epilot.io/api/workflow](https://docs.epilot.io/api/workflow)
 
-Service for Workflow Executions which covers executions of processes defined in an Organization
+Overview
+The Workflows Executions API manages the runtime instances of workflow processes within an organization.
+While **Workflow Definitions** (managed by the Workflows Definitions API) serve as reusable templates
+that define the structure, phases, and tasks of a process, **Workflow Executions** a
 
 ## Quick Start
 
@@ -42,31 +45,33 @@ epilot workflow getExecutions
 
 **Workflow Executions**
 - [`getExecutions`](#getexecutions) — Retrieve Workflow Executions. Optionally, you can filter them by context & schema. Please be aware, these executions are
-- [`createExecution`](#createexecution) — Create a Workflow Execution. Start a new workflow execution, based on a workflow definition (template).
-- [`getExecution`](#getexecution) — Get a full workflow execution, included steps information, by execution id.
+- [`createExecution`](#createexecution) — Creates a new V1 Workflow Execution from a workflow definition (template).
+- [`getExecution`](#getexecution) — Retrieves a complete V1 workflow execution by ID, including all steps information.
 - [`updateExecution`](#updateexecution) — Patches updates like assignees, status, closingReason for a single Workflow Execution.
 - [`deleteExecution`](#deleteexecution) — Delete workflow execution by id. Workflow contexts will NOT be deleted.
 
 **Workflow Steps**
 - [`createStep`](#createstep) — Create a new step in current workflow execution.
-- [`updateStep`](#updatestep) — Patches various changes to a workflow execution step.
+- [`updateStep`](#updatestep) — Updates a workflow execution step with new values for status, assignees, due date, position, and more.
 - [`deleteStep`](#deletestep) — Deletes a step from a workflow execution.
 
 **Closing Reasons**
 - [`getClosingReasonExecution`](#getclosingreasonexecution) — Shows all Closing Reasons defined at the moment of starting the Workflow Execution.
 
 **Flows V2**
-- [`startFlowExecution`](#startflowexecution) — Starts a new Flow Execution based on a flow template.
-- [`getFlowExecution`](#getflowexecution) — Get a full flow execution, included tasks, phases, edges & analytics.
+- [`startFlowExecution`](#startflowexecution) — Starts a new Flow Execution based on a flow template (definition).
+- [`getFlowExecution`](#getflowexecution) — Retrieves a complete flow execution by ID, including all phases, tasks, edges, contexts, and analytics.
 - [`patchFlowExecution`](#patchflowexecution) — Patch flow execution with new assignees, status, analytics & other changes.
 - [`deleteFlowExecution`](#deleteflowexecution) — Deletes a specific execution of a flow, identified by id. Flow contexts will NOT be deleted.
 - [`searchFlowExecutions`](#searchflowexecutions) — Search Flow Executions for a specific Entity.
-- [`patchTask`](#patchtask) — Changes various attributes of a flow task, like assignees, status, due date, etc.
+- [`patchTask`](#patchtask) — Updates attributes of a flow task including status, assignees, due date, and more.
 - [`runTaskAutomation`](#runtaskautomation) — Runs configured automation for a flow task
 - [`executeTask`](#executetask) — Executes any kind of flow task immediately.
 - [`patchPhase`](#patchphase) — Apply updates to a phase within flow execution
 - [`addTask`](#addtask) — Create a new task in current workflow execution.
 - [`cancelTaskSchedule`](#canceltaskschedule) — Cancels a scheduled task, deleting the schedule and marking the task as skipped.
+- [`reconcileAutomationTask`](#reconcileautomationtask) — Reconciles an automation task's status against its linked automation execution.
+- [`runTaskScheduleNow`](#runtaskschedulenow) — Cancels the pending schedule for a task and immediately triggers its automation execution.
 
 ### `getExecutions`
 
@@ -142,7 +147,7 @@ epilot workflow getExecutions --jsonata '$'
 
 ### `createExecution`
 
-Create a Workflow Execution. Start a new workflow execution, based on a workflow definition (template).
+Creates a new V1 Workflow Execution from a workflow definition (template).
 
 `POST /v1/workflows/executions`
 
@@ -236,7 +241,7 @@ epilot workflow createExecution --jsonata '$'
 
 ### `getExecution`
 
-Get a full workflow execution, included steps information, by execution id.
+Retrieves a complete V1 workflow execution by ID, including all steps information.
 
 `GET /v1/workflows/executions/{executionId}`
 
@@ -520,6 +525,11 @@ epilot workflow createStep -p executionId=wd56125gah --jsonata '$'
       "complete_task_automatically": true
     }
   },
+  "partner": {
+    "enabled": true,
+    "label": "string",
+    "description": "string"
+  },
   "enabled": true,
   "requirements": [
     {
@@ -534,6 +544,7 @@ epilot workflow createStep -p executionId=wd56125gah --jsonata '$'
   "userIds": [0],
   "assignedTo": ["string"],
   "assignedToInProgress": "string",
+  "assignedToOnHold": "string",
   "status": "UNASSIGNED",
   "created": "string",
   "lastUpdated": "string",
@@ -570,7 +581,7 @@ epilot workflow createStep -p executionId=wd56125gah --jsonata '$'
 
 ### `updateStep`
 
-Patches various changes to a workflow execution step.
+Updates a workflow execution step with new values for status, assignees, due date, position, and more.
 
 `PATCH /v1/workflows/executions/{executionId}/steps/{stepId}`
 
@@ -578,8 +589,8 @@ Patches various changes to a workflow execution step.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `executionId` | path | string | Yes | Id of the execution |
-| `stepId` | path | string | Yes | Short uuid (length 6) to identify the Workflow Execution Step. |
+| `executionId` | path | string | Yes | Unique identifier of the workflow execution |
+| `stepId` | path | string | Yes | Short unique identifier (typically 6 characters) of the step within the execution |
 
 **Request Body** (required)
 
@@ -603,6 +614,7 @@ epilot workflow updateStep \
   "userIds": [0],
   "assignedTo": ["string"],
   "assignedToInProgress": "string",
+  "assignedToOnHold": "string",
   "status": "UNASSIGNED",
   "dueDate": "string",
   "dynamicDueDate": {
@@ -685,6 +697,11 @@ epilot workflow updateStep -p executionId=wd56125gah -p stepId=7hj28a --jsonata 
       "complete_task_automatically": true
     }
   },
+  "partner": {
+    "enabled": true,
+    "label": "string",
+    "description": "string"
+  },
   "enabled": true,
   "requirements": [
     {
@@ -699,6 +716,7 @@ epilot workflow updateStep -p executionId=wd56125gah -p stepId=7hj28a --jsonata 
   "userIds": [0],
   "assignedTo": ["string"],
   "assignedToInProgress": "string",
+  "assignedToOnHold": "string",
   "status": "UNASSIGNED",
   "created": "string",
   "lastUpdated": "string",
@@ -819,7 +837,7 @@ epilot workflow getClosingReasonExecution -p executionId=wd561 --jsonata 'reason
 
 ### `startFlowExecution`
 
-Starts a new Flow Execution based on a flow template.
+Starts a new Flow Execution based on a flow template (definition).
 
 `POST /v2/flows/executions`
 
@@ -836,14 +854,20 @@ With request body:
 ```bash
 epilot workflow startFlowExecution \
   -d '{
-  "flow_template_id": "string",
+  "flow_template_id": "tpl_abc123def456",
   "trigger": {
     "type": "MANUAL",
     "automation_config": {
       "flow_id": "string",
       "execution_id": "string",
       "execution_status": "string",
-      "error_reason": "string"
+      "error_reason": "string",
+      "input_context": {
+        "source": "trigger",
+        "task_id": "string"
+      },
+      "heal_attempts": 0,
+      "last_heal_attempted_at": "1970-01-01T00:00:00.000Z"
     }
   },
   "contexts": [
@@ -906,7 +930,8 @@ epilot workflow startFlowExecution --jsonata 'id'
   ],
   "crt_tasks": [
     {
-      "id": "string"
+      "id": "string",
+      "crt_since": "1970-01-01T00:00:00.000Z"
     }
   ],
   "phases": [
@@ -943,6 +968,7 @@ epilot workflow startFlowExecution --jsonata 'id'
       "enabled": true,
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -987,10 +1013,14 @@ epilot workflow startFlowExecution --jsonata 'id'
       "flow_id": "string",
       "execution_id": "string",
       "execution_status": "string",
-      "error_reason": "string"
+      "error_reason": "string",
+      "input_context": {},
+      "heal_attempts": 0,
+      "last_heal_attempted_at": "1970-01-01T00:00:00.000Z"
     }
   },
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "linear": true
 }
 ```
 
@@ -1000,7 +1030,7 @@ epilot workflow startFlowExecution --jsonata 'id'
 
 ### `getFlowExecution`
 
-Get a full flow execution, included tasks, phases, edges & analytics.
+Retrieves a complete flow execution by ID, including all phases, tasks, edges, contexts, and analytics.
 
 `GET /v2/flows/executions/{execution_id}`
 
@@ -1008,25 +1038,27 @@ Get a full flow execution, included tasks, phases, edges & analytics.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
 
 **Sample Call**
 
 ```bash
 epilot workflow getFlowExecution \
-  -p execution_id=wd561
+  -p execution_id=exec_abc123def456
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot workflow getFlowExecution wd561
+epilot workflow getFlowExecution exec_abc123def456
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow getFlowExecution -p execution_id=wd561 --jsonata 'id'
+epilot workflow getFlowExecution -p execution_id=exec_abc123def456 --jsonata 'id'
 ```
 
 <details>
@@ -1066,7 +1098,8 @@ epilot workflow getFlowExecution -p execution_id=wd561 --jsonata 'id'
   ],
   "crt_tasks": [
     {
-      "id": "string"
+      "id": "string",
+      "crt_since": "1970-01-01T00:00:00.000Z"
     }
   ],
   "phases": [
@@ -1103,6 +1136,7 @@ epilot workflow getFlowExecution -p execution_id=wd561 --jsonata 'id'
       "enabled": true,
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -1147,10 +1181,14 @@ epilot workflow getFlowExecution -p execution_id=wd561 --jsonata 'id'
       "flow_id": "string",
       "execution_id": "string",
       "execution_status": "string",
-      "error_reason": "string"
+      "error_reason": "string",
+      "input_context": {},
+      "heal_attempts": 0,
+      "last_heal_attempted_at": "1970-01-01T00:00:00.000Z"
     }
   },
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "linear": true
 }
 ```
 
@@ -1168,7 +1206,9 @@ Patch flow execution with new assignees, status, analytics & other changes.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
 
 **Request Body** (required)
 
@@ -1176,14 +1216,14 @@ Patch flow execution with new assignees, status, analytics & other changes.
 
 ```bash
 epilot workflow patchFlowExecution \
-  -p execution_id=wd561
+  -p execution_id=exec_abc123def456
 ```
 
 With request body:
 
 ```bash
 epilot workflow patchFlowExecution \
-  -p execution_id=wd561 \
+  -p execution_id=exec_abc123def456 \
   -d '{
   "status": "STARTED",
   "assigned_to": ["string"],
@@ -1223,19 +1263,19 @@ epilot workflow patchFlowExecution \
 Using positional args for path parameters:
 
 ```bash
-epilot workflow patchFlowExecution wd561
+epilot workflow patchFlowExecution exec_abc123def456
 ```
 
 Using stdin pipe:
 
 ```bash
-cat body.json | epilot workflow patchFlowExecution -p execution_id=wd561
+cat body.json | epilot workflow patchFlowExecution -p execution_id=exec_abc123def456
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow patchFlowExecution -p execution_id=wd561 --jsonata 'id'
+epilot workflow patchFlowExecution -p execution_id=exec_abc123def456 --jsonata 'id'
 ```
 
 <details>
@@ -1275,7 +1315,8 @@ epilot workflow patchFlowExecution -p execution_id=wd561 --jsonata 'id'
   ],
   "crt_tasks": [
     {
-      "id": "string"
+      "id": "string",
+      "crt_since": "1970-01-01T00:00:00.000Z"
     }
   ],
   "phases": [
@@ -1312,6 +1353,7 @@ epilot workflow patchFlowExecution -p execution_id=wd561 --jsonata 'id'
       "enabled": true,
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -1356,10 +1398,14 @@ epilot workflow patchFlowExecution -p execution_id=wd561 --jsonata 'id'
       "flow_id": "string",
       "execution_id": "string",
       "execution_status": "string",
-      "error_reason": "string"
+      "error_reason": "string",
+      "input_context": {},
+      "heal_attempts": 0,
+      "last_heal_attempted_at": "1970-01-01T00:00:00.000Z"
     }
   },
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "linear": true
 }
 ```
 
@@ -1377,26 +1423,30 @@ Deletes a specific execution of a flow, identified by id. Flow contexts will NOT
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
-| `soft` | query | boolean | No | If true, the execution will NOT be deleted permanently, but rather kept for archive purpose. |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
+| `soft` | query | boolean | No | When true, the execution is marked as deleted but retained in storage for archival
+and audit purposes. When false (default), the execution is permanently removed.
+Soft-deleted executions do not appear |
 
 **Sample Call**
 
 ```bash
 epilot workflow deleteFlowExecution \
-  -p execution_id=wd561
+  -p execution_id=exec_abc123def456
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot workflow deleteFlowExecution wd561
+epilot workflow deleteFlowExecution exec_abc123def456
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow deleteFlowExecution -p execution_id=wd561 --jsonata '$'
+epilot workflow deleteFlowExecution -p execution_id=exec_abc123def456 --jsonata '$'
 ```
 
 ---
@@ -1457,7 +1507,8 @@ epilot workflow searchFlowExecutions --jsonata 'results[0]'
       "entity_sync": [],
       "taxonomies": ["string"],
       "trigger": {},
-      "singleClosingReasonSelection": true
+      "singleClosingReasonSelection": true,
+      "linear": true
     }
   ]
 }
@@ -1469,7 +1520,7 @@ epilot workflow searchFlowExecutions --jsonata 'results[0]'
 
 ### `patchTask`
 
-Changes various attributes of a flow task, like assignees, status, due date, etc.
+Updates attributes of a flow task including status, assignees, due date, and more.
 
 `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}`
 
@@ -1477,8 +1528,12 @@ Changes various attributes of a flow task, like assignees, status, due date, etc
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
-| `task_id` | path | string | Yes | Id of the task |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
+| `task_id` | path | string | Yes | Unique identifier for a task within the execution. Each task has a unique ID
+that distinguishes it from other tasks in the same execution.
+ |
 
 **Request Body** (required)
 
@@ -1486,20 +1541,20 @@ Changes various attributes of a flow task, like assignees, status, due date, etc
 
 ```bash
 epilot workflow patchTask \
-  -p execution_id=wd561 \
-  -p task_id=7hj28a
+  -p execution_id=exec_abc123def456 \
+  -p task_id=task_7hj28a
 ```
 
 With request body:
 
 ```bash
 epilot workflow patchTask \
-  -p execution_id=wd561 \
-  -p task_id=7hj28a \
+  -p execution_id=exec_abc123def456 \
+  -p task_id=task_7hj28a \
   -d '{
-  "name": "string",
+  "name": "Review customer application",
   "status": "UNASSIGNED",
-  "due_date": "2021-04-27T12:00:00.000Z",
+  "due_date": "2026-05-28T00:00:00.000",
   "due_date_config": {
     "duration": 0,
     "unit": "minutes",
@@ -1513,7 +1568,13 @@ epilot workflow patchTask \
     "flow_id": "string",
     "execution_id": "string",
     "execution_status": "string",
-    "error_reason": "string"
+    "error_reason": "string",
+    "input_context": {
+      "source": "trigger",
+      "task_id": "string"
+    },
+    "heal_attempts": 0,
+    "last_heal_attempted_at": "1970-01-01T00:00:00.000Z"
   },
   "description": {
     "enabled": true,
@@ -1541,27 +1602,33 @@ epilot workflow patchTask \
       "complete_task_automatically": true
     }
   },
-  "next_condition_id": "string",
-  "revert_execution": false
+  "partner": {
+    "enabled": true,
+    "label": "string",
+    "description": "string"
+  },
+  "next_condition_id": "cond_branch_approved",
+  "revert_execution": false,
+  "completed_via_journey": false
 }'
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot workflow patchTask wd561 7hj28a
+epilot workflow patchTask exec_abc123def456 task_7hj28a
 ```
 
 Using stdin pipe:
 
 ```bash
-cat body.json | epilot workflow patchTask -p execution_id=wd561 -p task_id=7hj28a
+cat body.json | epilot workflow patchTask -p execution_id=exec_abc123def456 -p task_id=task_7hj28a
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow patchTask -p execution_id=wd561 -p task_id=7hj28a --jsonata '$'
+epilot workflow patchTask -p execution_id=exec_abc123def456 -p task_id=task_7hj28a --jsonata '$'
 ```
 
 <details>
@@ -1606,7 +1673,8 @@ epilot workflow patchTask -p execution_id=wd561 -p task_id=7hj28a --jsonata '$'
     "status_updated_at": "1970-01-01T00:00:00.000Z",
     "in_progress_by": "string",
     "completed_by": "string",
-    "skipped_by": "string"
+    "skipped_by": "string",
+    "on_hold_by": "string"
   },
   "created_at": "1970-01-01T00:00:00.000Z",
   "updated_at": "1970-01-01T00:00:00.000Z",
@@ -1633,6 +1701,11 @@ epilot workflow patchTask -p execution_id=wd561 -p task_id=7hj28a --jsonata '$'
       "name": "string",
       "complete_task_automatically": true
     }
+  },
+  "partner": {
+    "enabled": true,
+    "label": "string",
+    "description": "string"
   },
   "taxonomies": ["string"],
   "phase_id": "string",
@@ -1658,27 +1731,31 @@ Runs configured automation for a flow task
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
-| `task_id` | path | string | Yes | Id of the task |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
+| `task_id` | path | string | Yes | Unique identifier for a task within the execution. Each task has a unique ID
+that distinguishes it from other tasks in the same execution.
+ |
 
 **Sample Call**
 
 ```bash
 epilot workflow runTaskAutomation \
-  -p execution_id=wd561 \
-  -p task_id=7hj28a
+  -p execution_id=exec_abc123def456 \
+  -p task_id=task_7hj28a
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot workflow runTaskAutomation wd561 7hj28a
+epilot workflow runTaskAutomation exec_abc123def456 task_7hj28a
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow runTaskAutomation -p execution_id=wd561 -p task_id=7hj28a --jsonata '$'
+epilot workflow runTaskAutomation -p execution_id=exec_abc123def456 -p task_id=task_7hj28a --jsonata '$'
 ```
 
 <details>
@@ -1723,7 +1800,8 @@ epilot workflow runTaskAutomation -p execution_id=wd561 -p task_id=7hj28a --json
     "status_updated_at": "1970-01-01T00:00:00.000Z",
     "in_progress_by": "string",
     "completed_by": "string",
-    "skipped_by": "string"
+    "skipped_by": "string",
+    "on_hold_by": "string"
   },
   "created_at": "1970-01-01T00:00:00.000Z",
   "updated_at": "1970-01-01T00:00:00.000Z",
@@ -1751,6 +1829,11 @@ epilot workflow runTaskAutomation -p execution_id=wd561 -p task_id=7hj28a --json
       "complete_task_automatically": true
     }
   },
+  "partner": {
+    "enabled": true,
+    "label": "string",
+    "description": "string"
+  },
   "taxonomies": ["string"],
   "phase_id": "string",
   "task_type": "MANUAL",
@@ -1758,7 +1841,13 @@ epilot workflow runTaskAutomation -p execution_id=wd561 -p task_id=7hj28a --json
     "flow_id": "string",
     "execution_id": "string",
     "execution_status": "string",
-    "error_reason": "string"
+    "error_reason": "string",
+    "input_context": {
+      "source": "trigger",
+      "task_id": "string"
+    },
+    "heal_attempts": 0,
+    "last_heal_attempted_at": "1970-01-01T00:00:00.000Z"
   },
   "automation_execution_id": "string",
   "trigger_mode": "manual",
@@ -1786,27 +1875,31 @@ Executes any kind of flow task immediately.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
-| `task_id` | path | string | Yes | Id of the task |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
+| `task_id` | path | string | Yes | Unique identifier for a task within the execution. Each task has a unique ID
+that distinguishes it from other tasks in the same execution.
+ |
 
 **Sample Call**
 
 ```bash
 epilot workflow executeTask \
-  -p execution_id=wd561 \
-  -p task_id=7hj28a
+  -p execution_id=exec_abc123def456 \
+  -p task_id=task_7hj28a
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot workflow executeTask wd561 7hj28a
+epilot workflow executeTask exec_abc123def456 task_7hj28a
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow executeTask -p execution_id=wd561 -p task_id=7hj28a --jsonata '$'
+epilot workflow executeTask -p execution_id=exec_abc123def456 -p task_id=task_7hj28a --jsonata '$'
 ```
 
 <details>
@@ -1851,7 +1944,8 @@ epilot workflow executeTask -p execution_id=wd561 -p task_id=7hj28a --jsonata '$
     "status_updated_at": "1970-01-01T00:00:00.000Z",
     "in_progress_by": "string",
     "completed_by": "string",
-    "skipped_by": "string"
+    "skipped_by": "string",
+    "on_hold_by": "string"
   },
   "created_at": "1970-01-01T00:00:00.000Z",
   "updated_at": "1970-01-01T00:00:00.000Z",
@@ -1879,6 +1973,11 @@ epilot workflow executeTask -p execution_id=wd561 -p task_id=7hj28a --jsonata '$
       "complete_task_automatically": true
     }
   },
+  "partner": {
+    "enabled": true,
+    "label": "string",
+    "description": "string"
+  },
   "taxonomies": ["string"],
   "phase_id": "string",
   "task_type": "MANUAL",
@@ -1903,8 +2002,12 @@ Apply updates to a phase within flow execution
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
-| `phase_id` | path | string | Yes | Id of the phase |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
+| `phase_id` | path | string | Yes | Unique identifier for a phase within the execution. Phases group related tasks
+together and track collective progress.
+ |
 
 **Request Body** (required)
 
@@ -1912,16 +2015,16 @@ Apply updates to a phase within flow execution
 
 ```bash
 epilot workflow patchPhase \
-  -p execution_id=wd561 \
-  -p phase_id=9gjs2952j
+  -p execution_id=exec_abc123def456 \
+  -p phase_id=phase_9gjs2952j
 ```
 
 With request body:
 
 ```bash
 epilot workflow patchPhase \
-  -p execution_id=wd561 \
-  -p phase_id=9gjs2952j \
+  -p execution_id=exec_abc123def456 \
+  -p phase_id=phase_9gjs2952j \
   -d '{
   "name": "string",
   "due_date": "2021-04-27T12:00:00.000Z",
@@ -1939,19 +2042,19 @@ epilot workflow patchPhase \
 Using positional args for path parameters:
 
 ```bash
-epilot workflow patchPhase wd561 9gjs2952j
+epilot workflow patchPhase exec_abc123def456 phase_9gjs2952j
 ```
 
 Using stdin pipe:
 
 ```bash
-cat body.json | epilot workflow patchPhase -p execution_id=wd561 -p phase_id=9gjs2952j
+cat body.json | epilot workflow patchPhase -p execution_id=exec_abc123def456 -p phase_id=phase_9gjs2952j
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow patchPhase -p execution_id=wd561 -p phase_id=9gjs2952j --jsonata 'id'
+epilot workflow patchPhase -p execution_id=exec_abc123def456 -p phase_id=phase_9gjs2952j --jsonata 'id'
 ```
 
 <details>
@@ -1980,7 +2083,8 @@ epilot workflow patchPhase -p execution_id=wd561 -p phase_id=9gjs2952j --jsonata
     "status_updated_at": "1970-01-01T00:00:00.000Z",
     "in_progress_by": "string",
     "completed_by": "string",
-    "skipped_by": "string"
+    "skipped_by": "string",
+    "on_hold_by": "string"
   },
   "taxonomies": ["string"],
   "loop_config": {
@@ -2004,7 +2108,9 @@ Create a new task in current workflow execution.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
 
 **Request Body** (required)
 
@@ -2012,14 +2118,14 @@ Create a new task in current workflow execution.
 
 ```bash
 epilot workflow addTask \
-  -p execution_id=wd561
+  -p execution_id=exec_abc123def456
 ```
 
 With request body:
 
 ```bash
 epilot workflow addTask \
-  -p execution_id=wd561 \
+  -p execution_id=exec_abc123def456 \
   -d '{
   "previous_task_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "next_task_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -2041,7 +2147,13 @@ epilot workflow addTask \
       "flow_id": "string",
       "execution_id": "string",
       "execution_status": "string",
-      "error_reason": "string"
+      "error_reason": "string",
+      "input_context": {
+        "source": "trigger",
+        "task_id": "string"
+      },
+      "heal_attempts": 0,
+      "last_heal_attempted_at": "1970-01-01T00:00:00.000Z"
     },
     "phase_id": "string",
     "task_type": "MANUAL"
@@ -2052,19 +2164,19 @@ epilot workflow addTask \
 Using positional args for path parameters:
 
 ```bash
-epilot workflow addTask wd561
+epilot workflow addTask exec_abc123def456
 ```
 
 Using stdin pipe:
 
 ```bash
-cat body.json | epilot workflow addTask -p execution_id=wd561
+cat body.json | epilot workflow addTask -p execution_id=exec_abc123def456
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow addTask -p execution_id=wd561 --jsonata '$'
+epilot workflow addTask -p execution_id=exec_abc123def456 --jsonata '$'
 ```
 
 <details>
@@ -2109,7 +2221,8 @@ epilot workflow addTask -p execution_id=wd561 --jsonata '$'
     "status_updated_at": "1970-01-01T00:00:00.000Z",
     "in_progress_by": "string",
     "completed_by": "string",
-    "skipped_by": "string"
+    "skipped_by": "string",
+    "on_hold_by": "string"
   },
   "created_at": "1970-01-01T00:00:00.000Z",
   "updated_at": "1970-01-01T00:00:00.000Z",
@@ -2137,6 +2250,11 @@ epilot workflow addTask -p execution_id=wd561 --jsonata '$'
       "complete_task_automatically": true
     }
   },
+  "partner": {
+    "enabled": true,
+    "label": "string",
+    "description": "string"
+  },
   "taxonomies": ["string"],
   "phase_id": "string",
   "task_type": "MANUAL",
@@ -2161,27 +2279,330 @@ Cancels a scheduled task, deleting the schedule and marking the task as skipped.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `execution_id` | path | string | Yes | Id of the execution |
-| `task_id` | path | string | Yes | Id of the task |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
+| `task_id` | path | string | Yes | Unique identifier for a task within the execution. Each task has a unique ID
+that distinguishes it from other tasks in the same execution.
+ |
 
 **Sample Call**
 
 ```bash
 epilot workflow cancelTaskSchedule \
-  -p execution_id=wd561 \
-  -p task_id=7hj28a
+  -p execution_id=exec_abc123def456 \
+  -p task_id=task_7hj28a
 ```
 
 Using positional args for path parameters:
 
 ```bash
-epilot workflow cancelTaskSchedule wd561 7hj28a
+epilot workflow cancelTaskSchedule exec_abc123def456 task_7hj28a
 ```
 
 With JSONata filter:
 
 ```bash
-epilot workflow cancelTaskSchedule -p execution_id=wd561 -p task_id=7hj28a --jsonata '$'
+epilot workflow cancelTaskSchedule -p execution_id=exec_abc123def456 -p task_id=task_7hj28a --jsonata '$'
 ```
+
+---
+
+### `reconcileAutomationTask`
+
+Reconciles an automation task's status against its linked automation execution.
+
+`POST /v2/flows/executions/{execution_id}/tasks/{task_id}/reconcile-automation`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
+| `task_id` | path | string | Yes | Unique identifier for a task within the execution. Each task has a unique ID
+that distinguishes it from other tasks in the same execution.
+ |
+
+**Sample Call**
+
+```bash
+epilot workflow reconcileAutomationTask \
+  -p execution_id=exec_abc123def456 \
+  -p task_id=task_7hj28a
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot workflow reconcileAutomationTask exec_abc123def456 task_7hj28a
+```
+
+With JSONata filter:
+
+```bash
+epilot workflow reconcileAutomationTask -p execution_id=exec_abc123def456 -p task_id=task_7hj28a --jsonata 'id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "id": "string",
+  "flow_template_id": "string",
+  "org_id": "string",
+  "name": "string",
+  "created_at": "string",
+  "updated_at": "string",
+  "due_date": "string",
+  "due_date_config": {
+    "duration": 0,
+    "unit": "minutes",
+    "type": "WORKFLOW_STARTED",
+    "task_id": "string",
+    "phase_id": "string"
+  },
+  "status": "STARTED",
+  "assigned_to": ["string"],
+  "analytics": {
+    "started_at": "string",
+    "completed_at": "string",
+    "closed_at": "string",
+    "started_by": "string",
+    "closed_by": "string"
+  },
+  "contexts": [
+    {
+      "entity_id": "string",
+      "entity_schema": "string",
+      "is_primary": false
+    }
+  ],
+  "crt_tasks": [
+    {
+      "id": "string",
+      "crt_since": "1970-01-01T00:00:00.000Z"
+    }
+  ],
+  "phases": [
+    {
+      "id": "string",
+      "template_id": "string",
+      "name": "string",
+      "status": "OPEN",
+      "updated_at": "string",
+      "due_date": "2021-04-27T12:00:00.000Z",
+      "due_date_config": {},
+      "assigned_to": ["string"],
+      "analytics": {},
+      "taxonomies": ["string"],
+      "loop_config": {}
+    }
+  ],
+  "tasks": [
+    {
+      "id": "string",
+      "template_id": "string",
+      "name": "string",
+      "description": {},
+      "status": "UNASSIGNED",
+      "journey": {},
+      "due_date": "2021-04-27T12:00:00.000Z",
+      "due_date_config": {},
+      "requirements": [],
+      "assigned_to": ["string"],
+      "analytics": {},
+      "created_at": "1970-01-01T00:00:00.000Z",
+      "updated_at": "1970-01-01T00:00:00.000Z",
+      "manually_created": true,
+      "enabled": true,
+      "ecp": {},
+      "installer": {},
+      "partner": {},
+      "taxonomies": ["string"],
+      "phase_id": "string",
+      "task_type": "MANUAL",
+      "loop_config": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "string",
+      "from_id": "string",
+      "to_id": "string",
+      "condition_id": "abc123",
+      "none_met": true
+    }
+  ],
+  "_execution_chain": {
+    "parent_execution_id": "string",
+    "parent_task_id": "string",
+    "depth": 0
+  },
+  "closing_reason": {
+    "selected_reasons": [
+      {}
+    ],
+    "configured_reasons": [
+      {}
+    ],
+    "extra_description": "string"
+  },
+  "available_in_ecp": true,
+  "entity_sync": [
+    {
+      "trigger": {},
+      "target": {},
+      "value": {}
+    }
+  ],
+  "taxonomies": ["string"],
+  "trigger": {
+    "type": "MANUAL",
+    "automation_config": {
+      "flow_id": "string",
+      "execution_id": "string",
+      "execution_status": "string",
+      "error_reason": "string",
+      "input_context": {},
+      "heal_attempts": 0,
+      "last_heal_attempted_at": "1970-01-01T00:00:00.000Z"
+    }
+  },
+  "singleClosingReasonSelection": true,
+  "linear": true
+}
+```
+
+</details>
+
+---
+
+### `runTaskScheduleNow`
+
+Cancels the pending schedule for a task and immediately triggers its automation execution.
+
+`POST /v2/flows/executions/{execution_id}/tasks/{task_id}/schedule/run-now`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `execution_id` | path | string | Yes | Unique identifier for the flow execution. This ID is generated when the execution
+is created and remains constant throughout its lifecycle.
+ |
+| `task_id` | path | string | Yes | Unique identifier for a task within the execution. Each task has a unique ID
+that distinguishes it from other tasks in the same execution.
+ |
+
+**Sample Call**
+
+```bash
+epilot workflow runTaskScheduleNow \
+  -p execution_id=exec_abc123def456 \
+  -p task_id=task_7hj28a
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot workflow runTaskScheduleNow exec_abc123def456 task_7hj28a
+```
+
+With JSONata filter:
+
+```bash
+epilot workflow runTaskScheduleNow -p execution_id=exec_abc123def456 -p task_id=task_7hj28a --jsonata '$'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "id": "string",
+  "template_id": "string",
+  "name": "string",
+  "description": {
+    "enabled": true,
+    "value": "string"
+  },
+  "status": "UNASSIGNED",
+  "journey": {
+    "id": "string",
+    "journeyId": "string",
+    "name": "string",
+    "complete_task_automatically": true
+  },
+  "due_date": "2021-04-27T12:00:00.000Z",
+  "due_date_config": {
+    "duration": 0,
+    "unit": "minutes",
+    "type": "WORKFLOW_STARTED",
+    "task_id": "string",
+    "phase_id": "string"
+  },
+  "requirements": [
+    {
+      "task_id": "string",
+      "phase_id": "string",
+      "when": "TASK_FINISHED"
+    }
+  ],
+  "assigned_to": ["string"],
+  "analytics": {
+    "started_at": "1970-01-01T00:00:00.000Z",
+    "in_progress_at": "1970-01-01T00:00:00.000Z",
+    "completed_at": "1970-01-01T00:00:00.000Z",
+    "status_updated_at": "1970-01-01T00:00:00.000Z",
+    "in_progress_by": "string",
+    "completed_by": "string",
+    "skipped_by": "string",
+    "on_hold_by": "string"
+  },
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "manually_created": true,
+  "enabled": true,
+  "ecp": {
+    "enabled": true,
+    "label": "string",
+    "description": "string",
+    "journey": {
+      "id": "string",
+      "journeyId": "string",
+      "name": "string",
+      "complete_task_automatically": true
+    }
+  },
+  "installer": {
+    "enabled": true,
+    "label": "string",
+    "description": "string",
+    "journey": {
+      "id": "string",
+      "journeyId": "string",
+      "name": "string",
+      "complete_task_automatically": true
+    }
+  },
+  "partner": {
+    "enabled": true,
+    "label": "string",
+    "description": "string"
+  },
+  "taxonomies": ["string"],
+  "phase_id": "string",
+  "task_type": "MANUAL",
+  "loop_config": {
+    "max_iterations": 3,
+    "crt_iterations": 0
+  }
+}
+```
+
+</details>
 
 ---

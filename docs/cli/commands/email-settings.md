@@ -60,16 +60,37 @@ epilot email-settings provisionEpilotEmailAddress
 - [`listInboxBuckets`](#listinboxbuckets) — Retrieves all inbox buckets for the organization.
 
 **O365 Outlook Connection**
-- [`connectOutlook`](#connectoutlook) — Returns Microsoft authorization URL for Outlook OAuth.
+- [`connectOutlook`](#connectoutlook) — Returns the Microsoft authorization URL for Outlook OAuth.
 - [`getOutlookConnectionStatus`](#getoutlookconnectionstatus) — Returns all Microsoft 365 / Outlook connections for the organization.
+- [`getCalendarAdminConsentStatus`](#getcalendaradminconsentstatus) — Reports whether the caller's organization can connect personal Outlook
+- [`getMyCalendarConnection`](#getmycalendarconnection) — Returns the calling user's personal Outlook calendar connection,
+- [`disconnectMyCalendar`](#disconnectmycalendar) — Removes the calling user's personal calendar connection.
 - [`disconnectOutlook`](#disconnectoutlook) — Removes the Microsoft 365 / Outlook connection for a specific tenant.
 - [`connectOutlookMailbox`](#connectoutlookmailbox) — Connects an Outlook mailbox:
 - [`disconnectOutlookMailbox`](#disconnectoutlookmailbox) — Disconnects a single Outlook mailbox by email address.
 - [`startMailboxSync`](#startmailboxsync) — Triggers an Outlook mailbox sync for the specified email address.
 - [`getMailboxSyncStatus`](#getmailboxsyncstatus) — Returns the current or latest sync status for the specified mailbox.
+- [`getMailboxSyncEstimate`](#getmailboxsyncestimate) — Counts the inbox and sent messages a mailbox sync would import for each timeframe, with the same date filter the
 - [`retryMailboxSync`](#retrymailboxsync) — Retries failed messages from a previous sync execution.
+- [`cancelMailboxSync`](#cancelmailboxsync) — Stops the running sync of an Outlook mailbox and marks it CANCELLED.
 - [`getConnectedOutlookEmails`](#getconnectedoutlookemails) — Returns all Outlook email addresses connected to the organization.
 - [`outlookOAuthCallback`](#outlookoauthcallback) — Exchanges authorization code for tokens and stores them.
+
+**Channels**
+- [`connectMsTeams`](#connectmsteams) — Connects Microsoft Teams channel (click-to-call deep links, meetings) for the organization.
+- [`disconnectMsTeams`](#disconnectmsteams) — Disconnects Microsoft Teams channel for the organization.
+- [`getMsTeamsStatus`](#getmsteamsstatus) — Returns the connection status of the Microsoft Teams channel for the organization.
+
+**Custom SMTP**
+- [`listSmtpConnections`](#listsmtpconnections) — Returns all custom SMTP connections configured for the organization.
+- [`createSmtpConnection`](#createsmtpconnection) — Creates a new custom SMTP connection. Runs a live verify against the SMTP server
+- [`getSmtpConnection`](#getsmtpconnection) — Returns a single custom SMTP connection by id. The password is never returned.
+- [`updateSmtpConnection`](#updatesmtpconnection) — Partial update; omitted fields keep their existing values. The merged
+- [`deleteSmtpConnection`](#deletesmtpconnection) — Deletes a custom SMTP connection. Messages already sent are unaffected.
+- [`testSmtpConnection`](#testsmtpconnection) — Re-runs a live SMTP verify against the saved configuration (EHLO + AUTH + NOOP + QUIT)
+- [`listSmtpSenders`](#listsmtpsenders) — Returns every address registered to send through a custom SMTP connection.
+- [`connectSmtpSender`](#connectsmtpsender) — Registers an address as a sender on a custom SMTP connection:
+- [`disconnectSmtpSender`](#disconnectsmtpsender) — Removes a sender address: deletes the email address and its binding to the SMTP
 
 **Settings**
 - [`getSettings`](#getsettings) — Retrieves settings of a specific type for the organization.
@@ -78,9 +99,11 @@ epilot email-settings provisionEpilotEmailAddress
 - [`updateSetting`](#updatesetting) — Updates an existing setting identified by its ID.
 
 **Domains**
+- [`getDomains`](#getdomains) — Retrieves all custom email domains for the organization.
 - [`addDomain`](#adddomain) — Adds a custom email domain to the organization.
 - [`deleteDomain`](#deletedomain) — Removes a custom email domain from the organization.
 - [`verifyNameServers`](#verifynameservers) — Verifies that the domain's name server (NS) records are correctly configured.
+- [`verifyDnsRecords`](#verifydnsrecords) — Verifies that the domain's DNS records (MX, TXT, CNAME) are correctly configured
 - [`verifyDomain`](#verifydomain) — Verifies ownership and configuration of a custom email domain.
 
 ### `provisionEpilotEmailAddress`
@@ -128,7 +151,8 @@ epilot email-settings provisionEpilotEmailAddress --jsonata '$'
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -181,7 +205,8 @@ epilot email-settings setEmailAddressPrimary --jsonata '$'
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -240,7 +265,8 @@ epilot email-settings getEmailAddress -p id=123e4567-e89b-12d3-a456-426614174000
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -322,7 +348,8 @@ epilot email-settings updateEmailAddress -p id=123e4567-e89b-12d3-a456-426614174
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -402,7 +429,8 @@ epilot email-settings listEmailAddresses --jsonata '$'
     "shared_inbox_id": "inbox-xyz",
     "is_active": true,
     "is_primary": false,
-    "is_epilot_email_address": false
+    "is_epilot_email_address": false,
+    "provider": "outlook"
   }
 ]
 ```
@@ -469,7 +497,8 @@ epilot email-settings addEmailAddress --jsonata '$'
   "shared_inbox_id": "inbox-xyz",
   "is_active": true,
   "is_primary": false,
-  "is_epilot_email_address": false
+  "is_epilot_email_address": false,
+  "provider": "outlook"
 }
 ```
 
@@ -785,14 +814,23 @@ epilot email-settings listInboxBuckets --jsonata '$'
 
 ### `connectOutlook`
 
-Returns Microsoft authorization URL for Outlook OAuth.
+Returns the Microsoft authorization URL for Outlook OAuth.
 
-`GET /v2/outlook/connect`
+`POST /v2/outlook/connect`
+
+**Request Body** (required)
 
 **Sample Call**
 
 ```bash
-epilot email-settings connectOutlook
+epilot email-settings connectOutlook \
+  -d '{"mail":true,"calendar":true,"return_to":"string"}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot email-settings connectOutlook
 ```
 
 With JSONata filter:
@@ -841,6 +879,7 @@ epilot email-settings getOutlookConnectionStatus --jsonata 'connections'
     {
       "status": "connected",
       "action": "connect",
+      "action_reason": "expired",
       "connected_by_display_name": "string",
       "connected_by_email": "user@example.com",
       "connected_by_user_id": "string",
@@ -852,11 +891,105 @@ epilot email-settings getOutlookConnectionStatus --jsonata 'connections'
       "is_token_valid": true
     }
   ],
-  "has_connections": true
+  "has_connections": true,
+  "teams_enabled": true
 }
 ```
 
 </details>
+
+---
+
+### `getCalendarAdminConsentStatus`
+
+Reports whether the caller's organization can connect personal Outlook
+
+`GET /v2/outlook/calendar/admin-consent-status`
+
+**Sample Call**
+
+```bash
+epilot email-settings getCalendarAdminConsentStatus
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings getCalendarAdminConsentStatus --jsonata 'admin_consented'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "admin_consented": true,
+  "admin_consent_url": "https://example.com/path"
+}
+```
+
+</details>
+
+---
+
+### `getMyCalendarConnection`
+
+Returns the calling user's personal Outlook calendar connection,
+
+`GET /v2/outlook/calendar/me`
+
+**Sample Call**
+
+```bash
+epilot email-settings getMyCalendarConnection
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings getMyCalendarConnection --jsonata 'connection'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "connection": {
+    "user_id": "string",
+    "tenant_id": "string",
+    "status": "connected",
+    "scopes": ["string"],
+    "connected_by_display_name": "string",
+    "connected_by_email": "user@example.com",
+    "connected_at": "1970-01-01T00:00:00.000Z",
+    "updated_at": "1970-01-01T00:00:00.000Z",
+    "expires_at": "1970-01-01T00:00:00.000Z"
+  }
+}
+```
+
+</details>
+
+---
+
+### `disconnectMyCalendar`
+
+Removes the calling user's personal calendar connection.
+
+`DELETE /v2/outlook/calendar/me`
+
+**Sample Call**
+
+```bash
+epilot email-settings disconnectMyCalendar
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings disconnectMyCalendar --jsonata '$'
+```
 
 ---
 
@@ -902,6 +1035,102 @@ epilot email-settings disconnectOutlook --jsonata 'success'
 
 ---
 
+### `connectMsTeams`
+
+Connects Microsoft Teams channel (click-to-call deep links, meetings) for the organization.
+
+`POST /v2/channels/msteams/connect`
+
+**Sample Call**
+
+```bash
+epilot email-settings connectMsTeams
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings connectMsTeams --jsonata 'connected'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "connected": true,
+  "connected_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `disconnectMsTeams`
+
+Disconnects Microsoft Teams channel for the organization.
+
+`POST /v2/channels/msteams/disconnect`
+
+**Sample Call**
+
+```bash
+epilot email-settings disconnectMsTeams
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings disconnectMsTeams --jsonata 'connected'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "connected": true
+}
+```
+
+</details>
+
+---
+
+### `getMsTeamsStatus`
+
+Returns the connection status of the Microsoft Teams channel for the organization.
+
+`GET /v2/channels/msteams/status`
+
+**Sample Call**
+
+```bash
+epilot email-settings getMsTeamsStatus
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings getMsTeamsStatus --jsonata 'connected'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "connected": true,
+  "connected_at": "1970-01-01T00:00:00.000Z",
+  "connected_by_user_id": "string"
+}
+```
+
+</details>
+
+---
+
 ### `connectOutlookMailbox`
 
 Connects an Outlook mailbox:
@@ -913,8 +1142,22 @@ Connects an Outlook mailbox:
 **Sample Call**
 
 ```bash
+epilot email-settings connectOutlookMailbox
+```
+
+With request body:
+
+```bash
 epilot email-settings connectOutlookMailbox \
-  -d '{"email":"user@example.com","shared_inbox_id":"default","mailboxSyncTimeframe":"5m"}'
+  -d '{
+  "email": "user@example.com",
+  "shared_inbox_id": "default",
+  "name": "string",
+  "user_ids": ["string"],
+  "group_ids": ["string"],
+  "default_signature_id": "string",
+  "mailboxSyncTimeframe": "5m"
+}'
 ```
 
 Using stdin pipe:
@@ -948,7 +1191,8 @@ epilot email-settings connectOutlookMailbox --jsonata 'email_address'
     "shared_inbox_id": "inbox-xyz",
     "is_active": true,
     "is_primary": false,
-    "is_epilot_email_address": false
+    "is_epilot_email_address": false,
+    "provider": "outlook"
   },
   "outlook_email": "user@example.com",
   "tenant_id": "string",
@@ -1024,7 +1268,7 @@ Triggers an Outlook mailbox sync for the specified email address.
 ```bash
 epilot email-settings startMailboxSync \
   -p email=user@example.com \
-  -d '{"timeframe":"5m"}'
+  -d '{"timeframe":"5m","since":"1970-01-01T00:00:00.000Z"}'
 ```
 
 Using positional args for path parameters:
@@ -1086,6 +1330,7 @@ epilot email-settings getMailboxSyncStatus -p email=user@example.com --jsonata '
   "execution_id": "string",
   "status": "RUNNING",
   "timeframe": "5m",
+  "timeframe_start": "1970-01-01T00:00:00.000Z",
   "started_at": "1970-01-01T00:00:00.000Z",
   "completed_at": "1970-01-01T00:00:00.000Z",
   "inbox": {
@@ -1100,6 +1345,61 @@ epilot email-settings getMailboxSyncStatus -p email=user@example.com --jsonata '
     "processed_messages": 0,
     "failed_messages": 0
   }
+}
+```
+
+</details>
+
+---
+
+### `getMailboxSyncEstimate`
+
+Counts the inbox and sent messages a mailbox sync would import for each timeframe, with the same date filter the
+
+`GET /v2/outlook/mailbox/{email}/sync/estimate`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `email` | path | string (email) | Yes | Email address of the Outlook mailbox |
+| `timeframes` | query | string | No | Comma-separated timeframes to estimate. Defaults to `1m,1y,2y`, or to none when `since` is given. |
+| `since` | query | string (date-time) | No | Also estimate a custom period from this point up to now (returned with timeframe `custom`). At most 2 years back. |
+
+**Sample Call**
+
+```bash
+epilot email-settings getMailboxSyncEstimate \
+  -p email=user@example.com
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot email-settings getMailboxSyncEstimate user@example.com
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings getMailboxSyncEstimate -p email=user@example.com --jsonata 'estimates'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "estimates": [
+    {
+      "timeframe": "5m",
+      "since": "1970-01-01T00:00:00.000Z",
+      "inbox_messages": 0,
+      "sent_messages": 0,
+      "total_messages": 0,
+      "estimated_duration_seconds": 0
+    }
+  ]
 }
 ```
 
@@ -1149,6 +1449,51 @@ epilot email-settings retryMailboxSync -p email=user@example.com --jsonata '$'
 
 ---
 
+### `cancelMailboxSync`
+
+Stops the running sync of an Outlook mailbox and marks it CANCELLED.
+
+`POST /v2/outlook/mailbox/{email}/sync/cancel`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `email` | path | string (email) | Yes | Email address of the Outlook mailbox |
+
+**Sample Call**
+
+```bash
+epilot email-settings cancelMailboxSync \
+  -p email=user@example.com
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot email-settings cancelMailboxSync user@example.com
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings cancelMailboxSync -p email=user@example.com --jsonata 'execution_id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "execution_id": "string",
+  "status": "RUNNING"
+}
+```
+
+</details>
+
+---
+
 ### `getConnectedOutlookEmails`
 
 Returns all Outlook email addresses connected to the organization.
@@ -1189,6 +1534,507 @@ epilot email-settings getConnectedOutlookEmails --jsonata 'outlook_emails'
 
 ---
 
+### `listSmtpConnections`
+
+Returns all custom SMTP connections configured for the organization.
+
+`GET /v2/smtp/connections`
+
+**Sample Call**
+
+```bash
+epilot email-settings listSmtpConnections
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings listSmtpConnections --jsonata 'connections'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "connections": [
+    {
+      "connection_id": "string",
+      "smtp_host": "string",
+      "smtp_port": "string",
+      "smtp_secure": "tls",
+      "smtp_username": "string",
+      "smtp_password": "string",
+      "connected_by_display_name": "string",
+      "connected_by_email": "user@example.com",
+      "connected_by_user_id": "string",
+      "connected_at": "1970-01-01T00:00:00.000Z",
+      "updated_at": "1970-01-01T00:00:00.000Z",
+      "last_tested_at": "1970-01-01T00:00:00.000Z",
+      "last_test_status": "ok",
+      "last_test_error": "string"
+    }
+  ],
+  "has_connections": true
+}
+```
+
+</details>
+
+---
+
+### `createSmtpConnection`
+
+Creates a new custom SMTP connection. Runs a live verify against the SMTP server
+
+`POST /v2/smtp/connections`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `skip_test` | query | boolean | No | Save without running the live verify. Use when the server is not reachable from
+epilot yet, or when a referenced `{{ env.* }}` secret has not been set. The
+connection is stored untested — `last_test_s |
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot email-settings createSmtpConnection
+```
+
+With request body:
+
+```bash
+epilot email-settings createSmtpConnection \
+  -d '{
+  "smtp_host": "string",
+  "smtp_port": "string",
+  "smtp_secure": "tls",
+  "smtp_username": "string",
+  "smtp_password": "{{ env.smtp_password }}"
+}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot email-settings createSmtpConnection
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings createSmtpConnection --jsonata 'connection_id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "connection_id": "string",
+  "smtp_host": "string",
+  "smtp_port": "string",
+  "smtp_secure": "tls",
+  "smtp_username": "string",
+  "smtp_password": "string",
+  "connected_by_display_name": "string",
+  "connected_by_email": "user@example.com",
+  "connected_by_user_id": "string",
+  "connected_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "last_tested_at": "1970-01-01T00:00:00.000Z",
+  "last_test_status": "ok",
+  "last_test_error": "string"
+}
+```
+
+</details>
+
+---
+
+### `getSmtpConnection`
+
+Returns a single custom SMTP connection by id. The password is never returned.
+
+`GET /v2/smtp/connections/{connectionId}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `connectionId` | path | string | Yes |  |
+
+**Sample Call**
+
+```bash
+epilot email-settings getSmtpConnection \
+  -p connectionId=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot email-settings getSmtpConnection 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings getSmtpConnection -p connectionId=123e4567-e89b-12d3-a456-426614174000 --jsonata 'connection_id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "connection_id": "string",
+  "smtp_host": "string",
+  "smtp_port": "string",
+  "smtp_secure": "tls",
+  "smtp_username": "string",
+  "smtp_password": "string",
+  "connected_by_display_name": "string",
+  "connected_by_email": "user@example.com",
+  "connected_by_user_id": "string",
+  "connected_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "last_tested_at": "1970-01-01T00:00:00.000Z",
+  "last_test_status": "ok",
+  "last_test_error": "string"
+}
+```
+
+</details>
+
+---
+
+### `updateSmtpConnection`
+
+Partial update; omitted fields keep their existing values. The merged
+
+`PUT /v2/smtp/connections/{connectionId}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `connectionId` | path | string | Yes |  |
+| `skip_test` | query | boolean | No | Save without running the live verify. Use when the server is not reachable from
+epilot yet, or when a referenced `{{ env.* }}` secret has not been set. The
+connection is stored untested — `last_test_s |
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot email-settings updateSmtpConnection \
+  -p connectionId=123e4567-e89b-12d3-a456-426614174000 \
+  -d '{"smtp_host":"string","smtp_port":"string","smtp_secure":"tls","smtp_username":"string","smtp_password":"string"}'
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot email-settings updateSmtpConnection 123e4567-e89b-12d3-a456-426614174000
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot email-settings updateSmtpConnection -p connectionId=123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings updateSmtpConnection -p connectionId=123e4567-e89b-12d3-a456-426614174000 --jsonata 'connection_id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "connection_id": "string",
+  "smtp_host": "string",
+  "smtp_port": "string",
+  "smtp_secure": "tls",
+  "smtp_username": "string",
+  "smtp_password": "string",
+  "connected_by_display_name": "string",
+  "connected_by_email": "user@example.com",
+  "connected_by_user_id": "string",
+  "connected_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "last_tested_at": "1970-01-01T00:00:00.000Z",
+  "last_test_status": "ok",
+  "last_test_error": "string"
+}
+```
+
+</details>
+
+---
+
+### `deleteSmtpConnection`
+
+Deletes a custom SMTP connection. Messages already sent are unaffected.
+
+`DELETE /v2/smtp/connections/{connectionId}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `connectionId` | path | string | Yes |  |
+
+**Sample Call**
+
+```bash
+epilot email-settings deleteSmtpConnection \
+  -p connectionId=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot email-settings deleteSmtpConnection 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings deleteSmtpConnection -p connectionId=123e4567-e89b-12d3-a456-426614174000 --jsonata 'success'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "success": true,
+  "connection_id": "string"
+}
+```
+
+</details>
+
+---
+
+### `testSmtpConnection`
+
+Re-runs a live SMTP verify against the saved configuration (EHLO + AUTH + NOOP + QUIT)
+
+`POST /v2/smtp/connections/{connectionId}/test`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `connectionId` | path | string | Yes |  |
+
+**Sample Call**
+
+```bash
+epilot email-settings testSmtpConnection \
+  -p connectionId=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot email-settings testSmtpConnection 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings testSmtpConnection -p connectionId=123e4567-e89b-12d3-a456-426614174000 --jsonata 'status'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "status": "ok",
+  "error": "string",
+  "tested_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `listSmtpSenders`
+
+Returns every address registered to send through a custom SMTP connection.
+
+`GET /v2/smtp/senders`
+
+**Sample Call**
+
+```bash
+epilot email-settings listSmtpSenders
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings listSmtpSenders --jsonata 'senders'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "senders": [
+    {
+      "email": "user@example.com",
+      "connection_id": "string",
+      "reply_to_email": "string",
+      "connected_at": "1970-01-01T00:00:00.000Z",
+      "connected_by_user_id": "string"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `connectSmtpSender`
+
+Registers an address as a sender on a custom SMTP connection:
+
+`POST /v2/smtp/senders`
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot email-settings connectSmtpSender
+```
+
+With request body:
+
+```bash
+epilot email-settings connectSmtpSender \
+  -d '{
+  "email": "user@example.com",
+  "connection_id": "string",
+  "name": "string",
+  "reply_to_email": "string",
+  "shared_inbox_id": "default",
+  "user_ids": ["string"],
+  "group_ids": ["string"],
+  "default_signature_id": "string"
+}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot email-settings connectSmtpSender
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings connectSmtpSender --jsonata 'email_address'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "email_address": {
+    "id": "a10bd0ff-4391-4cfc-88ee-b19d718a9bf7",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-20T14:45:00Z",
+    "created_by": "user-123",
+    "updated_by": "user-456",
+    "address": "sales@yourcompany.com",
+    "name": "Sales Team",
+    "user_ids": ["user-123", "user-456"],
+    "group_ids": ["group-789"],
+    "default_signature_id": "sig-abc",
+    "shared_inbox_id": "inbox-xyz",
+    "is_active": true,
+    "is_primary": false,
+    "is_epilot_email_address": false,
+    "provider": "outlook"
+  },
+  "sender": {
+    "email": "user@example.com",
+    "connection_id": "string",
+    "reply_to_email": "string",
+    "connected_at": "1970-01-01T00:00:00.000Z",
+    "connected_by_user_id": "string"
+  }
+}
+```
+
+</details>
+
+---
+
+### `disconnectSmtpSender`
+
+Removes a sender address: deletes the email address and its binding to the SMTP
+
+`DELETE /v2/smtp/senders/{email}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `email` | path | string (email) | Yes |  |
+
+**Sample Call**
+
+```bash
+epilot email-settings disconnectSmtpSender \
+  -p email=user@example.com
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot email-settings disconnectSmtpSender user@example.com
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings disconnectSmtpSender -p email=user@example.com --jsonata 'email'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "success": true,
+  "email": "user@example.com"
+}
+```
+
+</details>
+
+---
+
 ### `outlookOAuthCallback`
 
 Exchanges authorization code for tokens and stores them.
@@ -1209,6 +2055,7 @@ Exchanges authorization code for tokens and stores them.
 | `error_uri` | query | string | No |  |
 | `admin_consent` | query | string | No |  |
 | `tenant` | query | string | No |  |
+| `clientdata` | query | string | No |  |
 
 **Sample Call**
 
@@ -1248,7 +2095,7 @@ Retrieves settings of a specific type for the organization.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `type` | query | "signature" \| "email_domain" \| "email_address" \| "whitelist_email_address" \| "restrict_duplicates_within" | Yes | The type of settings to retrieve. Determines which category of
+| `type` | query | "signature" \| "email_domain" \| "email_address" \| "whitelist_email_address" \| "restrict_duplicates_within" \| "allowed_recipient_domains" \| "auto_link_identifier_attributes" | Yes | The type of settings to retrieve. Determines which category of
 email settings will be returned.
  |
 | `id` | query | string | No | Optional ID to retrieve a specific setting. If omitted, all settings
@@ -1280,6 +2127,8 @@ epilot email-settings getSettings -p type=signature --jsonata '$'
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -1317,6 +2166,8 @@ epilot email-settings addSetting \
   "type": "signature",
   "value": "Best regards, The Team",
   "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+  "schemas": {},
+  "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
   "created_at": "2024-01-15T10:30:00Z",
   "updated_at": "2024-01-20T14:45:00Z",
   "created_by": "user-123",
@@ -1348,6 +2199,8 @@ epilot email-settings addSetting --jsonata '$'
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -1384,28 +2237,8 @@ cat body.json | epilot email-settings deleteSetting
 With JSONata filter:
 
 ```bash
-epilot email-settings deleteSetting --jsonata 'id'
+epilot email-settings deleteSetting --jsonata '$'
 ```
-
-<details>
-<summary>Sample Response</summary>
-
-```json
-{
-  "id": "a10bd0ff-4391-4cfc-88ee-b19d718a9bf7",
-  "name": "Default Signature",
-  "org_id": "org-123",
-  "type": "signature",
-  "value": "Best regards, The Team",
-  "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
-  "created_at": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-20T14:45:00Z",
-  "created_by": "user-123",
-  "updated_by": "user-456"
-}
-```
-
-</details>
 
 ---
 
@@ -1442,6 +2275,8 @@ epilot email-settings updateSetting \
   "type": "signature",
   "value": "Best regards, The Team",
   "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+  "schemas": {},
+  "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
   "created_at": "2024-01-15T10:30:00Z",
   "updated_at": "2024-01-20T14:45:00Z",
   "created_by": "user-123",
@@ -1478,11 +2313,42 @@ epilot email-settings updateSetting -p id=a10bd0ff-4391-4cfc-88ee-b19d718a9bf7 -
   "type": "signature",
   "value": "Best regards, The Team",
   "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+  "schemas": {},
+  "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
   "created_at": "2024-01-15T10:30:00Z",
   "updated_at": "2024-01-20T14:45:00Z",
   "created_by": "user-123",
   "updated_by": "user-456"
 }
+```
+
+</details>
+
+---
+
+### `getDomains`
+
+Retrieves all custom email domains for the organization.
+
+`GET /v1/email-settings/domain`
+
+**Sample Call**
+
+```bash
+epilot email-settings getDomains
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings getDomains --jsonata '$'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+["string"]
 ```
 
 </details>
@@ -1528,6 +2394,8 @@ epilot email-settings addDomain --jsonata '$'
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -1608,6 +2476,61 @@ epilot email-settings verifyNameServers --jsonata '$'
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-20T14:45:00Z",
+    "created_by": "user-123",
+    "updated_by": "user-456"
+  }
+]
+```
+
+</details>
+
+---
+
+### `verifyDnsRecords`
+
+Verifies that the domain's DNS records (MX, TXT, CNAME) are correctly configured
+
+`POST /v1/email-settings/domain/dns-records:verify`
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot email-settings verifyDnsRecords \
+  -d '{"domain":"mail.yourcompany.com"}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot email-settings verifyDnsRecords
+```
+
+With JSONata filter:
+
+```bash
+epilot email-settings verifyDnsRecords --jsonata '$'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+[
+  {
+    "id": "a10bd0ff-4391-4cfc-88ee-b19d718a9bf7",
+    "name": "Default Signature",
+    "org_id": "org-123",
+    "type": "signature",
+    "value": "Best regards, The Team",
+    "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",
@@ -1659,6 +2582,8 @@ epilot email-settings verifyDomain --jsonata '$'
     "type": "signature",
     "value": "Best regards, The Team",
     "html": "<p>Best regards,<br/><strong>The Team</strong></p>",
+    "schemas": {},
+    "excluded_senders": ["newsletter@partner.de", "@noreply.example.com"],
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-20T14:45:00Z",
     "created_by": "user-123",

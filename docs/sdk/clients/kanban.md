@@ -44,10 +44,12 @@ const { data } = await kanbanClient.createKanbanBoard(...)
 - [`executeFlowsQuery`](#executeflowsquery)
 
 **Schemas**
+- [`Error`](#error)
 - [`BoardSummary`](#boardsummary)
 - [`Board`](#board)
 - [`Swimlane`](#swimlane)
 - [`Sorting`](#sorting)
+- [`GroupBy`](#groupby)
 - [`BoardFilter`](#boardfilter)
 - [`FilterGroup`](#filtergroup)
 - [`FilterOperator`](#filteroperator)
@@ -59,7 +61,7 @@ const { data } = await kanbanClient.createKanbanBoard(...)
 
 ### `createKanbanBoard`
 
-Create a Kanban board
+Creates a new Kanban board with the provided configuration.
 
 `POST /v1/kanban/board`
 
@@ -116,6 +118,9 @@ const { data } = await client.createKanbanBoard(
       sorting: {
         field: 'created_at',
         direction: 'asc'
+      },
+      group_by: {
+        field: 'context_entity'
       },
       search_query: 'task 1'
     }
@@ -178,6 +183,9 @@ const { data } = await client.createKanbanBoard(
       "field": "created_at",
       "direction": "asc"
     },
+    "group_by": {
+      "field": "context_entity"
+    },
     "search_query": "task 1"
   }
 }
@@ -189,7 +197,7 @@ const { data } = await client.createKanbanBoard(
 
 ### `getKanbanBoards`
 
-Get all Kanban boards
+Returns a list of all Kanban boards accessible to the authenticated user.
 
 `GET /v1/kanban/boards`
 
@@ -226,7 +234,7 @@ const { data } = await client.getKanbanBoards({
 
 ### `getKanbanBoard`
 
-Get a Kanban board
+Retrieves a Kanban board by ID, including its full configuration (swimlanes, filters, sorting, card fields).
 
 `GET /v1/kanban/board/{boardId}`
 
@@ -291,6 +299,9 @@ const { data } = await client.getKanbanBoard({
       "field": "created_at",
       "direction": "asc"
     },
+    "group_by": {
+      "field": "context_entity"
+    },
     "search_query": "task 1"
   }
 }
@@ -302,7 +313,7 @@ const { data } = await client.getKanbanBoard({
 
 ### `updateKanbanBoard`
 
-Update a Kanban board
+Fully replaces the configuration of an existing Kanban board by ID.
 
 `PUT /v1/kanban/board/{boardId}`
 
@@ -361,6 +372,9 @@ const { data } = await client.updateKanbanBoard(
       sorting: {
         field: 'created_at',
         direction: 'asc'
+      },
+      group_by: {
+        field: 'context_entity'
       },
       search_query: 'task 1'
     }
@@ -423,6 +437,9 @@ const { data } = await client.updateKanbanBoard(
       "field": "created_at",
       "direction": "asc"
     },
+    "group_by": {
+      "field": "context_entity"
+    },
     "search_query": "task 1"
   }
 }
@@ -434,7 +451,7 @@ const { data } = await client.updateKanbanBoard(
 
 ### `patchKanbanBoard`
 
-Patch a Kanban board
+Partially updates fields of an existing Kanban board by ID.
 
 `PATCH /v1/kanban/board/{boardId}`
 
@@ -508,6 +525,9 @@ const { data } = await client.patchKanbanBoard(
       "field": "created_at",
       "direction": "asc"
     },
+    "group_by": {
+      "field": "context_entity"
+    },
     "search_query": "task 1"
   }
 }
@@ -519,7 +539,7 @@ const { data } = await client.patchKanbanBoard(
 
 ### `deleteKanbanBoard`
 
-Delete a Kanban board
+Permanently deletes a Kanban board by ID. This action is irreversible.
 
 `DELETE /v1/kanban/board/{boardId}`
 
@@ -533,7 +553,7 @@ const { data } = await client.deleteKanbanBoard({
 
 ### `setDefaultKanbanBoard`
 
-Set default board for organization
+Sets a Kanban board as the default board for the organization.
 
 `PUT /v1/kanban/org/default-board`
 
@@ -559,7 +579,7 @@ const { data } = await client.setDefaultKanbanBoard({
 
 ### `clearDefaultKanbanBoard`
 
-Clear default board for organization
+Removes the default board configuration for the organization.
 
 `DELETE /v1/kanban/org/default-board`
 
@@ -583,7 +603,7 @@ const { data } = await client.clearDefaultKanbanBoard()
 
 ### `flowsAutocomplete`
 
-Autocomplete flows data
+Returns autocomplete suggestions for a given attribute in the Flows dataset.
 
 `GET /v1/kanban/query/flows:autocomplete`
 
@@ -612,7 +632,7 @@ const { data } = await client.flowsAutocomplete({
 
 ### `executeFlowsQuery`
 
-Query Flows Data for Kanban View.
+Executes a query against the Flows dataset and returns paginated results for use in Kanban card rendering.
 
 `POST /v1/kanban/query/flows:execute`
 
@@ -635,6 +655,9 @@ const { data } = await client.executeFlowsQuery(
       field: 'created_at',
       direction: 'asc'
     },
+    group_by: {
+      field: 'context_entity'
+    },
     from: 0,
     size: 10
   },
@@ -649,10 +672,10 @@ const { data } = await client.executeFlowsQuery(
   "results": [
     {}
   ],
-  "hits": 0,
-  "page_number": 0,
-  "page_size": 0,
-  "total_pages": 0
+  "hits": 42,
+  "page_number": 1,
+  "page_size": 10,
+  "total_pages": 5
 }
 ```
 
@@ -662,7 +685,20 @@ const { data } = await client.executeFlowsQuery(
 
 ## Schemas
 
+### `Error`
+
+Standard error response
+
+```ts
+type Error = {
+  message?: string
+  status?: number
+}
+```
+
 ### `BoardSummary`
+
+Summary representation of a Kanban board, returned in list responses. Does not include swimlane and filter configuration details.
 
 ```ts
 type BoardSummary = {
@@ -681,6 +717,8 @@ type BoardSummary = {
 ```
 
 ### `Board`
+
+Full representation of a Kanban board, including swimlane layout, filter configuration, card display fields, and sorting options.
 
 ```ts
 type Board = {
@@ -715,12 +753,17 @@ type Board = {
       field: { ... }
       direction?: { ... }
     }
+    group_by?: {
+      field: { ... }
+    }
     search_query?: string
   }
 }
 ```
 
 ### `Swimlane`
+
+A vertical column in a Kanban board that groups workflow tasks or entities matching its filter criteria. Each swimlane has an independent filter and a display position.
 
 ```ts
 type Swimlane = {
@@ -745,6 +788,8 @@ type Swimlane = {
 
 ### `Sorting`
 
+Defines how query results should be sorted. Specify a field name and sort direction.
+
 ```ts
 type Sorting = {
   field: string
@@ -752,14 +797,26 @@ type Sorting = {
 }
 ```
 
+### `GroupBy`
+
+Defines how tasks should be grouped within each swimlane. Tasks with the same group value are returned adjacently in the result set.
+
+```ts
+type GroupBy = {
+  field: "context_entity" | "phase" | "task"
+}
+```
+
 ### `BoardFilter`
+
+A filter group containing one or more filter items or nested filter groups. Items are combined using the specified logical operator (AND/OR).
 
 ```ts
 type BoardFilter = {
   items: Array<{
     key: string
     operator: "EQUALS" | "NOT_EQUALS" | "EMPTY" | "NOT_EMPTY" | "CONTAINS" | "NOT_CONTAINS" | "IS_ONE_OF" | "IS_NONE_OF" | "GREATER_THAN" | "LESS_THAN" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL"
-    value?: string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | number | boolean | string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | number | boolean[]
+    value?: string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER" | number | boolean | string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER" | number | boolean[]
     data_type?: "string" | "number" | "boolean" | "date"
   } | {
     items: Array<{
@@ -781,7 +838,7 @@ type FilterGroup = {
   items: Array<{
     key: string
     operator: "EQUALS" | "NOT_EQUALS" | "EMPTY" | "NOT_EMPTY" | "CONTAINS" | "NOT_CONTAINS" | "IS_ONE_OF" | "IS_NONE_OF" | "GREATER_THAN" | "LESS_THAN" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL"
-    value?: string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | number | boolean | string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | number | boolean[]
+    value?: string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER" | number | boolean | string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER" | number | boolean[]
     data_type?: "string" | "number" | "boolean" | "date"
   }>
   combination: "AND" | "OR"
@@ -801,7 +858,7 @@ type FilterOperator = "EQUALS" | "NOT_EQUALS" | "EMPTY" | "NOT_EMPTY" | "CONTAIN
 Dynamic date keywords that resolve to actual dates at runtime
 
 ```ts
-type DynamicDateValue = "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH"
+type DynamicDateValue = "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER"
 ```
 
 ### `ValueType`
@@ -809,10 +866,12 @@ type DynamicDateValue = "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "
 The value to compare against - can be a single value (string, number, boolean, or dynamic date) or an array of values
 
 ```ts
-type ValueType = string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | number | boolean | string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | number | boolean[]
+type ValueType = string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER" | number | boolean | string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER" | number | boolean[]
 ```
 
 ### `FlowsQueryRequest`
+
+Request payload for executing a query against the Flows dataset. Supports filter conditions, sorting, grouping, and offset-based pagination.
 
 ```ts
 type FlowsQueryRequest = {
@@ -832,12 +891,17 @@ type FlowsQueryRequest = {
     field: string
     direction?: "asc" | "desc"
   }
+  group_by?: {
+    field: "context_entity" | "phase" | "task"
+  }
   from?: number
   size?: number
 }
 ```
 
 ### `FlowsQueryResult`
+
+Paginated result set returned from a Flows query. Each item in `results` is a workflow task record with dynamic fields depending on the dataset configuration.
 
 ```ts
 type FlowsQueryResult = {
@@ -855,7 +919,7 @@ type FlowsQueryResult = {
 type FilterItem = {
   key: string
   operator: "EQUALS" | "NOT_EQUALS" | "EMPTY" | "NOT_EMPTY" | "CONTAINS" | "NOT_CONTAINS" | "IS_ONE_OF" | "IS_NONE_OF" | "GREATER_THAN" | "LESS_THAN" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL"
-  value?: string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | number | boolean | string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | number | boolean[]
+  value?: string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER" | number | boolean | string | "TODAY" | "TOMORROW" | "YESTERDAY" | "IN_THE_FUTURE" | "IN_THE_PAST" | "THIS_WEEK" | "NEXT_WEEK" | "LAST_WEEK" | "THIS_MONTH" | "NEXT_MONTH" | "LAST_MONTH" | "TODAY_OR_EARLIER" | number | boolean[]
   data_type?: "string" | "number" | "boolean" | "date"
 }
 ```

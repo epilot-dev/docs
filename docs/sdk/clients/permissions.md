@@ -50,7 +50,10 @@ const { data } = await permissionsClient.listCurrentRoles(...)
 - [`Grant`](#grant)
 - [`GrantWithDependencies`](#grantwithdependencies)
 - [`GrantCondition`](#grantcondition)
+- [`EqualsCurrentUserCondition`](#equalscurrentusercondition)
+- [`NotEqualsCurrentUserCondition`](#notequalscurrentusercondition)
 - [`EqualsCondition`](#equalscondition)
+- [`NotEqualsCondition`](#notequalscondition)
 - [`RoleId`](#roleid)
 - [`BaseRole`](#baserole)
 - [`BaseRoleForCreate`](#baseroleforcreate)
@@ -110,7 +113,8 @@ const { data } = await client.listCurrentRoles()
           ]
         }
       ],
-      "parent_role": "123:owner"
+      "parent_role": "123:owner",
+      "vendor_created": true
     }
   ]
 }
@@ -157,7 +161,8 @@ const { data } = await client.listAllRoles()
           ]
         }
       ],
-      "parent_role": "123:owner"
+      "parent_role": "123:owner",
+      "vendor_created": true
     }
   ]
 }
@@ -205,7 +210,8 @@ const { data } = await client.createRole(
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }
 ```
 
@@ -261,7 +267,8 @@ const { data } = await client.searchRoles(
           ]
         }
       ],
-      "parent_role": "123:owner"
+      "parent_role": "123:owner",
+      "vendor_created": true
     }
   ]
 }
@@ -308,7 +315,8 @@ const { data } = await client.getRole({
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }
 ```
 
@@ -348,7 +356,8 @@ const { data } = await client.putRole(
         ]
       }
     ],
-    parent_role: '123:owner'
+    parent_role: '123:owner',
+    vendor_created: true
   },
 )
 ```
@@ -378,7 +387,8 @@ const { data } = await client.putRole(
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }
 ```
 
@@ -423,7 +433,8 @@ const { data } = await client.deleteRole({
       ]
     }
   ],
-  "parent_role": "123:owner"
+  "parent_role": "123:owner",
+  "vendor_created": true
 }
 ```
 
@@ -610,6 +621,30 @@ type GrantWithDependencies = {
 type GrantCondition = object
 ```
 
+### `EqualsCurrentUserCondition`
+
+Check if any relation_user attribute on the entity contains the current user. When attribute is provided, only that specific attribute path is checked. When attributes is provided, it takes precedence over attribute and the condition passes when the current user appears in ANY of the listed attribut
+
+```ts
+type EqualsCurrentUserCondition = {
+  attribute?: string
+  attributes?: string[]
+  operation: "equals_current_user"
+}
+```
+
+### `NotEqualsCurrentUserCondition`
+
+Check if the current user is absent from the relation_user attributes on the entity. When attribute is provided, only that specific attribute path is checked. When attributes is provided, it takes precedence over attribute and the condition passes only when the current user appears in NONE of the li
+
+```ts
+type NotEqualsCurrentUserCondition = {
+  attribute?: string
+  attributes?: string[]
+  operation: "not_equals_current_user"
+}
+```
+
 ### `EqualsCondition`
 
 Check if attribute equals to any of the values
@@ -618,6 +653,18 @@ Check if attribute equals to any of the values
 type EqualsCondition = {
   attribute: string
   operation: "equals"
+  values: unknown[]
+}
+```
+
+### `NotEqualsCondition`
+
+Passes when the attribute does not equal any of the values. Records where the attribute is missing or empty pass the condition.
+
+```ts
+type NotEqualsCondition = {
+  attribute: string
+  operation: "not_equals"
   values: unknown[]
 }
 ```
@@ -685,6 +732,7 @@ type UserRole = {
     conditions?: object[]
   }>
   parent_role?: object
+  vendor_created?: boolean
 }
 ```
 
@@ -745,6 +793,7 @@ type PartnerRole = {
   }>
   partner_org_id?: object
   vendor_enforced_user_limit?: number
+  vendor_created?: boolean
 }
 ```
 
@@ -784,6 +833,7 @@ type Role = {
     conditions?: object[]
   }>
   parent_role?: object
+  vendor_created?: boolean
 } | {
   id: string
   name: string
@@ -826,6 +876,7 @@ type Role = {
   }>
   partner_org_id?: object
   vendor_enforced_user_limit?: number
+  vendor_created?: boolean
 } | {
   id: string
   name: string
@@ -918,6 +969,7 @@ type OrgRoles = {
       conditions?: { ... }
     }>
     parent_role?: object
+    vendor_created?: boolean
   } | {
     id: string
     name: string
@@ -960,6 +1012,7 @@ type OrgRoles = {
     }>
     partner_org_id?: object
     vendor_enforced_user_limit?: number
+    vendor_created?: boolean
   } | {
     id: string
     name: string
