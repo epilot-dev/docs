@@ -110,12 +110,6 @@ graph TB
   description="Tickets store customer support requests and help desk inquiries."
 />
 
-<EntitySchemaViewer
-  schema="request"
-  displayName="Request"
-  description="Requests store customer-initiated service requests or inquiries, usually submitted through contact forms or support channels."
-/>
-
 ### Sales
 
 <EntitySchemaViewer
