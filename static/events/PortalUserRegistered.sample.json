@@ -19,10 +19,6 @@
     "string"
   ],
   "_changeset_edit_modes_by_attribute": {},
-  "operation": "createEntity",
-  "activity_id": "01F130Q52Q6MWSNS8N2AVXV4JN",
-  "activity_type": "EntityUpdated",
-  "trigger_entity": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "portal_user_id": "string",
   "portal_id": "string",
   "email": "string",

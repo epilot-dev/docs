@@ -84,29 +84,6 @@
       },
       "description": "Per-key edit mode map; keys are a subset of _changeset_attributes (attribute names for entity changesets, changeset IDs for meter-reading changesets) — only those whose pending changeset has an \"external\" or \"approval\" mode. A \"direct\"/unrecognised mode is omitted here, though the key still appears in _changeset_attributes. Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
     },
-    "operation": {
-      "type": "string",
-      "enum": [
-        "createEntity",
-        "updateEntity"
-      ],
-      "description": "The entity operation type that triggered this event"
-    },
-    "activity_id": {
-      "type": "string",
-      "description": "Activity ID associated with this operation (ULID)",
-      "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
-    },
-    "activity_type": {
-      "type": "string",
-      "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
-      "example": "EntityUpdated"
-    },
-    "trigger_entity": {
-      "type": "string",
-      "format": "uuid",
-      "description": "Entity ID of the entity that triggered this event"
-    },
     "portal_user_id": {
       "type": "string",
       "description": "ID of the portal user entity"
@@ -1721,8 +1698,6 @@
     "_event_version",
     "_event_source",
     "_ack_id",
-    "operation",
-    "trigger_entity",
     "portal_user_id"
   ],
   "additionalProperties": true,

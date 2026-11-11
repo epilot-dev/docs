@@ -1,7 +1,7 @@
 {
   "event_name": "PortalUserLoggedIn",
   "event_title": "Portal User Logged In",
-  "event_description": "Triggered when a user logs in to a customer or partner portal. Carries the portal user, its primary contact, the related contacts and the accounts of the primary contact.",
+  "event_description": "Triggered when a user logs in to a customer or partner portal, including epilot or partner users logging in as the customer (`is_admin_login`). Carries the portal user, its primary contact, the related contacts and the accounts of the primary contact.",
   "event_version": "1.0",
   "event_tags": [
     "builtin",
@@ -11,40 +11,6 @@
     "login"
   ],
   "schema_fields": {
-    "operation": {
-      "json_schema": {
-        "type": "string",
-        "enum": [
-          "updateEntity"
-        ],
-        "description": "The entity operation type that triggered this event"
-      },
-      "required": true
-    },
-    "activity_id": {
-      "json_schema": {
-        "type": "string",
-        "description": "Activity ID associated with this operation (ULID)",
-        "example": "01F130Q52Q6MWSNS8N2AVXV4JN"
-      },
-      "required": false
-    },
-    "activity_type": {
-      "json_schema": {
-        "type": "string",
-        "description": "Activity type (e.g., EntityCreated, EntityUpdated)",
-        "example": "EntityUpdated"
-      },
-      "required": false
-    },
-    "trigger_entity": {
-      "json_schema": {
-        "type": "string",
-        "format": "uuid",
-        "description": "Entity ID of the entity that triggered this event"
-      },
-      "required": true
-    },
     "portal_user_id": {
       "json_schema": {
         "type": "string",
@@ -80,7 +46,7 @@
     "logged_in_at": {
       "json_schema": {
         "type": "string",
-        "description": "When the user logged in (ISO 8601), the `last_login` of the portal user"
+        "description": "When the login happened (ISO 8601)"
       },
       "required": false,
       "graph_source": "portal_user.last_login"
@@ -88,10 +54,38 @@
     "is_first_login": {
       "json_schema": {
         "type": "boolean",
-        "description": "Whether this is the first login of the portal user"
+        "description": "Whether this is the first login of the portal user. Always false for admin logins"
       },
       "required": false,
       "graph_source": "portal_user.first_login and portal_user.last_login ? portal_user.first_login = portal_user.last_login : false"
+    },
+    "is_admin_login": {
+      "json_schema": {
+        "type": "boolean",
+        "description": "Whether an epilot or partner user logged in as the customer (\"login as\") rather than the customer"
+      },
+      "required": false
+    },
+    "admin_user_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "ID of the epilot or partner user who logged in as the customer. Only for admin logins"
+      },
+      "required": false
+    },
+    "admin_email": {
+      "json_schema": {
+        "type": "string",
+        "description": "Email of the user who logged in as the customer. Only for admin logins; absent when they used an API token"
+      },
+      "required": false
+    },
+    "admin_org_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Organization of the user who logged in as the customer: a partner organization when it differs from `_org_id`. Only for admin logins"
+      },
+      "required": false
     }
   },
   "entity_graph": {
@@ -142,17 +136,6 @@
         "from": "accounts",
         "to": "account_contacts"
       }
-    ]
-  },
-  "entity_operation": {
-    "operation": [
-      "updateEntity"
-    ],
-    "schema": [
-      "portal_user"
-    ],
-    "attribute": [
-      "last_login"
     ]
   }
 }
