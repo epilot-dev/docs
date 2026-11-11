@@ -1,13 +1,13 @@
 ---
 sidebar_position: 5
-title: Interactive Registration
+title: Interactive Inbound
 description: Push ERP data an end customer is waiting for with the portal's correlation id, so the portal can wait for exactly that data
-slug: /integrations/integration-toolkit/interactive-registration
+slug: /integrations/integration-toolkit/interactive-inbound
 ---
 
-# Interactive Registration
+# Interactive Inbound
 
-Interactive registration is a mode of the [inbound API](./inbound/getting-started.md) for the flows where an end customer is waiting on screen: self-registration in the [End Customer Portal](/docs/portals/customer-portal), adding a contract or a customer account to an existing login, and public journeys that identify a customer.
+Interactive inbound is a mode of the [inbound API](./inbound/getting-started.md) for the flows where an end customer is waiting on screen: self-registration in the [End Customer Portal](/docs/portals/customer-portal), adding a contract or a customer account to an existing login, and public journeys that identify a customer.
 
 Your push stays asynchronous. Each push carries the **correlation id** the portal passed to your extension hook, its events are processed on a dedicated, rate-limited **interactive lane**, and the portal **waits on that correlation** until the entities it needs have been written.
 
@@ -93,7 +93,7 @@ The portal calls your hook with the identifiers the end customer entered and a c
 1. **`correlation_id`** — the id the portal passed to your hook, at request level.
 2. **`interactive: true`**.
 
-Both are needed. Only events processed as interactive are recorded for the wait, so a push that carries the correlation id without `interactive: true` leaves the portal nothing to wait on: it falls back to searching for the customer, as it does without interactive registration.
+Both are needed. Only events processed as interactive are recorded for the wait, so a push that carries the correlation id without `interactive: true` leaves the portal nothing to wait on: it falls back to searching for the customer, as it does without interactive inbound.
 
 Use the id the hook passed, for that customer only. A fixed, hard-coded or reused correlation id puts every registration into one correlation and breaks the wait for all of them — see [Correlation IDs](#correlation-ids).
 

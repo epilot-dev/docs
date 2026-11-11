@@ -111,6 +111,11 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
               ],
               to: '/docs/apps/app-options',
             },
+            {
+              // The page was renamed to match the feature name
+              from: '/docs/integrations/integration-toolkit/interactive-registration',
+              to: '/docs/integrations/integration-toolkit/interactive-inbound',
+            },
           ],
           createRedirects(existingPath) {
             // Redirect old /apps/* paths to /docs/apps/*

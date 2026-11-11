@@ -24,7 +24,7 @@ A code's level is fixed. That is what makes alert rules scoped to `_error_` or
 :::
 
 The interactive lane codes (`INTERACTIVE_*` and `CORRELATION_*`) are explained in
-context, with when each is raised, in [Interactive Registration](../interactive-registration.md#monitoring).
+context, with when each is raised, in [Interactive Inbound](../interactive-inbound.md#monitoring).
 
 ## Error
 
