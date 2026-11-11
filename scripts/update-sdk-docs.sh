@@ -57,6 +57,12 @@ for line in sys.stdin:
     if line.startswith('\`\`\`'):
         in_code = not in_code
     if not in_code:
+        # Repair generator output where a <placeholder> was split out of its
+        # inline code span: `List`<T>`` -> `List<T>`, `A`<b>`c`<d>`` -> `A<b>c<d>`
+        prev_fix = None
+        while prev_fix != line:
+            prev_fix = line
+            line = re.sub(r'\`(<[a-zA-Z][^<>\`\n]*>)\`', r'\1', line)
         # Escape <word> patterns that are not valid HTML tags and not in backticks
         # Run multiple passes to handle adjacent matches on the same line
         prev = None
@@ -64,7 +70,7 @@ for line in sys.stdin:
             prev = line
             line = re.sub(
                 r'(?<!\`)<([a-zA-Z][a-zA-Z0-9_-]*)>(?!\`)',
-                lambda m: m.group(0) if m.group(1).lower() in HTML_TAGS else '\`<' + m.group(1) + '>\`',
+                lambda m: m.group(0) if m.string[:m.start()].count('\`') % 2 == 1 or m.group(1).lower() in HTML_TAGS and (len(m.group(1)) > 1 or '</' + m.group(1) in m.string) else '\`<' + m.group(1) + '>\`',
                 line
             )
     print(line)

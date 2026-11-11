@@ -1814,7 +1814,7 @@ type AgentPresenceChange = {
 ### `Skill`
 
 A skill as the phone system holds it (Babelforce: an agent tag). epilot's convention for skills is
-`<skill category>:`<label>`` (e.g. `language:german`), which the control center shows as
+`<skill category>:<label>` (e.g. `language:german`), which the control center shows as
 "Category · Label"; a skill without a colon has no category.
 Skills are case-insensitive and stored lowercased, in
 

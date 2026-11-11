@@ -350,7 +350,7 @@ type ContextRequirement = {
 
 ### `EntityContextRequirement`
 
-The consumer supplies the bound entities of `schema` under `Context.`<schema>``, e.g. a hook
+The consumer supplies the bound entities of `schema` under `Context.<schema>`, e.g. a hook
 interpolating `{{ Context.contract[0].external_id }}` declares
 `{ type: entity, schema: contract }`.
 
@@ -365,7 +365,7 @@ type EntityContextRequirement = {
 ### `ValueContextRequirement`
 
 An optional scalar input. When the consumer has a value it supplies it under
-`Context.`<name>`` (dates as ISO 8601 strings, `YYYY-MM-DD` or a date-time); otherwise the
+`Context.<name>` (dates as ISO 8601 strings, `YYYY-MM-DD` or a date-time); otherwise the
 key is absent, so the hook template must provide a fallback, e.g.
 `{{ Context.reading_date | default: "now" | date: "%Y-%m-%d" }}` dec
 
