@@ -8,6 +8,7 @@
   ],
   "name": "string",
   "goal": "string",
+  "type": "tariff_change",
   "status": "draft",
   "start_date": "1970-01-01T00:00:00.000Z",
   "end_date": "1970-01-01T00:00:00.000Z",

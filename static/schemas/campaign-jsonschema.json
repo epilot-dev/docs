@@ -54,6 +54,15 @@
       "nullable": true,
       "description": "Goal"
     },
+    "type": {
+      "type": "string",
+      "enum": [
+        "tariff_change",
+        null
+      ],
+      "nullable": true,
+      "description": "Type"
+    },
     "status": {
       "type": "string",
       "enum": [
