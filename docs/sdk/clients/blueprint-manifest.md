@@ -6227,7 +6227,7 @@ type BlueprintTestInterpretationStarted = {
 
 ### `BlueprintInterpretedCheck`
 
-An engine-verified check. Code-assigned id (p<i> or p<i>c`<n>`); the sentence is a key, never model text.
+An engine-verified check. Code-assigned id (p`<i>` or p`<i>`c`<n>`); the sentence is a key, never model text.
 
 ```ts
 type BlueprintInterpretedCheck = {

@@ -3015,7 +3015,7 @@ type SyncJobCounts = {
 ### `SyncJobEvent`
 
 Activity-log entry surfaced to the frontend. Backed by the append-only
-job event log, or by the op-log rows (`SYNC#`<jobId>`#OP#`<seq>``) for jobs
+job event log, or by the op-log rows (`SYNC#<jobId>#OP#<seq>`) for jobs
 that predate it. Key events by `id` when present.
 
 

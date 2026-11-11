@@ -772,7 +772,7 @@ const { data } = await client.queryEvents(
 
 ### `createBundleUploadUrl`
 
-Generate a presigned URL for uploading app bundle to /``<app-id>``/bundle.js path
+Generate a presigned URL for uploading app bundle to /`<app-id>`/bundle.js path
 
 `POST /v1/app-configurations/{appId}/bundle`
 
@@ -810,7 +810,7 @@ const { data } = await client.createBundleUploadUrl(
 
 ### `createZipUploadUrl`
 
-Generate a presigned URL to upload a zip file with artifacts that will be unpacked in a new directory under the /``<app-id>``/ path
+Generate a presigned URL to upload a zip file with artifacts that will be unpacked in a new directory under the /`<app-id>`/ path
 
 `POST /v1/app-configurations/{appId}/zip`
 
@@ -849,7 +849,7 @@ const { data } = await client.createZipUploadUrl(
 
 ### `createLogoUploadUrl`
 
-Generate a presigned URL for uploading app logo to /``<app-id>``/logo.png path
+Generate a presigned URL for uploading app logo to /`<app-id>`/logo.png path
 
 `POST /v1/app-configurations/{appId}/logo`
 
@@ -885,7 +885,7 @@ const { data } = await client.createLogoUploadUrl(
 
 ### `deleteLogo`
 
-Delete the app logo from /``<app-id>``/logo.png path
+Delete the app logo from /`<app-id>`/logo.png path
 
 `DELETE /v1/app-configurations/{appId}/logo`
 
@@ -3913,7 +3913,7 @@ type ContextRequirement = {
 
 ### `EntityContextRequirement`
 
-The consumer supplies the bound entities of `schema` under `Context.`<schema>``.
+The consumer supplies the bound entities of `schema` under `Context.<schema>`.
 
 ```ts
 type EntityContextRequirement = {
@@ -3924,7 +3924,7 @@ type EntityContextRequirement = {
 
 ### `ValueContextRequirement`
 
-The consumer supplies one scalar value under `Context.`<name>``, e.g. a date the customer entered in a journey block. A value input is optional: the consumer sends it when it has a value and omits it otherwise, so the hook's templates must cope with its absence, e.g. `{{ Context.reading_date | default
+The consumer supplies one scalar value under `Context.<name>`, e.g. a date the customer entered in a journey block. A value input is optional: the consumer sends it when it has a value and omits it otherwise, so the hook's templates must cope with its absence, e.g. `{{ Context.reading_date | default
 
 ```ts
 type ValueContextRequirement = {

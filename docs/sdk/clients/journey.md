@@ -841,7 +841,7 @@ const { data } = await client.resolveJourneyExternalValues(
 
 ### `getJourneyEnvironmentVariables`
 
-List the organization's client-safe environment variables a journey may use: Map and List``<Link>`` as an options source; Text, Number, Boolean and lists of them in logic conditions. Only variables that c
+List the organization's client-safe environment variables a journey may use: Map and List`<Link>` as an options source; Text, Number, Boolean and lists of them in logic conditions. Only variables that c
 
 `GET /v1/journey/environment-variables`
 
@@ -2503,7 +2503,7 @@ type EnvironmentLink = {
 
 ### `EnvironmentLinkList`
 
-A list of links, served under this service's own `List`<Link>`` type
+A list of links, served under this service's own `List<Link>` type
 token. environments-api types the variable `List` and declares the
 element type inside the value; journey-api composes the two so a
 consumer needs only one discriminant.
@@ -2523,8 +2523,8 @@ type EnvironmentLinkList = {
 
 ### `EnvironmentScalarList`
 
-A list of scalars, served under this service's own `List`<Text>``,
-`List`<Number>`` or `List`<Boolean>`` token (ER-5455). Read by logic
+A list of scalars, served under this service's own `List<Text>`,
+`List<Number>` or `List<Boolean>` token (ER-5455). Read by logic
 conditions; flattened to `items` by the journey runtime.
 
 

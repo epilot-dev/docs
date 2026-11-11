@@ -4450,7 +4450,7 @@ const { data } = await client.listTaxonomyClassificationsForSchema({
 ### `getTaxonomyBulkActionJobs`
 
 Gets bulk actions jobs by job status:
-- ``<undefined>`` = all active jobs
+- `<undefined>` = all active jobs
 - PENDING = all active jobs
 - FAILED = all failed jobs
 - COMPLETED = all completed jobs
