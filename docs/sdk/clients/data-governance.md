@@ -29,17 +29,21 @@ const { data } = await dataGovernanceClient.queryEntities(...)
 
 ## Operations
 
-**Data Governance**
+**Query**
 - [`queryEntities`](#queryentities)
+
+**Auditable Jobs**
 - [`createJob`](#createjob)
 - [`updateJob`](#updatejob)
 - [`getJob`](#getjob)
 - [`getJobReportUrl`](#getjobreporturl)
-- [`getConfig`](#getconfig)
 - [`createJobForConfig`](#createjobforconfig)
+- [`listJobs`](#listjobs)
+
+**Data Lifecycle Configs**
+- [`getConfig`](#getconfig)
 - [`upsertConfig`](#upsertconfig)
 - [`listConfigs`](#listconfigs)
-- [`listJobs`](#listjobs)
 
 **Schemas**
 - [`ConfigType`](#configtype)
@@ -67,7 +71,7 @@ const { data } = await dataGovernanceClient.queryEntities(...)
 
 ### `queryEntities`
 
-Query entities using a saved view with additional data filters
+Query entities matching a data lifecycle config
 
 `POST /data-governance/v1/{entity_schema}/query`
 
@@ -83,7 +87,9 @@ const { data } = await client.queryEntities(
       {
         type: 'entity_workflows_only_in_closed_or_cancelled_status',
         related_entity_schemas: ['string'],
-        lookback_period_days: 0
+        lookback_period_days: 0,
+        message_type: ['SENT'],
+        workflow_status: ['CLOSED']
       }
     ],
     from: 0,
@@ -124,7 +130,7 @@ const { data } = await client.createJob(
   {
     type: 'deletion',
     config_id: 'string',
-    scheduled_for: 'string',
+    scheduled_for: '1970-01-01',
     status: 'in_progress',
     started_at: '1970-01-01T00:00:00.000Z'
   },
@@ -140,7 +146,7 @@ const { data } = await client.createJob(
   "type": "deletion",
   "config_id": "string",
   "entity_schema": "string",
-  "scheduled_for": "string",
+  "scheduled_for": "1970-01-01",
   "status": "in_progress",
   "details": {},
   "started_at": "1970-01-01T00:00:00.000Z",
@@ -197,7 +203,7 @@ const { data } = await client.updateJob(
   "type": "deletion",
   "config_id": "string",
   "entity_schema": "string",
-  "scheduled_for": "string",
+  "scheduled_for": "1970-01-01",
   "status": "in_progress",
   "details": {},
   "started_at": "1970-01-01T00:00:00.000Z",
@@ -221,7 +227,7 @@ const { data } = await client.updateJob(
 
 ### `getJob`
 
-Get a job by id
+Get a job by ID
 
 `GET /data-governance/v1/jobs/{job_id}`
 
@@ -240,7 +246,7 @@ const { data } = await client.getJob({
   "type": "deletion",
   "config_id": "string",
   "entity_schema": "string",
-  "scheduled_for": "string",
+  "scheduled_for": "1970-01-01",
   "status": "in_progress",
   "details": {},
   "started_at": "1970-01-01T00:00:00.000Z",
@@ -290,7 +296,7 @@ const { data } = await client.getJobReportUrl({
 
 ### `getConfig`
 
-Get a config by id
+Get a config by ID
 
 `GET /data-governance/v1/configs/{config_id}`
 
@@ -315,20 +321,22 @@ const { data } = await client.getConfig({
       {
         "type": "entity_workflows_only_in_closed_or_cancelled_status",
         "related_entity_schemas": ["string"],
-        "lookback_period_days": 0
+        "lookback_period_days": 0,
+        "message_type": ["SENT"],
+        "workflow_status": ["CLOSED"]
       }
     ]
   },
   "schedule": {
     "frequency": "interval",
     "interval_days": 1,
-    "start_date": "string",
-    "end_date": "string"
+    "start_date": "1970-01-01",
+    "end_date": "1970-01-01"
   },
   "enabled": true,
   "created_at": "1970-01-01T00:00:00.000Z",
   "last_updated_at": "1970-01-01T00:00:00.000Z",
-  "next_run_at": "string",
+  "next_run_at": "1970-01-01",
   "relations_for_deletion": ["contact"],
   "last_run_at": "1970-01-01T00:00:00.000Z"
 }
@@ -359,7 +367,7 @@ const { data } = await client.createJobForConfig({
   "type": "deletion",
   "config_id": "string",
   "entity_schema": "string",
-  "scheduled_for": "string",
+  "scheduled_for": "1970-01-01",
   "status": "in_progress",
   "details": {},
   "started_at": "1970-01-01T00:00:00.000Z",
@@ -383,7 +391,7 @@ const { data } = await client.createJobForConfig({
 
 ### `upsertConfig`
 
-Upsert config
+Create or update a data lifecycle config
 
 `POST /data-governance/v1/{entity_schema}/configs`
 
@@ -401,15 +409,17 @@ const { data } = await client.upsertConfig(
         {
           type: 'entity_workflows_only_in_closed_or_cancelled_status',
           related_entity_schemas: ['string'],
-          lookback_period_days: 0
+          lookback_period_days: 0,
+          message_type: ['SENT'],
+          workflow_status: ['CLOSED']
         }
       ]
     },
     schedule: {
       frequency: 'interval',
       interval_days: 1,
-      start_date: 'string',
-      end_date: 'string'
+      start_date: '1970-01-01',
+      end_date: '1970-01-01'
     },
     relations_for_deletion: ['contact'],
     enabled: true
@@ -432,20 +442,22 @@ const { data } = await client.upsertConfig(
       {
         "type": "entity_workflows_only_in_closed_or_cancelled_status",
         "related_entity_schemas": ["string"],
-        "lookback_period_days": 0
+        "lookback_period_days": 0,
+        "message_type": ["SENT"],
+        "workflow_status": ["CLOSED"]
       }
     ]
   },
   "schedule": {
     "frequency": "interval",
     "interval_days": 1,
-    "start_date": "string",
-    "end_date": "string"
+    "start_date": "1970-01-01",
+    "end_date": "1970-01-01"
   },
   "enabled": true,
   "created_at": "1970-01-01T00:00:00.000Z",
   "last_updated_at": "1970-01-01T00:00:00.000Z",
-  "next_run_at": "string",
+  "next_run_at": "1970-01-01",
   "relations_for_deletion": ["contact"],
   "last_run_at": "1970-01-01T00:00:00.000Z"
 }
@@ -457,7 +469,7 @@ const { data } = await client.upsertConfig(
 
 ### `listConfigs`
 
-List configs
+List data lifecycle configs
 
 `GET /data-governance/v1/configs`
 
@@ -489,20 +501,22 @@ const { data } = await client.listConfigs({
           {
             "type": "entity_workflows_only_in_closed_or_cancelled_status",
             "related_entity_schemas": ["string"],
-            "lookback_period_days": 0
+            "lookback_period_days": 0,
+            "message_type": ["SENT"],
+            "workflow_status": ["CLOSED"]
           }
         ]
       },
       "schedule": {
         "frequency": "interval",
         "interval_days": 1,
-        "start_date": "string",
-        "end_date": "string"
+        "start_date": "1970-01-01",
+        "end_date": "1970-01-01"
       },
       "enabled": true,
       "created_at": "1970-01-01T00:00:00.000Z",
       "last_updated_at": "1970-01-01T00:00:00.000Z",
-      "next_run_at": "string",
+      "next_run_at": "1970-01-01",
       "relations_for_deletion": ["contact"],
       "last_run_at": "1970-01-01T00:00:00.000Z"
     }
@@ -517,7 +531,7 @@ const { data } = await client.listConfigs({
 
 ### `listJobs`
 
-List jobs
+List job runs
 
 `GET /data-governance/v1/jobs`
 
@@ -543,7 +557,7 @@ const { data } = await client.listJobs({
       "type": "deletion",
       "config_id": "string",
       "entity_schema": "string",
-      "scheduled_for": "string",
+      "scheduled_for": "1970-01-01",
       "status": "in_progress",
       "details": {},
       "started_at": "1970-01-01T00:00:00.000Z",
@@ -572,7 +586,9 @@ const { data } = await client.listJobs({
 
 ### `ConfigType`
 
-Type of configuration (e.g. deletion)
+The governance action type. Determines what operation is performed on
+matched entities when a job runs. Currently only `deletion` is supported.
+
 
 ```ts
 type ConfigType = "deletion"
@@ -580,11 +596,22 @@ type ConfigType = "deletion"
 
 ### `JobStatus`
 
+Current execution status of a job run.
+- `in_progress` — the job is actively processing entities.
+- `success` — the job completed without critical errors.
+- `failed` — the job terminated due to an error.
+
+
 ```ts
 type JobStatus = "in_progress" | "success" | "failed"
 ```
 
 ### `JobTrigger`
+
+Indicates how the job was initiated.
+- `schedule` — automatically created by the background scheduler.
+- `manual` — explicitly triggered by a user via the API.
+
 
 ```ts
 type JobTrigger = "schedule" | "manual"
@@ -592,11 +619,17 @@ type JobTrigger = "schedule" | "manual"
 
 ### `JobReportFormat`
 
+File format of the job report. Currently only CSV is supported.
+
 ```ts
 type JobReportFormat = "csv"
 ```
 
 ### `JobReport`
+
+Reference to a report file stored in S3 that details the outcome of a
+job run (e.g., which entities were deleted or failed).
+
 
 ```ts
 type JobReport = {
@@ -607,6 +640,8 @@ type JobReport = {
 ```
 
 ### `CreateJobRequest`
+
+Request payload for creating a new job run.
 
 ```ts
 type CreateJobRequest = {
@@ -620,13 +655,22 @@ type CreateJobRequest = {
 
 ### `JobDetails`
 
-Generic, type-specific job details payload (e.g. matched count, deleted count, failed count, etc.).
+Type-specific job outcome payload. The shape depends on the config type.
+For `deletion` jobs, typical fields include:
+- `matched_count` — total entities matched by the query
+- `deleted_count` — entities successfully deleted
+- `failed_count` — entities that could not be deleted
+
 
 ```ts
 type JobDetails = Record<string, unknown>
 ```
 
 ### `UpdateJobRequest`
+
+Partial update payload for an existing job. Only the fields provided
+will be merged into the job record.
+
 
 ```ts
 type UpdateJobRequest = {
@@ -643,6 +687,11 @@ type UpdateJobRequest = {
 ```
 
 ### `Job`
+
+Represents a single execution run of a data lifecycle config. Tracks the
+full lifecycle from creation through completion, including outcome
+details and an optional downloadable report.
+
 
 ```ts
 type Job = {
@@ -669,6 +718,8 @@ type Job = {
 ```
 
 ### `ListJobsResponse`
+
+Paginated response containing a list of job runs.
 
 ```ts
 type ListJobsResponse = {
@@ -699,6 +750,8 @@ type ListJobsResponse = {
 
 ### `JobReportUrlResponse`
 
+Contains a time-limited pre-signed URL to download a job report.
+
 ```ts
 type JobReportUrlResponse = {
   url?: string
@@ -708,21 +761,37 @@ type JobReportUrlResponse = {
 
 ### `QueryFilterType`
 
+Predefined data governance filter types that can be layered on top of
+a saved view to narrow down target entities:
+- `entity_workflows_only_in_closed_or_cancelled_status` — include only
+  entities whose own workflows are all in a closed/cancelled state.
+- `no_related_entities` — include only entitie
+
 ```ts
 type QueryFilterType = "entity_workflows_only_in_closed_or_cancelled_status" | "no_related_entities" | "related_entities_all_in_closed_or_cancelled_status" | "related_entities_workflows_only_in_closed_or_cancelled_status" | "no_email_communication_since"
 ```
 
 ### `QueryFilter`
 
+A single governance filter condition applied during entity querying.
+The required and optional fields depend on the `type`.
+
+
 ```ts
 type QueryFilter = {
   type: "entity_workflows_only_in_closed_or_cancelled_status" | "no_related_entities" | "related_entities_all_in_closed_or_cancelled_status" | "related_entities_workflows_only_in_closed_or_cancelled_status" | "no_email_communication_since"
   related_entity_schemas?: string[]
   lookback_period_days?: number
+  message_type?: "SENT" | "RECEIVED"[]
+  workflow_status?: "CLOSED" | "DONE"[]
 }
 ```
 
 ### `QueryConfig`
+
+Defines the query used by a data lifecycle config to identify target
+entities. Combines a saved view with optional governance filters.
+
 
 ```ts
 type QueryConfig = {
@@ -732,11 +801,17 @@ type QueryConfig = {
     type: "entity_workflows_only_in_closed_or_cancelled_status" | "no_related_entities" | "related_entities_all_in_closed_or_cancelled_status" | "related_entities_workflows_only_in_closed_or_cancelled_status" | "no_email_communication_since"
     related_entity_schemas?: string[]
     lookback_period_days?: number
+    message_type?: "SENT" | "RECEIVED"[]
+    workflow_status?: "CLOSED" | "DONE"[]
   }>
 }
 ```
 
 ### `QueryEntitiesRequest`
+
+Request body for the query endpoint. Extends `QueryConfig` with
+pagination and projection options.
+
 
 ```ts
 type QueryEntitiesRequest = {
@@ -746,6 +821,8 @@ type QueryEntitiesRequest = {
     type: "entity_workflows_only_in_closed_or_cancelled_status" | "no_related_entities" | "related_entities_all_in_closed_or_cancelled_status" | "related_entities_workflows_only_in_closed_or_cancelled_status" | "no_email_communication_since"
     related_entity_schemas?: string[]
     lookback_period_days?: number
+    message_type?: "SENT" | "RECEIVED"[]
+    workflow_status?: "CLOSED" | "DONE"[]
   }>
   from?: number
   size?: number
@@ -756,6 +833,8 @@ type QueryEntitiesRequest = {
 
 ### `QueryEntitiesResult`
 
+Response from the entity query endpoint.
+
 ```ts
 type QueryEntitiesResult = {
   hits?: number
@@ -764,6 +843,10 @@ type QueryEntitiesResult = {
 ```
 
 ### `ConfigSchedule`
+
+Interval-based schedule. The governance engine will create a job every
+`interval_days` days, optionally bounded by start and end dates.
+
 
 ```ts
 type ConfigSchedule = {
@@ -776,6 +859,10 @@ type ConfigSchedule = {
 
 ### `IntervalConfigSchedule`
 
+Interval-based schedule. The governance engine will create a job every
+`interval_days` days, optionally bounded by start and end dates.
+
+
 ```ts
 type IntervalConfigSchedule = {
   frequency: "interval"
@@ -787,6 +874,8 @@ type IntervalConfigSchedule = {
 
 ### `UpsertConfigRequest`
 
+Request payload for creating or updating a data lifecycle config.
+
 ```ts
 type UpsertConfigRequest = {
   type: "deletion"
@@ -797,6 +886,8 @@ type UpsertConfigRequest = {
       type: { ... }
       related_entity_schemas?: { ... }
       lookback_period_days?: { ... }
+      message_type?: { ... }
+      workflow_status?: { ... }
     }>
   }
   schedule: {
@@ -812,6 +903,10 @@ type UpsertConfigRequest = {
 
 ### `Config`
 
+A data lifecycle config defining an automated policy (e.g., scheduled
+entity deletion) for a specific entity schema.
+
+
 ```ts
 type Config = {
   id: string
@@ -824,6 +919,8 @@ type Config = {
       type: { ... }
       related_entity_schemas?: { ... }
       lookback_period_days?: { ... }
+      message_type?: { ... }
+      workflow_status?: { ... }
     }>
   }
   schedule?: {
@@ -843,11 +940,18 @@ type Config = {
 
 ### `DeletionRelationEntitySchema`
 
+Entity schema slug that can be specified as a cascading deletion
+target. When a primary entity is deleted, related entities of these
+schemas are also removed.
+
+
 ```ts
 type DeletionRelationEntitySchema = "contact" | "file" | "opportunity" | "order" | "meter" | "ticket" | "message" | "account" | "submission" | "contract"
 ```
 
 ### `ListConfigsResponse`
+
+Paginated response containing a list of data lifecycle configs.
 
 ```ts
 type ListConfigsResponse = {

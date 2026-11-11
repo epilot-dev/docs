@@ -44,6 +44,13 @@ epilot journey getJourneysByOrgId -p id=123
 - [`getJourneysByOrgId`](#getjourneysbyorgid) — Get all journeys by organization id
 - [`getJourney`](#getjourney) — Get journey by id. Private journeys requires valid private token to be passed
 - [`removeJourney`](#removejourney) — Remove journey by id
+- [`listJourneyRevisions`](#listjourneyrevisions) — Lists the journey's revision history, newest first. Metadata only, no configuration payload. `is_published` says whether
+- [`createJourneyRevision`](#createjourneyrevision) — Creates a revision: an immutable copy of the complete journey configuration, identified by `revision_id`. Nothing custom
+- [`getJourneyRevision`](#getjourneyrevision) — Returns one revision with its full configuration, in the shape the builder holds a journey in, so it can be loaded strai
+- [`publishJourneyRevision`](#publishjourneyrevision) — Makes one revision the published version, the one customers receive, in a single transaction: the revision's configurati
+- [`getJourneyPublishState`](#getjourneypublishstate) — Answers which revision is the published version without paging through the history. A journey that has not adopted versi
+- [`getJourneyEnvironment`](#getjourneyenvironment) — Resolve the environment variables referenced by this journey. Only browser-safe value types are returned.
+- [`getJourneyEnvironmentVariables`](#getjourneyenvironmentvariables) — List the organization's environment variables that a journey block may use as an options source. Only Map variables that
 - [`getJourneyProducts`](#getjourneyproducts) — Get products available in the journey by id. requires public journey token to be passed.
 - [`createJourney`](#createjourney) — Create a Journey
 - [`updateJourney`](#updatejourney) — Update a Journey
@@ -114,6 +121,8 @@ Get journey by id. Private journeys requires valid private token to be passed
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string (uuid) | Yes | Journey ID |
+| `version` | query | number | No | Revision row to read. `0` (default) is the journey record, the published version every customer receives; a positive integer `n` reads revision row `n` (used by config-engine for history reads). Disti |
+| `revision_id` | query | string | No | Serve the named revision instead of the published version, so a save-and-continue session can stay on the revision it started on. Only revisions that have been published at least once are served on th |
 | `source` | query | string | No | What source ID. Journey or Entity ID |
 | `orgId` | query | string | No | Organization ID |
 
@@ -153,6 +162,7 @@ epilot journey getJourney -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata '
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -188,10 +198,13 @@ epilot journey getJourney -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata '
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -207,6 +220,7 @@ epilot journey getJourney -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata '
     "templateId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "targetedCustomer": "string",
     "description": "string",
     "organizationSettings": {},
@@ -216,26 +230,35 @@ epilot journey getJourney -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata '
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "useAustrianLabels": true,
     "enableDarkMode": true,
     "accessMode": "PUBLIC",
+    "authGate": {
+      "stepId": "string"
+    },
     "isPublished": true,
     "status": "string",
     "isActive": true,
     "savingProgress": {
-      "savingMode": "auto",
-      "supportedVersion": 0
+      "mode": "auto",
+      "supportedRevision": 0
     },
     "thirdPartyCookies": true
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "createdBy": "string",
   "updatedBy": "string",
   "__lastModifiedAt": "string",
@@ -244,7 +267,8 @@ epilot journey getJourney -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata '
   "deletedAt": "string",
   "version": 0,
   "revisions": 0,
-  "featureFlags": {}
+  "featureFlags": {},
+  "revision_id": "42"
 }
 ```
 
@@ -282,6 +306,582 @@ With JSONata filter:
 ```bash
 epilot journey removeJourney -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata '$'
 ```
+
+---
+
+### `listJourneyRevisions`
+
+Lists the journey's revision history, newest first. Metadata only, no configuration payload. `is_published` says whether
+
+`GET /v1/journey/configuration/{id}/revisions`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string (uuid) | Yes | Journey ID |
+| `limit` | query | number | No | Maximum number of revisions to return |
+| `cursor` | query | string | No | Opaque pagination cursor, taken from a previous response's `next_cursor` |
+
+**Sample Call**
+
+```bash
+epilot journey listJourneyRevisions \
+  -p id=509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot journey listJourneyRevisions 509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+With JSONata filter:
+
+```bash
+epilot journey listJourneyRevisions -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata 'results[0]'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "revision_id": "42",
+      "created_at": "1970-01-01T00:00:00.000Z",
+      "created_by": "string",
+      "name": "Summer campaign",
+      "description": "string",
+      "published_at": "1970-01-01T00:00:00.000Z",
+      "is_published": true,
+      "mapping_config_version": 12
+    }
+  ],
+  "next_cursor": "string"
+}
+```
+
+</details>
+
+---
+
+### `createJourneyRevision`
+
+Creates a revision: an immutable copy of the complete journey configuration, identified by `revision_id`. Nothing custom
+
+`POST /v1/journey/configuration/{id}/revisions`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string (uuid) | Yes | Journey ID |
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot journey createJourneyRevision \
+  -p id=509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+With request body:
+
+```bash
+epilot journey createJourneyRevision \
+  -p id=509cdffe-424f-457a-95c2-9708c304ce77 \
+  -d '{
+  "journeyId": "string",
+  "organizationId": "string",
+  "brandId": "string",
+  "name": "string",
+  "steps": [
+    {
+      "showStepName": true,
+      "title": "string",
+      "subTitle": "string",
+      "showStepSubtitle": true,
+      "showStepper": true,
+      "showStepperLabels": true,
+      "stepperType": "numbers",
+      "hideNextButton": true,
+      "name": "string",
+      "stepId": "string",
+      "schema": {},
+      "uischema": {},
+      "maxWidth": "small"
+    }
+  ],
+  "design": {
+    "logoUrl": "string",
+    "theme": {},
+    "designTokens": {}
+  },
+  "rules": [
+    {
+      "type": "inject",
+      "sourceType": "journey",
+      "source": "string",
+      "target": "string"
+    }
+  ],
+  "logics": [
+    {
+      "autoGeneratedId": "string",
+      "conditions": ["string"],
+      "actions": ["string"]
+    }
+  ],
+  "logicsV4": {},
+  "contextSchema": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "type": "string",
+      "paramKey": "string",
+      "isRequired": true,
+      "shouldLoadEntity": true,
+      "description": "string"
+    }
+  ],
+  "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
+  "settings": {
+    "embedOptions": {
+      "mode": "full-screen",
+      "lang": "de",
+      "width": "string",
+      "topBar": true,
+      "scrollToTop": true,
+      "button": {}
+    },
+    "safeModeAutomation": true,
+    "canary": true,
+    "designId": "string",
+    "templateId": "string",
+    "entityId": "string",
+    "mappingsAutomationId": "string",
+    "newMappings": true,
+    "targetedCustomer": "string",
+    "description": "string",
+    "organizationSettings": {},
+    "publicToken": "string",
+    "runtimeEntities": ["ORDER"],
+    "filePurposes": ["string"],
+    "entityTags": ["string"],
+    "addressSuggestionsFileUrl": "string",
+    "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
+    "useNewDesign": true,
+    "useAustrianLabels": true,
+    "enableDarkMode": true,
+    "accessMode": "PUBLIC",
+    "authGate": {
+      "stepId": "string"
+    },
+    "isPublished": true,
+    "status": "string",
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    },
+    "thirdPartyCookies": true
+  },
+  "validationRules": {
+    "block1": "rule123",
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
+    }
+  },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
+  "createdBy": "string",
+  "updatedBy": "string",
+  "__lastModifiedAt": "string",
+  "parent_revision_id": "41",
+  "based_on_revision_id": "37",
+  "mapping_config_version": 12,
+  "revision_name": "Changes to Steps and Logic"
+}'
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot journey createJourneyRevision 509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot journey createJourneyRevision -p id=509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+With JSONata filter:
+
+```bash
+epilot journey createJourneyRevision -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata 'revision_id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "revision_id": "42",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "created_by": "string",
+  "name": "Summer campaign",
+  "description": "string",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "is_published": true,
+  "mapping_config_version": 12
+}
+```
+
+</details>
+
+---
+
+### `getJourneyRevision`
+
+Returns one revision with its full configuration, in the shape the builder holds a journey in, so it can be loaded strai
+
+`GET /v1/journey/configuration/{id}/revisions/{revision_id}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string (uuid) | Yes | Journey ID |
+| `revision_id` | path | string | Yes | Revision ID, as returned in a revision summary |
+
+**Sample Call**
+
+```bash
+epilot journey getJourneyRevision \
+  -p id=509cdffe-424f-457a-95c2-9708c304ce77 \
+  -p revision_id=42
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot journey getJourneyRevision 509cdffe-424f-457a-95c2-9708c304ce77 42
+```
+
+With JSONata filter:
+
+```bash
+epilot journey getJourneyRevision -p id=509cdffe-424f-457a-95c2-9708c304ce77 -p revision_id=42 --jsonata '$'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "revision_id": "42",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "created_by": "string",
+  "name": "Summer campaign",
+  "description": "string",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "is_published": true,
+  "mapping_config_version": 12,
+  "configuration": {
+    "journeyId": "string",
+    "organizationId": "string",
+    "brandId": "string",
+    "name": "string",
+    "steps": [
+      {}
+    ],
+    "design": {
+      "logoUrl": "string",
+      "theme": {},
+      "designTokens": {}
+    },
+    "rules": [
+      {}
+    ],
+    "logics": [
+      {}
+    ],
+    "logicsV4": {},
+    "contextSchema": [
+      {}
+    ],
+    "journey_type": "Sales template (Premium)",
+    "protected": true,
+    "protectedEditable": ["string"],
+    "settings": {
+      "embedOptions": {},
+      "safeModeAutomation": true,
+      "canary": true,
+      "designId": "string",
+      "templateId": "string",
+      "entityId": "string",
+      "mappingsAutomationId": "string",
+      "newMappings": true,
+      "targetedCustomer": "string",
+      "description": "string",
+      "organizationSettings": {},
+      "publicToken": "string",
+      "runtimeEntities": ["ORDER"],
+      "filePurposes": ["string"],
+      "entityTags": ["string"],
+      "addressSuggestionsFileUrl": "string",
+      "addressSuggestionsFileId": "string",
+      "addressSuggestionsCountryCode": "string",
+      "addressSuggestionsEnableAutoComplete": true,
+      "addressSuggestionsSource": ["string"],
+      "addressSuggestionsEnableFreeText": true,
+      "useNewDesign": true,
+      "useAustrianLabels": true,
+      "enableDarkMode": true,
+      "accessMode": "PUBLIC",
+      "authGate": {},
+      "isPublished": true,
+      "status": "string",
+      "isActive": true,
+      "savingProgress": {},
+      "thirdPartyCookies": true
+    },
+    "validationRules": {
+      "block1": "rule123",
+      "block2": ["rule456", "rule789"],
+      "block3": {}
+    },
+    "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
+    "createdBy": "string",
+    "updatedBy": "string",
+    "__lastModifiedAt": "string",
+    "createdAt": "string",
+    "lastModifiedAt": "string",
+    "deletedAt": "string",
+    "version": 0,
+    "revisions": 0,
+    "featureFlags": {}
+  }
+}
+```
+
+</details>
+
+---
+
+### `publishJourneyRevision`
+
+Makes one revision the published version, the one customers receive, in a single transaction: the revision's configurati
+
+`POST /v1/journey/configuration/{id}/publish`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string (uuid) | Yes | Journey ID |
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot journey publishJourneyRevision \
+  -p id=509cdffe-424f-457a-95c2-9708c304ce77 \
+  -d '{"revision_id":"42","name":"Summer campaign","description":"string"}'
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot journey publishJourneyRevision 509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot journey publishJourneyRevision -p id=509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+With JSONata filter:
+
+```bash
+epilot journey publishJourneyRevision -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata 'revision_id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "revision_id": "42",
+  "name": "Summer campaign",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "published_by": "string",
+  "post_publish_warnings": ["string"]
+}
+```
+
+</details>
+
+---
+
+### `getJourneyPublishState`
+
+Answers which revision is the published version without paging through the history. A journey that has not adopted versi
+
+`GET /v1/journey/configuration/{id}/publish-state`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string (uuid) | Yes | Journey ID |
+
+**Sample Call**
+
+```bash
+epilot journey getJourneyPublishState \
+  -p id=509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot journey getJourneyPublishState 509cdffe-424f-457a-95c2-9708c304ce77
+```
+
+With JSONata filter:
+
+```bash
+epilot journey getJourneyPublishState -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata 'journey_id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "journey_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "published_revision_id": "42",
+  "published_at": "1970-01-01T00:00:00.000Z",
+  "published_by": "string"
+}
+```
+
+</details>
+
+---
+
+### `getJourneyEnvironment`
+
+Resolve the environment variables referenced by this journey. Only browser-safe value types are returned.
+
+`GET /v1/journey/configuration/{id}/environment`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `id` | path | string (uuid) | Yes | Journey ID bound to the supplied journey access token |
+
+**Sample Call**
+
+```bash
+epilot journey getJourneyEnvironment \
+  -p id=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot journey getJourneyEnvironment 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot journey getJourneyEnvironment -p id=123e4567-e89b-12d3-a456-426614174000 --jsonata 'items[0]'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "items": [
+    {
+      "datasourceId": "string",
+      "type": "Text",
+      "value": "string"
+    }
+  ],
+  "errors": [
+    {
+      "datasourceId": "string",
+      "code": "not_found"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `getJourneyEnvironmentVariables`
+
+List the organization's environment variables that a journey block may use as an options source. Only Map variables that
+
+`GET /v1/journey/environment-variables`
+
+**Sample Call**
+
+```bash
+epilot journey getJourneyEnvironmentVariables
+```
+
+With JSONata filter:
+
+```bash
+epilot journey getJourneyEnvironmentVariables --jsonata 'items[0]'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "items": [
+    {
+      "key": "string",
+      "type": "Map",
+      "value": {
+        "fallbackLanguage": "de",
+        "options": [
+          {
+            "key": "string",
+            "value": "string"
+          }
+        ]
+      },
+      "description": "string"
+    }
+  ]
+}
+```
+
+</details>
 
 ---
 
@@ -335,10 +935,16 @@ epilot journey getJourneyProducts -p id=509cdffe-424f-457a-95c2-9708c304ce77 --j
     "_org": "string",
     "code": "string",
     "description": "string",
-    "feature": [],
-    "product_images": [],
+    "feature": [
+      {}
+    ],
+    "product_images": [
+      {}
+    ],
     "legal_footnote": "string",
-    "product_downloads": [],
+    "product_downloads": [
+      {}
+    ],
     "price": {}
   }
 ]
@@ -385,6 +991,7 @@ epilot journey createJourney \
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -420,10 +1027,13 @@ epilot journey createJourney \
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -439,6 +1049,7 @@ epilot journey createJourney \
     "templateId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "targetedCustomer": "string",
     "description": "string",
     "organizationSettings": {},
@@ -448,26 +1059,35 @@ epilot journey createJourney \
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "useAustrianLabels": true,
     "enableDarkMode": true,
     "accessMode": "PUBLIC",
+    "authGate": {
+      "stepId": "string"
+    },
     "isPublished": true,
     "status": "string",
     "isActive": true,
     "savingProgress": {
-      "savingMode": "auto",
-      "supportedVersion": 0
+      "mode": "auto",
+      "supportedRevision": 0
     },
     "thirdPartyCookies": true
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "createdBy": "string",
   "updatedBy": "string",
   "__lastModifiedAt": "string"
@@ -503,6 +1123,7 @@ epilot journey createJourney --jsonata '$'
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -538,10 +1159,13 @@ epilot journey createJourney --jsonata '$'
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -557,6 +1181,7 @@ epilot journey createJourney --jsonata '$'
     "templateId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "targetedCustomer": "string",
     "description": "string",
     "organizationSettings": {},
@@ -566,26 +1191,35 @@ epilot journey createJourney --jsonata '$'
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "useAustrianLabels": true,
     "enableDarkMode": true,
     "accessMode": "PUBLIC",
+    "authGate": {
+      "stepId": "string"
+    },
     "isPublished": true,
     "status": "string",
     "isActive": true,
     "savingProgress": {
-      "savingMode": "auto",
-      "supportedVersion": 0
+      "mode": "auto",
+      "supportedRevision": 0
     },
     "thirdPartyCookies": true
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "createdBy": "string",
   "updatedBy": "string",
   "__lastModifiedAt": "string",
@@ -633,6 +1267,7 @@ epilot journey updateJourney \
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -668,10 +1303,13 @@ epilot journey updateJourney \
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -687,6 +1325,7 @@ epilot journey updateJourney \
     "templateId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "targetedCustomer": "string",
     "description": "string",
     "organizationSettings": {},
@@ -696,26 +1335,35 @@ epilot journey updateJourney \
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "useAustrianLabels": true,
     "enableDarkMode": true,
     "accessMode": "PUBLIC",
+    "authGate": {
+      "stepId": "string"
+    },
     "isPublished": true,
     "status": "string",
     "isActive": true,
     "savingProgress": {
-      "savingMode": "auto",
-      "supportedVersion": 0
+      "mode": "auto",
+      "supportedRevision": 0
     },
     "thirdPartyCookies": true
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "createdBy": "string",
   "updatedBy": "string",
   "__lastModifiedAt": "string"
@@ -792,6 +1440,8 @@ epilot journey patchUpdateJourney --jsonata 'createdJourney'
       {}
     ],
     "journey_type": "Sales template (Premium)",
+    "protected": true,
+    "protectedEditable": ["string"],
     "settings": {
       "embedOptions": {},
       "safeModeAutomation": true,
@@ -800,6 +1450,7 @@ epilot journey patchUpdateJourney --jsonata 'createdJourney'
       "templateId": "string",
       "entityId": "string",
       "mappingsAutomationId": "string",
+      "newMappings": true,
       "targetedCustomer": "string",
       "description": "string",
       "organizationSettings": {},
@@ -809,10 +1460,15 @@ epilot journey patchUpdateJourney --jsonata 'createdJourney'
       "entityTags": ["string"],
       "addressSuggestionsFileUrl": "string",
       "addressSuggestionsFileId": "string",
+      "addressSuggestionsCountryCode": "string",
+      "addressSuggestionsEnableAutoComplete": true,
+      "addressSuggestionsSource": ["string"],
+      "addressSuggestionsEnableFreeText": true,
       "useNewDesign": true,
       "useAustrianLabels": true,
       "enableDarkMode": true,
       "accessMode": "PUBLIC",
+      "authGate": {},
       "isPublished": true,
       "status": "string",
       "isActive": true,
@@ -821,8 +1477,10 @@ epilot journey patchUpdateJourney --jsonata 'createdJourney'
     },
     "validationRules": {
       "block1": "rule123",
-      "block2": {}
+      "block2": ["rule456", "rule789"],
+      "block3": {}
     },
+    "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
     "createdBy": "string",
     "updatedBy": "string",
     "__lastModifiedAt": "string",
@@ -913,8 +1571,21 @@ Builds document generated from a template with journey values."
 **Sample Call**
 
 ```bash
+epilot journey generateDocument
+```
+
+With request body:
+
+```bash
 epilot journey generateDocument \
-  -d '{"file_id":"1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p","context_data":{"additionalProperties":"string"},"language":"de"}'
+  -d '{
+  "file_id": "1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+  "context_data": {
+    "additionalProperties": "string"
+  },
+  "context_entity_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "language": "de"
+}'
 ```
 
 Using stdin pipe:
@@ -972,7 +1643,7 @@ epilot journey generateDocument --jsonata 'job_id'
     "template_with_datatable": false,
     "enabled_template_settings_persistence": false,
     "misconfigured_margins": false,
-    "file_entity_id": "1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p"
+    "file_entity_id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
   }
 }
 ```
@@ -1017,6 +1688,7 @@ epilot journey createJourneyV2 \
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -1052,10 +1724,13 @@ epilot journey createJourneyV2 \
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1069,6 +1744,7 @@ epilot journey createJourneyV2 \
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1078,16 +1754,30 @@ epilot journey createJourneyV2 \
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1122,6 +1812,7 @@ epilot journey createJourneyV2 --jsonata 'journeyId'
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -1157,10 +1848,13 @@ epilot journey createJourneyV2 --jsonata 'journeyId'
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1174,6 +1868,7 @@ epilot journey createJourneyV2 --jsonata 'journeyId'
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1183,16 +1878,30 @@ epilot journey createJourneyV2 --jsonata 'journeyId'
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1233,6 +1942,7 @@ epilot journey updateJourneyV2 \
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -1268,10 +1978,13 @@ epilot journey updateJourneyV2 \
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1285,6 +1998,7 @@ epilot journey updateJourneyV2 \
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1294,16 +2008,30 @@ epilot journey updateJourneyV2 \
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1338,6 +2066,7 @@ epilot journey updateJourneyV2 --jsonata 'journeyId'
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -1373,10 +2102,13 @@ epilot journey updateJourneyV2 --jsonata 'journeyId'
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1390,6 +2122,7 @@ epilot journey updateJourneyV2 --jsonata 'journeyId'
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1399,16 +2132,30 @@ epilot journey updateJourneyV2 --jsonata 'journeyId'
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1462,6 +2209,7 @@ epilot journey patchUpdateJourneyV2 --jsonata 'journeyId'
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -1497,10 +2245,13 @@ epilot journey patchUpdateJourneyV2 --jsonata 'journeyId'
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1514,6 +2265,7 @@ epilot journey patchUpdateJourneyV2 --jsonata 'journeyId'
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1523,16 +2275,30 @@ epilot journey patchUpdateJourneyV2 --jsonata 'journeyId'
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
@@ -1554,6 +2320,7 @@ Get journey by id
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `id` | path | string (uuid) | Yes | Journey ID |
+| `version` | query | number | No | Revision row to read. `0` (default) is the journey record, the published version every customer receives; a positive integer `n` reads revision row `n` (used by config-engine for history reads). Disti |
 
 **Sample Call**
 
@@ -1571,7 +2338,7 @@ epilot journey getJourneyV2 509cdffe-424f-457a-95c2-9708c304ce77
 With JSONata filter:
 
 ```bash
-epilot journey getJourneyV2 -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata 'journeyId'
+epilot journey getJourneyV2 -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata '$'
 ```
 
 <details>
@@ -1590,6 +2357,7 @@ epilot journey getJourneyV2 -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata
       "showStepSubtitle": true,
       "showStepper": true,
       "showStepperLabels": true,
+      "stepperType": "numbers",
       "hideNextButton": true,
       "name": "string",
       "stepId": "string",
@@ -1625,10 +2393,13 @@ epilot journey getJourneyV2 -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata
       "type": "string",
       "paramKey": "string",
       "isRequired": true,
-      "shouldLoadEntity": true
+      "shouldLoadEntity": true,
+      "description": "string"
     }
   ],
   "journey_type": "Sales template (Premium)",
+  "protected": true,
+  "protectedEditable": ["string"],
   "settings": {
     "embedOptions": {
       "mode": "full-screen",
@@ -1642,6 +2413,7 @@ epilot journey getJourneyV2 -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata
     "designId": "string",
     "entityId": "string",
     "mappingsAutomationId": "string",
+    "newMappings": true,
     "templateId": "string",
     "targetedCustomer": "string",
     "description": "string",
@@ -1651,16 +2423,30 @@ epilot journey getJourneyV2 -p id=509cdffe-424f-457a-95c2-9708c304ce77 --jsonata
     "entityTags": ["string"],
     "addressSuggestionsFileUrl": "string",
     "addressSuggestionsFileId": "string",
+    "addressSuggestionsCountryCode": "string",
+    "addressSuggestionsEnableAutoComplete": true,
+    "addressSuggestionsSource": ["string"],
+    "addressSuggestionsEnableFreeText": true,
     "useNewDesign": true,
     "thirdPartyCookies": true,
     "accessMode": "PUBLIC",
-    "enableDarkMode": true
+    "authGate": {
+      "stepId": "string"
+    },
+    "enableDarkMode": true,
+    "useAustrianLabels": true,
+    "isActive": true,
+    "savingProgress": {
+      "mode": "auto",
+      "supportedRevision": 0
+    }
   },
   "validationRules": {
     "block1": "rule123",
-    "block2": {
-      "field1": "rule456",
-      "field2": "rule789"
+    "block2": ["rule456", "rule789"],
+    "block3": {
+      "field1": "rule101",
+      "field2": ["rule102", "rule103"]
     }
   },
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]

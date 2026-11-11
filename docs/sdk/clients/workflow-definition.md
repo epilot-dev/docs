@@ -47,8 +47,6 @@ const { data } = await workflowDefinitionClient.getMaxAllowedLimit(...)
 - [`updateFlowTemplate`](#updateflowtemplate)
 - [`deleteFlowTemplate`](#deleteflowtemplate)
 - [`duplicateFlowTemplate`](#duplicateflowtemplate)
-- [`exportFlowTemplate`](#exportflowtemplate)
-- [`importFlowTemplate`](#importflowtemplate)
 
 **Closing Reason**
 - [`getAllClosingReasons`](#getallclosingreasons)
@@ -60,6 +58,8 @@ const { data } = await workflowDefinitionClient.getMaxAllowedLimit(...)
 
 **Schemas**
 - [`FlowTemplateBase`](#flowtemplatebase)
+- [`FlowLimitWarning`](#flowlimitwarning)
+- [`FlowStructuralWarning`](#flowstructuralwarning)
 - [`FlowTemplate`](#flowtemplate)
 - [`Version`](#version)
 - [`Trigger`](#trigger)
@@ -74,7 +74,19 @@ const { data } = await workflowDefinitionClient.getMaxAllowedLimit(...)
 - [`Task`](#task)
 - [`ManualTask`](#manualtask)
 - [`AutomationTask`](#automationtask)
+- [`AutomationFailurePolicy`](#automationfailurepolicy)
 - [`AutomationConfig`](#automationconfig)
+- [`EmailReviewConfig`](#emailreviewconfig)
+- [`AutomationInputContext`](#automationinputcontext)
+- [`AutomationInputExtraContextRef`](#automationinputextracontextref)
+- [`AutomationInputExtraTaskRef`](#automationinputextrataskref)
+- [`FlowContextSettings`](#flowcontextsettings)
+- [`MainContextSetting`](#maincontextsetting)
+- [`FlowDisplayRule`](#flowdisplayrule)
+- [`FlowRuleAnchor`](#flowruleanchor)
+- [`MainContextAnchor`](#maincontextanchor)
+- [`RuleAnchor`](#ruleanchor)
+- [`AutomationOutputContext`](#automationoutputcontext)
 - [`AiAgentTask`](#aiagenttask)
 - [`AgentConfig`](#agentconfig)
 - [`TriggerMode`](#triggermode)
@@ -83,8 +95,11 @@ const { data } = await workflowDefinitionClient.getMaxAllowedLimit(...)
 - [`DelayedSchedule`](#delayedschedule)
 - [`RelativeSchedule`](#relativeschedule)
 - [`DecisionTask`](#decisiontask)
+- [`LoopDefinition`](#loopdefinition)
+- [`TaskAudience`](#taskaudience)
 - [`TaskBase`](#taskbase)
 - [`Phase`](#phase)
+- [`Stage`](#stage)
 - [`VariableAssignment`](#variableassignment)
 - [`TaskType`](#tasktype)
 - [`Edge`](#edge)
@@ -93,8 +108,10 @@ const { data } = await workflowDefinitionClient.getMaxAllowedLimit(...)
 - [`EvaluationSource`](#evaluationsource)
 - [`Operator`](#operator)
 - [`DueDateConfig`](#duedateconfig)
+- [`StartDateConfig`](#startdateconfig)
 - [`TimeUnit`](#timeunit)
 - [`EnableRequirement`](#enablerequirement)
+- [`Subtask`](#subtask)
 - [`WorkflowDefinition`](#workflowdefinition)
 - [`Step`](#step)
 - [`Section`](#section)
@@ -102,7 +119,12 @@ const { data } = await workflowDefinitionClient.getMaxAllowedLimit(...)
 - [`ItemType`](#itemtype)
 - [`StepType`](#steptype)
 - [`StepJourney`](#stepjourney)
+- [`AiPrefillConfig`](#aiprefillconfig)
+- [`AiPrefillExtractionField`](#aiprefillextractionfield)
+- [`AiPrefillMapping`](#aiprefillmapping)
+- [`JourneyContextParameter`](#journeycontextparameter)
 - [`ECPDetails`](#ecpdetails)
+- [`PartnerDetails`](#partnerdetails)
 - [`StepDescription`](#stepdescription)
 - [`MaxAllowedLimit`](#maxallowedlimit)
 - [`DefinitionNotFoundResp`](#definitionnotfoundresp)
@@ -118,8 +140,9 @@ const { data } = await workflowDefinitionClient.getMaxAllowedLimit(...)
 - [`EntitySync`](#entitysync)
 - [`DynamicDueDate`](#dynamicduedate)
 - [`StepRequirement`](#steprequirement)
-- [`FlowTemplateExport`](#flowtemplateexport)
-- [`FlowTemplateImportResult`](#flowtemplateimportresult)
+- [`JourneyContextUsagesReq`](#journeycontextusagesreq)
+- [`JourneyContextUsage`](#journeycontextusage)
+- [`JourneyContextUsagesResp`](#journeycontextusagesresp)
 
 ### `getMaxAllowedLimit`
 
@@ -147,7 +170,7 @@ const { data } = await client.getMaxAllowedLimit()
 
 ### `getDefinitions`
 
-Retrieve all Workflow Definitions from an Organization
+Retrieve all V1 workflow definitions belonging to the authenticated organization.
 
 `GET /v1/workflows/definitions`
 
@@ -189,7 +212,8 @@ const { data } = await client.getDefinitions()
       {}
     ],
     "taxonomies": ["string"],
-    "singleClosingReasonSelection": true
+    "singleClosingReasonSelection": true,
+    "_manifest": ["string"]
   }
 ]
 ```
@@ -200,7 +224,9 @@ const { data } = await client.getDefinitions()
 
 ### `createDefinition`
 
-Create a Workflow Definition.
+Create a new V1 workflow definition. The definition consists of sections and steps
+that define the structure of the workflow. Once created, the definition can be used
+to start workflow executions.
 
 `POST /v1/workflows/definitions`
 
@@ -253,6 +279,7 @@ const { data } = await client.createDefinition(
         type: 'STEP',
         ecp: { /* ... */ },
         installer: { /* ... */ },
+        partner: { /* ... */ },
         taxonomies: ['string']
       }
     ],
@@ -268,7 +295,8 @@ const { data } = await client.createDefinition(
       }
     ],
     taxonomies: ['string'],
-    singleClosingReasonSelection: true
+    singleClosingReasonSelection: true,
+    _manifest: ['string']
   },
 )
 ```
@@ -323,6 +351,7 @@ const { data } = await client.createDefinition(
       "type": "STEP",
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"]
     }
   ],
@@ -338,7 +367,8 @@ const { data } = await client.createDefinition(
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"]
 }
 ```
 
@@ -371,6 +401,7 @@ const { data } = await client.listFlowTemplates({
       "org_id": "string",
       "name": "string",
       "description": "string",
+      "portal_titles": {},
       "trigger": {},
       "enabled": true,
       "version": 2,
@@ -382,12 +413,20 @@ const { data } = await client.listFlowTemplates({
       "available_in_ecp": true,
       "additional_triggers": [],
       "phases": [],
+      "stages": [],
       "tasks": [],
       "edges": [],
       "closing_reasons": [],
       "entity_sync": [],
       "taxonomies": ["string"],
-      "singleClosingReasonSelection": true
+      "singleClosingReasonSelection": true,
+      "_manifest": ["string"],
+      "linear": true,
+      "context_settings": {},
+      "limit_warnings": [],
+      "structural_warnings": [],
+      "keep_task_automations_in_sync": true,
+      "protected": true
     }
   ]
 }
@@ -399,18 +438,25 @@ const { data } = await client.listFlowTemplates({
 
 ### `createFlowTemplate`
 
-Create a new Flow Template.
+Create a new Flow Template (V2 workflow definition).
 
 `POST /v2/flows/templates`
 
 ```ts
 const { data } = await client.createFlowTemplate(
-  null,
+  {
+    enforce_limits: true,
+    client_supports_adv_loops: true,
+  },
   {
     id: 'string',
     org_id: 'string',
     name: 'string',
     description: 'string',
+    portal_titles: {
+      ecp: 'string',
+      installer: 'string'
+    },
     trigger: {
       type: 'automation',
       automation_id: 'g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg'
@@ -439,7 +485,9 @@ const { data } = await client.createFlowTemplate(
         id: 'string',
         type: 'automation',
         automation_id: 'string',
-        trigger_config: [ /* ... */ ]
+        input_entity: 'thread',
+        trigger_config: [ /* ... */ ],
+        duplicated_automation_id: 'string'
       },
       /* ... 2 more */
     ],
@@ -453,6 +501,18 @@ const { data } = await client.createFlowTemplate(
         taxonomies: ['string']
       }
     ],
+    stages: [
+      {
+        id: 'string',
+        name: 'string',
+        description: 'string',
+        entry_node_id: 'string',
+        cut_edge_ids: ['string'],
+        color: 'string',
+        portal_names: { /* ... */ },
+        portal_descriptions: { /* ... */ }
+      }
+    ],
     tasks: [
       {
         id: 'string',
@@ -461,10 +521,17 @@ const { data } = await client.createFlowTemplate(
         journey: { /* ... */ },
         due_date: '2021-04-27T12:00:00.000Z',
         due_date_config: { /* ... */ },
+        start_date: '2021-04-27T12:00:00.000Z',
+        start_date_config: { /* ... */ },
         requirements: [ /* ... */ ],
+        required: false,
+        only_assignee_can_complete: true,
+        subtasks: [ /* ... */ ],
         assigned_to: ['string'],
         ecp: { /* ... */ },
         installer: { /* ... */ },
+        partner: { /* ... */ },
+        audience_order: ['description'],
         taxonomies: ['string'],
         phase_id: 'string',
         task_type: 'MANUAL'
@@ -476,14 +543,22 @@ const { data } = await client.createFlowTemplate(
         journey: { /* ... */ },
         due_date: '2021-04-27T12:00:00.000Z',
         due_date_config: { /* ... */ },
+        start_date: '2021-04-27T12:00:00.000Z',
+        start_date_config: { /* ... */ },
         requirements: [ /* ... */ ],
+        required: false,
+        only_assignee_can_complete: true,
+        subtasks: [ /* ... */ ],
         assigned_to: ['string'],
         ecp: { /* ... */ },
         installer: { /* ... */ },
+        partner: { /* ... */ },
+        audience_order: ['description'],
         taxonomies: ['string'],
         phase_id: 'string',
         task_type: 'MANUAL',
         automation_config: { /* ... */ },
+        on_failure: 'stop',
         trigger_mode: 'manual',
         schedule: { /* ... */ },
         created_automatically: false
@@ -496,6 +571,7 @@ const { data } = await client.createFlowTemplate(
         from_id: 'string',
         to_id: 'string',
         condition_id: 'string',
+        loop_id: 'string',
         none_met: true
       }
     ],
@@ -516,7 +592,43 @@ const { data } = await client.createFlowTemplate(
       }
     ],
     taxonomies: ['string'],
-    singleClosingReasonSelection: true
+    singleClosingReasonSelection: true,
+    _manifest: ['string'],
+    linear: true,
+    context_settings: {
+      visibility: 'entity_views',
+      main_context: {
+        schema: 'string',
+        relation_labels: ['string']
+      },
+      displays: [
+        { /* ... */ }
+      ]
+    },
+    limit_warnings: [
+      {
+        i18nKey: 'string',
+        message: 'string',
+        max: 0,
+        current: 0,
+        node_id: 'string',
+        task_name: 'string',
+        branch_name: 'string',
+        param_name: 'string',
+        path: [ /* ... */ ]
+      }
+    ],
+    structural_warnings: [
+      {
+        i18nKey: 'string',
+        message: 'string',
+        node_id: 'string',
+        edge_id: 'string',
+        path: [ /* ... */ ]
+      }
+    ],
+    keep_task_automations_in_sync: true,
+    protected: true
   },
 )
 ```
@@ -530,6 +642,10 @@ const { data } = await client.createFlowTemplate(
   "org_id": "string",
   "name": "string",
   "description": "string",
+  "portal_titles": {
+    "ecp": "string",
+    "installer": "string"
+  },
   "trigger": {
     "type": "automation",
     "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
@@ -558,7 +674,9 @@ const { data } = await client.createFlowTemplate(
       "id": "string",
       "type": "automation",
       "automation_id": "string",
-      "trigger_config": []
+      "input_entity": "thread",
+      "trigger_config": [],
+      "duplicated_automation_id": "string"
     }
   ],
   "phases": [
@@ -571,6 +689,18 @@ const { data } = await client.createFlowTemplate(
       "taxonomies": ["string"]
     }
   ],
+  "stages": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "entry_node_id": "string",
+      "cut_edge_ids": ["string"],
+      "color": "string",
+      "portal_names": {},
+      "portal_descriptions": {}
+    }
+  ],
   "tasks": [
     {
       "id": "string",
@@ -579,10 +709,17 @@ const { data } = await client.createFlowTemplate(
       "journey": {},
       "due_date": "2021-04-27T12:00:00.000Z",
       "due_date_config": {},
+      "start_date": "2021-04-27T12:00:00.000Z",
+      "start_date_config": {},
       "requirements": [],
+      "required": false,
+      "only_assignee_can_complete": true,
+      "subtasks": [],
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
+      "audience_order": ["description"],
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -594,14 +731,22 @@ const { data } = await client.createFlowTemplate(
       "journey": {},
       "due_date": "2021-04-27T12:00:00.000Z",
       "due_date_config": {},
+      "start_date": "2021-04-27T12:00:00.000Z",
+      "start_date_config": {},
       "requirements": [],
+      "required": false,
+      "only_assignee_can_complete": true,
+      "subtasks": [],
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
+      "audience_order": ["description"],
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
       "automation_config": {},
+      "on_failure": "stop",
       "trigger_mode": "manual",
       "schedule": {},
       "created_automatically": false
@@ -613,6 +758,7 @@ const { data } = await client.createFlowTemplate(
       "from_id": "string",
       "to_id": "string",
       "condition_id": "string",
+      "loop_id": "string",
       "none_met": true
     }
   ],
@@ -633,7 +779,43 @@ const { data } = await client.createFlowTemplate(
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"],
+  "linear": true,
+  "context_settings": {
+    "visibility": "entity_views",
+    "main_context": {
+      "schema": "string",
+      "relation_labels": ["string"]
+    },
+    "displays": [
+      {}
+    ]
+  },
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ],
+  "structural_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "node_id": "string",
+      "edge_id": "string",
+      "path": []
+    }
+  ],
+  "keep_task_automations_in_sync": true,
+  "protected": true
 }
 ```
 
@@ -675,6 +857,7 @@ const { data } = await client.searchFlowTemplates(
       "org_id": "string",
       "name": "string",
       "description": "string",
+      "portal_titles": {},
       "trigger": {},
       "enabled": true,
       "version": 2,
@@ -686,12 +869,20 @@ const { data } = await client.searchFlowTemplates(
       "available_in_ecp": true,
       "additional_triggers": [],
       "phases": [],
+      "stages": [],
       "tasks": [],
       "edges": [],
       "closing_reasons": [],
       "entity_sync": [],
       "taxonomies": ["string"],
-      "singleClosingReasonSelection": true
+      "singleClosingReasonSelection": true,
+      "_manifest": ["string"],
+      "linear": true,
+      "context_settings": {},
+      "limit_warnings": [],
+      "structural_warnings": [],
+      "keep_task_automations_in_sync": true,
+      "protected": true
     }
   ]
 }
@@ -703,13 +894,14 @@ const { data } = await client.searchFlowTemplates(
 
 ### `getFlowTemplate`
 
-Get specific FLow template for a customer
+Retrieve a specific flow template by its unique identifier.
 
 `GET /v2/flows/templates/{flowId}`
 
 ```ts
 const { data } = await client.getFlowTemplate({
   flowId: 'example',
+  skip_heal: true,
 })
 ```
 
@@ -722,6 +914,10 @@ const { data } = await client.getFlowTemplate({
   "org_id": "string",
   "name": "string",
   "description": "string",
+  "portal_titles": {
+    "ecp": "string",
+    "installer": "string"
+  },
   "trigger": {
     "type": "automation",
     "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
@@ -750,7 +946,9 @@ const { data } = await client.getFlowTemplate({
       "id": "string",
       "type": "automation",
       "automation_id": "string",
-      "trigger_config": []
+      "input_entity": "thread",
+      "trigger_config": [],
+      "duplicated_automation_id": "string"
     }
   ],
   "phases": [
@@ -763,6 +961,18 @@ const { data } = await client.getFlowTemplate({
       "taxonomies": ["string"]
     }
   ],
+  "stages": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "entry_node_id": "string",
+      "cut_edge_ids": ["string"],
+      "color": "string",
+      "portal_names": {},
+      "portal_descriptions": {}
+    }
+  ],
   "tasks": [
     {
       "id": "string",
@@ -771,10 +981,17 @@ const { data } = await client.getFlowTemplate({
       "journey": {},
       "due_date": "2021-04-27T12:00:00.000Z",
       "due_date_config": {},
+      "start_date": "2021-04-27T12:00:00.000Z",
+      "start_date_config": {},
       "requirements": [],
+      "required": false,
+      "only_assignee_can_complete": true,
+      "subtasks": [],
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
+      "audience_order": ["description"],
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -786,14 +1003,22 @@ const { data } = await client.getFlowTemplate({
       "journey": {},
       "due_date": "2021-04-27T12:00:00.000Z",
       "due_date_config": {},
+      "start_date": "2021-04-27T12:00:00.000Z",
+      "start_date_config": {},
       "requirements": [],
+      "required": false,
+      "only_assignee_can_complete": true,
+      "subtasks": [],
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
+      "audience_order": ["description"],
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
       "automation_config": {},
+      "on_failure": "stop",
       "trigger_mode": "manual",
       "schedule": {},
       "created_automatically": false
@@ -805,6 +1030,7 @@ const { data } = await client.getFlowTemplate({
       "from_id": "string",
       "to_id": "string",
       "condition_id": "string",
+      "loop_id": "string",
       "none_met": true
     }
   ],
@@ -825,7 +1051,43 @@ const { data } = await client.getFlowTemplate({
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"],
+  "linear": true,
+  "context_settings": {
+    "visibility": "entity_views",
+    "main_context": {
+      "schema": "string",
+      "relation_labels": ["string"]
+    },
+    "displays": [
+      {}
+    ]
+  },
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ],
+  "structural_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "node_id": "string",
+      "edge_id": "string",
+      "path": []
+    }
+  ],
+  "keep_task_automations_in_sync": true,
+  "protected": true
 }
 ```
 
@@ -843,12 +1105,18 @@ Update Flow Template.
 const { data } = await client.updateFlowTemplate(
   {
     flowId: 'example',
+    enforce_limits: true,
+    client_supports_adv_loops: true,
   },
   {
     id: 'string',
     org_id: 'string',
     name: 'string',
     description: 'string',
+    portal_titles: {
+      ecp: 'string',
+      installer: 'string'
+    },
     trigger: {
       type: 'automation',
       automation_id: 'g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg'
@@ -877,7 +1145,9 @@ const { data } = await client.updateFlowTemplate(
         id: 'string',
         type: 'automation',
         automation_id: 'string',
-        trigger_config: [ /* ... */ ]
+        input_entity: 'thread',
+        trigger_config: [ /* ... */ ],
+        duplicated_automation_id: 'string'
       },
       /* ... 2 more */
     ],
@@ -891,6 +1161,18 @@ const { data } = await client.updateFlowTemplate(
         taxonomies: ['string']
       }
     ],
+    stages: [
+      {
+        id: 'string',
+        name: 'string',
+        description: 'string',
+        entry_node_id: 'string',
+        cut_edge_ids: ['string'],
+        color: 'string',
+        portal_names: { /* ... */ },
+        portal_descriptions: { /* ... */ }
+      }
+    ],
     tasks: [
       {
         id: 'string',
@@ -899,10 +1181,17 @@ const { data } = await client.updateFlowTemplate(
         journey: { /* ... */ },
         due_date: '2021-04-27T12:00:00.000Z',
         due_date_config: { /* ... */ },
+        start_date: '2021-04-27T12:00:00.000Z',
+        start_date_config: { /* ... */ },
         requirements: [ /* ... */ ],
+        required: false,
+        only_assignee_can_complete: true,
+        subtasks: [ /* ... */ ],
         assigned_to: ['string'],
         ecp: { /* ... */ },
         installer: { /* ... */ },
+        partner: { /* ... */ },
+        audience_order: ['description'],
         taxonomies: ['string'],
         phase_id: 'string',
         task_type: 'MANUAL'
@@ -914,14 +1203,22 @@ const { data } = await client.updateFlowTemplate(
         journey: { /* ... */ },
         due_date: '2021-04-27T12:00:00.000Z',
         due_date_config: { /* ... */ },
+        start_date: '2021-04-27T12:00:00.000Z',
+        start_date_config: { /* ... */ },
         requirements: [ /* ... */ ],
+        required: false,
+        only_assignee_can_complete: true,
+        subtasks: [ /* ... */ ],
         assigned_to: ['string'],
         ecp: { /* ... */ },
         installer: { /* ... */ },
+        partner: { /* ... */ },
+        audience_order: ['description'],
         taxonomies: ['string'],
         phase_id: 'string',
         task_type: 'MANUAL',
         automation_config: { /* ... */ },
+        on_failure: 'stop',
         trigger_mode: 'manual',
         schedule: { /* ... */ },
         created_automatically: false
@@ -934,6 +1231,7 @@ const { data } = await client.updateFlowTemplate(
         from_id: 'string',
         to_id: 'string',
         condition_id: 'string',
+        loop_id: 'string',
         none_met: true
       }
     ],
@@ -954,7 +1252,43 @@ const { data } = await client.updateFlowTemplate(
       }
     ],
     taxonomies: ['string'],
-    singleClosingReasonSelection: true
+    singleClosingReasonSelection: true,
+    _manifest: ['string'],
+    linear: true,
+    context_settings: {
+      visibility: 'entity_views',
+      main_context: {
+        schema: 'string',
+        relation_labels: ['string']
+      },
+      displays: [
+        { /* ... */ }
+      ]
+    },
+    limit_warnings: [
+      {
+        i18nKey: 'string',
+        message: 'string',
+        max: 0,
+        current: 0,
+        node_id: 'string',
+        task_name: 'string',
+        branch_name: 'string',
+        param_name: 'string',
+        path: [ /* ... */ ]
+      }
+    ],
+    structural_warnings: [
+      {
+        i18nKey: 'string',
+        message: 'string',
+        node_id: 'string',
+        edge_id: 'string',
+        path: [ /* ... */ ]
+      }
+    ],
+    keep_task_automations_in_sync: true,
+    protected: true
   },
 )
 ```
@@ -968,6 +1302,10 @@ const { data } = await client.updateFlowTemplate(
   "org_id": "string",
   "name": "string",
   "description": "string",
+  "portal_titles": {
+    "ecp": "string",
+    "installer": "string"
+  },
   "trigger": {
     "type": "automation",
     "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
@@ -996,7 +1334,9 @@ const { data } = await client.updateFlowTemplate(
       "id": "string",
       "type": "automation",
       "automation_id": "string",
-      "trigger_config": []
+      "input_entity": "thread",
+      "trigger_config": [],
+      "duplicated_automation_id": "string"
     }
   ],
   "phases": [
@@ -1009,6 +1349,18 @@ const { data } = await client.updateFlowTemplate(
       "taxonomies": ["string"]
     }
   ],
+  "stages": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "entry_node_id": "string",
+      "cut_edge_ids": ["string"],
+      "color": "string",
+      "portal_names": {},
+      "portal_descriptions": {}
+    }
+  ],
   "tasks": [
     {
       "id": "string",
@@ -1017,10 +1369,17 @@ const { data } = await client.updateFlowTemplate(
       "journey": {},
       "due_date": "2021-04-27T12:00:00.000Z",
       "due_date_config": {},
+      "start_date": "2021-04-27T12:00:00.000Z",
+      "start_date_config": {},
       "requirements": [],
+      "required": false,
+      "only_assignee_can_complete": true,
+      "subtasks": [],
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
+      "audience_order": ["description"],
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -1032,14 +1391,22 @@ const { data } = await client.updateFlowTemplate(
       "journey": {},
       "due_date": "2021-04-27T12:00:00.000Z",
       "due_date_config": {},
+      "start_date": "2021-04-27T12:00:00.000Z",
+      "start_date_config": {},
       "requirements": [],
+      "required": false,
+      "only_assignee_can_complete": true,
+      "subtasks": [],
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
+      "audience_order": ["description"],
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
       "automation_config": {},
+      "on_failure": "stop",
       "trigger_mode": "manual",
       "schedule": {},
       "created_automatically": false
@@ -1051,6 +1418,7 @@ const { data } = await client.updateFlowTemplate(
       "from_id": "string",
       "to_id": "string",
       "condition_id": "string",
+      "loop_id": "string",
       "none_met": true
     }
   ],
@@ -1071,7 +1439,43 @@ const { data } = await client.updateFlowTemplate(
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"],
+  "linear": true,
+  "context_settings": {
+    "visibility": "entity_views",
+    "main_context": {
+      "schema": "string",
+      "relation_labels": ["string"]
+    },
+    "displays": [
+      {}
+    ]
+  },
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ],
+  "structural_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "node_id": "string",
+      "edge_id": "string",
+      "path": []
+    }
+  ],
+  "keep_task_automations_in_sync": true,
+  "protected": true
 }
 ```
 
@@ -1095,7 +1499,9 @@ const { data } = await client.deleteFlowTemplate({
 
 ### `duplicateFlowTemplate`
 
-Duplicate a Flow Template from an existing workflow.
+Create a copy of an existing flow template. The duplicated template will have a new
+unique identifier and can be modified independently of the original. This is useful
+for creating variations of exist
 
 `POST /v2/flows/templates/{flowId}/duplicate`
 
@@ -1114,6 +1520,10 @@ const { data } = await client.duplicateFlowTemplate({
   "org_id": "string",
   "name": "string",
   "description": "string",
+  "portal_titles": {
+    "ecp": "string",
+    "installer": "string"
+  },
   "trigger": {
     "type": "automation",
     "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
@@ -1142,7 +1552,9 @@ const { data } = await client.duplicateFlowTemplate({
       "id": "string",
       "type": "automation",
       "automation_id": "string",
-      "trigger_config": []
+      "input_entity": "thread",
+      "trigger_config": [],
+      "duplicated_automation_id": "string"
     }
   ],
   "phases": [
@@ -1155,6 +1567,18 @@ const { data } = await client.duplicateFlowTemplate({
       "taxonomies": ["string"]
     }
   ],
+  "stages": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "entry_node_id": "string",
+      "cut_edge_ids": ["string"],
+      "color": "string",
+      "portal_names": {},
+      "portal_descriptions": {}
+    }
+  ],
   "tasks": [
     {
       "id": "string",
@@ -1163,10 +1587,17 @@ const { data } = await client.duplicateFlowTemplate({
       "journey": {},
       "due_date": "2021-04-27T12:00:00.000Z",
       "due_date_config": {},
+      "start_date": "2021-04-27T12:00:00.000Z",
+      "start_date_config": {},
       "requirements": [],
+      "required": false,
+      "only_assignee_can_complete": true,
+      "subtasks": [],
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
+      "audience_order": ["description"],
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -1178,14 +1609,22 @@ const { data } = await client.duplicateFlowTemplate({
       "journey": {},
       "due_date": "2021-04-27T12:00:00.000Z",
       "due_date_config": {},
+      "start_date": "2021-04-27T12:00:00.000Z",
+      "start_date_config": {},
       "requirements": [],
+      "required": false,
+      "only_assignee_can_complete": true,
+      "subtasks": [],
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
+      "audience_order": ["description"],
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
       "automation_config": {},
+      "on_failure": "stop",
       "trigger_mode": "manual",
       "schedule": {},
       "created_automatically": false
@@ -1197,138 +1636,7 @@ const { data } = await client.duplicateFlowTemplate({
       "from_id": "string",
       "to_id": "string",
       "condition_id": "string",
-      "none_met": true
-    }
-  ],
-  "closing_reasons": [
-    {
-      "id": "string",
-      "title": "string",
-      "status": "ACTIVE",
-      "lastUpdateTime": "string",
-      "creationTime": "string"
-    }
-  ],
-  "entity_sync": [
-    {
-      "trigger": {},
-      "target": {},
-      "value": {}
-    }
-  ],
-  "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
-}
-```
-
-</details>
-
----
-
-### `exportFlowTemplate`
-
-Export a Flow Template with all referenced automations resolved and bundled alongside.
-
-`GET /v2/flows/templates/{flowId}/export`
-
-```ts
-const { data } = await client.exportFlowTemplate({
-  flowId: 'example',
-})
-```
-
-<details>
-<summary>Response</summary>
-
-```json
-{
-  "id": "string",
-  "org_id": "string",
-  "name": "string",
-  "description": "string",
-  "trigger": {
-    "type": "automation",
-    "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
-  },
-  "enabled": true,
-  "version": 2,
-  "created_at": "2021-04-27T12:01:13.000Z",
-  "updated_at": "2021-04-27T12:01:13.000Z",
-  "due_date": "2021-04-27T12:00:00.000Z",
-  "due_date_config": {
-    "duration": 0,
-    "unit": "minutes",
-    "type": "WORKFLOW_STARTED",
-    "task_id": "string",
-    "phase_id": "string"
-  },
-  "assigned_to": ["string"],
-  "available_in_ecp": true,
-  "additional_triggers": [
-    {
-      "id": "string",
-      "type": "manual",
-      "entity_schema": "string"
-    },
-    {
-      "id": "string",
-      "type": "automation",
-      "automation_id": "string",
-      "trigger_config": []
-    }
-  ],
-  "phases": [
-    {
-      "id": "string",
-      "name": "string",
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "assigned_to": ["string"],
-      "taxonomies": ["string"]
-    }
-  ],
-  "tasks": [
-    {
-      "id": "string",
-      "name": "string",
-      "description": {},
-      "journey": {},
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "requirements": [],
-      "assigned_to": ["string"],
-      "ecp": {},
-      "installer": {},
-      "taxonomies": ["string"],
-      "phase_id": "string",
-      "task_type": "MANUAL"
-    },
-    {
-      "id": "string",
-      "name": "string",
-      "description": {},
-      "journey": {},
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "requirements": [],
-      "assigned_to": ["string"],
-      "ecp": {},
-      "installer": {},
-      "taxonomies": ["string"],
-      "phase_id": "string",
-      "task_type": "MANUAL",
-      "automation_config": {},
-      "trigger_mode": "manual",
-      "schedule": {},
-      "created_automatically": false
-    }
-  ],
-  "edges": [
-    {
-      "id": "string",
-      "from_id": "string",
-      "to_id": "string",
-      "condition_id": "string",
+      "loop_id": "string",
       "none_met": true
     }
   ],
@@ -1350,198 +1658,42 @@ const { data } = await client.exportFlowTemplate({
   ],
   "taxonomies": ["string"],
   "singleClosingReasonSelection": true,
-  "_resolved_automations": {}
-}
-```
-
-</details>
-
----
-
-### `importFlowTemplate`
-
-Import a Flow Template from an export payload. Creates all automations and the flow in the caller's organization.
-
-`POST /v2/flows/templates/import`
-
-```ts
-const { data } = await client.importFlowTemplate(
-  null,
-  {
-    id: 'string',
-    org_id: 'string',
-    name: 'string',
-    description: 'string',
-    trigger: {
-      type: 'automation',
-      automation_id: 'g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg'
+  "_manifest": ["string"],
+  "linear": true,
+  "context_settings": {
+    "visibility": "entity_views",
+    "main_context": {
+      "schema": "string",
+      "relation_labels": ["string"]
     },
-    enabled: true,
-    version: 2,
-    created_at: '2021-04-27T12:01:13.000Z',
-    updated_at: '2021-04-27T12:01:13.000Z',
-    due_date: '2021-04-27T12:00:00.000Z',
-    due_date_config: {
-      duration: 0,
-      unit: 'minutes',
-      type: 'WORKFLOW_STARTED',
-      task_id: 'string',
-      phase_id: 'string'
-    },
-    assigned_to: ['string'],
-    available_in_ecp: true,
-    additional_triggers: [
-      {
-        id: 'string',
-        type: 'manual',
-        entity_schema: 'string'
-      },
-      {
-        id: 'string',
-        type: 'automation',
-        automation_id: 'string',
-        trigger_config: [ /* ... */ ]
-      },
-      /* ... 2 more */
-    ],
-    phases: [
-      {
-        id: 'string',
-        name: 'string',
-        due_date: '2021-04-27T12:00:00.000Z',
-        due_date_config: { /* ... */ },
-        assigned_to: ['string'],
-        taxonomies: ['string']
-      }
-    ],
-    tasks: [
-      {
-        id: 'string',
-        name: 'string',
-        description: { /* ... */ },
-        journey: { /* ... */ },
-        due_date: '2021-04-27T12:00:00.000Z',
-        due_date_config: { /* ... */ },
-        requirements: [ /* ... */ ],
-        assigned_to: ['string'],
-        ecp: { /* ... */ },
-        installer: { /* ... */ },
-        taxonomies: ['string'],
-        phase_id: 'string',
-        task_type: 'MANUAL'
-      },
-      {
-        id: 'string',
-        name: 'string',
-        description: { /* ... */ },
-        journey: { /* ... */ },
-        due_date: '2021-04-27T12:00:00.000Z',
-        due_date_config: { /* ... */ },
-        requirements: [ /* ... */ ],
-        assigned_to: ['string'],
-        ecp: { /* ... */ },
-        installer: { /* ... */ },
-        taxonomies: ['string'],
-        phase_id: 'string',
-        task_type: 'MANUAL',
-        automation_config: { /* ... */ },
-        trigger_mode: 'manual',
-        schedule: { /* ... */ },
-        created_automatically: false
-      },
-      /* ... 2 more */
-    ],
-    edges: [
-      {
-        id: 'string',
-        from_id: 'string',
-        to_id: 'string',
-        condition_id: 'string',
-        none_met: true
-      }
-    ],
-    closing_reasons: [
-      {
-        id: 'string',
-        title: 'string',
-        status: 'ACTIVE',
-        lastUpdateTime: 'string',
-        creationTime: 'string'
-      }
-    ],
-    entity_sync: [
-      {
-        trigger: { /* ... */ },
-        target: { /* ... */ },
-        value: { /* ... */ }
-      }
-    ],
-    taxonomies: ['string'],
-    singleClosingReasonSelection: true,
-    _resolved_automations: {}
+    "displays": [
+      {}
+    ]
   },
-)
-```
-
-<details>
-<summary>Response</summary>
-
-```json
-{
-  "flow": {
-    "id": "string",
-    "org_id": "string",
-    "name": "string",
-    "description": "string",
-    "trigger": {
-      "type": "automation",
-      "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
-    },
-    "enabled": true,
-    "version": 2,
-    "created_at": "2021-04-27T12:01:13.000Z",
-    "updated_at": "2021-04-27T12:01:13.000Z",
-    "due_date": "2021-04-27T12:00:00.000Z",
-    "due_date_config": {
-      "duration": 0,
-      "unit": "minutes",
-      "type": "WORKFLOW_STARTED",
-      "task_id": "string",
-      "phase_id": "string"
-    },
-    "assigned_to": ["string"],
-    "available_in_ecp": true,
-    "additional_triggers": [
-      {},
-      {}
-    ],
-    "phases": [
-      {}
-    ],
-    "tasks": [
-      {},
-      {}
-    ],
-    "edges": [
-      {}
-    ],
-    "closing_reasons": [
-      {}
-    ],
-    "entity_sync": [
-      {}
-    ],
-    "taxonomies": ["string"],
-    "singleClosingReasonSelection": true
-  },
-  "_id_mappings": {
-    "flow_id": {
-      "old": "string",
-      "new": "string"
-    },
-    "task_ids": {},
-    "automation_ids": {}
-  }
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ],
+  "structural_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "node_id": "string",
+      "edge_id": "string",
+      "path": []
+    }
+  ],
+  "keep_task_automations_in_sync": true,
+  "protected": true
 }
 ```
 
@@ -1611,6 +1763,7 @@ const { data } = await client.getDefinition({
       "type": "STEP",
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"]
     }
   ],
@@ -1626,7 +1779,8 @@ const { data } = await client.getDefinition({
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"]
 }
 ```
 
@@ -1691,6 +1845,7 @@ const { data } = await client.updateDefinition(
         type: 'STEP',
         ecp: { /* ... */ },
         installer: { /* ... */ },
+        partner: { /* ... */ },
         taxonomies: ['string']
       }
     ],
@@ -1706,7 +1861,8 @@ const { data } = await client.updateDefinition(
       }
     ],
     taxonomies: ['string'],
-    singleClosingReasonSelection: true
+    singleClosingReasonSelection: true,
+    _manifest: ['string']
   },
 )
 ```
@@ -1761,6 +1917,7 @@ const { data } = await client.updateDefinition(
       "type": "STEP",
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"]
     }
   ],
@@ -1776,7 +1933,8 @@ const { data } = await client.updateDefinition(
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"]
 }
 ```
 
@@ -2023,12 +2181,21 @@ const { data } = await client.setWorkflowClosingReasons(
 
 ### `FlowTemplateBase`
 
+Base schema for V2 flow templates. A flow template defines the structure of a workflow
+including phases, tasks, edges, triggers, and other configuration. Flow templates serve
+as blueprints that can be instantiated as flow executions.
+
+
 ```ts
 type FlowTemplateBase = {
   id?: string
   org_id?: string
   name: string
   description?: string
+  portal_titles?: {
+    ecp?: string
+    installer?: string
+  }
   trigger?: {
     id?: string
     type: "manual"
@@ -2037,10 +2204,12 @@ type FlowTemplateBase = {
     id?: string
     type: "automation"
     automation_id?: string
+    input_entity?: "thread" | "first_email" | "last_email"
     trigger_config?: Array<{
       type: { ... }
       configuration?: { ... }
     }>
+    duplicated_automation_id?: string
   } | {
     id?: string
     type: "journey_submission"
@@ -2059,14 +2228,14 @@ type FlowTemplateBase = {
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
   }
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   available_in_ecp?: boolean
   additional_triggers?: Array<{
@@ -2077,10 +2246,12 @@ type FlowTemplateBase = {
     id?: string
     type: "automation"
     automation_id?: string
+    input_entity?: "thread" | "first_email" | "last_email"
     trigger_config?: Array<{
       type: { ... }
       configuration?: { ... }
     }>
+    duplicated_automation_id?: string
   } | {
     id?: string
     type: "journey_submission"
@@ -2109,22 +2280,46 @@ type FlowTemplateBase = {
     }>
     taxonomies?: string[]
   }>
-  tasks: Array<{
+  stages?: Array<{
     id: string
     name: string
-    description?: {
-      enabled?: { ... }
-      value?: { ... }
-    }
-    journey?: {
-      id?: { ... }
-      journeyId?: { ... }
-      name?: { ... }
-      complete_task_automatically?: { ... }
-    }
-    due_date?: string
-    due_date_config?: {
+    description?: string
+    entry_node_id?: string
+    cut_edge_ids?: string[]
+    color?: string
   // ...
+}
+```
+
+### `FlowLimitWarning`
+
+A configuration limit that the flow currently exceeds. Returned by the get-flow endpoint and by create/update responses so the UI can show a non-blocking banner. Size/count limit violations never cause a 400 — only structural errors do. The flow remains fully usable; users are encouraged to bring va
+
+```ts
+type FlowLimitWarning = {
+  i18nKey: string
+  message: string
+  max: number
+  current?: number
+  node_id?: string
+  task_name?: string
+  branch_name?: string
+  param_name?: string
+  path: unknown[]
+}
+```
+
+### `FlowStructuralWarning`
+
+A structural problem the flow has that does not block a save. Returned by the get-flow endpoint and by create/update responses. Today the only one is errors.loop_id_after_exit: a loop connection can be reached from its loop's exit branch, so leaving the loop leads back into it.
+
+```ts
+type FlowStructuralWarning = {
+  i18nKey: string
+  message: string
+  node_id?: string
+  edge_id?: string
+  path: unknown[]
 }
 ```
 
@@ -2136,6 +2331,10 @@ type FlowTemplate = {
   org_id?: string
   name: string
   description?: string
+  portal_titles?: {
+    ecp?: string
+    installer?: string
+  }
   trigger?: {
     id?: string
     type: "manual"
@@ -2144,10 +2343,12 @@ type FlowTemplate = {
     id?: string
     type: "automation"
     automation_id?: string
+    input_entity?: "thread" | "first_email" | "last_email"
     trigger_config?: Array<{
       type: { ... }
       configuration?: { ... }
     }>
+    duplicated_automation_id?: string
   } | {
     id?: string
     type: "journey_submission"
@@ -2166,14 +2367,14 @@ type FlowTemplate = {
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
   }
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   available_in_ecp?: boolean
   additional_triggers?: Array<{
@@ -2184,10 +2385,12 @@ type FlowTemplate = {
     id?: string
     type: "automation"
     automation_id?: string
+    input_entity?: "thread" | "first_email" | "last_email"
     trigger_config?: Array<{
       type: { ... }
       configuration?: { ... }
     }>
+    duplicated_automation_id?: string
   } | {
     id?: string
     type: "journey_submission"
@@ -2216,21 +2419,13 @@ type FlowTemplate = {
     }>
     taxonomies?: string[]
   }>
-  tasks: Array<{
+  stages?: Array<{
     id: string
     name: string
-    description?: {
-      enabled?: { ... }
-      value?: { ... }
-    }
-    journey?: {
-      id?: { ... }
-      journeyId?: { ... }
-      name?: { ... }
-      complete_task_automatically?: { ... }
-    }
-    due_date?: string
-    due_date_config?: {
+    description?: string
+    entry_node_id?: string
+    cut_edge_ids?: string[]
+    color?: string
   // ...
 }
 ```
@@ -2239,9 +2434,9 @@ type FlowTemplate = {
 
 Version of the workflow schema.
 
-- `v1` – *Deprecated*. The initial version of workflows with limited structure and automation capabilities.  
-- `v2` – Linear workflows. Supports sequential task execution with basic automation triggers.  
-- `v3` – Advanced workflows. Adds support for branching logic
+- `v1` – *Deprecated*. The initial version of workflows with limited structure and automation capabilities.
+- `v2` – Linear workflows. Supports sequential task execution with basic automation triggers.
+- `v3` – Advanced workflows. Adds support for branching logic (co
 
 ```ts
 type Version = "v1" | "v2" | "v3"
@@ -2258,10 +2453,12 @@ type Trigger = {
   id?: string
   type: "automation"
   automation_id?: string
+  input_entity?: "thread" | "first_email" | "last_email"
   trigger_config?: Array<{
     type: string
     configuration?: Record<string, unknown>
   }>
+  duplicated_automation_id?: string
 } | {
   id?: string
   type: "journey_submission"
@@ -2292,10 +2489,12 @@ type AutomationTrigger = {
   id?: string
   type: "automation"
   automation_id?: string
+  input_entity?: "thread" | "first_email" | "last_email"
   trigger_config?: Array<{
     type: string
     configuration?: Record<string, unknown>
   }>
+  duplicated_automation_id?: string
 }
 ```
 
@@ -2329,6 +2528,10 @@ type CreateFlowTemplate = {
   org_id?: string
   name: string
   description?: string
+  portal_titles?: {
+    ecp?: string
+    installer?: string
+  }
   trigger?: {
     id?: string
     type: "manual"
@@ -2337,10 +2540,12 @@ type CreateFlowTemplate = {
     id?: string
     type: "automation"
     automation_id?: string
+    input_entity?: "thread" | "first_email" | "last_email"
     trigger_config?: Array<{
       type: { ... }
       configuration?: { ... }
     }>
+    duplicated_automation_id?: string
   } | {
     id?: string
     type: "journey_submission"
@@ -2359,14 +2564,14 @@ type CreateFlowTemplate = {
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
   }
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   available_in_ecp?: boolean
   additional_triggers?: Array<{
@@ -2377,10 +2582,12 @@ type CreateFlowTemplate = {
     id?: string
     type: "automation"
     automation_id?: string
+    input_entity?: "thread" | "first_email" | "last_email"
     trigger_config?: Array<{
       type: { ... }
       configuration?: { ... }
     }>
+    duplicated_automation_id?: string
   } | {
     id?: string
     type: "journey_submission"
@@ -2409,21 +2616,13 @@ type CreateFlowTemplate = {
     }>
     taxonomies?: string[]
   }>
-  tasks: Array<{
+  stages?: Array<{
     id: string
     name: string
-    description?: {
-      enabled?: { ... }
-      value?: { ... }
-    }
-    journey?: {
-      id?: { ... }
-      journeyId?: { ... }
-      name?: { ... }
-      complete_task_automatically?: { ... }
-    }
-    due_date?: string
-    due_date_config?: {
+    description?: string
+    entry_node_id?: string
+    cut_edge_ids?: string[]
+    color?: string
   // ...
 }
 ```
@@ -2438,7 +2637,7 @@ type SearchFlowTemplates = {
   enabled?: boolean
   from?: number
   size?: number
-  sort_by?: "created_at" | "updated_at"
+  sort_by?: "created_at" | "updated_at" | "name" | "enabled" | "id"
   sort_order?: "asc" | "desc"
 }
 ```
@@ -2452,6 +2651,10 @@ type FlowTemplatesList = {
     org_id?: string
     name: string
     description?: string
+    portal_titles?: {
+      ecp?: { ... }
+      installer?: { ... }
+    }
     trigger?: {
       id?: { ... }
       type: { ... }
@@ -2460,7 +2663,9 @@ type FlowTemplatesList = {
       id?: { ... }
       type: { ... }
       automation_id?: { ... }
+      input_entity?: { ... }
       trigger_config?: { ... }
+      duplicated_automation_id?: { ... }
     } | {
       id?: { ... }
       type: { ... }
@@ -2497,7 +2702,9 @@ type FlowTemplatesList = {
       id?: { ... }
       type: { ... }
       automation_id?: { ... }
+      input_entity?: { ... }
       trigger_config?: { ... }
+      duplicated_automation_id?: { ... }
     } | {
       id?: { ... }
       type: { ... }
@@ -2517,6 +2724,16 @@ type FlowTemplatesList = {
       assigned_to?: { ... }
       taxonomies?: { ... }
     }>
+    stages?: Array<{
+      id: { ... }
+      name: { ... }
+      description?: { ... }
+      entry_node_id?: { ... }
+      cut_edge_ids?: { ... }
+      color?: { ... }
+      portal_names?: { ... }
+      portal_descriptions?: { ... }
+    }>
     tasks: Array<{
       id: { ... }
       name: { ... }
@@ -2524,28 +2741,10 @@ type FlowTemplatesList = {
       journey?: { ... }
       due_date?: { ... }
       due_date_config?: { ... }
+      start_date?: { ... }
+      start_date_config?: { ... }
       requirements?: { ... }
-      assigned_to?: { ... }
-      ecp?: { ... }
-      installer?: { ... }
-      taxonomies?: { ... }
-      phase_id?: { ... }
-      task_type: { ... }
-    } | {
-      id: { ... }
-      name: { ... }
-      description?: { ... }
-      journey?: { ... }
-      due_date?: { ... }
-      due_date_config?: { ... }
-      requirements?: { ... }
-      assigned_to?: { ... }
-      ecp?: { ... }
-      installer?: { ... }
-      taxonomies?: { ... }
-      phase_id?: { ... }
-      task_type: { ... }
-      automation_config: { ... }
+      required?: { ... }
   // ...
 }
 ```
@@ -2572,24 +2771,53 @@ type Task = {
     id?: string
     journeyId?: string
     name?: string
+    portal_button_label?: string
     complete_task_automatically?: boolean
+    journey_submission_required?: boolean
+    context_parameters?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+    ai_prefill?: {
+      enabled?: { ... }
+      source?: { ... }
+      extraction_fields?: { ... }
+      mappings?: { ... }
+      min_confidence?: { ... }
+      instructions?: { ... }
+    }
   }
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
+  }
+  start_date?: string
+  start_date_config?: {
+    duration: number
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "THIS_TASK_LAST_COMPLETED"
+    task_id?: string
   }
   requirements?: Array<{
     task_id?: string
     phase_id?: string
     when: "TASK_FINISHED" | "PHASE_FINISHED"
   }>
+  required?: boolean
+  only_assignee_can_complete?: boolean
+  subtasks?: Array<{
+    id: string
+    name?: string
+    party: "description" | "ecp" | "installer" | "partner"
+    required?: boolean
+  }>
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   ecp?: {
     enabled?: boolean
@@ -2599,7 +2827,11 @@ type Task = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
   installer?: {
@@ -2610,57 +2842,24 @@ type Task = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
+  partner?: {
+    enabled?: boolean
+    label?: string
+    description?: string
+  }
+  audience_order?: "description" | "ecp" | "installer" | "partner"[]
   taxonomies?: string[]
   phase_id?: string
   task_type: "MANUAL" | "AUTOMATION" | "DECISION" | "AI_AGENT"
 } | {
   id: string
-  name: string
-  description?: {
-    enabled?: boolean
-    value?: string
-  }
-  journey?: {
-    id?: string
-    journeyId?: string
-    name?: string
-    complete_task_automatically?: boolean
-  }
-  due_date?: string
-  due_date_config?: {
-    duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
-    task_id?: string
-    phase_id?: string
-  }
-  requirements?: Array<{
-    task_id?: string
-    phase_id?: string
-    when: "TASK_FINISHED" | "PHASE_FINISHED"
-  }>
-  assigned_to?: Array<string | {
-    variable: string
-    value?: string
-  }>
-  ecp?: {
-    enabled?: boolean
-    label?: string
-    description?: string
-    journey?: {
-      id?: { ... }
-      journeyId?: { ... }
-      name?: { ... }
-      complete_task_automatically?: { ... }
-    }
-  }
-  installer?: {
-    enabled?: boolean
-    label?: string
-    description?: string
   // ...
 }
 ```
@@ -2679,24 +2878,53 @@ type ManualTask = {
     id?: string
     journeyId?: string
     name?: string
+    portal_button_label?: string
     complete_task_automatically?: boolean
+    journey_submission_required?: boolean
+    context_parameters?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+    ai_prefill?: {
+      enabled?: { ... }
+      source?: { ... }
+      extraction_fields?: { ... }
+      mappings?: { ... }
+      min_confidence?: { ... }
+      instructions?: { ... }
+    }
   }
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
+  }
+  start_date?: string
+  start_date_config?: {
+    duration: number
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "THIS_TASK_LAST_COMPLETED"
+    task_id?: string
   }
   requirements?: Array<{
     task_id?: string
     phase_id?: string
     when: "TASK_FINISHED" | "PHASE_FINISHED"
   }>
+  required?: boolean
+  only_assignee_can_complete?: boolean
+  subtasks?: Array<{
+    id: string
+    name?: string
+    party: "description" | "ecp" | "installer" | "partner"
+    required?: boolean
+  }>
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   ecp?: {
     enabled?: boolean
@@ -2706,7 +2934,11 @@ type ManualTask = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
   installer?: {
@@ -2717,9 +2949,19 @@ type ManualTask = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
+  partner?: {
+    enabled?: boolean
+    label?: string
+    description?: string
+  }
+  audience_order?: "description" | "ecp" | "installer" | "partner"[]
   taxonomies?: string[]
   phase_id?: string
   task_type: "MANUAL" | "AUTOMATION" | "DECISION" | "AI_AGENT"
@@ -2740,24 +2982,53 @@ type AutomationTask = {
     id?: string
     journeyId?: string
     name?: string
+    portal_button_label?: string
     complete_task_automatically?: boolean
+    journey_submission_required?: boolean
+    context_parameters?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+    ai_prefill?: {
+      enabled?: { ... }
+      source?: { ... }
+      extraction_fields?: { ... }
+      mappings?: { ... }
+      min_confidence?: { ... }
+      instructions?: { ... }
+    }
   }
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
+  }
+  start_date?: string
+  start_date_config?: {
+    duration: number
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "THIS_TASK_LAST_COMPLETED"
+    task_id?: string
   }
   requirements?: Array<{
     task_id?: string
     phase_id?: string
     when: "TASK_FINISHED" | "PHASE_FINISHED"
   }>
+  required?: boolean
+  only_assignee_can_complete?: boolean
+  subtasks?: Array<{
+    id: string
+    name?: string
+    party: "description" | "ecp" | "installer" | "partner"
+    required?: boolean
+  }>
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   ecp?: {
     enabled?: boolean
@@ -2767,7 +3038,11 @@ type AutomationTask = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
   installer?: {
@@ -2778,40 +3053,34 @@ type AutomationTask = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
+  partner?: {
+    enabled?: boolean
+    label?: string
+    description?: string
+  }
+  audience_order?: "description" | "ecp" | "installer" | "partner"[]
   taxonomies?: string[]
   phase_id?: string
   task_type: "MANUAL" | "AUTOMATION" | "DECISION" | "AI_AGENT"
   automation_config: {
     flow_id?: string
-    action_config?: {
-      type: { ... }
-      config?: { ... }
-    }
-  }
-  trigger_mode?: "manual" | "automatic"
-  schedule?: {
-    mode?: "immediate"
-  } | {
-    mode: "delayed"
-    duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-  } | {
-    mode: "relative"
-    direction: "before" | "after"
-    duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    reference: {
-      id: { ... }
-      origin: { ... }
-      schema?: { ... }
-      attribute?: { ... }
-    }
-  }
-  created_automatically?: boolean
+  // ...
 }
+```
+
+### `AutomationFailurePolicy`
+
+What the flow does when this automation ends in a failed state. `stop` waits on the failed task until it is retried or skipped. `continue` proceeds to the next task. An absent value means `stop`.
+
+```ts
+type AutomationFailurePolicy = "stop" | "continue"
 ```
 
 ### `AutomationConfig`
@@ -2825,6 +3094,193 @@ type AutomationConfig = {
     type: string
     config?: Record<string, unknown>
   }
+  duplicated_flow_id?: string
+  input_context?: {
+    source: "main_context" | "task" | "trigger"
+    task_id?: string
+    trigger_id?: string
+    with_relations?: boolean
+    also_pass?: Array<{
+      source: { ... }
+    } | {
+      source: { ... }
+      task_id: { ... }
+    }>
+  }
+  output_context?: {
+    set_as_primary?: boolean
+    attach_to_contexts?: boolean
+  }
+  eligible_closing_reason_ids?: string[]
+  email_review?: {
+    enabled?: boolean
+    allow_document_selection?: boolean
+    allow_subject_and_body_edit?: boolean
+  }
+  allow_execution_note?: boolean
+}
+```
+
+### `EmailReviewConfig`
+
+Whether the person running a semi-automated send-email step may adjust the email before it goes out, and what they may adjust. Meaningful only on a task a person triggers — the engine's own dispatch has nobody to review — so the template healer clears it from an `automatic` task. With `enabled` fals
+
+```ts
+type EmailReviewConfig = {
+  enabled?: boolean
+  allow_document_selection?: boolean
+  allow_subject_and_body_edit?: boolean
+}
+```
+
+### `AutomationInputContext`
+
+Optional. Source of the entity fed into this automation task. If omitted, the run's current main context is used.
+
+
+```ts
+type AutomationInputContext = {
+  source: "main_context" | "task" | "trigger"
+  task_id?: string
+  trigger_id?: string
+  with_relations?: boolean
+  also_pass?: Array<{
+    source: "main_context"
+  } | {
+    source: "task"
+    task_id: string
+  }>
+}
+```
+
+### `AutomationInputExtraContextRef`
+
+One of the run's own entities. `main_context` = the run's current main context.
+
+
+```ts
+type AutomationInputExtraContextRef = {
+  source: "main_context"
+}
+```
+
+### `AutomationInputExtraTaskRef`
+
+Every entity produced by an upstream task.
+
+```ts
+type AutomationInputExtraTaskRef = {
+  source: "task"
+  task_id: string
+}
+```
+
+### `FlowContextSettings`
+
+Where a flow runs, and where people see it.
+A run is ALWAYS visible on the entities it runs on — the entity its trigger supplied and every context it picks up. That is not configurable: it is what running there means, and hiding a run from its own entity is what `visibility: background` is for.
+`dis
+
+```ts
+type FlowContextSettings = {
+  visibility?: "entity_views" | "background"
+  main_context?: {
+    schema: string
+    relation_labels?: string[]
+  }
+  displays?: Array<{
+    id: string
+    entity_schema: string
+    from?: {
+      role: { ... }
+    } | {
+      role: { ... }
+      rule_id: { ... }
+    }
+    relation_labels?: string[]
+    attach_to_contexts?: boolean
+  }>
+}
+```
+
+### `MainContextSetting`
+
+Which of a flow's contexts owns the run: the entity conditions, automations and entity sync resolve against by default.
+ABSENT means the default — the primary trigger's entity. A flow has ONE main context, not one per trigger (STABLE360-13503): a run started by another trigger resolves the default a
+
+```ts
+type MainContextSetting = {
+  schema: string
+  relation_labels?: string[]
+}
+```
+
+### `FlowDisplayRule`
+
+One additional entity kind the flow should be visible on, found by relation from the main context or from an earlier entry.
+An entity reached this way has no context of its own: it shows the main context's run, and acting on it acts on the main context. Nothing is copied and no second run starts.
+Th
+
+```ts
+type FlowDisplayRule = {
+  id: string
+  entity_schema: string
+  from?: {
+    role: "main_context"
+  } | {
+    role: "rule"
+    rule_id: string
+  }
+  relation_labels?: string[]
+  attach_to_contexts?: boolean
+}
+```
+
+### `FlowRuleAnchor`
+
+Where an entry starts looking. Absent means `main_context`.
+A ROLE, not a schema: an entry anchored on `main_context` follows the primary when a task promotes another entity, where naming a schema would freeze it on the old one.
+
+
+```ts
+type FlowRuleAnchor = {
+  role: "main_context"
+} | {
+  role: "rule"
+  rule_id: string
+}
+```
+
+### `MainContextAnchor`
+
+The run's primary context, whatever it currently is.
+
+```ts
+type MainContextAnchor = {
+  role: "main_context"
+}
+```
+
+### `RuleAnchor`
+
+An earlier entry in `displays`, by its id: this entry searches from whatever that one matched. Chaining ticket -> contact -> account this way keeps both hops DISPLAY-only; making the contact a real context first is a separate decision (`attach_to_contexts`), not a prerequisite for reaching the accou
+
+```ts
+type RuleAnchor = {
+  role: "rule"
+  rule_id: string
+}
+```
+
+### `AutomationOutputContext`
+
+Optional. What happens to the entity produced by this automation task (the last successful entity-producing action of its automation).
+
+
+```ts
+type AutomationOutputContext = {
+  set_as_primary?: boolean
+  attach_to_contexts?: boolean
 }
 ```
 
@@ -2842,24 +3298,53 @@ type AiAgentTask = {
     id?: string
     journeyId?: string
     name?: string
+    portal_button_label?: string
     complete_task_automatically?: boolean
+    journey_submission_required?: boolean
+    context_parameters?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+    ai_prefill?: {
+      enabled?: { ... }
+      source?: { ... }
+      extraction_fields?: { ... }
+      mappings?: { ... }
+      min_confidence?: { ... }
+      instructions?: { ... }
+    }
   }
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
+  }
+  start_date?: string
+  start_date_config?: {
+    duration: number
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "THIS_TASK_LAST_COMPLETED"
+    task_id?: string
   }
   requirements?: Array<{
     task_id?: string
     phase_id?: string
     when: "TASK_FINISHED" | "PHASE_FINISHED"
   }>
+  required?: boolean
+  only_assignee_can_complete?: boolean
+  subtasks?: Array<{
+    id: string
+    name?: string
+    party: "description" | "ecp" | "installer" | "partner"
+    required?: boolean
+  }>
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   ecp?: {
     enabled?: boolean
@@ -2869,7 +3354,11 @@ type AiAgentTask = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
   installer?: {
@@ -2880,15 +3369,25 @@ type AiAgentTask = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
+  partner?: {
+    enabled?: boolean
+    label?: string
+    description?: string
+  }
+  audience_order?: "description" | "ecp" | "installer" | "partner"[]
   taxonomies?: string[]
   phase_id?: string
   task_type: "MANUAL" | "AUTOMATION" | "DECISION" | "AI_AGENT"
   agent_config?: {
     agent_id: string
-  }
+  // ...
 }
 ```
 
@@ -2916,15 +3415,15 @@ type ActionSchedule = {
 } | {
   mode: "delayed"
   duration: number
-  unit: "minutes" | "hours" | "days" | "weeks" | "months"
+  unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
 } | {
   mode: "relative"
   direction: "before" | "after"
   duration: number
-  unit: "minutes" | "hours" | "days" | "weeks" | "months"
+  unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
   reference: {
     id: string
-    origin: "flow_started" | "task_completed" | "trigger_entity_attribute"
+    origin: "flow_started" | "task_completed" | "trigger_entity_attribute" | "all_preceding_tasks_completed"
     schema?: string
     attribute?: string
   }
@@ -2945,7 +3444,7 @@ type ImmediateSchedule = {
 type DelayedSchedule = {
   mode: "delayed"
   duration: number
-  unit: "minutes" | "hours" | "days" | "weeks" | "months"
+  unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
 }
 ```
 
@@ -2956,10 +3455,10 @@ type RelativeSchedule = {
   mode: "relative"
   direction: "before" | "after"
   duration: number
-  unit: "minutes" | "hours" | "days" | "weeks" | "months"
+  unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
   reference: {
     id: string
-    origin: "flow_started" | "task_completed" | "trigger_entity_attribute"
+    origin: "flow_started" | "task_completed" | "trigger_entity_attribute" | "all_preceding_tasks_completed"
     schema?: string
     attribute?: string
   }
@@ -2980,24 +3479,53 @@ type DecisionTask = {
     id?: string
     journeyId?: string
     name?: string
+    portal_button_label?: string
     complete_task_automatically?: boolean
+    journey_submission_required?: boolean
+    context_parameters?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+    ai_prefill?: {
+      enabled?: { ... }
+      source?: { ... }
+      extraction_fields?: { ... }
+      mappings?: { ... }
+      min_confidence?: { ... }
+      instructions?: { ... }
+    }
   }
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
+  }
+  start_date?: string
+  start_date_config?: {
+    duration: number
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "THIS_TASK_LAST_COMPLETED"
+    task_id?: string
   }
   requirements?: Array<{
     task_id?: string
     phase_id?: string
     when: "TASK_FINISHED" | "PHASE_FINISHED"
   }>
+  required?: boolean
+  only_assignee_can_complete?: boolean
+  subtasks?: Array<{
+    id: string
+    name?: string
+    party: "description" | "ecp" | "installer" | "partner"
+    required?: boolean
+  }>
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   ecp?: {
     enabled?: boolean
@@ -3007,7 +3535,11 @@ type DecisionTask = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
   installer?: {
@@ -3018,46 +3550,44 @@ type DecisionTask = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
+  partner?: {
+    enabled?: boolean
+    label?: string
+    description?: string
+  }
+  audience_order?: "description" | "ecp" | "installer" | "partner"[]
   taxonomies?: string[]
   phase_id?: string
   task_type: "MANUAL" | "AUTOMATION" | "DECISION" | "AI_AGENT"
   trigger_mode: "manual" | "automatic"
   conditions: Array<{
-    id: string
-    branch_name: string
-    logical_operator: "AND" | "OR"
-    statements: Array<{
-      id: { ... }
-      source: { ... }
-      operator: { ... }
-      values: { ... }
-    }>
-  }>
-  schedule?: {
-    mode: "delayed"
-    duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-  } | {
-    mode: "relative"
-    direction: "before" | "after"
-    duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    reference: {
-      id: { ... }
-      origin: { ... }
-      schema?: { ... }
-      attribute?: { ... }
-    }
-  }
-  loop_config?: {
-    loop_branch_id: string
-    exit_branch_id: string
-    max_iterations: number
-  }
+  // ...
 }
+```
+
+### `LoopDefinition`
+
+```ts
+type LoopDefinition = {
+  entry_branch_ids: string[]
+  exit_branch_id: string
+  max_iterations: number
+}
+```
+
+### `TaskAudience`
+
+A task audience, named after the task field holding its description: co-workers (description), end customers (ecp), installers and partners.
+
+```ts
+type TaskAudience = "description" | "ecp" | "installer" | "partner"
 ```
 
 ### `TaskBase`
@@ -3074,24 +3604,53 @@ type TaskBase = {
     id?: string
     journeyId?: string
     name?: string
+    portal_button_label?: string
     complete_task_automatically?: boolean
+    journey_submission_required?: boolean
+    context_parameters?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+    ai_prefill?: {
+      enabled?: { ... }
+      source?: { ... }
+      extraction_fields?: { ... }
+      mappings?: { ... }
+      min_confidence?: { ... }
+      instructions?: { ... }
+    }
   }
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
+  }
+  start_date?: string
+  start_date_config?: {
+    duration: number
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "THIS_TASK_LAST_COMPLETED"
+    task_id?: string
   }
   requirements?: Array<{
     task_id?: string
     phase_id?: string
     when: "TASK_FINISHED" | "PHASE_FINISHED"
   }>
+  required?: boolean
+  only_assignee_can_complete?: boolean
+  subtasks?: Array<{
+    id: string
+    name?: string
+    party: "description" | "ecp" | "installer" | "partner"
+    required?: boolean
+  }>
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   ecp?: {
     enabled?: boolean
@@ -3101,7 +3660,11 @@ type TaskBase = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
   installer?: {
@@ -3112,9 +3675,19 @@ type TaskBase = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
+  partner?: {
+    enabled?: boolean
+    label?: string
+    description?: string
+  }
+  audience_order?: "description" | "ecp" | "installer" | "partner"[]
   taxonomies?: string[]
   phase_id?: string
   task_type: "MANUAL" | "AUTOMATION" | "DECISION" | "AI_AGENT"
@@ -3130,16 +3703,39 @@ type Phase = {
   due_date?: string
   due_date_config?: {
     duration: number
-    unit: "minutes" | "hours" | "days" | "weeks" | "months"
-    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+    unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+    type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
     task_id?: string
     phase_id?: string
   }
   assigned_to?: Array<string | {
     variable: string
-    value?: string
+    value?: string[]
   }>
   taxonomies?: string[]
+}
+```
+
+### `Stage`
+
+A customer-facing progress segment layered on top of the flow graph. Unlike phases (internal task grouping), stages exist to communicate progress to outside users (e.g. end customers) with a title and description. Stages form a strict total order; the array order is the boundary order and must match
+
+```ts
+type Stage = {
+  id: string
+  name: string
+  description?: string
+  entry_node_id?: string
+  cut_edge_ids?: string[]
+  color?: string
+  portal_names?: {
+    ecp?: string
+    installer?: string
+  }
+  portal_descriptions?: {
+    ecp?: string
+    installer?: string
+  }
 }
 ```
 
@@ -3150,7 +3746,7 @@ Represents a variable assignment with its expression and optional resolved value
 ```ts
 type VariableAssignment = {
   variable: string
-  value?: string
+  value?: string[]
 }
 ```
 
@@ -3166,8 +3762,9 @@ type TaskType = "MANUAL" | "AUTOMATION" | "DECISION" | "AI_AGENT"
 type Edge = {
   id: string
   from_id: string
-  to_id: string
+  to_id?: string
   condition_id?: string
+  loop_id?: string
   none_met?: boolean
 }
 ```
@@ -3190,10 +3787,14 @@ type Condition = {
       attribute_type?: { ... }
       attribute_repeatable?: { ... }
       attribute_operation?: { ... }
+      attributes?: { ... }
+      attributes_match?: { ... }
       attribute_sub_field?: { ... }
+      date_offset?: { ... }
     }
     operator: "equals" | "not_equals" | "any_of" | "none_of" | "contains" | "not_contains" | "starts_with" | "ends_with" | "greater_than" | "less_than" | "greater_than_or_equals" | "less_than_or_equals" | "is_empty" | "is_not_empty"
     values: string[]
+    value_type?: "static" | "relative_date"
   }>
 }
 ```
@@ -3205,17 +3806,24 @@ type Statement = {
   id: string
   source: {
     id?: string
-    origin?: "trigger" | "action"
-    origin_type?: "entity" | "workflow" | "journey_block"
+    origin?: "trigger" | "action" | "flow_runtime"
+    origin_type?: "entity" | "workflow" | "journey_block" | "trigger_source" | "main_context" | "flow_trait"
     schema?: string
     attribute?: string
     attribute_type?: "string" | "text" | "number" | "boolean" | "date" | "datetime" | "tags" | "country" | "email" | "phone" | "product" | "price" | "status" | "relation" | "multiselect" | "select" | "radio" | "relation_user" | "purpose" | "label" | "message_email_address"
     attribute_repeatable?: boolean
     attribute_operation?: "all" | "updated" | "added" | "deleted"
+    attributes?: string[]
+    attributes_match?: "any" | "all"
     attribute_sub_field?: string
+    date_offset?: {
+      amount?: { ... }
+      unit?: { ... }
+    }
   }
   operator: "equals" | "not_equals" | "any_of" | "none_of" | "contains" | "not_contains" | "starts_with" | "ends_with" | "greater_than" | "less_than" | "greater_than_or_equals" | "less_than_or_equals" | "is_empty" | "is_not_empty"
   values: string[]
+  value_type?: "static" | "relative_date"
 }
 ```
 
@@ -3224,14 +3832,20 @@ type Statement = {
 ```ts
 type EvaluationSource = {
   id?: string
-  origin?: "trigger" | "action"
-  origin_type?: "entity" | "workflow" | "journey_block"
+  origin?: "trigger" | "action" | "flow_runtime"
+  origin_type?: "entity" | "workflow" | "journey_block" | "trigger_source" | "main_context" | "flow_trait"
   schema?: string
   attribute?: string
   attribute_type?: "string" | "text" | "number" | "boolean" | "date" | "datetime" | "tags" | "country" | "email" | "phone" | "product" | "price" | "status" | "relation" | "multiselect" | "select" | "radio" | "relation_user" | "purpose" | "label" | "message_email_address"
   attribute_repeatable?: boolean
   attribute_operation?: "all" | "updated" | "added" | "deleted"
+  attributes?: string[]
+  attributes_match?: "any" | "all"
   attribute_sub_field?: string
+  date_offset?: {
+    amount?: number
+    unit?: "days" | "months" | "years"
+  }
 }
 ```
 
@@ -3243,22 +3857,35 @@ type Operator = "equals" | "not_equals" | "any_of" | "none_of" | "contains" | "n
 
 ### `DueDateConfig`
 
-Set due date for the task based on a dynamic condition
+Set due date for the task based on a dynamic condition. `START_DATE` counts from the task's own start date (AL-3678) and is valid only on a task that has a start date.
 
 ```ts
 type DueDateConfig = {
   duration: number
-  unit: "minutes" | "hours" | "days" | "weeks" | "months"
-  type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED"
+  unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+  type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "PHASE_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "START_DATE"
   task_id?: string
   phase_id?: string
+}
+```
+
+### `StartDateConfig`
+
+Relative start date of a task (AL-3678): `duration` `unit` after the most recent occurrence of the reference event. `THIS_TASK_LAST_COMPLETED` is the task's own previous completion (a loop's earlier pass); there is no wait while the reference event has not happened. Durations are positive whole numb
+
+```ts
+type StartDateConfig = {
+  duration: number
+  unit: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
+  type: "WORKFLOW_STARTED" | "TASK_FINISHED" | "A_PRECEDING_TASK_COMPLETED" | "ALL_PRECEDING_TASKS_COMPLETED" | "THIS_TASK_LAST_COMPLETED"
+  task_id?: string
 }
 ```
 
 ### `TimeUnit`
 
 ```ts
-type TimeUnit = "minutes" | "hours" | "days" | "weeks" | "months"
+type TimeUnit = "minutes" | "hours" | "days" | "weeks" | "months" | "years"
 ```
 
 ### `EnableRequirement`
@@ -3273,7 +3900,26 @@ type EnableRequirement = {
 }
 ```
 
+### `Subtask`
+
+One checklist item of a task, derived from the checklist markup in the party descriptions. Identity is the stable data-subtask-id the editor mints into the markup.
+
+```ts
+type Subtask = {
+  id: string
+  name?: string
+  party: "description" | "ecp" | "installer" | "partner"
+  required?: boolean
+}
+```
+
 ### `WorkflowDefinition`
+
+V1 workflow definition schema. Defines a linear workflow structure with sections
+and steps. Sections group related steps together, and steps represent individual
+tasks that need to be completed. This is the legacy workflow model; for new
+implementations, consider using V2 flow templates instead.
+
 
 ```ts
 type WorkflowDefinition = {
@@ -3286,7 +3932,7 @@ type WorkflowDefinition = {
   dueDate?: string
   dynamicDueDate?: {
     numberOfUnits: number
-    timePeriod: "minutes" | "hours" | "days" | "weeks" | "months"
+    timePeriod: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
     actionTypeCondition: "WORKFLOW_STARTED" | "STEP_CLOSED" | "PHASE_FINISHED"
     stepId?: string
     phaseId?: string
@@ -3324,6 +3970,7 @@ type WorkflowDefinition = {
       type: { ... }
       ecp?: { ... }
       installer?: { ... }
+      partner?: { ... }
       taxonomies?: { ... }
     }>
     taxonomies?: string[]
@@ -3342,7 +3989,11 @@ type WorkflowDefinition = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
     order: number
     dueDate?: string
@@ -3371,11 +4022,6 @@ type WorkflowDefinition = {
       enabled?: { ... }
       label?: { ... }
       description?: { ... }
-      journey?: { ... }
-    }
-    taxonomies?: string[]
-  }>
-  closingReasons?: Array<{
   // ...
 }
 ```
@@ -3400,13 +4046,27 @@ type Step = {
     id?: string
     journeyId?: string
     name?: string
+    portal_button_label?: string
     complete_task_automatically?: boolean
+    journey_submission_required?: boolean
+    context_parameters?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+    ai_prefill?: {
+      enabled?: { ... }
+      source?: { ... }
+      extraction_fields?: { ... }
+      mappings?: { ... }
+      min_confidence?: { ... }
+      instructions?: { ... }
+    }
   }
   order: number
   dueDate?: string
   dynamicDueDate?: {
     numberOfUnits: number
-    timePeriod: "minutes" | "hours" | "days" | "weeks" | "months"
+    timePeriod: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
     actionTypeCondition: "WORKFLOW_STARTED" | "STEP_CLOSED" | "PHASE_FINISHED"
     stepId?: string
     phaseId?: string
@@ -3427,7 +4087,11 @@ type Step = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
   }
   installer?: {
@@ -3438,8 +4102,17 @@ type Step = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
+  }
+  partner?: {
+    enabled?: boolean
+    label?: string
+    description?: string
   }
   taxonomies?: string[]
 }
@@ -3458,7 +4131,7 @@ type Section = {
   dueDate?: string
   dynamicDueDate?: {
     numberOfUnits: number
-    timePeriod: "minutes" | "hours" | "days" | "weeks" | "months"
+    timePeriod: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
     actionTypeCondition: "WORKFLOW_STARTED" | "STEP_CLOSED" | "PHASE_FINISHED"
     stepId?: string
     phaseId?: string
@@ -3479,7 +4152,11 @@ type Section = {
       id?: { ... }
       journeyId?: { ... }
       name?: { ... }
+      portal_button_label?: { ... }
       complete_task_automatically?: { ... }
+      journey_submission_required?: { ... }
+      context_parameters?: { ... }
+      ai_prefill?: { ... }
     }
     order: number
     dueDate?: string
@@ -3509,6 +4186,11 @@ type Section = {
       label?: { ... }
       description?: { ... }
       journey?: { ... }
+    }
+    partner?: {
+      enabled?: { ... }
+      label?: { ... }
+      description?: { ... }
     }
     taxonomies?: string[]
   }>
@@ -3541,7 +4223,99 @@ type StepJourney = {
   id?: string
   journeyId?: string
   name?: string
+  portal_button_label?: string
   complete_task_automatically?: boolean
+  journey_submission_required?: boolean
+  context_parameters?: Array<{
+    key: string
+    value: string
+  }>
+  ai_prefill?: {
+    enabled?: boolean
+    source?: {
+      type?: { ... }
+      input_entity?: { ... }
+    }
+    extraction_fields?: Array<{
+      key: { ... }
+      type: { ... }
+      description?: { ... }
+      description_overridden?: { ... }
+      enum?: { ... }
+    }>
+    mappings?: Array<{
+      source: { ... }
+      block_id: { ... }
+      block_type: { ... }
+      block_field?: { ... }
+      country_code?: { ... }
+    }>
+    min_confidence?: number
+    instructions?: string
+  }
+}
+```
+
+### `AiPrefillConfig`
+
+AI extraction + prefill configuration for the attached journey (Flows v2 only)
+
+```ts
+type AiPrefillConfig = {
+  enabled?: boolean
+  source?: {
+    type?: "flow_context"
+    input_entity?: "thread" | "first_email" | "last_email"
+  }
+  extraction_fields?: Array<{
+    key: string
+    type: "string" | "number" | "boolean" | "date" | "enum"
+    description?: string
+    description_overridden?: boolean
+    enum?: string[]
+  }>
+  mappings?: Array<{
+    source: string
+    block_id: string
+    block_type: "text-input" | "number-input" | "personal-information" | "meter-reading" | "contact" | "single-choice" | "date-input" | "binary-input" | "address" | "payment-method" | "multiple-choice" | "availability-check"
+    block_field?: string
+    country_code?: string
+  }>
+  min_confidence?: number
+  instructions?: string
+}
+```
+
+### `AiPrefillExtractionField`
+
+```ts
+type AiPrefillExtractionField = {
+  key: string
+  type: "string" | "number" | "boolean" | "date" | "enum"
+  description?: string
+  description_overridden?: boolean
+  enum?: string[]
+}
+```
+
+### `AiPrefillMapping`
+
+```ts
+type AiPrefillMapping = {
+  source: string
+  block_id: string
+  block_type: "text-input" | "number-input" | "personal-information" | "meter-reading" | "contact" | "single-choice" | "date-input" | "binary-input" | "address" | "payment-method" | "multiple-choice" | "availability-check"
+  block_field?: string
+  country_code?: string
+}
+```
+
+### `JourneyContextParameter`
+
+```ts
+type JourneyContextParameter = {
+  key: string
+  value: string
 }
 ```
 
@@ -3558,8 +4332,34 @@ type ECPDetails = {
     id?: string
     journeyId?: string
     name?: string
+    portal_button_label?: string
     complete_task_automatically?: boolean
+    journey_submission_required?: boolean
+    context_parameters?: Array<{
+      key: { ... }
+      value: { ... }
+    }>
+    ai_prefill?: {
+      enabled?: { ... }
+      source?: { ... }
+      extraction_fields?: { ... }
+      mappings?: { ... }
+      min_confidence?: { ... }
+      instructions?: { ... }
+    }
   }
+}
+```
+
+### `PartnerDetails`
+
+Details regarding partner for the workflow step
+
+```ts
+type PartnerDetails = {
+  enabled?: boolean
+  label?: string
+  description?: string
 }
 ```
 
@@ -3585,7 +4385,7 @@ type MaxAllowedLimit = {
 
 ### `DefinitionNotFoundResp`
 
-Definition could be not found
+Error response returned when a workflow definition or flow template is not found.
 
 ```ts
 type DefinitionNotFoundResp = {
@@ -3595,7 +4395,7 @@ type DefinitionNotFoundResp = {
 
 ### `ClosingReasonNotFoundResp`
 
-Closing reason could be not found
+Error response returned when a closing reason is not found.
 
 ```ts
 type ClosingReasonNotFoundResp = {
@@ -3617,8 +4417,8 @@ type ChangeReasonStatusReq = {
 type ClosingReasons = {
   reasons: Array<{
     id?: string
-    title: string
-    status: "ACTIVE" | "INACTIVE"
+    title?: string
+    status?: "ACTIVE" | "INACTIVE"
     lastUpdateTime?: string
     creationTime?: string
   }>
@@ -3632,8 +4432,8 @@ One Closing reason for a workflow
 ```ts
 type ClosingReason = {
   id?: string
-  title: string
-  status: "ACTIVE" | "INACTIVE"
+  title?: string
+  status?: "ACTIVE" | "INACTIVE"
   lastUpdateTime?: string
   creationTime?: string
 }
@@ -3664,6 +4464,8 @@ type ClosingReasonId = {
 ```
 
 ### `ErrorResp`
+
+Standard error response returned when an API request fails.
 
 ```ts
 type ErrorResp = {
@@ -3707,12 +4509,16 @@ type EntitySync = {
 
 ### `DynamicDueDate`
 
-set a Duedate for a step then a specific
+Configuration for calculating a due date dynamically based on workflow events.
+The due date is computed by adding a duration (numberOfUnits + timePeriod) to
+a reference point defined by actionTypeCondition (e.g., when workflow started,
+when a step closed, or when a phase finished).
+
 
 ```ts
 type DynamicDueDate = {
   numberOfUnits: number
-  timePeriod: "minutes" | "hours" | "days" | "weeks" | "months"
+  timePeriod: "minutes" | "hours" | "days" | "weeks" | "months" | "years"
   actionTypeCondition: "WORKFLOW_STARTED" | "STEP_CLOSED" | "PHASE_FINISHED"
   stepId?: string
   phaseId?: string
@@ -3731,117 +4537,76 @@ type StepRequirement = {
 }
 ```
 
-### `FlowTemplateExport`
+### `JourneyContextUsagesReq`
+
+Request payload for getJourneyContextUsages.
 
 ```ts
-type FlowTemplateExport = {
-  _resolved_automations?: Record<string, object>
+type JourneyContextUsagesReq = {
+  journey_id: string
+  param_keys: string[]
+  param_ids?: string[]
 }
 ```
 
-### `FlowTemplateImportResult`
+### `JourneyContextUsage`
+
+One place a flow template task presets one of the requested context parameters.
 
 ```ts
-type FlowTemplateImportResult = {
-  flow?: {
-    id?: string
-    org_id?: string
-    name: string
-    description?: string
-    trigger?: {
-      id?: { ... }
-      type: { ... }
-      entity_schema?: { ... }
-    } | {
-      id?: { ... }
-      type: { ... }
-      automation_id?: { ... }
-      trigger_config?: { ... }
-    } | {
-      id?: { ... }
-      type: { ... }
-      journey_id: { ... }
-      journey_name?: { ... }
-      automation_id?: { ... }
-    } | {
-      id?: { ... }
-      type: { ... }
-      entity_schema?: { ... }
+type JourneyContextUsage = {
+  kind: "workflow-task"
+  resource: {
+    type: "workflow_template"
+    id: string
+    name?: string
+  }
+  location?: {
+    task_id?: string
+    task_name?: string
+  }
+  matched_as: {
+    dialect: "name"
+    token: string
+    at: string
+  }
+  link_hint?: {
+    route: "workflows-hub-flow"
+    params: {
+      template_id: { ... }
     }
-    enabled?: boolean
-    version?: "v1" | "v2" | "v3"
-    created_at?: string
-    updated_at?: string
-    due_date?: string
-    due_date_config?: {
-      duration: { ... }
-      unit: { ... }
+  }
+}
+```
+
+### `JourneyContextUsagesResp`
+
+Response payload for getJourneyContextUsages.
+
+```ts
+type JourneyContextUsagesResp = {
+  usages: Array<{
+    kind: "workflow-task"
+    resource: {
       type: { ... }
+      id: { ... }
+      name?: { ... }
+    }
+    location?: {
       task_id?: { ... }
-      phase_id?: { ... }
+      task_name?: { ... }
     }
-    assigned_to?: Array<string | {
-      variable: { ... }
-      value?: { ... }
-    }>
-    available_in_ecp?: boolean
-    additional_triggers?: Array<{
-      id?: { ... }
-      type: { ... }
-      entity_schema?: { ... }
-    } | {
-      id?: { ... }
-      type: { ... }
-      automation_id?: { ... }
-      trigger_config?: { ... }
-    } | {
-      id?: { ... }
-      type: { ... }
-      journey_id: { ... }
-      journey_name?: { ... }
-      automation_id?: { ... }
-    } | {
-      id?: { ... }
-      type: { ... }
-      entity_schema?: { ... }
-    }>
-    phases?: Array<{
-      id: { ... }
-      name: { ... }
-      due_date?: { ... }
-      due_date_config?: { ... }
-      assigned_to?: { ... }
-      taxonomies?: { ... }
-    }>
-    tasks: Array<{
-      id: { ... }
-      name: { ... }
-      description?: { ... }
-      journey?: { ... }
-      due_date?: { ... }
-      due_date_config?: { ... }
-      requirements?: { ... }
-      assigned_to?: { ... }
-      ecp?: { ... }
-      installer?: { ... }
-      taxonomies?: { ... }
-      phase_id?: { ... }
-      task_type: { ... }
-    } | {
-      id: { ... }
-      name: { ... }
-      description?: { ... }
-      journey?: { ... }
-      due_date?: { ... }
-      due_date_config?: { ... }
-      requirements?: { ... }
-      assigned_to?: { ... }
-      ecp?: { ... }
-      installer?: { ... }
-      taxonomies?: { ... }
-      phase_id?: { ... }
-      task_type: { ... }
-      automation_config: { ... }
-  // ...
+    matched_as: {
+      dialect: { ... }
+      token: { ... }
+      at: { ... }
+    }
+    link_hint?: {
+      route: { ... }
+      params: { ... }
+    }
+  }>
+  status: "ok" | "partial"
+  scanned: number
 }
 ```

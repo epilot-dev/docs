@@ -40,6 +40,7 @@ const { data } = await pricingClient.$calculatePricingDetails(...)
 **Catalog API**
 - [`$searchCatalog`](#$searchcatalog)
 - [`$privateSearchCatalog`](#$privatesearchcatalog)
+- [`$resolveCatalog`](#$resolvecatalog)
 
 **Promo Codes API**
 - [`$validatePromoCodes`](#$validatepromocodes)
@@ -69,10 +70,106 @@ const { data } = await pricingClient.$calculatePricingDetails(...)
 **Product Recommendations API**
 - [`$productRecommendations`](#$productrecommendations)
 
+**Conditional Pricing API**
+- [`$getConditionSets`](#$getconditionsets)
+- [`$getConditionUsage`](#$getconditionusage)
+- [`$getConditionalPricingOrganization`](#$getconditionalpricingorganization)
+- [`$resolveConditionalEntity`](#$resolveconditionalentity)
+- [`$createConditionalVariant`](#$createconditionalvariant)
+- [`$listConditionalVariants`](#$listconditionalvariants)
+- [`$getConditionalVariantTree`](#$getconditionalvarianttree)
+- [`$getActiveConditionalVariantVersion`](#$getactiveconditionalvariantversion)
+- [`$replaceActiveConditionalVariantVersion`](#$replaceactiveconditionalvariantversion)
+- [`$patchActiveConditionalVariantVersion`](#$patchactiveconditionalvariantversion)
+- [`$deleteConditionalVariant`](#$deleteconditionalvariant)
+- [`$listConditionalVariantVersions`](#$listconditionalvariantversions)
+- [`$appendConditionalVariantVersion`](#$appendconditionalvariantversion)
+- [`$getConditionalVariantVersion`](#$getconditionalvariantversion)
+- [`$replaceConditionalVariantVersion`](#$replaceconditionalvariantversion)
+- [`$patchConditionalVariantVersion`](#$patchconditionalvariantversion)
+- [`$deleteConditionalVariantVersion`](#$deleteconditionalvariantversion)
+- [`$batchUpsertConditionalVariants`](#$batchupsertconditionalvariants)
+- [`$batchDeleteConditionalVariants`](#$batchdeleteconditionalvariants)
+
 **Schemas**
 - [`IntegrationId`](#integrationid)
+- [`ConditionalEntitySlug`](#conditionalentityslug)
+- [`ConditionType`](#conditiontype)
+- [`LocationFormat`](#locationformat)
+- [`ConditionDefinition`](#conditiondefinition)
+- [`ConditionSet`](#conditionset)
+- [`ConditionSetCatalog`](#conditionsetcatalog)
+- [`ConditionalPricingOptIn`](#conditionalpricingoptin)
+- [`ConditionUsage`](#conditionusage)
+- [`DeclaredConditionUsage`](#declaredconditionusage)
+- [`UndeclaredConditionUsage`](#undeclaredconditionusage)
+- [`ConditionOptionUsage`](#conditionoptionusage)
+- [`ConditionalPricingOrganization`](#conditionalpricingorganization)
+- [`ConditionalPricingErrorCode`](#conditionalpricingerrorcode)
+- [`ResolveConditionalEntityRequest`](#resolveconditionalentityrequest)
+- [`ResolveByContextRequest`](#resolvebycontextrequest)
+- [`ResolveByPinRequest`](#resolvebypinrequest)
+- [`ResolveContext`](#resolvecontext)
+- [`ResolveOptions`](#resolveoptions)
+- [`PinnedResolveOptions`](#pinnedresolveoptions)
+- [`ResolvedVariants`](#resolvedvariants)
+- [`ResolvedVariant`](#resolvedvariant)
+- [`CreateVariantRequest`](#createvariantrequest)
+- [`VariantConditions`](#variantconditions)
+- [`PinnedConditions`](#pinnedconditions)
+- [`PinnedConditionValue`](#pinnedconditionvalue)
+- [`PostalCodeFilter`](#postalcodefilter)
+- [`ConditionDateRange`](#conditiondaterange)
+- [`PostalCodeCity`](#postalcodecity)
+- [`ContextConditionValue`](#contextconditionvalue)
+- [`ConditionPredicate`](#conditionpredicate)
+- [`OrderedConditionOperand`](#orderedconditionoperand)
+- [`VariantValues`](#variantvalues)
+- [`CreatedVariant`](#createdvariant)
+- [`WriteWarning`](#writewarning)
+- [`VersionMoved`](#versionmoved)
+- [`InertOverride`](#inertoverride)
+- [`InertOverrideReason`](#inertoverridereason)
+- [`DeletedVariant`](#deletedvariant)
+- [`VariantVersion`](#variantversion)
+- [`WrittenVariantVersion`](#writtenvariantversion)
+- [`DeletedVariantVersion`](#deletedvariantversion)
+- [`AppendVersionRequest`](#appendversionrequest)
+- [`ReplaceVersionRequest`](#replaceversionrequest)
+- [`PatchVersionRequest`](#patchversionrequest)
+- [`ListVariantsRequest`](#listvariantsrequest)
+- [`VariantTreeRequest`](#varianttreerequest)
+- [`VariantConditionFilter`](#variantconditionfilter)
+- [`VariantList`](#variantlist)
+- [`VariantListRow`](#variantlistrow)
+- [`VariantTree`](#varianttree)
+- [`VariantTreeRow`](#varianttreerow)
+- [`VariantTreeRowStatus`](#varianttreerowstatus)
+- [`VariantVersionSnapshot`](#variantversionsnapshot)
+- [`VariantVersionList`](#variantversionlist)
+- [`BatchUpsertVariantsRequest`](#batchupsertvariantsrequest)
+- [`BatchUpsertItem`](#batchupsertitem)
+- [`BatchDeleteVariantsRequest`](#batchdeletevariantsrequest)
+- [`BatchDeleteItem`](#batchdeleteitem)
+- [`BatchDeleteByVariantId`](#batchdeletebyvariantid)
+- [`BatchDeleteByConditions`](#batchdeletebyconditions)
+- [`BatchUpsertResult`](#batchupsertresult)
+- [`BatchDeleteResult`](#batchdeleteresult)
+- [`BatchUpsertOutcome`](#batchupsertoutcome)
+- [`BatchDeleteOutcome`](#batchdeleteoutcome)
+- [`BatchUpsertCounts`](#batchupsertcounts)
+- [`BatchDeleteCounts`](#batchdeletecounts)
+- [`BatchUpsertResultEntry`](#batchupsertresultentry)
+- [`BatchDeleteResultEntry`](#batchdeleteresultentry)
 - [`Error`](#error)
+- [`RefusedLineItem`](#refusedlineitem)
+- [`ReportedError`](#reportederror)
+- [`ConditionalPricingError`](#conditionalpricingerror)
+- [`CatalogReferenceErrorCode`](#catalogreferenceerrorcode)
+- [`CatalogReferenceError`](#catalogreferenceerror)
+- [`BaseProduct`](#baseproduct)
 - [`Product`](#product)
+- [`HydratedProduct`](#hydratedproduct)
 - [`Opportunity`](#opportunity)
 - [`Order`](#order)
 - [`Price`](#price)
@@ -86,11 +183,22 @@ const { data } = await pricingClient.$calculatePricingDetails(...)
 - [`PriceInputMapping`](#priceinputmapping)
 - [`PriceConditions`](#priceconditions)
 - [`ExternalFeeMetadata`](#externalfeemetadata)
+- [`ExternalLocationMetadata`](#externallocationmetadata)
 - [`ExternalPriceMetadata`](#externalpricemetadata)
 - [`ExternalFeeMappings`](#externalfeemappings)
 - [`ExternalFeeMapping`](#externalfeemapping)
+- [`PublicCatalogSearch`](#publiccatalogsearch)
 - [`CatalogSearch`](#catalogsearch)
+- [`CatalogFieldsParam`](#catalogfieldsparam)
 - [`CatalogSearchResult`](#catalogsearchresult)
+- [`ResolveCatalogRequest`](#resolvecatalogrequest)
+- [`CatalogContext`](#catalogcontext)
+- [`CatalogEntry`](#catalogentry)
+- [`ResolveCatalogResult`](#resolvecatalogresult)
+- [`CatalogPair`](#catalogpair)
+- [`ResolvedPriceComponents`](#resolvedpricecomponents)
+- [`CatalogReference`](#catalogreference)
+- [`CatalogReferenceMember`](#catalogreferencemember)
 - [`SearchProvidersParams`](#searchprovidersparams)
 - [`SearchStreetsParams`](#searchstreetsparams)
 - [`AvailabilityCheckParams`](#availabilitycheckparams)
@@ -111,6 +219,7 @@ const { data } = await pricingClient.$calculatePricingDetails(...)
 - [`ComputedPriceBreakdown`](#computedpricebreakdown)
 - [`ComputedPriceComponents`](#computedpricecomponents)
 - [`ComputePriceResult`](#computepriceresult)
+- [`ComputePriceInputs`](#computepriceinputs)
 - [`SpotMarketBiddingZone`](#spotmarketbiddingzone)
 - [`SpotMarketType`](#spotmarkettype)
 - [`SpotMarketDataFrequency`](#spotmarketdatafrequency)
@@ -127,6 +236,10 @@ const { data } = await pricingClient.$calculatePricingDetails(...)
 - [`SearchStreetsResult`](#searchstreetsresult)
 - [`SearchProvidersResult`](#searchprovidersresult)
 - [`Provider`](#provider)
+- [`AdditionalProviderData`](#additionalproviderdata)
+- [`MarketParticipant`](#marketparticipant)
+- [`GasMarketAreaDetails`](#gasmarketareadetails)
+- [`PowerMarketAreaDetails`](#powermarketareadetails)
 - [`Street`](#street)
 - [`ValidateAvailabilityFileResult`](#validateavailabilityfileresult)
 - [`CartDto`](#cartdto)
@@ -177,6 +290,7 @@ const { data } = await pricingClient.$calculatePricingDetails(...)
 - [`EntityItem`](#entityitem)
 - [`EntityRelation`](#entityrelation)
 - [`Tax`](#tax)
+- [`TaxItem`](#taxitem)
 - [`TaxBreakdownInfo`](#taxbreakdowninfo)
 - [`BaseCouponCommon`](#basecouponcommon)
 - [`CouponWithoutPromoCodes`](#couponwithoutpromocodes)
@@ -209,19 +323,87 @@ const { data } = await pricingClient.$calculatePricingDetails(...)
 - [`ExternalCatalogItem`](#externalcatalogitem)
 - [`ProductRecommendationSearch`](#productrecommendationsearch)
 - [`ProductRecommendationResponse`](#productrecommendationresponse)
+- [`OfferHighlightConfig`](#offerhighlightconfig)
 - [`Offer`](#offer)
 - [`ProductRecommendation`](#productrecommendation)
 
 ### `$calculatePricingDetails`
 
-calculatePricingDetails
+Computes a set of pricing details that can be persisted on an entity with the pricing capability enabled, e.g: Orders or Contracts.
 
 `POST /v1/pricing:compute`
 
 ```ts
 const { data } = await client.$calculatePricingDetails(
   null,
-  {},
+  {
+    line_items: [
+      {
+        external_fees_mappings: [ /* ... */ ],
+        external_fees_metadata: { /* ... */ },
+        external_location_metadata: { /* ... */ },
+        external_price_metadata: { /* ... */ },
+        _immutable_pricing_details: { /* ... */ },
+        coupon_ids: ['string'],
+        taxes: [ /* ... */ ],
+        recurrences: [ /* ... */ ],
+        _coupons: [ /* ... */ ],
+        metadata: [ /* ... */ ],
+        quantity: 0,
+        product_id: 'string',
+        price_id: 'string',
+        description: 'string',
+        product_description: 'string',
+        product_name: 'string',
+        price_mappings: [ /* ... */ ],
+        is_tax_inclusive: true,
+        _product: { /* ... */ },
+        catalog_reference: { /* ... */ },
+        type: 'one_time',
+        billing_period: 'weekly',
+        unit_amount: 0,
+        unit_amount_gross: 0,
+        unit_amount_currency: 'EUR',
+        unit_amount_decimal: 'string',
+        is_composite_price: false,
+        pricing_model: 'per_unit',
+        _price: { /* ... */ }
+      },
+      {
+        external_fees_mappings: [ /* ... */ ],
+        external_fees_metadata: { /* ... */ },
+        external_location_metadata: { /* ... */ },
+        external_price_metadata: { /* ... */ },
+        _immutable_pricing_details: { /* ... */ },
+        coupon_ids: ['string'],
+        taxes: [ /* ... */ ],
+        recurrences: [ /* ... */ ],
+        _coupons: [ /* ... */ ],
+        metadata: [ /* ... */ ],
+        quantity: 0,
+        product_id: 'string',
+        price_id: 'string',
+        description: 'string',
+        product_description: 'string',
+        product_name: 'string',
+        price_mappings: [ /* ... */ ],
+        is_tax_inclusive: true,
+        _product: { /* ... */ },
+        catalog_reference: { /* ... */ },
+        is_composite_price: true,
+        item_components: [ /* ... */ ],
+        selected_price_component_ids: ['string'],
+        price_component_coupon_ids: {},
+        _price: { /* ... */ }
+      }
+    ],
+    redeemed_promos: [
+      {
+        code: 'string',
+        coupons: [ /* ... */ ]
+      }
+    ]
+  },
 )
 ```
 
@@ -304,6 +486,7 @@ const { data } = await client.createOrder(
       {
         external_fees_mappings: [ /* ... */ ],
         external_fees_metadata: { /* ... */ },
+        external_location_metadata: { /* ... */ },
         external_price_metadata: { /* ... */ },
         _immutable_pricing_details: { /* ... */ },
         coupon_ids: ['string'],
@@ -320,6 +503,7 @@ const { data } = await client.createOrder(
         price_mappings: [ /* ... */ ],
         is_tax_inclusive: true,
         _product: { /* ... */ },
+        catalog_reference: { /* ... */ },
         type: 'one_time',
         billing_period: 'weekly',
         unit_amount: 0,
@@ -333,6 +517,7 @@ const { data } = await client.createOrder(
       {
         external_fees_mappings: [ /* ... */ ],
         external_fees_metadata: { /* ... */ },
+        external_location_metadata: { /* ... */ },
         external_price_metadata: { /* ... */ },
         _immutable_pricing_details: { /* ... */ },
         coupon_ids: ['string'],
@@ -349,6 +534,7 @@ const { data } = await client.createOrder(
         price_mappings: [ /* ... */ ],
         is_tax_inclusive: true,
         _product: { /* ... */ },
+        catalog_reference: { /* ... */ },
         is_composite_price: true,
         item_components: [ /* ... */ ],
         selected_price_component_ids: ['string'],
@@ -535,6 +721,7 @@ const { data } = await client.putOrder(
       {
         external_fees_mappings: [ /* ... */ ],
         external_fees_metadata: { /* ... */ },
+        external_location_metadata: { /* ... */ },
         external_price_metadata: { /* ... */ },
         _immutable_pricing_details: { /* ... */ },
         coupon_ids: ['string'],
@@ -551,6 +738,7 @@ const { data } = await client.putOrder(
         price_mappings: [ /* ... */ ],
         is_tax_inclusive: true,
         _product: { /* ... */ },
+        catalog_reference: { /* ... */ },
         type: 'one_time',
         billing_period: 'weekly',
         unit_amount: 0,
@@ -564,6 +752,7 @@ const { data } = await client.putOrder(
       {
         external_fees_mappings: [ /* ... */ ],
         external_fees_metadata: { /* ... */ },
+        external_location_metadata: { /* ... */ },
         external_price_metadata: { /* ... */ },
         _immutable_pricing_details: { /* ... */ },
         coupon_ids: ['string'],
@@ -580,6 +769,7 @@ const { data } = await client.putOrder(
         price_mappings: [ /* ... */ ],
         is_tax_inclusive: true,
         _product: { /* ... */ },
+        catalog_reference: { /* ... */ },
         is_composite_price: true,
         item_components: [ /* ... */ ],
         selected_price_component_ids: ['string'],
@@ -751,7 +941,7 @@ const { data } = await client.putOrder(
 
 ### `$checkoutCart`
 
-checkoutCart
+Checkouts a cart and executes the specified checkout `mode` process.
 
 `POST /v1/public/cart:checkout`
 
@@ -856,7 +1046,7 @@ const { data } = await client.$checkoutCart(
 
 ### `$searchCatalog`
 
-searchCatalog
+Provides a querying functionalities over products and prices of the Catalog for a given organization.
 
 `POST /v1/public/catalog`
 
@@ -900,7 +1090,7 @@ const { data } = await client.$searchCatalog(
 
 ### `$privateSearchCatalog`
 
-privateSearchCatalog
+Provides a querying functionalities over products and prices of the Catalog for a given organization.
 
 `POST /v1/catalog`
 
@@ -939,9 +1129,60 @@ const { data } = await client.$privateSearchCatalog(
 
 ---
 
+### `$resolveCatalog`
+
+Returns the products and prices a journey block shows as catalog pairs, each member resolved
+for its own entity type's context at `as_of`. A pair carries the product, one of its prices, the coupons th
+
+`POST /v2/public/catalog`
+
+```ts
+const { data } = await client.$resolveCatalog(
+  null,
+  {
+    entries: [
+      {
+        product_id: 'product-pv-2027',
+        price_id: 'price-sp26d1yo'
+      }
+    ],
+    context: {
+      product: {
+        postal_code: '46045',
+        channel: 'direct'
+      },
+      price: {
+        postal_code: '46045'
+      }
+    },
+    as_of: '2026-12-20T10:15:00Z'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "pairs": [
+    {
+      "product": {},
+      "price": {},
+      "coupons": [],
+      "catalog_reference": {}
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
 ### `$validatePromoCodes`
 
-validatePromoCodes
+Validate a list of promo codes against a list of coupons
 
 `POST /v1/public/validate-promo-codes`
 
@@ -994,7 +1235,7 @@ const { data } = await client.$validatePromoCodes(
 
 ### `$availabilityCheck`
 
-availabilityCheck
+The availability check endpoint
 
 `POST /v1/public/availability:check`
 
@@ -1044,7 +1285,7 @@ const { data } = await client.$availabilityCheck(
 
 ### `$validateAvailabilityFile`
 
-validateAvailabilityFile
+Validates an availability file, it returns an array of errors if the file is invalid
 
 `GET /v1/validate-availability/{id}`
 
@@ -1072,7 +1313,7 @@ const { data } = await client.$validateAvailabilityFile({
 
 ### `$historicMarketPrices`
 
-historicMarketPrices
+Get a series of historic energy prices for a given time period, market and bidding zone.
 
 `GET /v1/public/historicMarketPrices`
 
@@ -1110,7 +1351,7 @@ const { data } = await client.$historicMarketPrices({
 
 ### `$averageMarketPrice`
 
-averageMarketPrice
+Get the average energy prices for a given time period, market and bidding zone.
 
 `GET /v1/public/averageMarketPrice`
 
@@ -1149,7 +1390,7 @@ const { data } = await client.$averageMarketPrice({
 
 ### `$searchExternalProducts`
 
-searchExternalProducts
+Returns the list of available products with computed prices based on a given context and for a given org integration.
 
 `POST /v1/public/integration/{integrationId}/products`
 
@@ -1208,7 +1449,7 @@ const { data } = await client.$searchExternalProducts(
 
 ### `$searchExternalProductRecommendations`
 
-searchExternalProductRecommendations
+Returns the list of available product recommendations with computed prices based on a given context and for a given org integration.
 
 `POST /v1/public/integration/{integrationId}/product-recommendations`
 
@@ -1283,7 +1524,7 @@ const { data } = await client.$searchExternalProductRecommendations(
 
 ### `$searchProviders`
 
-searchProviders
+Returns the list of providers available based on a given location
 
 `POST /v1/public/integration/{integrationId}/providers:search`
 
@@ -1298,7 +1539,8 @@ const { data } = await client.$searchProviders(
     postal_code: 'string',
     city: 'string',
     street: 'string',
-    street_number: 'string'
+    street_number: 'string',
+    grid_filter: 'all'
   },
 )
 ```
@@ -1310,7 +1552,35 @@ const { data } = await client.$searchProviders(
 [
   {
     "name": "string",
-    "code": "string"
+    "code": "string",
+    "type": "gas",
+    "additionalData": {
+      "gridOperators": [
+        {
+          "name": "string",
+          "codeNumber": "string",
+          "validFrom": "1970-01-01",
+          "validUntil": "1970-01-01"
+        }
+      ],
+      "defaultSuppliers": [
+        {
+          "name": "string",
+          "codeNumber": "string",
+          "validFrom": "1970-01-01",
+          "validUntil": "1970-01-01"
+        }
+      ],
+      "marketAreaDetails": {
+        "gasType": "L-Gas",
+        "marketArea": "string",
+        "virtualTradingPoint": "string"
+      }
+    },
+    "_meta": {
+      "signature": "string",
+      "timestamp": 0
+    }
   }
 ]
 ```
@@ -1321,7 +1591,7 @@ const { data } = await client.$searchProviders(
 
 ### `$searchStreets`
 
-searchStreets
+Returns the list of streets available for a given postal code and city
 
 `POST /v1/public/integration/{integrationId}/streets:search`
 
@@ -1355,7 +1625,7 @@ const { data } = await client.$searchStreets(
 
 ### `$computePrice`
 
-calculatePricingDetails
+Returns the price for a given product type based on location and consumption
 
 `POST /v1/public/integration/{integrationId}/compute-price`
 
@@ -1373,7 +1643,8 @@ const { data } = await client.$computePrice(
     consumption_NT: 0,
     association_id: 'string',
     billing_period: 'monthly',
-    reference_date: 'string',
+    reference_date: '1970-01-01',
+    city: 'string',
     type: 'power',
     meter_type: 'classic'
   },
@@ -1405,6 +1676,17 @@ const { data } = await client.$computePrice(
     "variable_ht": {},
     "variable_nt": {}
   },
+  "inputs": {
+    "type": "power",
+    "consumptionHT": 0,
+    "consumptionNT": 0,
+    "consumptionType": "household",
+    "zipCode": "string",
+    "city": "string",
+    "providerId": "string",
+    "billingPeriod": "weekly",
+    "referenceDate": "1970-01-01"
+  },
   "_meta": {
     "signature": "string",
     "timestamp": 0
@@ -1418,7 +1700,7 @@ const { data } = await client.$computePrice(
 
 ### `$getCredentials`
 
-getCredentials
+Gets the credentials for a given integration / organization
 
 `GET /v1/integration/{integrationId}/credentials`
 
@@ -1441,7 +1723,7 @@ const { data } = await client.$getCredentials({
 
 ### `$saveCredentials`
 
-saveCredentials
+Saves the credentials for a given integration / organization
 
 `PUT /v1/integration/{integrationId}/credentials:save`
 
@@ -1458,7 +1740,7 @@ const { data } = await client.$saveCredentials(
 
 ### `$deleteCredentials`
 
-deleteCredentials
+Delete the credentials for a given integration / organization
 
 `DELETE /v1/integration/{integrationId}/credentials:delete`
 
@@ -1472,13 +1754,15 @@ const { data } = await client.$deleteCredentials({
 
 ### `$getExternalCatalogProducts`
 
-getExternalCatalogProducts
+Returns the list of available external catalog products with computed prices based on a given context
 
 `POST /v1/public/external-catalog/products`
 
 ```ts
 const { data } = await client.$getExternalCatalogProducts(
-  null,
+  {
+    x-epilot-org-id: 'example',
+  },
   {
     config: {
       appId: '1234567890',
@@ -1538,13 +1822,15 @@ const { data } = await client.$getExternalCatalogProducts(
 
 ### `$getExternalCatalogProductRecommendations`
 
-getExternalCatalogProductRecommendations
+Returns the list of available external catalog products recommendations based on a given context
 
 `POST /v1/public/external-catalog/product-recommendations`
 
 ```ts
 const { data } = await client.$getExternalCatalogProductRecommendations(
-  null,
+  {
+    x-epilot-org-id: 'example',
+  },
   {
     config: {
       appId: '1234567890',
@@ -1620,7 +1906,7 @@ const { data } = await client.$getExternalCatalogProductRecommendations(
 
 ### `$productRecommendations`
 
-productRecommendations
+Get a list of product recommendations based on the search parameters.
 
 `POST /v1/public/product-recommendations`
 
@@ -1670,62 +1956,1093 @@ const { data } = await client.$productRecommendations(
       "description": "Annual internet service",
       "price_id": "7e24ff5d-d580-4136-a32f-19191eed039a",
       "product_id": "6241487f-b7fd-428b-ab92-24ee0b37fd84",
-      "taxes": [
-        {
-          "amount": 600,
-          "tax": {
-            "active": true,
-            "description": "Without Behaviour",
-            "rate": 6,
-            "region": "DE",
-            "type": "VAT",
-            "_created_at": "2022-02-07T14:49:08.831Z",
-            "_id": "18bbbc2e-2c37-4f91-924a-07ae60d830e4",
-            "_org": "739224",
-            "_schema": "tax",
-            "_title": "Tax Without Behaviour",
-            "_updated_at": "2022-02-07T14:49:08.831Z"
-          }
-        }
-      ],
+      "taxes": [],
       "unit_amount": 10000,
       "unit_amount_net": 10000,
       "pricing_model": "per_unit",
-      "_price": {
-        "_id": "7e24ff5d-d580-4136-a32f-19191eed039a",
-        "unit_amount": 10000,
-        "unit_amount_currency": "EUR",
-        "unit_amount_decimal": "100.00",
-        "sales_tax": "standard",
-        "is_tax_inclusive": false,
-        "price_display_in_journeys": "show_price",
-        "type": "one_time",
-        "billing_period": "weekly",
-        "billing_duration_unit": "months",
-        "notice_time_unit": "months",
-        "termination_time_unit": "months",
-        "renewal_duration_unit": "months",
-        "_schema": "price",
-        "_title": "Solar Panel Module",
-        "description": "Solar Panel Module",
-        "active": true,
-        "tax": {
-          "$relation": [
+      "_price": {},
+      "_product": {}
+    }
+  ],
+  "source": {
+    "item": {
+      "amount_subtotal": 10000,
+      "amount_total": 10600,
+      "currency": "EUR",
+      "description": "Annual internet service",
+      "price_id": "7e24ff5d-d580-4136-a32f-19191eed039a",
+      "product_id": "6241487f-b7fd-428b-ab92-24ee0b37fd84",
+      "taxes": [],
+      "unit_amount": 10000,
+      "unit_amount_net": 10000,
+      "pricing_model": "per_unit",
+      "_price": {},
+      "_product": {}
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+### `$getConditionSets`
+
+Returns the condition sets built in for one conditional entity type, ready to copy into that schema's `conditions` array. Read-only, and the same for every organization.
+
+`GET /v1/conditional-pricing/{slug}/condition-sets`
+
+```ts
+const { data } = await client.$getConditionSets({
+  slug: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "id": "delivery_area",
+      "label": "Delivery Area",
+      "description": "string",
+      "conditions": [
+        {
+          "id": "d5839b94-ba20-4225-a78e-76951d352bd6",
+          "name": "postal_code",
+          "label": "Postal Code",
+          "type": "string",
+          "options": [
+            "private",
             {
-              "entity_id": "24641e82-0690-4135-8b43-ef12a9b1c5dc"
+              "value": "commercial",
+              "title": "Commercial customers"
             }
-          ]
+          ],
+          "format": "postal_code"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$getConditionUsage`
+
+Returns, for each condition the schema declares and each option a `select` condition
+declares, how many variants pin it, and for the schema as a whole how many conditional
+entities and variants it has
+
+`GET /v1/conditional-pricing/{slug}/conditions:usage`
+
+```ts
+const { data } = await client.$getConditionUsage({
+  slug: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "total": {
+    "variants": 1252,
+    "entities": 38
+  },
+  "conditions": [
+    {
+      "name": "delivery_area",
+      "variants": 1240,
+      "entities": 37
+    },
+    {
+      "name": "customer_type",
+      "variants": 12,
+      "entities": 3,
+      "options": [
+        {
+          "value": "private",
+          "variants": 12
         },
-        "_org": "728",
-        "_created_at": "2022-06-03T16:04:10.369Z",
-        "_updated_at": "2022-06-03T16:04:10.369Z",
-        "pricing_model": "per_unit"
+        {
+          "value": "business",
+          "variants": 0
+        }
+      ],
+      "undeclared_options": []
+    }
+  ],
+  "undeclared": [
+    {
+      "name": "legacy_customer_type",
+      "type": "select",
+      "variants": 1,
+      "entities": 1,
+      "options": [
+        {
+          "value": "private",
+          "variants": 1
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$getConditionalPricingOrganization`
+
+Returns whether the calling organization has Conditional Pricing on, whether its search
+collection is ready or still being deleted, and, once it is on, whether it is in use. While it
+is in use, or whi
+
+`GET /v1/conditional-pricing/organization`
+
+```ts
+const { data } = await client.$getConditionalPricingOrganization()
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "status": "NOT_ENABLED"
+}
+```
+
+</details>
+
+---
+
+### `$resolveConditionalEntity`
+
+Returns the variants of one conditional entity that apply, each composed: the base entity
+overlaid with the version in effect at `as_of`.
+
+`POST /v1/conditional-pricing:resolve`
+
+```ts
+const { data } = await client.$resolveConditionalEntity(
+  null,
+  {
+    schema: 'product',
+    entity_id: 'price-sp26d1yo',
+    context: {
+      postal_code: '46045',
+      consumption: {
+        lt: 5000
+      }
+    },
+    as_of: '2027-03-15T00:00:00Z',
+    options: {
+      resolve_one: false,
+      hydrate: false
+    }
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "_id": "price-sp26d1yo",
+      "_variant_id": "var-46045",
+      "_version_valid_from": "2027-01-01",
+      "_conditions": {
+        "postal_code": "46045",
+        "default": false
       },
-      "_product": {
-        "name": "Cool box",
-        "type": "product",
-        "_id": "73f857a4-0fbc-4aa6-983f-87c0d6d410a6",
-        "_title": "Cool box"
+      "_inert_overrides": [
+        {
+          "attribute": "unit_amount",
+          "reason": "ATTRIBUTE_NOT_OVERRIDABLE"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$createConditionalVariant`
+
+Creates one variant together with its first version.
+
+`POST /v1/conditional-pricing/{slug}/entities/{entity_id}/variants`
+
+```ts
+const { data } = await client.$createConditionalVariant(
+  {
+    slug: 'example',
+    entity_id: 'example',
+  },
+  {
+    conditions: {
+      postal_code: '46045'
+    },
+    default: false,
+    valid_from: '2027-01-01',
+    values: {
+      unit_amount: 2499,
+      unit_amount_decimal: '24.99'
+    }
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "conditions": {
+    "postal_code": "46045",
+    "default": false
+  },
+  "valid_from": "2027-01-01",
+  "values": {
+    "unit_amount": 2499,
+    "unit_amount_decimal": "24.99"
+  },
+  "_created_at": "string",
+  "_updated_at": "string",
+  "_revision": 0,
+  "warnings": [
+    {
+      "code": "VARIANT_COUNT_APPROACHING_CAP",
+      "message": "string",
+      "details": {
+        "variant_count": 0,
+        "cap": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$listConditionalVariants`
+
+Lists a conditional entity's variants and the conditions each one pins. A `POST` because the
+condition filter is a structured object; nothing is written. The body is required, so send
+`{}` for the fir
+
+`POST /v1/conditional-pricing/{slug}/entities/{entity_id}/variants:list`
+
+```ts
+const { data } = await client.$listConditionalVariants(
+  {
+    slug: 'example',
+    entity_id: 'example',
+  },
+  {
+    conditions: {
+      postal_code: '46045',
+      consumption: {
+        lt: 5000
+      }
+    },
+    search: '460',
+    sort: 'conditions.postal_code:asc',
+    from: 0,
+    size: 10,
+    cursor: 'eyJmcm9tIjoyNSwibGlzdGluZyI6IjNmOWMxZTJhIn0'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "hits": 8128,
+  "results": [
+    {
+      "variant_id": "var-46045",
+      "entity_id": "price-sp26d1yo",
+      "schema": "product",
+      "conditions": {
+        "postal_code": "46045",
+        "default": false
+      }
+    }
+  ],
+  "next": "eyJmcm9tIjoyNSwibGlzdGluZyI6IjNmOWMxZTJhIn0"
+}
+```
+
+</details>
+
+---
+
+### `$getConditionalVariantTree`
+
+The variants list, each row carrying the version in effect at `as_of` and a `status` saying
+whether that version is `active` or still `scheduled`.
+
+`POST /v1/conditional-pricing/{slug}/entities/{entity_id}/variants:tree`
+
+```ts
+const { data } = await client.$getConditionalVariantTree(
+  {
+    slug: 'example',
+    entity_id: 'example',
+  },
+  {
+    conditions: {
+      postal_code: '46045',
+      consumption: {
+        lt: 5000
+      }
+    },
+    search: '460',
+    sort: 'conditions.postal_code:asc',
+    from: 0,
+    size: 10,
+    cursor: 'eyJmcm9tIjoyNSwibGlzdGluZyI6IjNmOWMxZTJhIn0',
+    as_of: '2027-03-15T00:00:00Z'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "hits": 8128,
+  "results": [
+    {
+      "variant_id": "var-46045",
+      "entity_id": "price-sp26d1yo",
+      "schema": "product",
+      "conditions": {
+        "postal_code": "46045",
+        "default": false
+      },
+      "status": "active",
+      "version": {
+        "variant_id": "var-46045",
+        "entity_id": "price-sp26d1yo",
+        "schema": "product",
+        "conditions": {
+          "postal_code": "46045",
+          "default": false
+        },
+        "valid_from": "2027-01-01",
+        "values": {
+          "unit_amount": 2499,
+          "unit_amount_decimal": "24.99"
+        },
+        "_created_at": "string",
+        "_updated_at": "string"
+      }
+    }
+  ],
+  "next": "eyJmcm9tIjoyNSwibGlzdGluZyI6IjNmOWMxZTJhIn0"
+}
+```
+
+</details>
+
+---
+
+### `$getActiveConditionalVariantVersion`
+
+Returns the version of this variant in effect today in the organization's timezone — the
+latest `valid_from` on or before today — with the `_revision` a write to it must carry.
+
+`GET /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}`
+
+```ts
+const { data } = await client.$getActiveConditionalVariantVersion({
+  slug: 'example',
+  entity_id: 'example',
+  variant_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "conditions": {
+    "postal_code": "46045",
+    "default": false
+  },
+  "valid_from": "2027-01-01",
+  "values": {
+    "unit_amount": 2499,
+    "unit_amount_decimal": "24.99"
+  },
+  "_created_at": "string",
+  "_updated_at": "string",
+  "_revision": 3
+}
+```
+
+</details>
+
+---
+
+### `$replaceActiveConditionalVariantVersion`
+
+Replaces the values of the version in effect. The body is the complete set of overrides: an
+overridable attribute absent from it stops being overridden, and one the variant may not
+override keeps its 
+
+`PUT /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}`
+
+```ts
+const { data } = await client.$replaceActiveConditionalVariantVersion(
+  {
+    slug: 'example',
+    entity_id: 'example',
+    variant_id: 'example',
+  },
+  {
+    values: {
+      unit_amount: 2499,
+      unit_amount_decimal: '24.99'
+    },
+    _revision: 3,
+    valid_from: '1970-01-01',
+    conditions: {
+      postal_code: '46045'
+    }
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "conditions": {
+    "postal_code": "46045",
+    "default": false
+  },
+  "valid_from": "2027-01-01",
+  "values": {
+    "unit_amount": 2499,
+    "unit_amount_decimal": "24.99"
+  },
+  "_created_at": "string",
+  "_updated_at": "string",
+  "_revision": 3,
+  "warnings": [
+    {
+      "code": "VARIANT_COUNT_APPROACHING_CAP",
+      "message": "string",
+      "details": {
+        "variant_count": 0,
+        "cap": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$patchActiveConditionalVariantVersion`
+
+Changes only the fields it names on the version in effect. `null` sets a value rather than
+removing an override; use the replace operation to remove one.
+
+`PATCH /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}`
+
+```ts
+const { data } = await client.$patchActiveConditionalVariantVersion(
+  {
+    slug: 'example',
+    entity_id: 'example',
+    variant_id: 'example',
+  },
+  {
+    values: {
+      unit_amount: 2499,
+      unit_amount_decimal: '24.99'
+    },
+    _revision: 3,
+    valid_from: '1970-01-01',
+    conditions: {
+      postal_code: '46045'
+    }
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "conditions": {
+    "postal_code": "46045",
+    "default": false
+  },
+  "valid_from": "2027-01-01",
+  "values": {
+    "unit_amount": 2499,
+    "unit_amount_decimal": "24.99"
+  },
+  "_created_at": "string",
+  "_updated_at": "string",
+  "_revision": 3,
+  "warnings": [
+    {
+      "code": "VARIANT_COUNT_APPROACHING_CAP",
+      "message": "string",
+      "details": {
+        "variant_count": 0,
+        "cap": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$deleteConditionalVariant`
+
+Removes one variant: its condition tuple, its index entry and all its versions. The tuple
+becomes reusable, and an interrupted delete is safe to send again.
+
+`DELETE /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}`
+
+```ts
+const { data } = await client.$deleteConditionalVariant({
+  slug: 'example',
+  entity_id: 'example',
+  variant_id: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "tuple_released": true,
+  "versions_deleted": 0
+}
+```
+
+</details>
+
+---
+
+### `$listConditionalVariantVersions`
+
+Lists one variant's versions. Cursor paging only: a page may be short or empty and still
+carry a `next`, so page until `next` is absent. A cursor is bound to one variant and one
+`order`.
+
+`GET /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}/versions`
+
+```ts
+const { data } = await client.$listConditionalVariantVersions({
+  slug: 'example',
+  entity_id: 'example',
+  variant_id: 'example',
+  limit: 1,
+  order: 'example',
+  cursor: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "variant_id": "var-46045",
+      "entity_id": "price-sp26d1yo",
+      "schema": "product",
+      "conditions": {
+        "postal_code": "46045",
+        "default": false
+      },
+      "valid_from": "2027-01-01",
+      "values": {
+        "unit_amount": 2499,
+        "unit_amount_decimal": "24.99"
+      },
+      "_created_at": "string",
+      "_updated_at": "string"
+    }
+  ],
+  "next": "eyJzayI6IlYjcHJpY2Utc3AyNmQxeW8jdmFyLTQ2MDQ1IzIwMjYtMDEtMDFUMDA6MDA6MDAuMDAwWiIsIm9yZGVyIjoiYXNjIn0"
+}
+```
+
+</details>
+
+---
+
+### `$appendConditionalVariantVersion`
+
+Appends a version taking effect on its own date. A variant has at most one version per
+day. The version in effect at any `as_of` is the one with the latest `valid_from` on or
+before its date in the or
+
+`POST /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}/versions`
+
+```ts
+const { data } = await client.$appendConditionalVariantVersion(
+  {
+    slug: 'example',
+    entity_id: 'example',
+    variant_id: 'example',
+  },
+  {
+    valid_from: '2027-01-01',
+    values: {
+      unit_amount: 2499,
+      unit_amount_decimal: '24.99'
+    },
+    conditions: {
+      postal_code: '46045'
+    }
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "conditions": {
+    "postal_code": "46045",
+    "default": false
+  },
+  "valid_from": "2027-01-01",
+  "values": {
+    "unit_amount": 2499,
+    "unit_amount_decimal": "24.99"
+  },
+  "_created_at": "string",
+  "_updated_at": "string",
+  "_revision": 3,
+  "warnings": [
+    {
+      "code": "VARIANT_COUNT_APPROACHING_CAP",
+      "message": "string",
+      "details": {
+        "variant_count": 0,
+        "cap": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$getConditionalVariantVersion`
+
+Returns one version by the date it takes effect. Exact, never nearest.
+
+`GET /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}/versions/{valid_from}`
+
+```ts
+const { data } = await client.$getConditionalVariantVersion({
+  slug: 'example',
+  entity_id: 'example',
+  variant_id: 'example',
+  valid_from: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "conditions": {
+    "postal_code": "46045",
+    "default": false
+  },
+  "valid_from": "2027-01-01",
+  "values": {
+    "unit_amount": 2499,
+    "unit_amount_decimal": "24.99"
+  },
+  "_created_at": "string",
+  "_updated_at": "string",
+  "_revision": 3
+}
+```
+
+</details>
+
+---
+
+### `$replaceConditionalVariantVersion`
+
+Replaces one version's values, whatever its date. Attributes the variant may not override
+keep their stored value. Writing a superseded version is reported in `warnings`.
+
+`PUT /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}/versions/{valid_from}`
+
+```ts
+const { data } = await client.$replaceConditionalVariantVersion(
+  {
+    slug: 'example',
+    entity_id: 'example',
+    variant_id: 'example',
+    valid_from: 'example',
+  },
+  {
+    values: {
+      unit_amount: 2499,
+      unit_amount_decimal: '24.99'
+    },
+    _revision: 3,
+    valid_from: '1970-01-01',
+    conditions: {
+      postal_code: '46045'
+    }
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "conditions": {
+    "postal_code": "46045",
+    "default": false
+  },
+  "valid_from": "2027-01-01",
+  "values": {
+    "unit_amount": 2499,
+    "unit_amount_decimal": "24.99"
+  },
+  "_created_at": "string",
+  "_updated_at": "string",
+  "_revision": 3,
+  "warnings": [
+    {
+      "code": "VARIANT_COUNT_APPROACHING_CAP",
+      "message": "string",
+      "details": {
+        "variant_count": 0,
+        "cap": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$patchConditionalVariantVersion`
+
+Changes only the fields it names on one version.
+
+`PATCH /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}/versions/{valid_from}`
+
+```ts
+const { data } = await client.$patchConditionalVariantVersion(
+  {
+    slug: 'example',
+    entity_id: 'example',
+    variant_id: 'example',
+    valid_from: 'example',
+  },
+  {
+    values: {
+      unit_amount: 2499,
+      unit_amount_decimal: '24.99'
+    },
+    _revision: 3,
+    valid_from: '1970-01-01',
+    conditions: {
+      postal_code: '46045'
+    }
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "conditions": {
+    "postal_code": "46045",
+    "default": false
+  },
+  "valid_from": "2027-01-01",
+  "values": {
+    "unit_amount": 2499,
+    "unit_amount_decimal": "24.99"
+  },
+  "_created_at": "string",
+  "_updated_at": "string",
+  "_revision": 3,
+  "warnings": [
+    {
+      "code": "VARIANT_COUNT_APPROACHING_CAP",
+      "message": "string",
+      "details": {
+        "variant_count": 0,
+        "cap": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$deleteConditionalVariantVersion`
+
+Removes one version. What the removal moves is reported in `warnings`. A variant's last
+remaining version cannot be removed — delete the variant instead.
+
+`DELETE /v1/conditional-pricing/{slug}/entities/{entity_id}/variants/{variant_id}/versions/{valid_from}`
+
+```ts
+const { data } = await client.$deleteConditionalVariantVersion({
+  slug: 'example',
+  entity_id: 'example',
+  variant_id: 'example',
+  valid_from: 'example',
+  _revision: 1,
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "variant_id": "var-46045",
+  "entity_id": "price-sp26d1yo",
+  "schema": "product",
+  "valid_from": "2027-01-01",
+  "warnings": [
+    {
+      "code": "VARIANT_COUNT_APPROACHING_CAP",
+      "message": "string",
+      "details": {
+        "variant_count": 0,
+        "cap": 0
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$batchUpsertConditionalVariants`
+
+Writes up to 100 variants or versions in one call. Each item names its own entity, so one
+call can span a tariff hierarchy, and addresses a variant by condition tuple rather than by
+id — the id it cre
+
+`POST /v1/conditional-pricing/{slug}/variants:batchUpsert`
+
+```ts
+const { data } = await client.$batchUpsertConditionalVariants(
+  {
+    slug: 'example',
+  },
+  {
+    correlation_id: 'tariff-refresh-2027-01',
+    items: [
+      {
+        entity_id: 'price-sp26d1yo',
+        conditions: {
+          postal_code: '46045'
+        },
+        default: false,
+        valid_from: '2027-01-01',
+        values: {
+          unit_amount: 2499,
+          unit_amount_decimal: '24.99'
+        }
+      }
+    ]
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "correlation_id": "tariff-refresh-2027-01",
+  "counts": {
+    "variant_created": 1,
+    "version_created": 1,
+    "updated": 1,
+    "skipped": 1,
+    "error": 1
+  },
+  "results": [
+    {
+      "outcome": "variant_created",
+      "entity_id": "price-sp26d1yo",
+      "variant_id": "var-46045",
+      "valid_from": "2027-01-01",
+      "warnings": [
+        {
+          "code": "VARIANT_COUNT_APPROACHING_CAP",
+          "message": "string",
+          "details": {
+            "variant_count": 0,
+            "cap": 0
+          }
+        }
+      ],
+      "error": {
+        "code": "SCHEMA_NOT_FOUND",
+        "details": {
+          "schema": "price"
+        }
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `$batchDeleteConditionalVariants`
+
+Removes up to 100 variants or versions in one call. An item carrying `valid_from` removes
+that version; one without it removes the whole variant.
+
+`POST /v1/conditional-pricing/{slug}/variants:batchDelete`
+
+```ts
+const { data } = await client.$batchDeleteConditionalVariants(
+  {
+    slug: 'example',
+  },
+  {
+    correlation_id: 'postal-code-cleanup-2026-09',
+    items: [
+      {
+        entity_id: 'price-sp26d1yo',
+        variant_id: 'var-46045',
+        valid_from: '2027-01-01'
+      }
+    ]
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "correlation_id": "postal-code-cleanup-2026-09",
+  "counts": {
+    "deleted": 1,
+    "skipped": 1,
+    "error": 1
+  },
+  "results": [
+    {
+      "outcome": "deleted",
+      "entity_id": "price-sp26d1yo",
+      "variant_id": "var-46045",
+      "valid_from": "2027-01-01",
+      "warnings": [
+        {
+          "code": "VARIANT_COUNT_APPROACHING_CAP",
+          "message": "string",
+          "details": {
+            "variant_count": 0,
+            "cap": 0
+          }
+        }
+      ],
+      "error": {
+        "code": "SCHEMA_NOT_FOUND",
+        "details": {
+          "schema": "price"
+        }
       }
     }
   ]
@@ -1744,6 +3061,1544 @@ const { data } = await client.$productRecommendations(
 type IntegrationId = "getag" | "external-catalog"
 ```
 
+### `ConditionalEntitySlug`
+
+Schema slug of an entity type that can be conditional — the `{slug}` of every conditional-pricing route.
+
+```ts
+type ConditionalEntitySlug = "product" | "price" | "coupon"
+```
+
+### `ConditionType`
+
+The kind of value a condition holds, which decides how a pinned value is matched against a
+resolve context.
+
+- `string`: an arbitrary string, matched exactly and case-sensitively
+- `number`: a numeric value
+- `date`: a single date
+- `daterange`: a window from a `from` to an `until`, both included; e
+
+```ts
+type ConditionType = "string" | "number" | "date" | "daterange" | "boolean" | "select" | "location"
+```
+
+### `LocationFormat`
+
+The value shape of a `location` condition. Absent for every other type.
+
+- `postal_code`: a postal code
+- `postal_code_city`: a postal code and a city
+- `power_grid_operator`: the code number of the power grid operator an address is connected to
+- `gas_grid_operator`: the code number of the gas grid
+
+```ts
+type LocationFormat = "postal_code" | "postal_code_city" | "power_grid_operator" | "gas_grid_operator"
+```
+
+### `ConditionDefinition`
+
+One condition dimension, in the shape a schema's `conditions` array holds it — copy it in verbatim.
+
+```ts
+type ConditionDefinition = {
+  id: string // uuid
+  name: string
+  label: string
+  type: "string" | "number" | "date" | "daterange" | "boolean" | "select" | "location"
+  options?: Array<string | {
+    value: string
+    title?: string
+  }>
+  format?: "postal_code" | "postal_code_city" | "power_grid_operator" | "gas_grid_operator"
+}
+```
+
+### `ConditionSet`
+
+A named bundle of condition definitions, built in for one entity type.
+
+```ts
+type ConditionSet = {
+  id: string
+  label: string
+  description: string
+  conditions: Array<{
+    id: string // uuid
+    name: string
+    label: string
+    type: "string" | "number" | "date" | "daterange" | "boolean" | "select" | "location"
+    options?: Array<string | {
+      value: { ... }
+      title?: { ... }
+    }>
+    format?: "postal_code" | "postal_code_city" | "power_grid_operator" | "gas_grid_operator"
+  }>
+}
+```
+
+### `ConditionSetCatalog`
+
+```ts
+type ConditionSetCatalog = {
+  results: Array<{
+    id: string
+    label: string
+    description: string
+    conditions: Array<{
+      id: { ... }
+      name: { ... }
+      label: { ... }
+      type: { ... }
+      options?: { ... }
+      format?: { ... }
+    }>
+  }>
+}
+```
+
+### `ConditionalPricingOptIn`
+
+```ts
+type ConditionalPricingOptIn = {
+  status: "PROVISIONING" | "ACTIVE"
+}
+```
+
+### `ConditionUsage`
+
+```ts
+type ConditionUsage = {
+  total: {
+    variants: number
+    entities: number
+  }
+  conditions: Array<{
+    name: string
+    variants: number
+    entities: number
+    options?: Array<{
+      value: { ... }
+      variants: { ... }
+    }>
+    undeclared_options?: Array<{
+      value: { ... }
+      variants: { ... }
+    }>
+  }>
+  undeclared: Array<{
+    name: string
+    type: "string" | "number" | "date" | "daterange" | "boolean" | "select" | "location"
+    format?: "postal_code" | "postal_code_city" | "power_grid_operator" | "gas_grid_operator"
+    variants: number
+    entities: number
+    options?: Array<{
+      value: { ... }
+      variants: { ... }
+    }>
+  }>
+}
+```
+
+### `DeclaredConditionUsage`
+
+A `select` condition always carries `options` and `undeclared_options`. A condition of any
+other type carries neither.
+
+
+```ts
+type DeclaredConditionUsage = {
+  name: string
+  variants: number
+  entities: number
+  options?: Array<{
+    value: string
+    variants: number
+  }>
+  undeclared_options?: Array<{
+    value: string
+    variants: number
+  }>
+}
+```
+
+### `UndeclaredConditionUsage`
+
+A condition variants pin under this name and type that the schema does not declare. A name
+pinned under two types is listed once for each.
+
+
+```ts
+type UndeclaredConditionUsage = {
+  name: string
+  type: "string" | "number" | "date" | "daterange" | "boolean" | "select" | "location"
+  format?: "postal_code" | "postal_code_city" | "power_grid_operator" | "gas_grid_operator"
+  variants: number
+  entities: number
+  options?: Array<{
+    value: string
+    variants: number
+  }>
+}
+```
+
+### `ConditionOptionUsage`
+
+```ts
+type ConditionOptionUsage = {
+  value: string
+  variants: number
+}
+```
+
+### `ConditionalPricingOrganization`
+
+```ts
+type ConditionalPricingOrganization = {
+  status: "NOT_ENABLED" | "DEPROVISIONING"
+} | {
+  status: "PROVISIONING" | "ACTIVE"
+  in_use: boolean
+}
+```
+
+### `ConditionalPricingErrorCode`
+
+Machine-readable failure mode of a conditional-pricing operation, so a client can branch on
+the kind of failure instead of parsing the message. A `400` is about the request; a `409` is
+about what is already stored. Refusals raised by request validation carry no `code` at all.
+
+- `SCHEMA_NOT_FOUND` (
+
+```ts
+type ConditionalPricingErrorCode = "SCHEMA_NOT_FOUND" | "ENTITY_NOT_FOUND" | "ENTITY_TYPE_MISMATCH" | "ENTITY_SOFT_DELETED" | "ENTITY_NOT_CONDITIONAL" | "VARIANT_NOT_FOUND" | "VERSION_NOT_FOUND" | "NO_MATCHES" | "NO_ACTIVE_VERSION" | "AMBIGUOUS_RESOLUTION" | "TUPLE_CONFLICT" | "VERSION_CONFLICT" | "CONDITION_UNDEFINED" | "VARIANT_PIN_UNDECLARED" | "OPERATOR_UNSUPPORTED" | "CONTEXT_FORMAT_INVALID" | "CONDITION_VALUE_INVALID" | "CONDITION_UNCONFIGURED" | "TOO_MANY_MATCHES" | "WRITE_CONFLICT" | "OFFSET_WINDOW_EXCEEDED" | "CURSOR_INVALID" | "VARIANT_LIMIT_REACHED" | "PIN_FORMAT_INVALID" | "VARIANT_UNPINNED" | "LAST_VERSION_UNDELETABLE" | "CONDITION_UNREADABLE" | "SORT_INVALID" | "DEFAULT_MARKER_RESERVED" | "DEFAULT_VARIANT_PINS_CONDITIONS" | "VALID_FROM_IMMUTABLE" | "VARIANT_CONDITIONS_IMMUTABLE" | "IDENTIFIER_INVALID" | "VALID_FROM_INVALID" | "VALUE_UNSTORABLE" | "OVERRIDE_VALUE_INVALID" | "CONDITIONAL_PRICING_NOT_ENABLED" | "CONDITIONAL_PRICING_NOT_READY" | "CONDITIONAL_PRICING_IN_USE" | "CONDITIONAL_PRICING_OPT_OUT_IN_PROGRESS" | "CONDITIONAL_PRICING_OPT_IN_IN_PROGRESS"
+```
+
+### `ResolveConditionalEntityRequest`
+
+A resolve names one conditional entity and selects its variants either by `context` or by
+`variant_id`, never both. `context: {}` matches nothing and so returns the `default`
+variant, which is how to ask for it without knowing its id.
+
+
+```ts
+type ResolveConditionalEntityRequest = {
+  schema: "product" | "price" | "coupon"
+  entity_id: string
+  context: Record<string, string | number | boolean | {
+    postal_code: string
+    city: string
+  } | {
+    lt: number | string
+  } | {
+    lte: number | string
+  } | {
+    gt: number | string
+  } | {
+    gte: number | string
+  } | {
+    in: string | number[]
+  } | {
+    between: string
+  } | {
+    exists: boolean
+  }>
+  as_of?: string
+  options?: {
+    resolve_one?: boolean
+    hydrate?: boolean
+  }
+} | {
+  schema: "product" | "price" | "coupon"
+  entity_id: string
+  variant_id: string
+  as_of?: string
+  options?: {
+    hydrate?: boolean
+  }
+}
+```
+
+### `ResolveByContextRequest`
+
+Resolve by matching a situation: which of this entity's variants apply to `context`, each
+composed with the version in effect at `as_of`.
+
+
+```ts
+type ResolveByContextRequest = {
+  schema: "product" | "price" | "coupon"
+  entity_id: string
+  context: Record<string, string | number | boolean | {
+    postal_code: string
+    city: string
+  } | {
+    lt: number | string
+  } | {
+    lte: number | string
+  } | {
+    gt: number | string
+  } | {
+    gte: number | string
+  } | {
+    in: string | number[]
+  } | {
+    between: string
+  } | {
+    exists: boolean
+  }>
+  as_of?: string
+  options?: {
+    resolve_one?: boolean
+    hydrate?: boolean
+  }
+}
+```
+
+### `ResolveByPinRequest`
+
+Resolve by naming a variant: compose this one, whatever a context would have matched.
+
+```ts
+type ResolveByPinRequest = {
+  schema: "product" | "price" | "coupon"
+  entity_id: string
+  variant_id: string
+  as_of?: string
+  options?: {
+    hydrate?: boolean
+  }
+}
+```
+
+### `ResolveContext`
+
+The situation to resolve for: a flat map keyed by condition name. A condition left out
+matches only variants that leave it unpinned; an empty map therefore returns the `default`
+variant. A key naming no condition the schema declares is ignored, as if it were left out.
+
+Each value is an exact value, 
+
+```ts
+type ResolveContext = Record<string, string | number | boolean | {
+  postal_code: string
+  city: string
+} | {
+  lt: number | string
+} | {
+  lte: number | string
+} | {
+  gt: number | string
+} | {
+  gte: number | string
+} | {
+  in: string | number[]
+} | {
+  between: string
+} | {
+  exists: boolean
+}>
+```
+
+### `ResolveOptions`
+
+The options a context resolve accepts. A pin takes `PinnedResolveOptions` instead.
+
+```ts
+type ResolveOptions = {
+  resolve_one?: boolean
+  hydrate?: boolean
+}
+```
+
+### `PinnedResolveOptions`
+
+The options a pinned resolve accepts — `hydrate` and nothing else. `resolve_one` has nothing
+to change where the answer is one result or a 404, so a body sending it is a `400`.
+
+
+```ts
+type PinnedResolveOptions = {
+  hydrate?: boolean
+}
+```
+
+### `ResolvedVariants`
+
+```ts
+type ResolvedVariants = {
+  results: Array<{
+    _id: string
+    _variant_id: string
+    _version_valid_from: string // date
+    _conditions: {
+      default: { ... }
+    }
+    _inert_overrides: Array<{
+      attribute: { ... }
+      reason: { ... }
+    }>
+  }>
+}
+```
+
+### `ResolvedVariant`
+
+The entity as this variant leaves it — every attribute of a plain entity read with the
+applicable version's overrides applied — plus the discriminators below.
+
+
+```ts
+type ResolvedVariant = {
+  _id: string
+  _variant_id: string
+  _version_valid_from: string // date
+  _conditions: {
+    default: boolean
+  }
+  _inert_overrides: Array<{
+    attribute: string
+    reason: "ATTRIBUTE_NOT_OVERRIDABLE" | "ATTRIBUTE_READONLY" | "ATTRIBUTE_HIDDEN" | "ATTRIBUTE_COMPUTED" | "ATTRIBUTE_UNDECLARED" | "TYPE_NOT_OVERRIDABLE" | "CAPABILITY_NOT_OVERRIDABLE"
+  }>
+}
+```
+
+### `CreateVariantRequest`
+
+```ts
+type CreateVariantRequest = {
+  conditions?: Record<string, string | number | boolean | {
+    from?: string
+    until?: string
+  } | {
+    postal_code: string
+    city: string
+  }>
+  default?: boolean
+  valid_from?: string // date
+  values: Record<string, unknown>
+}
+```
+
+### `VariantConditions`
+
+A variant's pinned conditions as a reader sees them: the pins the schema declares, plus a
+boolean `default` saying whether this is the entity's fallback.
+
+
+```ts
+type VariantConditions = {
+  default: boolean
+}
+```
+
+### `PinnedConditions`
+
+The situation this variant applies to: a flat map keyed by condition name. A condition left
+out is a wildcard, which is what makes adding a condition to a schema non-breaking for
+existing variants.
+
+Exact values only; predicates belong to reads. Values are stored canonicalized for their
+type: a `dat
+
+```ts
+type PinnedConditions = Record<string, string | number | boolean | {
+  from?: string
+  until?: string
+} | {
+  postal_code: string
+  city: string
+}>
+```
+
+### `PinnedConditionValue`
+
+One condition's exact value. Which of these shapes a condition takes is set by its type in the
+entity's schema, and a value of another shape is refused with `PIN_FORMAT_INVALID`. A
+`location` of format `power_grid_operator` or `gas_grid_operator` takes a string of exactly
+13 digits.
+
+
+```ts
+type PinnedConditionValue = string | number | boolean | {
+  from?: string
+  until?: string
+} | {
+  postal_code: string
+  city: string
+}
+```
+
+### `PostalCodeFilter`
+
+A listing filter on a `location` of format `postal_code_city` by its postal code alone: it
+matches the variants pinned to that postal code, whatever their city. Only a listing filter
+takes it; a resolve context must name the city too.
+
+
+```ts
+type PostalCodeFilter = {
+  postal_code: string
+}
+```
+
+### `ConditionDateRange`
+
+The value of a `daterange` condition. Each bound is an RFC 3339 date or date-time, and both
+are included. A date names the whole day in the organization's timezone: as `from` it starts
+at midnight, as `until` it runs to the day's last millisecond. So
+`{ "from": "2026-10-01", "until": "2026-10-31" }`
+
+```ts
+type ConditionDateRange = {
+  from?: string
+  until?: string
+}
+```
+
+### `PostalCodeCity`
+
+The value of a `location` condition of format `postal_code_city`, its parts named as an entity
+address names them.
+
+
+```ts
+type PostalCodeCity = {
+  postal_code: string
+  city: string
+}
+```
+
+### `ContextConditionValue`
+
+One condition's value in a resolve context or listing filter: an exact value, or a predicate.
+Which of these a condition takes is set by its type in the entity's schema, and a value of
+another shape is refused with `CONTEXT_FORMAT_INVALID`, or `OPERATOR_UNSUPPORTED` for a
+predicate its type does not
+
+```ts
+type ContextConditionValue = string | number | boolean | {
+  postal_code: string
+  city: string
+} | {
+  lt: number | string
+} | {
+  lte: number | string
+} | {
+  gt: number | string
+} | {
+  gte: number | string
+} | {
+  in: string | number[]
+} | {
+  between: string
+} | {
+  exists: boolean
+}
+```
+
+### `ConditionPredicate`
+
+A single-operator predicate.
+
+```ts
+type ConditionPredicate = {
+  lt: number | string
+} | {
+  lte: number | string
+} | {
+  gt: number | string
+} | {
+  gte: number | string
+} | {
+  in: string | number[]
+} | {
+  between: string
+} | {
+  exists: boolean
+}
+```
+
+### `OrderedConditionOperand`
+
+A number, or a date as an RFC 3339 date or date-time. A date is midnight of that day in the
+organization's timezone.
+
+
+```ts
+type OrderedConditionOperand = number | string
+```
+
+### `VariantValues`
+
+The values this version overrides on the base entity, keyed by entity field name.
+
+A field is overridable if its attribute declares `overridable_attribute` — which readonly,
+hidden, computed and metadata fields, and types no variant may override, cannot be given —
+or if a capability declaring `overr
+
+```ts
+type VariantValues = Record<string, unknown>
+```
+
+### `CreatedVariant`
+
+```ts
+type CreatedVariant = {
+  variant_id: string
+  entity_id: string
+  schema: "product" | "price" | "coupon"
+  conditions: {
+    default: boolean
+  }
+  valid_from: string // date
+  values: Record<string, unknown>
+  _created_at: string
+  _updated_at: string
+  _revision: number
+  warnings: Array<{
+    code: "VARIANT_COUNT_APPROACHING_CAP"
+    message: string
+    details: {
+      variant_count: { ... }
+      cap: { ... }
+    }
+  } | {
+    code: "ACTIVE_VERSION_CHANGED"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "SUPERSEDED_VERSION_WRITTEN"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "ATTRIBUTES_NOT_APPLIED"
+    message: string
+    details: {
+      attributes: { ... }
+    }
+  } | {
+    code: "VARIANT_NOT_INDEXED"
+    message: string
+    details: {
+      reason: { ... }
+    }
+  }>
+}
+```
+
+### `WriteWarning`
+
+Something worth knowing that did not stop a write. One vocabulary for every write; `details`
+is typed per `code`, and a write raises each code at most once.
+
+
+```ts
+type WriteWarning = {
+  code: "VARIANT_COUNT_APPROACHING_CAP"
+  message: string
+  details: {
+    variant_count: number
+    cap: number
+  }
+} | {
+  code: "ACTIVE_VERSION_CHANGED"
+  message: string
+  details: {
+    valid_from: string // date
+    active_valid_from?: string // date
+  }
+} | {
+  code: "SUPERSEDED_VERSION_WRITTEN"
+  message: string
+  details: {
+    valid_from: string // date
+    active_valid_from?: string // date
+  }
+} | {
+  code: "ATTRIBUTES_NOT_APPLIED"
+  message: string
+  details: {
+    attributes: Array<{
+      attribute: { ... }
+      reason: { ... }
+    }>
+  }
+} | {
+  code: "VARIANT_NOT_INDEXED"
+  message: string
+  details: {
+    reason: "INDEX_WRITE_FAILED"
+  }
+}
+```
+
+### `VersionMoved`
+
+Which version a write moved, and which one was in effect while it did.
+
+```ts
+type VersionMoved = {
+  valid_from: string // date
+  active_valid_from?: string // date
+}
+```
+
+### `InertOverride`
+
+One override that did not apply, and why — reported by a write for the attributes in its
+body, and by a resolved payload for the stored overrides composition passed over.
+
+
+```ts
+type InertOverride = {
+  attribute: string
+  reason: "ATTRIBUTE_NOT_OVERRIDABLE" | "ATTRIBUTE_READONLY" | "ATTRIBUTE_HIDDEN" | "ATTRIBUTE_COMPUTED" | "ATTRIBUTE_UNDECLARED" | "TYPE_NOT_OVERRIDABLE" | "CAPABILITY_NOT_OVERRIDABLE"
+}
+```
+
+### `InertOverrideReason`
+
+Why one override did not apply.
+
+- `ATTRIBUTE_NOT_OVERRIDABLE`: the schema declares the attribute without
+  `overridable_attribute`, which is an ordinary schema edit away
+- `ATTRIBUTE_READONLY`: the attribute is readonly, and cannot be granted the flag
+- `ATTRIBUTE_HIDDEN`: the attribute is hidden, 
+
+```ts
+type InertOverrideReason = "ATTRIBUTE_NOT_OVERRIDABLE" | "ATTRIBUTE_READONLY" | "ATTRIBUTE_HIDDEN" | "ATTRIBUTE_COMPUTED" | "ATTRIBUTE_UNDECLARED" | "TYPE_NOT_OVERRIDABLE" | "CAPABILITY_NOT_OVERRIDABLE"
+```
+
+### `DeletedVariant`
+
+```ts
+type DeletedVariant = {
+  variant_id: string
+  entity_id: string
+  schema: "product" | "price" | "coupon"
+  tuple_released: boolean
+  versions_deleted: number
+}
+```
+
+### `VariantVersion`
+
+One version of one variant: the overrides it carries, the date it takes effect, and the
+variant it belongs to. These are the version's own overrides; `:resolve` composes them onto
+the entity.
+
+
+```ts
+type VariantVersion = {
+  variant_id: string
+  entity_id: string
+  schema: "product" | "price" | "coupon"
+  conditions: {
+    default: boolean
+  }
+  valid_from: string // date
+  values: Record<string, unknown>
+  _created_at: string
+  _updated_at: string
+  _revision: number
+}
+```
+
+### `WrittenVariantVersion`
+
+A version as a write left it, together with anything the write moved.
+
+```ts
+type WrittenVariantVersion = {
+  variant_id: string
+  entity_id: string
+  schema: "product" | "price" | "coupon"
+  conditions: {
+    default: boolean
+  }
+  valid_from: string // date
+  values: Record<string, unknown>
+  _created_at: string
+  _updated_at: string
+  _revision: number
+  warnings: Array<{
+    code: "VARIANT_COUNT_APPROACHING_CAP"
+    message: string
+    details: {
+      variant_count: { ... }
+      cap: { ... }
+    }
+  } | {
+    code: "ACTIVE_VERSION_CHANGED"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "SUPERSEDED_VERSION_WRITTEN"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "ATTRIBUTES_NOT_APPLIED"
+    message: string
+    details: {
+      attributes: { ... }
+    }
+  } | {
+    code: "VARIANT_NOT_INDEXED"
+    message: string
+    details: {
+      reason: { ... }
+    }
+  }>
+}
+```
+
+### `DeletedVariantVersion`
+
+```ts
+type DeletedVariantVersion = {
+  variant_id: string
+  entity_id: string
+  schema: "product" | "price" | "coupon"
+  valid_from: string // date
+  warnings: Array<{
+    code: "VARIANT_COUNT_APPROACHING_CAP"
+    message: string
+    details: {
+      variant_count: { ... }
+      cap: { ... }
+    }
+  } | {
+    code: "ACTIVE_VERSION_CHANGED"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "SUPERSEDED_VERSION_WRITTEN"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "ATTRIBUTES_NOT_APPLIED"
+    message: string
+    details: {
+      attributes: { ... }
+    }
+  } | {
+    code: "VARIANT_NOT_INDEXED"
+    message: string
+    details: {
+      reason: { ... }
+    }
+  }>
+}
+```
+
+### `AppendVersionRequest`
+
+```ts
+type AppendVersionRequest = {
+  valid_from?: string // date
+  values: Record<string, unknown>
+  conditions?: Record<string, string | number | boolean | {
+    from?: string
+    until?: string
+  } | {
+    postal_code: string
+    city: string
+  }>
+}
+```
+
+### `ReplaceVersionRequest`
+
+```ts
+type ReplaceVersionRequest = {
+  values: Record<string, unknown>
+  _revision: number
+  valid_from?: string // date
+  conditions?: Record<string, string | number | boolean | {
+    from?: string
+    until?: string
+  } | {
+    postal_code: string
+    city: string
+  }>
+}
+```
+
+### `PatchVersionRequest`
+
+```ts
+type PatchVersionRequest = {
+  values: Record<string, unknown>
+  _revision: number
+  valid_from?: string // date
+  conditions?: Record<string, string | number | boolean | {
+    from?: string
+    until?: string
+  } | {
+    postal_code: string
+    city: string
+  }>
+}
+```
+
+### `ListVariantsRequest`
+
+How to narrow and page a variant listing. Every property is optional, so `{}` asks for the
+first ten variants in `variant_id` order, but the body itself is required. `conditions` and
+`search` narrow independently and a variant must satisfy both.
+
+
+```ts
+type ListVariantsRequest = {
+  conditions?: Record<string, string | number | boolean | {
+    postal_code: string
+    city: string
+  } | {
+    lt: number | string
+  } | {
+    lte: number | string
+  } | {
+    gt: number | string
+  } | {
+    gte: number | string
+  } | {
+    in: string | number[]
+  } | {
+    between: string
+  } | {
+    exists: boolean
+  } | {
+    postal_code: string
+  }>
+  search?: string
+  sort?: string
+  from?: number
+  size?: number
+  cursor?: string
+}
+```
+
+### `VariantTreeRequest`
+
+The variants list's request plus `as_of`, the instant each row's version is selected at.
+`size` is clamped at 100 here; every other property means what it means on the list.
+
+
+```ts
+type VariantTreeRequest = {
+  conditions?: Record<string, string | number | boolean | {
+    postal_code: string
+    city: string
+  } | {
+    lt: number | string
+  } | {
+    lte: number | string
+  } | {
+    gt: number | string
+  } | {
+    gte: number | string
+  } | {
+    in: string | number[]
+  } | {
+    between: string
+  } | {
+    exists: boolean
+  } | {
+    postal_code: string
+  }>
+  search?: string
+  sort?: string
+  from?: number
+  size?: number
+  cursor?: string
+  as_of?: string
+}
+```
+
+### `VariantConditionFilter`
+
+Which pins a variant must carry to be listed: a flat map keyed by condition name, taking the
+same exact values and predicates a resolve context does. A condition left out is not
+filtered on. An `in` list carries at most 50,000 values.
+
+A variant matches only where it pins the condition — unlike `:re
+
+```ts
+type VariantConditionFilter = Record<string, string | number | boolean | {
+  postal_code: string
+  city: string
+} | {
+  lt: number | string
+} | {
+  lte: number | string
+} | {
+  gt: number | string
+} | {
+  gte: number | string
+} | {
+  in: string | number[]
+} | {
+  between: string
+} | {
+  exists: boolean
+} | {
+  postal_code: string
+}>
+```
+
+### `VariantList`
+
+```ts
+type VariantList = {
+  hits: number
+  results: Array<{
+    variant_id: string
+    entity_id: string
+    schema: "product" | "price" | "coupon"
+    conditions: {
+      default: { ... }
+    }
+  }>
+  next?: string
+}
+```
+
+### `VariantListRow`
+
+One variant as a listing reports it: which variant it is and what it pins.
+
+```ts
+type VariantListRow = {
+  variant_id: string
+  entity_id: string
+  schema: "product" | "price" | "coupon"
+  conditions: {
+    default: boolean
+  }
+}
+```
+
+### `VariantTree`
+
+```ts
+type VariantTree = {
+  hits: number
+  results: Array<{
+    variant_id: string
+    entity_id: string
+    schema: "product" | "price" | "coupon"
+    conditions: {
+      default: { ... }
+    }
+    status: "active" | "scheduled"
+    version: {
+      variant_id: { ... }
+      entity_id: { ... }
+      schema: { ... }
+      conditions: { ... }
+      valid_from: { ... }
+      values: { ... }
+      _created_at: { ... }
+      _updated_at: { ... }
+    }
+  }>
+  next?: string
+}
+```
+
+### `VariantTreeRow`
+
+A listing row plus the one version the tree shows for it, and the status saying which.
+
+```ts
+type VariantTreeRow = {
+  variant_id: string
+  entity_id: string
+  schema: "product" | "price" | "coupon"
+  conditions: {
+    default: boolean
+  }
+  status: "active" | "scheduled"
+  version: {
+    variant_id: string
+    entity_id: string
+    schema: "product" | "price" | "coupon"
+    conditions: {
+      default: { ... }
+    }
+    valid_from: string // date
+    values: Record<string, unknown>
+    _created_at: string
+    _updated_at: string
+  }
+}
+```
+
+### `VariantTreeRowStatus`
+
+Whether a tree row's version is the one in effect at `as_of`, or one still ahead of it.
+
+- `active`: the version with the latest `valid_from` on or before `as_of`'s date in the
+  organization's timezone
+- `scheduled`: the variant's first version, which is later than that date
+
+
+```ts
+type VariantTreeRowStatus = "active" | "scheduled"
+```
+
+### `VariantVersionSnapshot`
+
+One version of one variant as a listing reports it: `VariantVersion` without `_revision`.
+Read the version through its own `GET` to get the revision a write must carry.
+
+
+```ts
+type VariantVersionSnapshot = {
+  variant_id: string
+  entity_id: string
+  schema: "product" | "price" | "coupon"
+  conditions: {
+    default: boolean
+  }
+  valid_from: string // date
+  values: Record<string, unknown>
+  _created_at: string
+  _updated_at: string
+}
+```
+
+### `VariantVersionList`
+
+```ts
+type VariantVersionList = {
+  results: Array<{
+    variant_id: string
+    entity_id: string
+    schema: "product" | "price" | "coupon"
+    conditions: {
+      default: { ... }
+    }
+    valid_from: string // date
+    values: Record<string, unknown>
+    _created_at: string
+    _updated_at: string
+  }>
+  next?: string
+}
+```
+
+### `BatchUpsertVariantsRequest`
+
+A batch of variant writes under one schema, each item naming the entity it writes to.
+
+```ts
+type BatchUpsertVariantsRequest = {
+  correlation_id?: string
+  items: Array<{
+    entity_id: string
+    conditions?: Record<string, string | number | boolean | {
+      from?: { ... }
+      until?: { ... }
+    } | {
+      postal_code: { ... }
+      city: { ... }
+    }>
+    default?: boolean
+    valid_from?: string // date
+    values: Record<string, unknown>
+  }>
+}
+```
+
+### `BatchUpsertItem`
+
+One variant write: the single-item create's body plus `entity_id`, and no `variant_id`. An
+existing condition tuple appends a version to the variant holding it rather than conflicting.
+
+
+```ts
+type BatchUpsertItem = {
+  entity_id: string
+  conditions?: Record<string, string | number | boolean | {
+    from?: string
+    until?: string
+  } | {
+    postal_code: string
+    city: string
+  }>
+  default?: boolean
+  valid_from?: string // date
+  values: Record<string, unknown>
+}
+```
+
+### `BatchDeleteVariantsRequest`
+
+A batch of variant and version deletes under one schema, each item naming the entity it removes from.
+
+```ts
+type BatchDeleteVariantsRequest = {
+  correlation_id?: string
+  items: Array<{
+    entity_id: string
+    variant_id: string
+    valid_from?: string // date
+  } | {
+    entity_id: string
+    conditions?: Record<string, string | number | boolean | {
+      from?: { ... }
+      until?: { ... }
+    } | {
+      postal_code: { ... }
+      city: { ... }
+    }>
+    default?: boolean
+    valid_from?: string // date
+  }>
+}
+```
+
+### `BatchDeleteItem`
+
+One delete: the variant, addressed by id or by the condition tuple it pins, and optionally
+the one version of it to remove. An item carrying both matches neither branch and is an
+envelope `400`.
+
+
+```ts
+type BatchDeleteItem = {
+  entity_id: string
+  variant_id: string
+  valid_from?: string // date
+} | {
+  entity_id: string
+  conditions?: Record<string, string | number | boolean | {
+    from?: string
+    until?: string
+  } | {
+    postal_code: string
+    city: string
+  }>
+  default?: boolean
+  valid_from?: string // date
+}
+```
+
+### `BatchDeleteByVariantId`
+
+A delete addressing its variant by id.
+
+```ts
+type BatchDeleteByVariantId = {
+  entity_id: string
+  variant_id: string
+  valid_from?: string // date
+}
+```
+
+### `BatchDeleteByConditions`
+
+A delete addressing its variant by the situation it applies to.
+
+`conditions` is optional because the fallback variant pins nothing: address it with
+`default: true` and no `conditions`. An item that ends up addressing no variant at all is a
+per-item `VARIANT_UNPINNED`, and one marking `default` besi
+
+```ts
+type BatchDeleteByConditions = {
+  entity_id: string
+  conditions?: Record<string, string | number | boolean | {
+    from?: string
+    until?: string
+  } | {
+    postal_code: string
+    city: string
+  }>
+  default?: boolean
+  valid_from?: string // date
+}
+```
+
+### `BatchUpsertResult`
+
+What a batch upsert did: one entry per item, in request order, and a count per outcome.
+
+```ts
+type BatchUpsertResult = {
+  correlation_id?: string
+  counts: {
+    variant_created: number
+    version_created: number
+    updated: number
+    skipped: number
+    error: number
+  }
+  results: Array<{
+    outcome: "variant_created" | "version_created" | "updated" | "skipped" | "error"
+    entity_id: string
+    variant_id?: string
+    valid_from?: string // date
+    warnings: Array<{
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    } | {
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    } | {
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    } | {
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    } | {
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    }>
+    error?: {
+      message: { ... }
+      status?: { ... }
+      cause?: { ... }
+      error?: { ... }
+    }
+  }>
+}
+```
+
+### `BatchDeleteResult`
+
+What a batch delete did: one entry per item, in request order, and a count per outcome.
+
+```ts
+type BatchDeleteResult = {
+  correlation_id?: string
+  counts: {
+    deleted: number
+    skipped: number
+    error: number
+  }
+  results: Array<{
+    outcome: "deleted" | "skipped" | "error"
+    entity_id: string
+    variant_id?: string
+    valid_from?: string // date
+    warnings: Array<{
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    } | {
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    } | {
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    } | {
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    } | {
+      code: { ... }
+      message: { ... }
+      details: { ... }
+    }>
+    error?: {
+      message: { ... }
+      status?: { ... }
+      cause?: { ... }
+      error?: { ... }
+    }
+  }>
+}
+```
+
+### `BatchUpsertOutcome`
+
+What one upsert item did, derived from what was stored.
+
+- `variant_created`: the condition tuple was unknown, so a variant and its first version
+  were created
+- `version_created`: the tuple was known and had no version at the item's `valid_from`
+- `updated`: a version existed on that exact date an
+
+```ts
+type BatchUpsertOutcome = "variant_created" | "version_created" | "updated" | "skipped" | "error"
+```
+
+### `BatchDeleteOutcome`
+
+What one delete item did.
+
+- `deleted`: the variant, or the one version the item named, is gone
+- `skipped`: the item addressed no such variant or version; a missing entity is an `error`
+- `error`: this item alone failed, and the entry's `error` says why
+
+
+```ts
+type BatchDeleteOutcome = "deleted" | "skipped" | "error"
+```
+
+### `BatchUpsertCounts`
+
+How many items reached each outcome. Keyed by exactly the values of `BatchUpsertOutcome`,
+all present, and summing to the length of `results`.
+
+
+```ts
+type BatchUpsertCounts = {
+  variant_created: number
+  version_created: number
+  updated: number
+  skipped: number
+  error: number
+}
+```
+
+### `BatchDeleteCounts`
+
+How many items reached each outcome. Keyed by exactly the values of `BatchDeleteOutcome`,
+all present, and summing to the length of `results`.
+
+
+```ts
+type BatchDeleteCounts = {
+  deleted: number
+  skipped: number
+  error: number
+}
+```
+
+### `BatchUpsertResultEntry`
+
+What one upsert item did. Position in `results` maps it back to its source row.
+
+```ts
+type BatchUpsertResultEntry = {
+  outcome: "variant_created" | "version_created" | "updated" | "skipped" | "error"
+  entity_id: string
+  variant_id?: string
+  valid_from?: string // date
+  warnings: Array<{
+    code: "VARIANT_COUNT_APPROACHING_CAP"
+    message: string
+    details: {
+      variant_count: { ... }
+      cap: { ... }
+    }
+  } | {
+    code: "ACTIVE_VERSION_CHANGED"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "SUPERSEDED_VERSION_WRITTEN"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "ATTRIBUTES_NOT_APPLIED"
+    message: string
+    details: {
+      attributes: { ... }
+    }
+  } | {
+    code: "VARIANT_NOT_INDEXED"
+    message: string
+    details: {
+      reason: { ... }
+    }
+  }>
+  error?: {
+    message: string
+    status?: number
+    cause?: string
+    error?: string | Record<string, unknown>[]
+  }
+}
+```
+
+### `BatchDeleteResultEntry`
+
+What one delete item did. Position in `results` maps it back to its source row.
+
+```ts
+type BatchDeleteResultEntry = {
+  outcome: "deleted" | "skipped" | "error"
+  entity_id: string
+  variant_id?: string
+  valid_from?: string // date
+  warnings: Array<{
+    code: "VARIANT_COUNT_APPROACHING_CAP"
+    message: string
+    details: {
+      variant_count: { ... }
+      cap: { ... }
+    }
+  } | {
+    code: "ACTIVE_VERSION_CHANGED"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "SUPERSEDED_VERSION_WRITTEN"
+    message: string
+    details: {
+      valid_from: { ... }
+      active_valid_from?: { ... }
+    }
+  } | {
+    code: "ATTRIBUTES_NOT_APPLIED"
+    message: string
+    details: {
+      attributes: { ... }
+    }
+  } | {
+    code: "VARIANT_NOT_INDEXED"
+    message: string
+    details: {
+      reason: { ... }
+    }
+  }>
+  error?: {
+    message: string
+    status?: number
+    cause?: string
+    error?: string | Record<string, unknown>[]
+  }
+}
+```
+
 ### `Error`
 
 ```ts
@@ -1754,12 +4609,78 @@ type Error = {
 }
 ```
 
-### `Product`
+### `RefusedLineItem`
 
-The product entity
+The line item a checkout refusal is about, named as the item names itself.
 
 ```ts
-type Product = {
+type RefusedLineItem = {
+  price_id: string
+  product_id?: string
+}
+```
+
+### `ReportedError`
+
+The `error` field of an error response: the message, or — where the request failed
+validation before any handler ran — the validation errors themselves.
+
+
+```ts
+type ReportedError = string | Record<string, unknown>[]
+```
+
+### `ConditionalPricingError`
+
+An error from a conditional-pricing operation, carrying a `code` plus the structured data
+that code explains. `details` is typed per code: narrow on `code` and the object under it
+declares exactly the fields that code sends.
+
+A request these schemas reject is answered by the request validator with a
+
+```ts
+type ConditionalPricingError = {
+  message: string
+  status?: number
+  cause?: string
+  error?: string | Record<string, unknown>[]
+}
+```
+
+### `CatalogReferenceErrorCode`
+
+Why an order operation refused a catalog reference. Other refusals carry no `code`.
+
+- `CATALOG_REFERENCE_MISSING` (400): a line item whose product or price is conditional carries no `catalog_reference`, or one with no variant for that member
+- `CATALOG_REFERENCE_SIGNATURE_INVALID` (400): a `catalog
+
+```ts
+type CatalogReferenceErrorCode = "CATALOG_REFERENCE_MISSING" | "CATALOG_REFERENCE_SIGNATURE_INVALID" | "CATALOG_REFERENCE_UNRESOLVABLE"
+```
+
+### `CatalogReferenceError`
+
+An error from an order operation that prices line items. A catalog-reference refusal carries
+`code` and `details`, typed per code. Every other refusal carries neither.
+
+
+```ts
+type CatalogReferenceError = {
+  message: string
+  status?: number
+  cause?: string
+  error?: string | Record<string, unknown>[]
+}
+```
+
+### `BaseProduct`
+
+The product's own attributes — everything but the two relations whose shape depends on
+whether the product was hydrated, which `Product` and `HydratedProduct` add.
+
+
+```ts
+type BaseProduct = {
   description?: string
   code?: string
   type?: "product" | "service"
@@ -1769,12 +4690,6 @@ type Product = {
     _tags?: string[]
     feature?: string
   }>
-  cross_sellable_products?: {
-    $relation?: Array<{
-      entity_id?: { ... }
-      _tags?: { ... }
-    }>
-  }
   product_images?: {
     $relation?: Array<{
       entity_id?: { ... }
@@ -1819,12 +4734,179 @@ type Product = {
       _tags?: { ... }
     }
   }>
-  price_options?: {
+  is_conditional?: boolean
+  _availability_files?: Array<{
+    _id: string
+    filename: string
+    mime_type: string
+    versions: Array<{
+      s3ref: { ... }
+    }>
+    _schema: string
+    _org: string
+    _created_at: string // date-time
+    _updated_at: string // date-time
+    _title?: string
+    $relation?: {
+      entity_id?: { ... }
+      _tags?: { ... }
+    }
+  }>
+  _id?: string
+  _title?: string
+  _org_id?: string
+  _created_at?: string
+  _updated_at?: string
+}
+```
+
+### `Product`
+
+The product entity, its relations as stored.
+
+```ts
+type Product = {
+  description?: string
+  code?: string
+  type?: "product" | "service"
+  name?: string
+  categories?: string[]
+  feature?: Array<{
+    _tags?: string[]
+    feature?: string
+  }>
+  product_images?: {
     $relation?: Array<{
       entity_id?: { ... }
       _tags?: { ... }
     }>
-  }
+  } | Array<{
+    _id: string
+    filename: string
+    mime_type: string
+    versions: Array<{
+      s3ref: { ... }
+    }>
+    _schema: string
+    _org: string
+    _created_at: string // date-time
+    _updated_at: string // date-time
+    _title?: string
+    $relation?: {
+      entity_id?: { ... }
+      _tags?: { ... }
+    }
+  }>
+  product_downloads?: {
+    $relation?: Array<{
+      entity_id?: { ... }
+      _tags?: { ... }
+    }>
+  } | Array<{
+    _id: string
+    filename: string
+    mime_type: string
+    versions: Array<{
+      s3ref: { ... }
+    }>
+    _schema: string
+    _org: string
+    _created_at: string // date-time
+    _updated_at: string // date-time
+    _title?: string
+    $relation?: {
+      entity_id?: { ... }
+      _tags?: { ... }
+    }
+  }>
+  is_conditional?: boolean
+  _availability_files?: Array<{
+    _id: string
+    filename: string
+    mime_type: string
+    versions: Array<{
+      s3ref: { ... }
+    }>
+    _schema: string
+    _org: string
+    _created_at: string // date-time
+    _updated_at: string // date-time
+    _title?: string
+    $relation?: {
+      entity_id?: { ... }
+      _tags?: { ... }
+    }
+  }>
+  _id?: string
+  _title?: string
+  _org_id?: string
+  _created_at?: string
+  _updated_at?: string
+}
+```
+
+### `HydratedProduct`
+
+The product entity hydrated one level deep, as the v2 public catalog serves it: each
+relation holds the entities it referenced, sanitised, with their own relations as stored.
+
+
+```ts
+type HydratedProduct = {
+  description?: string
+  code?: string
+  type?: "product" | "service"
+  name?: string
+  categories?: string[]
+  feature?: Array<{
+    _tags?: string[]
+    feature?: string
+  }>
+  product_images?: {
+    $relation?: Array<{
+      entity_id?: { ... }
+      _tags?: { ... }
+    }>
+  } | Array<{
+    _id: string
+    filename: string
+    mime_type: string
+    versions: Array<{
+      s3ref: { ... }
+    }>
+    _schema: string
+    _org: string
+    _created_at: string // date-time
+    _updated_at: string // date-time
+    _title?: string
+    $relation?: {
+      entity_id?: { ... }
+      _tags?: { ... }
+    }
+  }>
+  product_downloads?: {
+    $relation?: Array<{
+      entity_id?: { ... }
+      _tags?: { ... }
+    }>
+  } | Array<{
+    _id: string
+    filename: string
+    mime_type: string
+    versions: Array<{
+      s3ref: { ... }
+    }>
+    _schema: string
+    _org: string
+    _created_at: string // date-time
+    _updated_at: string // date-time
+    _title?: string
+    $relation?: {
+      entity_id?: { ... }
+      _tags?: { ... }
+    }
+  }>
+  is_conditional?: boolean
   _availability_files?: Array<{
     _id: string
     filename: string
@@ -2014,10 +5096,9 @@ type Order = {
       name?: { ... }
       categories?: { ... }
       feature?: { ... }
-      cross_sellable_products?: { ... }
       product_images?: { ... }
       product_downloads?: { ... }
-      price_options?: { ... }
+      is_conditional?: { ... }
       _availability_files?: { ... }
       _id?: { ... }
       _title?: { ... }
@@ -2025,10 +5106,11 @@ type Order = {
       _created_at?: { ... }
       _updated_at?: { ... }
     }
-  } | {
-    metadata?: Array<{
-      key?: { ... }
-      value?: { ... }
+    catalog_reference?: {
+      product: { ... }
+      price: { ... }
+      price_components?: { ... }
+      coupons?: { ... }
   // ...
 }
 ```
@@ -2231,6 +5313,53 @@ type ExternalFeeMetadata = {
       unit_amount_decimal?: { ... }
     }>
   }
+  inputs?: {
+    type?: "power" | "gas"
+    consumptionHT?: number
+    consumptionNT?: number
+    consumptionType?: "household" | "heating_pump" | "night_storage_heating" | "night_storage_heating_common_meter"
+    zipCode?: string
+    city?: string
+    providerId?: string
+    billingPeriod?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
+    referenceDate?: string // date
+  }
+  _meta?: {
+    signature: string
+    timestamp: number
+  }
+}
+```
+
+### `ExternalLocationMetadata`
+
+```ts
+type ExternalLocationMetadata = {
+  name: string
+  code: string
+  type: "gas" | "power"
+  additionalData: {
+    gridOperators: Array<{
+      name: { ... }
+      codeNumber: { ... }
+      validFrom?: { ... }
+      validUntil?: { ... }
+    }>
+    defaultSuppliers: Array<{
+      name: { ... }
+      codeNumber: { ... }
+      validFrom?: { ... }
+      validUntil?: { ... }
+    }>
+    marketAreaDetails: {
+      gasType?: { ... }
+      marketArea?: { ... }
+      virtualTradingPoint?: { ... }
+    } | {
+      controlZone?: { ... }
+      balancingZone?: { ... }
+    }
+  }
   _meta?: {
     signature: string
     timestamp: number
@@ -2279,6 +5408,30 @@ type ExternalFeeMapping = {
 }
 ```
 
+### `PublicCatalogSearch`
+
+A public catalog search payload
+
+```ts
+type PublicCatalogSearch = {
+  q: string
+  sort?: string
+  from?: number
+  size?: number
+  hydrate?: boolean
+  availability?: {
+    location: {
+      street?: { ... }
+      street_number?: { ... }
+      postal_code?: { ... }
+      city?: { ... }
+      country?: { ... }
+    }
+    available_date?: string // date
+  }
+}
+```
+
 ### `CatalogSearch`
 
 A catalog search payload
@@ -2300,7 +5453,17 @@ type CatalogSearch = {
     }
     available_date?: string // date
   }
+  fields?: string[]
 }
+```
+
+### `CatalogFieldsParam`
+
+List of entity fields to include or exclude from the results.
+
+
+```ts
+type CatalogFieldsParam = string[]
 ```
 
 ### `CatalogSearchResult`
@@ -2320,9 +5483,6 @@ type CatalogSearchResult = {
       _tags?: { ... }
       feature?: { ... }
     }>
-    cross_sellable_products?: {
-      $relation?: { ... }
-    }
     product_images?: {
       $relation?: { ... }
     } | Array<{
@@ -2351,9 +5511,7 @@ type CatalogSearchResult = {
       _title?: { ... }
       $relation?: { ... }
     }>
-    price_options?: {
-      $relation?: { ... }
-    }
+    is_conditional?: boolean
     _availability_files?: Array<{
       _id: { ... }
       filename: { ... }
@@ -2398,8 +5556,538 @@ type CatalogSearchResult = {
     fixed_value_currency?: string
     cashback_period?: "0" | "12"
     active?: boolean
+    is_conditional?: boolean
     requires_promo_code?: boolean
   }>
+}
+```
+
+### `ResolveCatalogRequest`
+
+The entries of one journey block, and the situation to resolve them for. Every member of
+every pair is resolved for its entity type's context at the same `as_of`.
+
+
+```ts
+type ResolveCatalogRequest = {
+  entries: Array<{
+    product_id: string
+    price_id?: string
+  }>
+  context: {
+    product?: Record<string, string | number | boolean | {
+      postal_code: { ... }
+      city: { ... }
+    } | {
+      lt: { ... }
+    } | {
+      lte: { ... }
+    } | {
+      gt: { ... }
+    } | {
+      gte: { ... }
+    } | {
+      in: { ... }
+    } | {
+      between: { ... }
+    } | {
+      exists: { ... }
+    }>
+    price?: Record<string, string | number | boolean | {
+      postal_code: { ... }
+      city: { ... }
+    } | {
+      lt: { ... }
+    } | {
+      lte: { ... }
+    } | {
+      gt: { ... }
+    } | {
+      gte: { ... }
+    } | {
+      in: { ... }
+    } | {
+      between: { ... }
+    } | {
+      exists: { ... }
+    }>
+    coupon?: Record<string, string | number | boolean | {
+      postal_code: { ... }
+      city: { ... }
+    } | {
+      lt: { ... }
+    } | {
+      lte: { ... }
+    } | {
+      gt: { ... }
+    } | {
+      gte: { ... }
+    } | {
+      in: { ... }
+    } | {
+      between: { ... }
+    } | {
+      exists: { ... }
+    }>
+  }
+  as_of?: string
+}
+```
+
+### `CatalogContext`
+
+One context per entity type, each the authenticated resolve's context and checked against
+that type's schema alone. A product resolves against `product`, and a price and each of a
+composite's components against `price`. A type left out resolves against an empty context,
+which serves the `default` va
+
+```ts
+type CatalogContext = {
+  product?: Record<string, string | number | boolean | {
+    postal_code: string
+    city: string
+  } | {
+    lt: number | string
+  } | {
+    lte: number | string
+  } | {
+    gt: number | string
+  } | {
+    gte: number | string
+  } | {
+    in: string | number[]
+  } | {
+    between: string
+  } | {
+    exists: boolean
+  }>
+  price?: Record<string, string | number | boolean | {
+    postal_code: string
+    city: string
+  } | {
+    lt: number | string
+  } | {
+    lte: number | string
+  } | {
+    gt: number | string
+  } | {
+    gte: number | string
+  } | {
+    in: string | number[]
+  } | {
+    between: string
+  } | {
+    exists: boolean
+  }>
+  coupon?: Record<string, string | number | boolean | {
+    postal_code: string
+    city: string
+  } | {
+    lt: number | string
+  } | {
+    lte: number | string
+  } | {
+    gt: number | string
+  } | {
+    gte: number | string
+  } | {
+    in: string | number[]
+  } | {
+    between: string
+  } | {
+    exists: boolean
+  }>
+}
+```
+
+### `CatalogEntry`
+
+A product and, optionally, one of its prices. With `price_id` the entry is the author's
+pair, served as named; without it the entry is served from the resolved product's
+`price_options`, one pair per price.
+
+
+```ts
+type CatalogEntry = {
+  product_id: string
+  price_id?: string
+}
+```
+
+### `ResolveCatalogResult`
+
+```ts
+type ResolveCatalogResult = {
+  pairs: Array<{
+    product: {
+      cross_sellable_products?: { ... }
+      price_options?: { ... }
+      _id: { ... }
+      _variant_id: { ... }
+      _version_valid_from: { ... }
+      _conditions: { ... }
+      _inert_overrides: { ... }
+    } | {
+      description?: { ... }
+      code?: { ... }
+      type?: { ... }
+      name?: { ... }
+      categories?: { ... }
+      feature?: { ... }
+      product_images?: { ... }
+      product_downloads?: { ... }
+      is_conditional?: { ... }
+      _availability_files?: { ... }
+      _id?: { ... }
+      _title?: { ... }
+      _org_id?: { ... }
+      _created_at?: { ... }
+      _updated_at?: { ... }
+    }
+    price: {
+      active?: { ... }
+      is_composite_price?: { ... }
+      is_conditional?: { ... }
+      pricing_model: { ... }
+      tiers?: { ... }
+      description?: { ... }
+      long_description?: { ... }
+      sales_tax?: { ... }
+      tax?: { ... }
+      is_tax_inclusive?: { ... }
+      type?: { ... }
+      billing_period?: { ... }
+      unit_amount?: { ... }
+      unit_amount_decimal?: { ... }
+      unit_amount_currency?: { ... }
+      price_display_in_journeys?: { ... }
+      variable_price?: { ... }
+      unit?: { ... }
+      get_ag?: { ... }
+      dynamic_tariff?: { ... }
+      _created_at?: { ... }
+      _id: { ... }
+      _title?: { ... }
+      _updated_at?: { ... }
+      _org_id?: { ... }
+      _tags?: { ... }
+      _variant_id: { ... }
+      _version_valid_from: { ... }
+      _conditions: { ... }
+      _inert_overrides: { ... }
+    } | {
+      price_components?: { ... }
+      _id: { ... }
+      _variant_id: { ... }
+      _version_valid_from: { ... }
+      _conditions: { ... }
+      _inert_overrides: { ... }
+    } | {
+      billing_duration_amount?: { ... }
+      billing_duration_unit?: { ... }
+      notice_time_amount?: { ... }
+      notice_time_unit?: { ... }
+      termination_time_amount?: { ... }
+      termination_time_unit?: { ... }
+      renewal_duration_amount?: { ... }
+      renewal_duration_unit?: { ... }
+    } | {
+      price_components?: { ... }
+    }
+    coupons: Array<{
+      _id: { ... }
+      _title: { ... }
+      _org: { ... }
+      _schema: { ... }
+      _tags?: { ... }
+      _created_at: { ... }
+      _updated_at: { ... }
+      name: { ... }
+      description?: { ... }
+      type: { ... }
+      category: { ... }
+      percentage_value?: { ... }
+      fixed_value?: { ... }
+      fixed_value_decimal?: { ... }
+      fixed_value_currency?: { ... }
+      cashback_period?: { ... }
+      active?: { ... }
+      is_conditional?: { ... }
+      requires_promo_code?: { ... }
+    }>
+    catalog_reference: {
+      product: { ... }
+  // ...
+}
+```
+
+### `CatalogPair`
+
+A product and one of its prices, resolved for the request's `context` at its `as_of`, with
+the coupons that apply and the reference checkout prices from.
+
+
+```ts
+type CatalogPair = {
+  product: {
+    cross_sellable_products?: Array<{
+      description?: { ... }
+      code?: { ... }
+      type?: { ... }
+      name?: { ... }
+      categories?: { ... }
+      feature?: { ... }
+      product_images?: { ... }
+      product_downloads?: { ... }
+      is_conditional?: { ... }
+      _availability_files?: { ... }
+      _id?: { ... }
+      _title?: { ... }
+      _org_id?: { ... }
+      _created_at?: { ... }
+      _updated_at?: { ... }
+    }>
+    price_options?: Array<{
+      billing_duration_amount?: { ... }
+      billing_duration_unit?: { ... }
+      notice_time_amount?: { ... }
+      notice_time_unit?: { ... }
+      termination_time_amount?: { ... }
+      termination_time_unit?: { ... }
+      renewal_duration_amount?: { ... }
+      renewal_duration_unit?: { ... }
+    } | {
+      billing_duration_amount?: { ... }
+      billing_duration_unit?: { ... }
+      notice_time_amount?: { ... }
+      notice_time_unit?: { ... }
+      termination_time_amount?: { ... }
+      termination_time_unit?: { ... }
+      renewal_duration_amount?: { ... }
+      renewal_duration_unit?: { ... }
+    } | {
+      billing_duration_amount?: { ... }
+      billing_duration_unit?: { ... }
+      notice_time_amount?: { ... }
+      notice_time_unit?: { ... }
+      termination_time_amount?: { ... }
+      termination_time_unit?: { ... }
+      renewal_duration_amount?: { ... }
+      renewal_duration_unit?: { ... }
+    }>
+    _id: string
+    _variant_id: string
+    _version_valid_from: string // date
+    _conditions: {
+      default: { ... }
+    }
+    _inert_overrides: Array<{
+      attribute: { ... }
+      reason: { ... }
+    }>
+  } | {
+    description?: string
+    code?: string
+    type?: "product" | "service"
+    name?: string
+    categories?: string[]
+    feature?: Array<{
+      _tags?: { ... }
+      feature?: { ... }
+    }>
+    product_images?: {
+      $relation?: { ... }
+    } | Array<{
+      _id: { ... }
+      filename: { ... }
+      mime_type: { ... }
+      versions: { ... }
+      _schema: { ... }
+      _org: { ... }
+      _created_at: { ... }
+      _updated_at: { ... }
+      _title?: { ... }
+      $relation?: { ... }
+    }>
+    product_downloads?: {
+      $relation?: { ... }
+    } | Array<{
+      _id: { ... }
+      filename: { ... }
+      mime_type: { ... }
+      versions: { ... }
+      _schema: { ... }
+      _org: { ... }
+      _created_at: { ... }
+      _updated_at: { ... }
+      _title?: { ... }
+      $relation?: { ... }
+    }>
+    is_conditional?: boolean
+    _availability_files?: Array<{
+      _id: { ... }
+      filename: { ... }
+      mime_type: { ... }
+  // ...
+}
+```
+
+### `ResolvedPriceComponents`
+
+The components of a composite price as the v2 catalog serves them: hydrated in place, and
+a component that is itself conditional resolved against the same context, carrying the
+discriminators a resolved payload carries. A conditional component with no variant in
+effect — nothing matches and there is
+
+```ts
+type ResolvedPriceComponents = {
+  price_components?: Array<{
+    active?: boolean
+    is_composite_price?: false
+    is_conditional?: boolean
+    pricing_model: "per_unit" | "tiered_graduated" | "tiered_volume" | "tiered_flatfee" | "dynamic_tariff" | "external_getag"
+    tiers?: Array<{
+      up_to?: { ... }
+      flat_fee_amount?: { ... }
+      flat_fee_amount_decimal?: { ... }
+      unit_amount?: { ... }
+      unit_amount_decimal?: { ... }
+      display_mode?: { ... }
+    }>
+    description?: string
+    long_description?: string
+    sales_tax?: "nontaxable" | "reduced" | "standard"
+    tax?: {
+      $relation?: { ... }
+    } | Array<{
+      _id: { ... }
+      _title: { ... }
+      _org: { ... }
+      _schema: { ... }
+      _tags?: { ... }
+      _created_at: { ... }
+      _updated_at: { ... }
+      type: { ... }
+      description?: { ... }
+      rate: { ... }
+      active?: { ... }
+      region?: { ... }
+      region_label?: { ... }
+    }>
+    is_tax_inclusive?: boolean
+    type?: "one_time" | "recurring"
+    billing_period?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly"
+    unit_amount?: number
+    unit_amount_decimal?: string
+    unit_amount_currency?: string
+    price_display_in_journeys?: "show_price" | "show_as_starting_price" | "show_as_on_request" | "estimated_price"
+    variable_price?: boolean
+    unit?: "kw" | "kwh" | "m" | "m2" | "l" | "cubic-meter" | "cubic-meter-h" | "ls" | "a" | "kva" | "w" | "wp" | "kwp" | string
+    get_ag?: {
+      category: { ... }
+      markup_pricing_model?: { ... }
+      type?: { ... }
+      tariff_type?: { ... }
+      consumption_type?: { ... }
+      concession_type?: { ... }
+      meter_type?: { ... }
+      markup_tiers?: { ... }
+      markup_amount: { ... }
+      markup_amount_decimal: { ... }
+      markup_amount_net?: { ... }
+      markup_amount_net_decimal?: { ... }
+      markup_amount_gross?: { ... }
+      markup_amount_gross_decimal?: { ... }
+      markup_total_amount_net?: { ... }
+      markup_total_amount_net_decimal?: { ... }
+      markup_total_amount_gross?: { ... }
+      markup_total_amount_gross_decimal?: { ... }
+      additional_markups_enabled?: { ... }
+      additional_markups?: { ... }
+      unit_amount_gross: { ... }
+      unit_amount_gross_decimal?: { ... }
+      unit_amount_net: { ... }
+      unit_amount_net_decimal?: { ... }
+    }
+    dynamic_tariff?: {
+      mode: { ... }
+      interval?: { ... }
+      average_price: { ... }
+      average_price_decimal: { ... }
+      markup_amount?: { ... }
+      markup_amount_decimal?: { ... }
+      markup_amount_net?: { ... }
+      markup_amount_net_decimal?: { ... }
+      markup_amount_gross?: { ... }
+      markup_amount_gross_decimal?: { ... }
+      unit_amount_net?: { ... }
+      unit_amount_net_decimal?: { ... }
+      unit_amount_gross?: { ... }
+      unit_amount_gross_decimal?: { ... }
+    }
+    _created_at?: string
+    _id: string
+    _title?: string
+    _updated_at?: string
+    _org_id?: string
+    _tags?: string[]
+    _variant_id: string
+    _version_valid_from: string // date
+    _conditions: {
+      default: { ... }
+    }
+    _inert_overrides: Array<{
+      attribute: { ... }
+      reason: { ... }
+    }>
+  // ...
+}
+```
+
+### `CatalogReference`
+
+Names the variant each member of a catalog pair was resolved from, and the instant `as_of`
+they were resolved at. Checkout prices each conditional member from that variant, using the
+version in effect on `as_of`'s date in the organization's timezone.
+
+The catalog signs every reference, classic pair 
+
+```ts
+type CatalogReference = {
+  product: {
+    id: string
+    variant?: string
+  }
+  price: {
+    id: string
+    variant?: string
+  }
+  price_components?: Array<{
+    id: string
+    variant?: string
+  }>
+  coupons?: Array<{
+    id: string
+    variant?: string
+  }>
+  as_of: string
+  _meta?: {
+    signature: string
+    timestamp: number
+  }
+}
+```
+
+### `CatalogReferenceMember`
+
+One member of a catalog reference: the entity, and the variant that produced it. `variant`
+is absent for a classic entity.
+
+
+```ts
+type CatalogReferenceMember = {
+  id: string
+  variant?: string
 }
 ```
 
@@ -2414,6 +6102,7 @@ type SearchProvidersParams = {
   city?: string
   street?: string
   street_number?: string
+  grid_filter?: "all" | "exclude_closed" | "only_closed"
 }
 ```
 
@@ -2539,6 +6228,7 @@ type ComputePriceParamsBase = {
   association_id?: string
   billing_period?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
   reference_date?: string // date
+  city?: string
 }
 ```
 
@@ -2554,6 +6244,7 @@ type ComputePriceParamsPower = {
   association_id?: string
   billing_period?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
   reference_date?: string // date
+  city?: string
   type: "power"
   meter_type?: "classic" | "smart" | "digital"
 }
@@ -2571,6 +6262,7 @@ type ComputePriceParamsGas = {
   association_id?: string
   billing_period?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
   reference_date?: string // date
+  city?: string
   type: "gas"
   concession_type?: "standard" | "special"
 }
@@ -2614,6 +6306,7 @@ type ComputePriceParams = {
   association_id?: string
   billing_period?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
   reference_date?: string // date
+  city?: string
   type: "power"
   meter_type?: "classic" | "smart" | "digital"
 } | {
@@ -2625,6 +6318,7 @@ type ComputePriceParams = {
   association_id?: string
   billing_period?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
   reference_date?: string // date
+  city?: string
   type: "gas"
   concession_type?: "standard" | "special"
 }
@@ -2752,10 +6446,39 @@ type ComputePriceResult = {
       unit_amount_decimal?: { ... }
     }>
   }
+  inputs?: {
+    type?: "power" | "gas"
+    consumptionHT?: number
+    consumptionNT?: number
+    consumptionType?: "household" | "heating_pump" | "night_storage_heating" | "night_storage_heating_common_meter"
+    zipCode?: string
+    city?: string
+    providerId?: string
+    billingPeriod?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
+    referenceDate?: string // date
+  }
   _meta?: {
     signature: string
     timestamp: number
   }
+}
+```
+
+### `ComputePriceInputs`
+
+Echo of the request parameters used to compute the price, in the caller-facing shape.
+
+```ts
+type ComputePriceInputs = {
+  type?: "power" | "gas"
+  consumptionHT?: number
+  consumptionNT?: number
+  consumptionType?: "household" | "heating_pump" | "night_storage_heating" | "night_storage_heating_common_meter"
+  zipCode?: string
+  city?: string
+  providerId?: string
+  billingPeriod?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
+  referenceDate?: string // date
 }
 ```
 
@@ -2951,6 +6674,33 @@ The search providers payload
 type SearchProvidersResult = Array<{
   name: string
   code: string
+  type: "gas" | "power"
+  additionalData: {
+    gridOperators: Array<{
+      name: { ... }
+      codeNumber: { ... }
+      validFrom?: { ... }
+      validUntil?: { ... }
+    }>
+    defaultSuppliers: Array<{
+      name: { ... }
+      codeNumber: { ... }
+      validFrom?: { ... }
+      validUntil?: { ... }
+    }>
+    marketAreaDetails: {
+      gasType?: { ... }
+      marketArea?: { ... }
+      virtualTradingPoint?: { ... }
+    } | {
+      controlZone?: { ... }
+      balancingZone?: { ... }
+    }
+  }
+  _meta?: {
+    signature: string
+    timestamp: number
+  }
 }>
 ```
 
@@ -2962,6 +6712,98 @@ The provider entity
 type Provider = {
   name: string
   code: string
+  type: "gas" | "power"
+  additionalData: {
+    gridOperators: Array<{
+      name: { ... }
+      codeNumber: { ... }
+      validFrom?: { ... }
+      validUntil?: { ... }
+    }>
+    defaultSuppliers: Array<{
+      name: { ... }
+      codeNumber: { ... }
+      validFrom?: { ... }
+      validUntil?: { ... }
+    }>
+    marketAreaDetails: {
+      gasType?: { ... }
+      marketArea?: { ... }
+      virtualTradingPoint?: { ... }
+    } | {
+      controlZone?: { ... }
+      balancingZone?: { ... }
+    }
+  }
+  _meta?: {
+    signature: string
+    timestamp: number
+  }
+}
+```
+
+### `AdditionalProviderData`
+
+Additional data included in the provider entity
+
+```ts
+type AdditionalProviderData = {
+  gridOperators: Array<{
+    name: string
+    codeNumber: string
+    validFrom?: string // date
+    validUntil?: string // date
+  }>
+  defaultSuppliers: Array<{
+    name: string
+    codeNumber: string
+    validFrom?: string // date
+    validUntil?: string // date
+  }>
+  marketAreaDetails: {
+    gasType?: "L-Gas" | "H-Gas"
+    marketArea?: string
+    virtualTradingPoint?: string
+  } | {
+    controlZone?: string
+    balancingZone?: string
+  }
+}
+```
+
+### `MarketParticipant`
+
+Market participant data
+
+```ts
+type MarketParticipant = {
+  name: string
+  codeNumber: string
+  validFrom?: string // date
+  validUntil?: string // date
+}
+```
+
+### `GasMarketAreaDetails`
+
+Market area details for gas
+
+```ts
+type GasMarketAreaDetails = {
+  gasType?: "L-Gas" | "H-Gas"
+  marketArea?: string
+  virtualTradingPoint?: string
+}
+```
+
+### `PowerMarketAreaDetails`
+
+Market area details for power
+
+```ts
+type PowerMarketAreaDetails = {
+  controlZone?: string
+  balancingZone?: string
 }
 ```
 
@@ -3084,18 +6926,18 @@ type CartDto = {
       currency: { ... }
       billing_period: { ... }
       breakdown: { ... }
+      inputs?: { ... }
+      _meta?: { ... }
+    }
+    external_location_metadata?: {
+      name: { ... }
+      code: { ... }
+      type: { ... }
+      additionalData: { ... }
       _meta?: { ... }
     }
     external_price_metadata?: {
       market: { ... }
-      bidding_zone: { ... }
-      price: { ... }
-      _meta?: { ... }
-    }
-    _immutable_pricing_details?: {
-      items?: { ... }
-      amount_subtotal?: { ... }
-      amount_total?: { ... }
   // ...
 }
 ```
@@ -3174,6 +7016,7 @@ type CheckoutCart = {
     line_items: Array<{
       external_fees_mappings?: { ... }
       external_fees_metadata?: { ... }
+      external_location_metadata?: { ... }
       external_price_metadata?: { ... }
       _immutable_pricing_details?: { ... }
       coupon_ids?: { ... }
@@ -3192,6 +7035,7 @@ type CheckoutCart = {
     } | {
       external_fees_mappings?: { ... }
       external_fees_metadata?: { ... }
+      external_location_metadata?: { ... }
       external_price_metadata?: { ... }
       _immutable_pricing_details?: { ... }
       coupon_ids?: { ... }
@@ -3203,8 +7047,6 @@ type CheckoutCart = {
       selected_price_component_ids?: { ... }
       price_component_coupon_ids?: { ... }
       _price?: { ... }
-    }>
-    files?: string[]
   // ...
 }
 ```
@@ -3282,6 +7124,7 @@ type CheckoutCartResult = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     } | {
       metadata?: { ... }
       quantity?: { ... }
@@ -3293,6 +7136,7 @@ type CheckoutCartResult = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     }>
     products?: {
       $relation?: { ... }
@@ -3312,8 +7156,6 @@ type CheckoutCartResult = {
     }
     _org_id?: string
     _id?: string
-    _created_at?: string
-    _updated_at?: string
   // ...
 }
 ```
@@ -3373,9 +7215,6 @@ type BasePriceItemCommon = {
       _tags?: { ... }
       feature?: { ... }
     }>
-    cross_sellable_products?: {
-      $relation?: { ... }
-    }
     product_images?: {
       $relation?: { ... }
     } | Array<{
@@ -3404,9 +7243,7 @@ type BasePriceItemCommon = {
       _title?: { ... }
       $relation?: { ... }
     }>
-    price_options?: {
-      $relation?: { ... }
-    }
+    is_conditional?: boolean
     _availability_files?: Array<{
       _id: { ... }
       filename: { ... }
@@ -3424,6 +7261,29 @@ type BasePriceItemCommon = {
     _org_id?: string
     _created_at?: string
     _updated_at?: string
+  }
+  catalog_reference?: {
+    product: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price_components?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    coupons?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    as_of: string
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
   }
 }
 ```
@@ -3459,6 +7319,31 @@ type PriceItemDtoUnion = {
       variable_ht?: { ... }
       variable_nt?: { ... }
     }
+    inputs?: {
+      type?: { ... }
+      consumptionHT?: { ... }
+      consumptionNT?: { ... }
+      consumptionType?: { ... }
+      zipCode?: { ... }
+      city?: { ... }
+      providerId?: { ... }
+      billingPeriod?: { ... }
+      referenceDate?: { ... }
+    }
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
+  }
+  external_location_metadata?: {
+    name: string
+    code: string
+    type: "gas" | "power"
+    additionalData: {
+      gridOperators: { ... }
+      defaultSuppliers: { ... }
+      marketAreaDetails: { ... }
+    }
     _meta?: {
       signature: { ... }
       timestamp: { ... }
@@ -3490,6 +7375,7 @@ type PriceItemDtoUnion = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     } | {
       metadata?: { ... }
       quantity?: { ... }
@@ -3501,36 +7387,10 @@ type PriceItemDtoUnion = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     }>
     amount_subtotal?: number
     amount_total?: number
-    unit_amount_gross?: number
-    unit_amount_net?: number
-    amount_tax?: number
-    total_details?: {
-      amount_shipping?: { ... }
-      amount_tax?: { ... }
-      breakdown?: { ... }
-    }
-    currency?: string
-    redeemed_promos?: Array<{
-      code: { ... }
-      coupons: { ... }
-    }>
-  }
-  coupon_ids?: string[]
-  taxes?: Array<{
-    rate?: string
-    tax?: {
-      _id: { ... }
-      _title: { ... }
-      _org: { ... }
-      _schema: { ... }
-      _tags?: { ... }
-      _created_at: { ... }
-      _updated_at: { ... }
-      type: { ... }
-      description?: { ... }
   // ...
 }
 ```
@@ -3568,6 +7428,31 @@ type PriceItemsDto = Array<{
       variable_ht?: { ... }
       variable_nt?: { ... }
     }
+    inputs?: {
+      type?: { ... }
+      consumptionHT?: { ... }
+      consumptionNT?: { ... }
+      consumptionType?: { ... }
+      zipCode?: { ... }
+      city?: { ... }
+      providerId?: { ... }
+      billingPeriod?: { ... }
+      referenceDate?: { ... }
+    }
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
+  }
+  external_location_metadata?: {
+    name: string
+    code: string
+    type: "gas" | "power"
+    additionalData: {
+      gridOperators: { ... }
+      defaultSuppliers: { ... }
+      marketAreaDetails: { ... }
+    }
     _meta?: {
       signature: { ... }
       timestamp: { ... }
@@ -3599,6 +7484,7 @@ type PriceItemsDto = Array<{
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     } | {
       metadata?: { ... }
       quantity?: { ... }
@@ -3610,36 +7496,10 @@ type PriceItemsDto = Array<{
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     }>
     amount_subtotal?: number
     amount_total?: number
-    unit_amount_gross?: number
-    unit_amount_net?: number
-    amount_tax?: number
-    total_details?: {
-      amount_shipping?: { ... }
-      amount_tax?: { ... }
-      breakdown?: { ... }
-    }
-    currency?: string
-    redeemed_promos?: Array<{
-      code: { ... }
-      coupons: { ... }
-    }>
-  }
-  coupon_ids?: string[]
-  taxes?: Array<{
-    rate?: string
-    tax?: {
-      _id: { ... }
-      _title: { ... }
-      _org: { ... }
-      _schema: { ... }
-      _tags?: { ... }
-      _created_at: { ... }
-      _updated_at: { ... }
-      type: { ... }
-      description?: { ... }
   // ...
 }
 ```
@@ -3678,9 +7538,6 @@ type BasePriceItemDto = {
       _tags?: { ... }
       feature?: { ... }
     }>
-    cross_sellable_products?: {
-      $relation?: { ... }
-    }
     product_images?: {
       $relation?: { ... }
     } | Array<{
@@ -3709,9 +7566,7 @@ type BasePriceItemDto = {
       _title?: { ... }
       $relation?: { ... }
     }>
-    price_options?: {
-      $relation?: { ... }
-    }
+    is_conditional?: boolean
     _availability_files?: Array<{
       _id: { ... }
       filename: { ... }
@@ -3729,6 +7584,29 @@ type BasePriceItemDto = {
     _org_id?: string
     _created_at?: string
     _updated_at?: string
+  }
+  catalog_reference?: {
+    product: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price_components?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    coupons?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    as_of: string
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
   }
 }
 ```
@@ -3766,6 +7644,31 @@ type PriceItemDto = {
       variable_ht?: { ... }
       variable_nt?: { ... }
     }
+    inputs?: {
+      type?: { ... }
+      consumptionHT?: { ... }
+      consumptionNT?: { ... }
+      consumptionType?: { ... }
+      zipCode?: { ... }
+      city?: { ... }
+      providerId?: { ... }
+      billingPeriod?: { ... }
+      referenceDate?: { ... }
+    }
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
+  }
+  external_location_metadata?: {
+    name: string
+    code: string
+    type: "gas" | "power"
+    additionalData: {
+      gridOperators: { ... }
+      defaultSuppliers: { ... }
+      marketAreaDetails: { ... }
+    }
     _meta?: {
       signature: { ... }
       timestamp: { ... }
@@ -3797,6 +7700,7 @@ type PriceItemDto = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     } | {
       metadata?: { ... }
       quantity?: { ... }
@@ -3808,36 +7712,10 @@ type PriceItemDto = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     }>
     amount_subtotal?: number
     amount_total?: number
-    unit_amount_gross?: number
-    unit_amount_net?: number
-    amount_tax?: number
-    total_details?: {
-      amount_shipping?: { ... }
-      amount_tax?: { ... }
-      breakdown?: { ... }
-    }
-    currency?: string
-    redeemed_promos?: Array<{
-      code: { ... }
-      coupons: { ... }
-    }>
-  }
-  coupon_ids?: string[]
-  taxes?: Array<{
-    rate?: string
-    tax?: {
-      _id: { ... }
-      _title: { ... }
-      _org: { ... }
-      _schema: { ... }
-      _tags?: { ... }
-      _created_at: { ... }
-      _updated_at: { ... }
-      type: { ... }
-      description?: { ... }
   // ...
 }
 ```
@@ -3875,6 +7753,31 @@ type CompositePriceItemDto = {
       variable_ht?: { ... }
       variable_nt?: { ... }
     }
+    inputs?: {
+      type?: { ... }
+      consumptionHT?: { ... }
+      consumptionNT?: { ... }
+      consumptionType?: { ... }
+      zipCode?: { ... }
+      city?: { ... }
+      providerId?: { ... }
+      billingPeriod?: { ... }
+      referenceDate?: { ... }
+    }
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
+  }
+  external_location_metadata?: {
+    name: string
+    code: string
+    type: "gas" | "power"
+    additionalData: {
+      gridOperators: { ... }
+      defaultSuppliers: { ... }
+      marketAreaDetails: { ... }
+    }
     _meta?: {
       signature: { ... }
       timestamp: { ... }
@@ -3906,6 +7809,7 @@ type CompositePriceItemDto = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     } | {
       metadata?: { ... }
       quantity?: { ... }
@@ -3917,36 +7821,10 @@ type CompositePriceItemDto = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     }>
     amount_subtotal?: number
     amount_total?: number
-    unit_amount_gross?: number
-    unit_amount_net?: number
-    amount_tax?: number
-    total_details?: {
-      amount_shipping?: { ... }
-      amount_tax?: { ... }
-      breakdown?: { ... }
-    }
-    currency?: string
-    redeemed_promos?: Array<{
-      code: { ... }
-      coupons: { ... }
-    }>
-  }
-  coupon_ids?: string[]
-  taxes?: Array<{
-    rate?: string
-    tax?: {
-      _id: { ... }
-      _title: { ... }
-      _org: { ... }
-      _schema: { ... }
-      _tags?: { ... }
-      _created_at: { ... }
-      _updated_at: { ... }
-      type: { ... }
-      description?: { ... }
   // ...
 }
 ```
@@ -3972,6 +7850,10 @@ type TaxAmountDto = {
     active?: boolean
     region?: string
     region_label?: string
+  } | {
+    type: "VAT" | "GST" | "Custom"
+    rate: number
+    description?: string
   }
 }
 ```
@@ -4074,6 +7956,14 @@ type OrderPayload = {
       currency: { ... }
       billing_period: { ... }
       breakdown: { ... }
+      inputs?: { ... }
+      _meta?: { ... }
+    }
+    external_location_metadata?: {
+      name: { ... }
+      code: { ... }
+      type: { ... }
+      additionalData: { ... }
       _meta?: { ... }
     }
     external_price_metadata?: {
@@ -4134,21 +8024,13 @@ type OrderPayload = {
       fixed_value_currency?: { ... }
       cashback_period?: { ... }
       active?: { ... }
+      is_conditional?: { ... }
       requires_promo_code?: { ... }
     }>
     type?: "one_time" | "recurring"
     billing_period?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly"
     unit_amount?: number
     unit_amount_gross?: number
-    unit_amount_currency?: string
-    unit_amount_decimal?: string
-    is_composite_price?: false
-    pricing_model?: "per_unit" | "tiered_graduated" | "tiered_volume" | "tiered_flatfee" | "dynamic_tariff" | "external_getag"
-    _price?: {
-      billing_duration_amount?: { ... }
-      billing_duration_unit?: { ... }
-      notice_time_amount?: { ... }
-      notice_time_unit?: { ... }
   // ...
 }
 ```
@@ -4187,9 +8069,6 @@ type PriceItems = Array<{
       _tags?: { ... }
       feature?: { ... }
     }>
-    cross_sellable_products?: {
-      $relation?: { ... }
-    }
     product_images?: {
       $relation?: { ... }
     } | Array<{
@@ -4218,9 +8097,7 @@ type PriceItems = Array<{
       _title?: { ... }
       $relation?: { ... }
     }>
-    price_options?: {
-      $relation?: { ... }
-    }
+    is_conditional?: boolean
     _availability_files?: Array<{
       _id: { ... }
       filename: { ... }
@@ -4239,25 +8116,30 @@ type PriceItems = Array<{
     _created_at?: string
     _updated_at?: string
   }
+  catalog_reference?: {
+    product: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price_components?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    coupons?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    as_of: string
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
+  }
 } | {
-  metadata?: Array<{
-    key?: string
-    value?: string
-  }>
-  quantity?: number
-  product_id?: string
-  price_id?: string
-  description?: string
-  product_description?: string
-  product_name?: string
-  price_mappings?: Array<{
-    price_id?: string
-    frequency_unit?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
-    name?: string
-    value?: number
-    metadata?: Record<string, string>
-  }>
-  is_tax_inclusive?: boolean
   // ...
 }
 ```
@@ -4296,9 +8178,6 @@ type CompositePriceItem = {
       _tags?: { ... }
       feature?: { ... }
     }>
-    cross_sellable_products?: {
-      $relation?: { ... }
-    }
     product_images?: {
       $relation?: { ... }
     } | Array<{
@@ -4327,9 +8206,7 @@ type CompositePriceItem = {
       _title?: { ... }
       $relation?: { ... }
     }>
-    price_options?: {
-      $relation?: { ... }
-    }
+    is_conditional?: boolean
     _availability_files?: Array<{
       _id: { ... }
       filename: { ... }
@@ -4347,6 +8224,29 @@ type CompositePriceItem = {
     _org_id?: string
     _created_at?: string
     _updated_at?: string
+  }
+  catalog_reference?: {
+    product: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price_components?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    coupons?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    as_of: string
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
   }
 }
 ```
@@ -4385,9 +8285,6 @@ type BasePriceItem = {
       _tags?: { ... }
       feature?: { ... }
     }>
-    cross_sellable_products?: {
-      $relation?: { ... }
-    }
     product_images?: {
       $relation?: { ... }
     } | Array<{
@@ -4416,9 +8313,7 @@ type BasePriceItem = {
       _title?: { ... }
       $relation?: { ... }
     }>
-    price_options?: {
-      $relation?: { ... }
-    }
+    is_conditional?: boolean
     _availability_files?: Array<{
       _id: { ... }
       filename: { ... }
@@ -4436,6 +8331,29 @@ type BasePriceItem = {
     _org_id?: string
     _created_at?: string
     _updated_at?: string
+  }
+  catalog_reference?: {
+    product: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price_components?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    coupons?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    as_of: string
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
   }
 }
 ```
@@ -4534,9 +8452,6 @@ type PriceItem = {
       _tags?: { ... }
       feature?: { ... }
     }>
-    cross_sellable_products?: {
-      $relation?: { ... }
-    }
     product_images?: {
       $relation?: { ... }
     } | Array<{
@@ -4565,9 +8480,7 @@ type PriceItem = {
       _title?: { ... }
       $relation?: { ... }
     }>
-    price_options?: {
-      $relation?: { ... }
-    }
+    is_conditional?: boolean
     _availability_files?: Array<{
       _id: { ... }
       filename: { ... }
@@ -4585,6 +8498,29 @@ type PriceItem = {
     _org_id?: string
     _created_at?: string
     _updated_at?: string
+  }
+  catalog_reference?: {
+    product: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price: {
+      id: { ... }
+      variant?: { ... }
+    }
+    price_components?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    coupons?: Array<{
+      id: { ... }
+      variant?: { ... }
+    }>
+    as_of: string
+    _meta?: {
+      signature: { ... }
+      timestamp: { ... }
+    }
   }
 }
 ```
@@ -4612,6 +8548,10 @@ type TaxAmount = {
     active?: boolean
     region?: string
     region_label?: string
+  } | {
+    type: "VAT" | "GST" | "Custom"
+    rate: number
+    description?: string
   }
 }
 ```
@@ -4660,10 +8600,11 @@ type RecurrenceAmount = {
 
 ### `CashbackAmount`
 
-An amount associated with a specific cashback period.
+A detail associated with a specific cashback.
 
 ```ts
 type CashbackAmount = {
+  cashback_name?: string
   cashback_period: "0" | "12"
   amount_total: number
 }
@@ -4727,6 +8668,7 @@ type TotalDetails = {
       before_discount_amount_subtotal_decimal?: { ... }
     }>
     cashbacks?: Array<{
+      cashback_name?: { ... }
       cashback_period: { ... }
       amount_total: { ... }
     }>
@@ -4774,16 +8716,23 @@ type PricingDetails = {
       name?: { ... }
       categories?: { ... }
       feature?: { ... }
-      cross_sellable_products?: { ... }
       product_images?: { ... }
       product_downloads?: { ... }
-      price_options?: { ... }
+      is_conditional?: { ... }
       _availability_files?: { ... }
       _id?: { ... }
       _title?: { ... }
       _org_id?: { ... }
       _created_at?: { ... }
       _updated_at?: { ... }
+    }
+    catalog_reference?: {
+      product: { ... }
+      price: { ... }
+      price_components?: { ... }
+      coupons?: { ... }
+      as_of: { ... }
+      _meta?: { ... }
     }
   } | {
     metadata?: Array<{
@@ -4811,16 +8760,23 @@ type PricingDetails = {
       name?: { ... }
       categories?: { ... }
       feature?: { ... }
-      cross_sellable_products?: { ... }
       product_images?: { ... }
       product_downloads?: { ... }
-      price_options?: { ... }
+      is_conditional?: { ... }
       _availability_files?: { ... }
       _id?: { ... }
       _title?: { ... }
       _org_id?: { ... }
       _created_at?: { ... }
       _updated_at?: { ... }
+    }
+    catalog_reference?: {
+      product: { ... }
+      price: { ... }
+      price_components?: { ... }
+      coupons?: { ... }
+      as_of: { ... }
+      _meta?: { ... }
     }
   }>
   amount_subtotal?: number
@@ -4833,20 +8789,6 @@ type PricingDetails = {
     amount_tax?: number
     breakdown?: {
       taxes?: { ... }
-      recurrences?: { ... }
-      cashbacks?: { ... }
-      recurrencesByTax?: { ... }
-    }
-  }
-  currency?: string
-  redeemed_promos?: Array<{
-    code: string
-    coupons: Array<{
-      _id: { ... }
-      _title: { ... }
-      _org: { ... }
-      _schema: { ... }
-      _tags?: { ... }
   // ...
 }
 ```
@@ -4875,6 +8817,7 @@ type PromoCodeValidationResponse = {
     fixed_value_currency?: string
     cashback_period?: "0" | "12"
     active?: boolean
+    is_conditional?: boolean
     requires_promo_code?: boolean
   }>
 }
@@ -4912,16 +8855,23 @@ type PricingDetailsResponse = {
       name?: { ... }
       categories?: { ... }
       feature?: { ... }
-      cross_sellable_products?: { ... }
       product_images?: { ... }
       product_downloads?: { ... }
-      price_options?: { ... }
+      is_conditional?: { ... }
       _availability_files?: { ... }
       _id?: { ... }
       _title?: { ... }
       _org_id?: { ... }
       _created_at?: { ... }
       _updated_at?: { ... }
+    }
+    catalog_reference?: {
+      product: { ... }
+      price: { ... }
+      price_components?: { ... }
+      coupons?: { ... }
+      as_of: { ... }
+      _meta?: { ... }
     }
   } | {
     metadata?: Array<{
@@ -4949,16 +8899,23 @@ type PricingDetailsResponse = {
       name?: { ... }
       categories?: { ... }
       feature?: { ... }
-      cross_sellable_products?: { ... }
       product_images?: { ... }
       product_downloads?: { ... }
-      price_options?: { ... }
+      is_conditional?: { ... }
       _availability_files?: { ... }
       _id?: { ... }
       _title?: { ... }
       _org_id?: { ... }
       _created_at?: { ... }
       _updated_at?: { ... }
+    }
+    catalog_reference?: {
+      product: { ... }
+      price: { ... }
+      price_components?: { ... }
+      coupons?: { ... }
+      as_of: { ... }
+      _meta?: { ... }
     }
   }>
   amount_subtotal?: number
@@ -4971,20 +8928,6 @@ type PricingDetailsResponse = {
     amount_tax?: number
     breakdown?: {
       taxes?: { ... }
-      recurrences?: { ... }
-      cashbacks?: { ... }
-      recurrencesByTax?: { ... }
-    }
-  }
-  currency?: string
-  redeemed_promos?: Array<{
-    code: string
-    coupons: Array<{
-      _id: { ... }
-      _title: { ... }
-      _org: { ... }
-      _schema: { ... }
-      _tags?: { ... }
   // ...
 }
 ```
@@ -5158,6 +9101,22 @@ type Tax = {
 }
 ```
 
+### `TaxItem`
+
+A minimal, ad-hoc tax rate for line items with no backing tax entity
+in the catalog (e.g. a fully custom/composite price component built
+by a client with no product/price reference to resolve tax from).
+Mirrors how PriceItem relates to Price: unlike Tax, this has no
+entity identity — it isn't persis
+
+```ts
+type TaxItem = {
+  type: "VAT" | "GST" | "Custom"
+  rate: number
+  description?: string
+}
+```
+
 ### `TaxBreakdownInfo`
 
 ```ts
@@ -5191,6 +9150,7 @@ type BaseCouponCommon = {
   fixed_value_currency?: string
   cashback_period?: "0" | "12"
   active?: boolean
+  is_conditional?: boolean
   requires_promo_code?: boolean
 }
 ```
@@ -5218,6 +9178,7 @@ type CouponWithoutPromoCodes = {
   fixed_value_currency?: string
   cashback_period?: "0" | "12"
   active?: boolean
+  is_conditional?: boolean
   requires_promo_code?: boolean
 }
 ```
@@ -5245,6 +9206,7 @@ type Coupon = {
   fixed_value_currency?: string
   cashback_period?: "0" | "12"
   active?: boolean
+  is_conditional?: boolean
   requires_promo_code?: boolean
 }
 ```
@@ -5270,6 +9232,7 @@ type CouponItem = {
   fixed_value_currency?: string
   cashback_period?: "0" | "12"
   active?: boolean
+  is_conditional?: boolean
   requires_promo_code?: boolean
 }
 ```
@@ -5308,6 +9271,7 @@ type RedeemedPromo = {
     fixed_value_currency?: string
     cashback_period?: "0" | "12"
     active?: boolean
+    is_conditional?: boolean
     requires_promo_code?: boolean
   }>
 }
@@ -5538,71 +9502,21 @@ The request payload for the external catalog service with a portal context.
 type ExternalCatalogPortalRequest = {
   origin: "portal"
   context: {
-    contract: {
-      _id?: { ... }
-      contract_name?: { ... }
-      contract_number?: { ... }
-      assignee?: { ... }
-      status?: { ... }
-      description?: { ... }
-      billing_account?: { ... }
-      account_number?: { ... }
-      branch?: { ... }
-      move_in_date?: { ... }
-      move_out_date?: { ... }
-      billing_address?: { ... }
-      delivery_address?: { ... }
-      additional_addresses?: { ... }
-      termination_date?: { ... }
-      termination_reason?: { ... }
-      start_date?: { ... }
-      end_date?: { ... }
-      customer?: { ... }
-      order?: { ... }
-      type?: { ... }
-      billing_period?: { ... }
-      billing_duration_amount?: { ... }
-      billing_duration_unit?: { ... }
-      notice_time_amount?: { ... }
-      notice_time_unit?: { ... }
-      termination_time_amount?: { ... }
-      termination_time_unit?: { ... }
-      renewal_duration_amount?: { ... }
-      renewal_duration_unit?: { ... }
-      billing_due_day?: { ... }
-      installment_amount?: { ... }
-      balance?: { ... }
-      meters?: { ... }
-      payment?: { ... }
-      last_sync_at?: { ... }
-      external_id?: { ... }
+    contract: Record<string, unknown>
+    contact: Record<string, unknown>
+    availability_address?: {
+      postal_code?: { ... }
+      city?: { ... }
+      street?: { ... }
+      street_number?: { ... }
+      journey_target_block?: { ... }
     }
-    contact: {
-      _id?: { ... }
-      salutation?: { ... }
-      title?: { ... }
-      first_name?: { ... }
-      last_name?: { ... }
-      customer_number?: { ... }
-      birthdate?: { ... }
-      email?: { ... }
-      phone?: { ... }
-      communication_preference?: { ... }
-      address?: { ... }
-      payment?: { ... }
-      account?: { ... }
-      marketing_permission?: { ... }
-      contact_owner?: { ... }
-      consent_email_marketing?: { ... }
-      consent_sms_marketing?: { ... }
-      consent_phone_call?: { ... }
-      consent_print_marketing?: { ... }
-      portal_users?: { ... }
-      opportunities?: { ... }
-      orders?: { ... }
-      contracts?: { ... }
-      external_id?: { ... }
-    }
+    variable_inputs?: Array<{
+      value?: { ... }
+      unit?: { ... }
+      frequency_unit?: { ... }
+      journey_target_block?: { ... }
+    }>
   }
 }
 ```
@@ -5649,92 +9563,21 @@ type JourneyContext = {
 
 ```ts
 type PortalContext = {
-  contract: {
-    _id?: string
-    contract_name?: string
-    contract_number?: string
-    assignee?: string
-    status?: "draft" | "in_approval_process" | "approved" | "active" | "deactivated" | "revoked" | "terminated" | "expired"
-    description?: string
-    billing_account?: string
-    account_number?: string
-    branch?: "power" | "gas" | "water" | "waste_water" | "district_heating"
-    move_in_date?: string // date
-    move_out_date?: string // date
-    billing_address?: object
-    delivery_address?: object
-    additional_addresses?: object[]
-    termination_date?: string // date
-    termination_reason?: string
-    start_date?: string // date
-    end_date?: string // date
-    customer?: string[]
-    order?: string
-    type?: "one_time" | "recurring"
-    billing_period?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly"
-    billing_duration_amount?: number
-    billing_duration_unit?: "weeks" | "months" | "years"
-    notice_time_amount?: number
-    notice_time_unit?: "weeks" | "months" | "years"
-    termination_time_amount?: number
-    termination_time_unit?: "weeks" | "months" | "years"
-    renewal_duration_amount?: number
-    renewal_duration_unit?: "weeks" | "months" | "years"
-    billing_due_day?: number
-    installment_amount?: {
-      value?: { ... }
-      currency?: { ... }
-    }
-    balance?: {
-      value?: { ... }
-      currency?: { ... }
-    }
-    meters?: string[]
-    payment?: string
-    last_sync_at?: string // date
-    external_id?: string
+  contract: Record<string, unknown>
+  contact: Record<string, unknown>
+  availability_address?: {
+    postal_code?: string
+    city?: string
+    street?: string
+    street_number?: string
+    journey_target_block?: string
   }
-  contact: {
-    _id?: string
-    salutation?: "Mr." | "Ms. / Mrs." | "Company" | "Contact Person" | "Company/Contact Person" | "Spouse" | "Family" | "Ownership" | "Assembly" | "Other"
-    title?: "Dr." | "Prof." | "Prof. Dr."
-    first_name?: string
-    last_name?: string
-    customer_number?: string
-    birthdate?: string // date
-    email?: Array<{
-      email?: { ... }
-      _primary?: { ... }
-    }>
-    phone?: Array<{
-      phone?: { ... }
-      _primary?: { ... }
-    }>
-    communication_preference?: "postal" | "portal"
-    address?: Array<{
-      _primary?: { ... }
-      postal_code?: { ... }
-      city?: { ... }
-      street?: { ... }
-      street_number?: { ... }
-      country?: { ... }
-    }>
-    payment?: Array<{
-      _primary?: { ... }
-    }>
-    account?: string[]
-    marketing_permission?: boolean
-    contact_owner?: string
-    consent_email_marketing?: object
-    consent_sms_marketing?: object
-    consent_phone_call?: object
-    consent_print_marketing?: object
-    portal_users?: string[]
-    opportunities?: string[]
-    orders?: string[]
-    contracts?: string[]
-    external_id?: string
-  }
+  variable_inputs?: Array<{
+    value?: number
+    unit?: string
+    frequency_unit?: "weekly" | "monthly" | "every_quarter" | "every_6_months" | "yearly" | "one_time"
+    journey_target_block?: string
+  }>
 }
 ```
 
@@ -5822,6 +9665,7 @@ type ExternalCatalogItem = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     } | {
       metadata?: { ... }
       quantity?: { ... }
@@ -5833,6 +9677,7 @@ type ExternalCatalogItem = {
       price_mappings?: { ... }
       is_tax_inclusive?: { ... }
       _product?: { ... }
+      catalog_reference?: { ... }
     }>
     amount_subtotal?: number
     amount_total?: number
@@ -5898,6 +9743,47 @@ type ProductRecommendationResponse = {
     _created_at: string // date-time
     _updated_at: string // date-time
   }>
+  source?: {
+    item?: {
+      metadata?: { ... }
+      quantity?: { ... }
+      product_id?: { ... }
+      price_id?: { ... }
+      description?: { ... }
+      product_description?: { ... }
+      product_name?: { ... }
+      price_mappings?: { ... }
+      is_tax_inclusive?: { ... }
+      _product?: { ... }
+      catalog_reference?: { ... }
+    } | {
+      metadata?: { ... }
+      quantity?: { ... }
+      product_id?: { ... }
+      price_id?: { ... }
+      description?: { ... }
+      product_description?: { ... }
+      product_name?: { ... }
+      price_mappings?: { ... }
+      is_tax_inclusive?: { ... }
+      _product?: { ... }
+      catalog_reference?: { ... }
+    }
+  }
+}
+```
+
+### `OfferHighlightConfig`
+
+```ts
+type OfferHighlightConfig = {
+  unique_selling_point?: string
+  unique_selling_point_icon?: string
+  total?: {
+    enabled?: boolean
+    format?: "absolute" | "relative"
+    only_if_better?: boolean
+  }
 }
 ```
 
@@ -5909,6 +9795,11 @@ type Offer = {
   items?: Array<{
     price_id: string
     product_id: string
+    highlight_config?: {
+      unique_selling_point?: { ... }
+      unique_selling_point_icon?: { ... }
+      total?: { ... }
+    }
   }>
 }
 ```

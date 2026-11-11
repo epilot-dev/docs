@@ -42,11 +42,19 @@ epilot event-catalog listEvents
 
 **Event Catalog**
 - [`listEvents`](#listevents) — Retrieve list of available business events
+- [`createCustomEvent`](#createcustomevent) — Reserve an org-scoped custom event name and persist its immutable v1.0 draft definition. Custom events are always projec
 - [`getEvent`](#getevent) — Retrieve the configuration of a specific business event
+- [`replaceCustomEventDraft`](#replacecustomeventdraft) — Replace the complete v1.0 definition of an org-scoped custom event while it is still an
 - [`patchEvent`](#patchevent) — Update the configuration of a specific business event for the organization
-- [`getEventJSONSchema`](#geteventjsonschema) — Retrieve the JSON Schema of a specific business event
-- [`getEventExample`](#geteventexample) — Generate a sample event payload based on the event's JSON Schema
+- [`deprecateCustomEvent`](#deprecatecustomevent) — Soft-deprecate an org-scoped custom event. Definitions and v1.0 history remain readable.
+- [`previewCustomEvent`](#previewcustomevent) — Assemble and fully validate a persisted custom-event draft without publishing it.
+- [`publishCustomEventDefinition`](#publishcustomeventdefinition) — Conditionally activate an immutable custom-event v1.0 definition.
+- [`getEventJSONSchema`](#geteventjsonschema) — Retrieve the JSON Schema of a specific business event. Pass an optional
+- [`getEventExample`](#geteventexample) — Generate a sample event payload based on the event's JSON Schema. Pass an
+- [`listEventVersions`](#listeventversions) — List every known version of an event, along with the `latest`
 - [`searchEventHistory`](#searcheventhistory) — Paginated history of events
+- [`searchEventHistoryV2`](#searcheventhistoryv2) — Paginated history of events with projected/lightweight payload (v2).
+- [`getHistoricalEvent`](#gethistoricalevent) — Fetch a single historical event by id with full hydration
 - [`triggerEvent`](#triggerevent) — Explicitly trigger an event by providing input field values and an optional entity seed
 
 ### `listEvents`
@@ -77,7 +85,7 @@ epilot event-catalog listEvents --jsonata 'results[0]'
       "event_name": "AddMeterReading",
       "event_title": "Add Meter Reading",
       "event_description": "Triggered when a new meter reading is added",
-      "event_version": "1.0.0",
+      "event_version": "1.0",
       "event_status": "active",
       "event_tags": ["builtin", "metering", "erp"],
       "schema_fields": {},
@@ -101,11 +109,191 @@ epilot event-catalog listEvents --jsonata 'results[0]'
         "operation": ["createEntity", "updateEntity"],
         "schema": ["contact", "contract", "order"],
         "attribute": ["email", "phone", "status"],
-        "purpose": ["Kündigung", "Umzug/Auszug"]
+        "purpose": ["Kündigung", "Umzug/Auszug"],
+        "purpose_filters": [
+          {
+            "id": "string",
+            "display_name": "string"
+          }
+        ]
       },
       "enabled": true,
       "auto_trigger": true,
-      "automation_trigger": true
+      "automation_trigger": true,
+      "api_trigger": true,
+      "automation_trigger_only": true,
+      "automation_trigger_seed_node": "ticket",
+      "event_origin": "builtin",
+      "mapping": {
+        "mode": "guided",
+        "jsonata": "string"
+      },
+      "lineage": {
+        "base_event_name": "string",
+        "base_event_version": "string"
+      },
+      "success_criteria": [
+        {
+          "entity_schema": "contract",
+          "attribute": "installment_amount"
+        },
+        {
+          "entity_schema": "billing_account",
+          "attribute": "due_date"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `createCustomEvent`
+
+Reserve an org-scoped custom event name and persist its immutable v1.0 draft definition. Custom events are always projec
+
+`POST /v1/events`
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot event-catalog createCustomEvent
+```
+
+With request body:
+
+```bash
+epilot event-catalog createCustomEvent \
+  -d '{
+  "event_name": "string",
+  "event_title": "string",
+  "event_description": "string",
+  "event_tags": ["string"],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one",
+        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+      }
+    ],
+    "edges": [
+      {
+        "from": "contact",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": ["createEntity", "updateEntity"],
+    "schema": ["contact", "contract", "order"],
+    "attribute": ["email", "phone", "status"],
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
+  },
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": false,
+  "automation_trigger_seed_node": "string",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "example": {}
+}'
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot event-catalog createCustomEvent
+```
+
+With JSONata filter:
+
+```bash
+epilot event-catalog createCustomEvent --jsonata '$'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "event_name": "AddMeterReading",
+  "event_title": "Add Meter Reading",
+  "event_description": "Triggered when a new meter reading is added",
+  "event_version": "1.0",
+  "event_status": "active",
+  "event_tags": ["builtin", "metering", "erp"],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one",
+        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+      }
+    ],
+    "edges": [
+      {
+        "from": "contact",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": ["createEntity", "updateEntity"],
+    "schema": ["contact", "contract", "order"],
+    "attribute": ["email", "phone", "status"],
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
+  },
+  "enabled": true,
+  "auto_trigger": true,
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
     }
   ]
 }
@@ -154,7 +342,7 @@ epilot event-catalog getEvent -p event_name=example --jsonata '$'
   "event_name": "AddMeterReading",
   "event_title": "Add Meter Reading",
   "event_description": "Triggered when a new meter reading is added",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_status": "active",
   "event_tags": ["builtin", "metering", "erp"],
   "schema_fields": {},
@@ -178,11 +366,205 @@ epilot event-catalog getEvent -p event_name=example --jsonata '$'
     "operation": ["createEntity", "updateEntity"],
     "schema": ["contact", "contract", "order"],
     "attribute": ["email", "phone", "status"],
-    "purpose": ["Kündigung", "Umzug/Auszug"]
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
   },
   "enabled": true,
   "auto_trigger": true,
-  "automation_trigger": true
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `replaceCustomEventDraft`
+
+Replace the complete v1.0 definition of an org-scoped custom event while it is still an
+
+`PUT /v1/events/{event_name}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `event_name` | path | string | Yes |  |
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot event-catalog replaceCustomEventDraft \
+  -p event_name=example
+```
+
+With request body:
+
+```bash
+epilot event-catalog replaceCustomEventDraft \
+  -p event_name=example \
+  -d '{
+  "event_name": "string",
+  "event_title": "string",
+  "event_description": "string",
+  "event_tags": ["string"],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one",
+        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+      }
+    ],
+    "edges": [
+      {
+        "from": "contact",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": ["createEntity", "updateEntity"],
+    "schema": ["contact", "contract", "order"],
+    "attribute": ["email", "phone", "status"],
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
+  },
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": false,
+  "automation_trigger_seed_node": "string",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "example": {}
+}'
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot event-catalog replaceCustomEventDraft example
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot event-catalog replaceCustomEventDraft -p event_name=example
+```
+
+With JSONata filter:
+
+```bash
+epilot event-catalog replaceCustomEventDraft -p event_name=example --jsonata '$'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "event_name": "AddMeterReading",
+  "event_title": "Add Meter Reading",
+  "event_description": "Triggered when a new meter reading is added",
+  "event_version": "1.0",
+  "event_status": "active",
+  "event_tags": ["builtin", "metering", "erp"],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one",
+        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+      }
+    ],
+    "edges": [
+      {
+        "from": "contact",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": ["createEntity", "updateEntity"],
+    "schema": ["contact", "contract", "order"],
+    "attribute": ["email", "phone", "status"],
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
+  },
+  "enabled": true,
+  "auto_trigger": true,
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
+    }
+  ]
 }
 ```
 
@@ -208,48 +590,8 @@ Update the configuration of a specific business event for the organization
 
 ```bash
 epilot event-catalog patchEvent \
-  -p event_name=example
-```
-
-With request body:
-
-```bash
-epilot event-catalog patchEvent \
   -p event_name=example \
-  -d '{
-  "event_name": "AddMeterReading",
-  "event_title": "Add Meter Reading",
-  "event_description": "Triggered when a new meter reading is added",
-  "event_version": "1.0.0",
-  "event_status": "active",
-  "event_tags": ["builtin", "metering", "erp"],
-  "schema_fields": {},
-  "entity_graph": {
-    "nodes": [
-      {
-        "id": "contact",
-        "schema": "contact",
-        "cardinality": "one",
-        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
-      }
-    ],
-    "edges": [
-      {
-        "from": "contact",
-        "to": "billing_account"
-      }
-    ]
-  },
-  "entity_operation": {
-    "operation": ["createEntity", "updateEntity"],
-    "schema": ["contact", "contract", "order"],
-    "attribute": ["email", "phone", "status"],
-    "purpose": ["Kündigung", "Umzug/Auszug"]
-  },
-  "enabled": true,
-  "auto_trigger": true,
-  "automation_trigger": true
-}'
+  -d '{"enabled":true,"auto_trigger":true,"success_criteria":[{"entity_schema":"contract","attribute":"installment_amount"}]}'
 ```
 
 Using positional args for path parameters:
@@ -278,7 +620,7 @@ epilot event-catalog patchEvent -p event_name=example --jsonata '$'
   "event_name": "AddMeterReading",
   "event_title": "Add Meter Reading",
   "event_description": "Triggered when a new meter reading is added",
-  "event_version": "1.0.0",
+  "event_version": "1.0",
   "event_status": "active",
   "event_tags": ["builtin", "metering", "erp"],
   "schema_fields": {},
@@ -302,11 +644,257 @@ epilot event-catalog patchEvent -p event_name=example --jsonata '$'
     "operation": ["createEntity", "updateEntity"],
     "schema": ["contact", "contract", "order"],
     "attribute": ["email", "phone", "status"],
-    "purpose": ["Kündigung", "Umzug/Auszug"]
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
   },
   "enabled": true,
   "auto_trigger": true,
-  "automation_trigger": true
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `deprecateCustomEvent`
+
+Soft-deprecate an org-scoped custom event. Definitions and v1.0 history remain readable.
+
+`DELETE /v1/events/{event_name}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `event_name` | path | string | Yes |  |
+
+**Sample Call**
+
+```bash
+epilot event-catalog deprecateCustomEvent \
+  -p event_name=example
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot event-catalog deprecateCustomEvent example
+```
+
+With JSONata filter:
+
+```bash
+epilot event-catalog deprecateCustomEvent -p event_name=example --jsonata '$'
+```
+
+---
+
+### `previewCustomEvent`
+
+Assemble and fully validate a persisted custom-event draft without publishing it.
+
+`POST /v1/events/{event_name}:preview`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `event_name` | path | string | Yes |  |
+
+**Request Body** (required)
+
+**Sample Call**
+
+```bash
+epilot event-catalog previewCustomEvent \
+  -p event_name=example
+```
+
+With request body:
+
+```bash
+epilot event-catalog previewCustomEvent \
+  -p event_name=example \
+  -d '{
+  "seed": {
+    "entity_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "node_id": "ticket"
+  },
+  "_trigger_source_type": "automation",
+  "_trigger_source": "execution-id/action-id"
+}'
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot event-catalog previewCustomEvent example
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot event-catalog previewCustomEvent -p event_name=example
+```
+
+With JSONata filter:
+
+```bash
+epilot event-catalog previewCustomEvent -p event_name=example --jsonata 'payload'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "payload": {},
+  "errors": [
+    {
+      "path": "string",
+      "message": "string"
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `publishCustomEventDefinition`
+
+Conditionally activate an immutable custom-event v1.0 definition.
+
+`POST /v1/events/{event_name}:publish`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `event_name` | path | string | Yes |  |
+
+**Request Body**
+
+**Sample Call**
+
+```bash
+epilot event-catalog publishCustomEventDefinition \
+  -p event_name=example \
+  -d '{"enabled":true,"auto_trigger":true,"base_auto_trigger_enabled":true}'
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot event-catalog publishCustomEventDefinition example
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot event-catalog publishCustomEventDefinition -p event_name=example
+```
+
+With JSONata filter:
+
+```bash
+epilot event-catalog publishCustomEventDefinition -p event_name=example --jsonata '$'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "event_name": "AddMeterReading",
+  "event_title": "Add Meter Reading",
+  "event_description": "Triggered when a new meter reading is added",
+  "event_version": "1.0",
+  "event_status": "active",
+  "event_tags": ["builtin", "metering", "erp"],
+  "schema_fields": {},
+  "entity_graph": {
+    "nodes": [
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one",
+        "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+      }
+    ],
+    "edges": [
+      {
+        "from": "contact",
+        "to": "billing_account"
+      }
+    ]
+  },
+  "entity_operation": {
+    "operation": ["createEntity", "updateEntity"],
+    "schema": ["contact", "contract", "order"],
+    "attribute": ["email", "phone", "status"],
+    "purpose": ["Kündigung", "Umzug/Auszug"],
+    "purpose_filters": [
+      {
+        "id": "string",
+        "display_name": "string"
+      }
+    ]
+  },
+  "enabled": true,
+  "auto_trigger": true,
+  "automation_trigger": true,
+  "api_trigger": true,
+  "automation_trigger_only": true,
+  "automation_trigger_seed_node": "ticket",
+  "event_origin": "builtin",
+  "mapping": {
+    "mode": "guided",
+    "jsonata": "string"
+  },
+  "lineage": {
+    "base_event_name": "string",
+    "base_event_version": "string"
+  },
+  "success_criteria": [
+    {
+      "entity_schema": "contract",
+      "attribute": "installment_amount"
+    },
+    {
+      "entity_schema": "billing_account",
+      "attribute": "due_date"
+    }
+  ]
 }
 ```
 
@@ -316,7 +904,7 @@ epilot event-catalog patchEvent -p event_name=example --jsonata '$'
 
 ### `getEventJSONSchema`
 
-Retrieve the JSON Schema of a specific business event
+Retrieve the JSON Schema of a specific business event. Pass an optional
 
 `GET /v1/events/{event_name}/json_schema`
 
@@ -325,6 +913,7 @@ Retrieve the JSON Schema of a specific business event
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `event_name` | path | string | Yes | Unique human readable name of the event |
+| `Epilot-Event-Version` | header | string | No | Event payload version (`MAJOR.MINOR`). Defaults to the event's latest version. |
 
 **Sample Call**
 
@@ -371,7 +960,7 @@ epilot event-catalog getEventJSONSchema -p event_name=example --jsonata '$'
     },
     "_event_version": {
       "type": "string",
-      "description": "Event version (semver)"
+      "description": "Event payload version (MAJOR.MINOR)"
     },
     "_event_source": {
       "type": "string",
@@ -457,7 +1046,7 @@ epilot event-catalog getEventJSONSchema -p event_name=example --jsonata '$'
 
 ### `getEventExample`
 
-Generate a sample event payload based on the event's JSON Schema
+Generate a sample event payload based on the event's JSON Schema. Pass an
 
 `GET /v1/events/{event_name}/example`
 
@@ -466,6 +1055,7 @@ Generate a sample event payload based on the event's JSON Schema
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
 | `event_name` | path | string | Yes | Unique human readable name of the event |
+| `Epilot-Event-Version` | header | string | No | Event payload version (`MAJOR.MINOR`). Defaults to the event's latest version. |
 
 **Sample Call**
 
@@ -491,6 +1081,67 @@ epilot event-catalog getEventExample -p event_name=example --jsonata '$'
 
 ```json
 {}
+```
+
+</details>
+
+---
+
+### `listEventVersions`
+
+List every known version of an event, along with the `latest`
+
+`GET /v1/events/{event_name}/versions`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `event_name` | path | string | Yes | Unique human readable name of the event |
+
+**Sample Call**
+
+```bash
+epilot event-catalog listEventVersions \
+  -p event_name=example
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot event-catalog listEventVersions example
+```
+
+With JSONata filter:
+
+```bash
+epilot event-catalog listEventVersions -p event_name=example --jsonata 'event_name'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "event_name": "MeterReadingAdded",
+  "latest": "1.0",
+  "versions": [
+    {
+      "version": "1.0",
+      "released_at": "2025-11-15",
+      "change_summary": "string",
+      "change_notes": "string",
+      "changes": [
+        {
+          "field": "reading",
+          "op": "added",
+          "type_old": "string",
+          "type_new": "string"
+        }
+      ]
+    }
+  ]
+}
 ```
 
 </details>
@@ -566,7 +1217,7 @@ epilot event-catalog searchEventHistory -p event_name=example --jsonata 'results
       "_event_time": "2024-01-01T12:00:00Z",
       "_event_id": "01FZ4Z5FZ5FZ5FZ5FZ5FZ5FZ5F",
       "_event_name": "MeterReading",
-      "_event_version": "1.0.0",
+      "_event_version": "1.0",
       "_event_source": "api",
       "_trigger_source_type": "api",
       "_trigger_source": "user_123456",
@@ -589,6 +1240,160 @@ epilot event-catalog searchEventHistory -p event_name=example --jsonata 'results
     "event_time": "2025-10-31T12:34:56Z",
     "event_id": "evt_1234567890abcdef"
   }
+}
+```
+
+</details>
+
+---
+
+### `searchEventHistoryV2`
+
+Paginated history of events with projected/lightweight payload (v2).
+
+`POST /v2/events/{event_name}:history`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `event_name` | path | string | Yes | Unique human readable name of the event |
+
+**Request Body**
+
+**Sample Call**
+
+```bash
+epilot event-catalog searchEventHistoryV2 \
+  -p event_name=example
+```
+
+With request body:
+
+```bash
+epilot event-catalog searchEventHistoryV2 \
+  -p event_name=example \
+  -d '{
+  "limit": 10,
+  "cursor": {
+    "event_time": "2025-10-31 12:34:56",
+    "event_id": "evt_1234567890abcdef"
+  },
+  "timestamp": {
+    "from": "2025-10-01T00:00:00Z",
+    "to": "2025-10-31T23:59:59Z"
+  },
+  "event_id": "evt_1234567890abcdef",
+  "fields": ["_id", "_title", "first_name", "account", "!account.*._files", "**._product"]
+}'
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot event-catalog searchEventHistoryV2 example
+```
+
+Using stdin pipe:
+
+```bash
+cat body.json | epilot event-catalog searchEventHistoryV2 -p event_name=example
+```
+
+With JSONata filter:
+
+```bash
+epilot event-catalog searchEventHistoryV2 -p event_name=example --jsonata 'results[0]'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "_org_id": "string",
+      "_event_time": "1970-01-01T00:00:00.000Z",
+      "_event_id": "string",
+      "_event_name": "string",
+      "_event_version": "1.0",
+      "_event_source": "string",
+      "_trigger_source_type": "api",
+      "_trigger_source": "string",
+      "_ack_id": "string"
+    }
+  ],
+  "next_cursor": {
+    "event_time": "2025-10-31T12:34:56Z",
+    "event_id": "evt_1234567890abcdef"
+  }
+}
+```
+
+</details>
+
+---
+
+### `getHistoricalEvent`
+
+Fetch a single historical event by id with full hydration
+
+`GET /v2/events/{event_name}/history/{event_id}`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `event_name` | path | string | Yes | Unique human readable name of the event |
+| `event_id` | path | string | Yes | Unique event identifier (ULID) |
+
+**Sample Call**
+
+```bash
+epilot event-catalog getHistoricalEvent \
+  -p event_name=example \
+  -p event_id=123e4567-e89b-12d3-a456-426614174000
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot event-catalog getHistoricalEvent example 123e4567-e89b-12d3-a456-426614174000
+```
+
+With JSONata filter:
+
+```bash
+epilot event-catalog getHistoricalEvent -p event_name=example -p event_id=123e4567-e89b-12d3-a456-426614174000 --jsonata '_org_id'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "_org_id": "org_123456",
+  "_event_time": "2024-01-01T12:00:00Z",
+  "_event_id": "01FZ4Z5FZ5FZ5FZ5FZ5FZ5FZ5F",
+  "_event_name": "MeterReading",
+  "_event_version": "1.0",
+  "_event_source": "api",
+  "_trigger_source_type": "api",
+  "_trigger_source": "user_123456",
+  "reading_value": 123.45,
+  "reading_date": "2024-01-01T11:59:00Z",
+  "read_by": "John Doe",
+  "reason": "regular",
+  "direction": "feed-out",
+  "source": "portal",
+  "meter_id": "550e8400-e29b-41d4-a716-446655440000",
+  "counter_id": "660e8400-e29b-41d4-a716-446655440000",
+  "meter_number": "MT123456789",
+  "obis_number": "1-0:1.8.0",
+  "unit": "kWh",
+  "customer_id": "770e8400-e29b-41d4-a716-446655440000",
+  "contract_id": "880e8400-e29b-41d4-a716-446655440000"
 }
 ```
 
@@ -625,12 +1430,10 @@ epilot event-catalog triggerEvent \
   -d '{
   "seed": {
     "entity_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "node_id": "string"
+    "node_id": "ticket"
   },
-  "fields": {},
-  "skip_hydration": ["string"],
-  "_trigger_source_type": "string",
-  "_trigger_source": "string"
+  "_trigger_source_type": "automation",
+  "_trigger_source": "execution-id/action-id"
 }'
 ```
 

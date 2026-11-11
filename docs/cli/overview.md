@@ -309,12 +309,15 @@ Per-API command reference with all operations, parameters, and sample calls. See
 | Access Token API | `epilot access-token` | [reference](commands/access-token.md) |
 | Address Suggestions API | `epilot address-suggestions` | [reference](commands/address-suggestions.md) |
 | Address API | `epilot address` | [reference](commands/address.md) |
-| AI Agents API - OpenAPI 3.0 | `epilot ai-agents` | [reference](commands/ai-agents.md) |
+| AI Agents API | `epilot ai-agents` | [reference](commands/ai-agents.md) |
 | App API | `epilot app` | [reference](commands/app.md) |
 | Audit Log | `epilot audit-logs` | [reference](commands/audit-logs.md) |
 | Automation API | `epilot automation` | [reference](commands/automation.md) |
 | Billing API | `epilot billing` | [reference](commands/billing.md) |
 | Blueprint Manifest API | `epilot blueprint-manifest` | [reference](commands/blueprint-manifest.md) |
+| Calendar API | `epilot calendar` | [reference](commands/calendar.md) |
+| epilot Chat API | `epilot chat` | [reference](commands/chat.md) |
+| Configuration Hub API | `epilot configuration-hub` | [reference](commands/configuration-hub.md) |
 | Consent API | `epilot consent` | [reference](commands/consent.md) |
 | Portal API | `epilot customer-portal` | [reference](commands/customer-portal.md) |
 | Dashboard API | `epilot dashboard` | [reference](commands/dashboard.md) |
@@ -325,12 +328,14 @@ Per-API command reference with all operations, parameters, and sample calls. See
 | Messaging Settings API | `epilot email-settings` | [reference](commands/email-settings.md) |
 | Email template API | `epilot email-template` | [reference](commands/email-template.md) |
 | Entity Mapping API | `epilot entity-mapping` | [reference](commands/entity-mapping.md) |
+| Entity UI API | `epilot entity-ui` | [reference](commands/entity-ui.md) |
 | Entity API | `epilot entity` | [reference](commands/entity.md) |
 | Environments API | `epilot environments` | [reference](commands/environments.md) |
-| ERP Integration API | `epilot erp-integration` | [reference](commands/erp-integration.md) |
 | Event Catalog API | `epilot event-catalog` | [reference](commands/event-catalog.md) |
 | File API | `epilot file` | [reference](commands/file.md) |
 | Iban API | `epilot iban` | [reference](commands/iban.md) |
+| Identity API | `epilot identity` | [reference](commands/identity.md) |
+| Integration Toolkit API | `epilot integration-toolkit` | [reference](commands/integration-toolkit.md) |
 | Journey API | `epilot journey` | [reference](commands/journey.md) |
 | Kanban API | `epilot kanban` | [reference](commands/kanban.md) |
 | Message API | `epilot message` | [reference](commands/message.md) |
@@ -338,13 +343,17 @@ Per-API command reference with all operations, parameters, and sample calls. See
 | Notes API | `epilot notes` | [reference](commands/notes.md) |
 | Notification API | `epilot notification` | [reference](commands/notification.md) |
 | Organization API | `epilot organization` | [reference](commands/organization.md) |
-| Partner API | `epilot partner-directory` | [reference](commands/partner-directory.md) |
+| Partner Directory API | `epilot partner-directory` | [reference](commands/partner-directory.md) |
 | Permissions API | `epilot permissions` | [reference](commands/permissions.md) |
 | Pricing Tier API | `epilot pricing-tier` | [reference](commands/pricing-tier.md) |
 | Pricing API | `epilot pricing` | [reference](commands/pricing.md) |
 | Purpose API | `epilot purpose` | [reference](commands/purpose.md) |
+| Query API | `epilot query` | [reference](commands/query.md) |
 | Sandbox API | `epilot sandbox` | [reference](commands/sandbox.md) |
+| Sharing API | `epilot sharing` | [reference](commands/sharing.md) |
+| Snapshot API | `epilot snapshot` | [reference](commands/snapshot.md) |
 | Submission API | `epilot submission` | [reference](commands/submission.md) |
+| Target API | `epilot target` | [reference](commands/target.md) |
 | Targeting API | `epilot targeting` | [reference](commands/targeting.md) |
 | Template Variables API | `epilot template-variables` | [reference](commands/template-variables.md) |
 | User API | `epilot user` | [reference](commands/user.md) |

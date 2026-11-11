@@ -8,7 +8,9 @@ description: "epilot CLI commands for the Workflows Definitions: quick start, co
 - **Base URL:** `https://workflows-definition.sls.epilot.io`
 - **API Docs:** [https://docs.epilot.io/api/workflow-definition](https://docs.epilot.io/api/workflow-definition)
 
-Service for Workflow Definitions for different processes inside of an Organization
+The Workflows Definitions API enables you to create, manage, and configure reusable workflow templates
+within your organization. Workflow definitions serve as blueprints that define the structure and behavior
+of business processes, which can then be instantiated as workflow executions.
 
 ## Quick Start
 
@@ -42,8 +44,8 @@ epilot workflow-definition getMaxAllowedLimit
 
 **Workflows**
 - [`getMaxAllowedLimit`](#getmaxallowedlimit) — Get limits and number of created executions for an Organization.
-- [`getDefinitions`](#getdefinitions) — Retrieve all Workflow Definitions from an Organization
-- [`createDefinition`](#createdefinition) — Create a Workflow Definition.
+- [`getDefinitions`](#getdefinitions) — Retrieve all V1 workflow definitions belonging to the authenticated organization.
+- [`createDefinition`](#createdefinition) — Create a new V1 workflow definition. The definition consists of sections and steps
 - [`getDefinition`](#getdefinition) — Get specific Definition by id from the Organization.
 - [`updateDefinition`](#updatedefinition) — Update Workflow Definition.
 - [`deleteDefinition`](#deletedefinition) — Delete Workflow Definition.
@@ -52,14 +54,12 @@ epilot workflow-definition getMaxAllowedLimit
 
 **Flows V2**
 - [`listFlowTemplates`](#listflowtemplates) — List all Flow Templates for a customer. Optionally, you can filter flow templates by trigger values.
-- [`createFlowTemplate`](#createflowtemplate) — Create a new Flow Template.
+- [`createFlowTemplate`](#createflowtemplate) — Create a new Flow Template (V2 workflow definition).
 - [`searchFlowTemplates`](#searchflowtemplates) — Search for flow templates by name, trigger type, enabled status, and more.
-- [`getFlowTemplate`](#getflowtemplate) — Get specific FLow template for a customer
+- [`getFlowTemplate`](#getflowtemplate) — Retrieve a specific flow template by its unique identifier.
 - [`updateFlowTemplate`](#updateflowtemplate) — Update Flow Template.
 - [`deleteFlowTemplate`](#deleteflowtemplate) — Delete Flow Template.
-- [`duplicateFlowTemplate`](#duplicateflowtemplate) — Duplicate a Flow Template from an existing workflow.
-- [`exportFlowTemplate`](#exportflowtemplate) — Export a Flow Template with all referenced automations resolved and bundled alongside.
-- [`importFlowTemplate`](#importflowtemplate) — Import a Flow Template from an export payload. Creates all automations and the flow in the caller's organization.
+- [`duplicateFlowTemplate`](#duplicateflowtemplate) — Create a copy of an existing flow template. The duplicated template will have a new
 
 **Closing Reason**
 - [`getAllClosingReasons`](#getallclosingreasons) — Get all Closing Reasons defined in the organization by default all Active.
@@ -103,7 +103,7 @@ epilot workflow-definition getMaxAllowedLimit --jsonata 'currentNoOfWorkflows'
 
 ### `getDefinitions`
 
-Retrieve all Workflow Definitions from an Organization
+Retrieve all V1 workflow definitions belonging to the authenticated organization.
 
 `GET /v1/workflows/definitions`
 
@@ -153,7 +153,8 @@ epilot workflow-definition getDefinitions --jsonata '$'
       {}
     ],
     "taxonomies": ["string"],
-    "singleClosingReasonSelection": true
+    "singleClosingReasonSelection": true,
+    "_manifest": ["string"]
   }
 ]
 ```
@@ -164,7 +165,7 @@ epilot workflow-definition getDefinitions --jsonata '$'
 
 ### `createDefinition`
 
-Create a Workflow Definition.
+Create a new V1 workflow definition. The definition consists of sections and steps
 
 `POST /v1/workflows/definitions`
 
@@ -226,6 +227,7 @@ epilot workflow-definition createDefinition \
       "type": "STEP",
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"]
     }
   ],
@@ -241,7 +243,8 @@ epilot workflow-definition createDefinition \
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"]
 }'
 ```
 
@@ -307,6 +310,7 @@ epilot workflow-definition createDefinition --jsonata 'id'
       "type": "STEP",
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"]
     }
   ],
@@ -322,7 +326,8 @@ epilot workflow-definition createDefinition --jsonata 'id'
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"]
 }
 ```
 
@@ -386,7 +391,10 @@ epilot workflow-definition listFlowTemplates --jsonata 'results[0]'
       "closing_reasons": [],
       "entity_sync": [],
       "taxonomies": ["string"],
-      "singleClosingReasonSelection": true
+      "singleClosingReasonSelection": true,
+      "_manifest": ["string"],
+      "linear": true,
+      "limit_warnings": []
     }
   ]
 }
@@ -398,9 +406,15 @@ epilot workflow-definition listFlowTemplates --jsonata 'results[0]'
 
 ### `createFlowTemplate`
 
-Create a new Flow Template.
+Create a new Flow Template (V2 workflow definition).
 
 `POST /v2/flows/templates`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `enforce_limits` | query | boolean | No | When true, size/count limit violations (max incoming edges per task, max branches, max entity-sync rules, ...) are enforced as 400 errors. Used by the flow-builder UI for interactive authoring. On upd |
 
 **Request Body** (required)
 
@@ -447,6 +461,7 @@ epilot workflow-definition createFlowTemplate \
       "id": "string",
       "type": "automation",
       "automation_id": "string",
+      "input_entity": "thread",
       "trigger_config": []
     }
   ],
@@ -472,6 +487,7 @@ epilot workflow-definition createFlowTemplate \
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -487,6 +503,7 @@ epilot workflow-definition createFlowTemplate \
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -522,7 +539,22 @@ epilot workflow-definition createFlowTemplate \
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"],
+  "linear": true,
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ]
 }'
 ```
 
@@ -575,6 +607,7 @@ epilot workflow-definition createFlowTemplate --jsonata '$'
       "id": "string",
       "type": "automation",
       "automation_id": "string",
+      "input_entity": "thread",
       "trigger_config": []
     }
   ],
@@ -600,6 +633,7 @@ epilot workflow-definition createFlowTemplate --jsonata '$'
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -615,6 +649,7 @@ epilot workflow-definition createFlowTemplate --jsonata '$'
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -650,7 +685,22 @@ epilot workflow-definition createFlowTemplate --jsonata '$'
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"],
+  "linear": true,
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ]
 }
 ```
 
@@ -728,7 +778,10 @@ epilot workflow-definition searchFlowTemplates --jsonata 'results[0]'
       "closing_reasons": [],
       "entity_sync": [],
       "taxonomies": ["string"],
-      "singleClosingReasonSelection": true
+      "singleClosingReasonSelection": true,
+      "_manifest": ["string"],
+      "linear": true,
+      "limit_warnings": []
     }
   ]
 }
@@ -740,7 +793,7 @@ epilot workflow-definition searchFlowTemplates --jsonata 'results[0]'
 
 ### `getFlowTemplate`
 
-Get specific FLow template for a customer
+Retrieve a specific flow template by its unique identifier.
 
 `GET /v2/flows/templates/{flowId}`
 
@@ -748,7 +801,7 @@ Get specific FLow template for a customer
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `flowId` | path | string | Yes |  |
+| `flowId` | path | string | Yes | Unique identifier of the flow template to retrieve. |
 
 **Sample Call**
 
@@ -806,6 +859,7 @@ epilot workflow-definition getFlowTemplate -p flowId=7hj28akg --jsonata '$'
       "id": "string",
       "type": "automation",
       "automation_id": "string",
+      "input_entity": "thread",
       "trigger_config": []
     }
   ],
@@ -831,6 +885,7 @@ epilot workflow-definition getFlowTemplate -p flowId=7hj28akg --jsonata '$'
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -846,6 +901,7 @@ epilot workflow-definition getFlowTemplate -p flowId=7hj28akg --jsonata '$'
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -881,7 +937,22 @@ epilot workflow-definition getFlowTemplate -p flowId=7hj28akg --jsonata '$'
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"],
+  "linear": true,
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ]
 }
 ```
 
@@ -899,7 +970,8 @@ Update Flow Template.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `flowId` | path | string | Yes |  |
+| `flowId` | path | string | Yes | Unique identifier of the flow template to update. |
+| `enforce_limits` | query | boolean | No | When true, size/count limit violations (max incoming edges per task, max branches, max entity-sync rules, ...) are enforced as 400 errors. Used by the flow-builder UI for interactive authoring. On upd |
 
 **Request Body** (required)
 
@@ -948,6 +1020,7 @@ epilot workflow-definition updateFlowTemplate \
       "id": "string",
       "type": "automation",
       "automation_id": "string",
+      "input_entity": "thread",
       "trigger_config": []
     }
   ],
@@ -973,6 +1046,7 @@ epilot workflow-definition updateFlowTemplate \
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -988,6 +1062,7 @@ epilot workflow-definition updateFlowTemplate \
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -1023,7 +1098,22 @@ epilot workflow-definition updateFlowTemplate \
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"],
+  "linear": true,
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ]
 }'
 ```
 
@@ -1082,6 +1172,7 @@ epilot workflow-definition updateFlowTemplate -p flowId=7hj28akg --jsonata '$'
       "id": "string",
       "type": "automation",
       "automation_id": "string",
+      "input_entity": "thread",
       "trigger_config": []
     }
   ],
@@ -1107,6 +1198,7 @@ epilot workflow-definition updateFlowTemplate -p flowId=7hj28akg --jsonata '$'
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -1122,6 +1214,7 @@ epilot workflow-definition updateFlowTemplate -p flowId=7hj28akg --jsonata '$'
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -1157,7 +1250,22 @@ epilot workflow-definition updateFlowTemplate -p flowId=7hj28akg --jsonata '$'
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"],
+  "linear": true,
+  "limit_warnings": [
+    {
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
+    }
+  ]
 }
 ```
 
@@ -1175,7 +1283,7 @@ Delete Flow Template.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `flowId` | path | string | Yes | Id of the flow template to de deleted. |
+| `flowId` | path | string | Yes | Unique identifier of the flow template to be deleted. |
 
 **Sample Call**
 
@@ -1200,7 +1308,7 @@ epilot workflow-definition deleteFlowTemplate -p flowId=7hj28akg --jsonata '$'
 
 ### `duplicateFlowTemplate`
 
-Duplicate a Flow Template from an existing workflow.
+Create a copy of an existing flow template. The duplicated template will have a new
 
 `POST /v2/flows/templates/{flowId}/duplicate`
 
@@ -1208,7 +1316,7 @@ Duplicate a Flow Template from an existing workflow.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `flowId` | path | string | Yes |  |
+| `flowId` | path | string | Yes | Unique identifier of the flow template to duplicate. |
 
 **Sample Call**
 
@@ -1266,6 +1374,7 @@ epilot workflow-definition duplicateFlowTemplate -p flowId=7hj28akg --jsonata '$
       "id": "string",
       "type": "automation",
       "automation_id": "string",
+      "input_entity": "thread",
       "trigger_config": []
     }
   ],
@@ -1291,6 +1400,7 @@ epilot workflow-definition duplicateFlowTemplate -p flowId=7hj28akg --jsonata '$
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL"
@@ -1306,157 +1416,7 @@ epilot workflow-definition duplicateFlowTemplate -p flowId=7hj28akg --jsonata '$
       "assigned_to": ["string"],
       "ecp": {},
       "installer": {},
-      "taxonomies": ["string"],
-      "phase_id": "string",
-      "task_type": "MANUAL",
-      "automation_config": {},
-      "trigger_mode": "manual",
-      "schedule": {},
-      "created_automatically": false
-    }
-  ],
-  "edges": [
-    {
-      "id": "string",
-      "from_id": "string",
-      "to_id": "string",
-      "condition_id": "string",
-      "none_met": true
-    }
-  ],
-  "closing_reasons": [
-    {
-      "id": "string",
-      "title": "string",
-      "status": "ACTIVE",
-      "lastUpdateTime": "string",
-      "creationTime": "string"
-    }
-  ],
-  "entity_sync": [
-    {
-      "trigger": {},
-      "target": {},
-      "value": {}
-    }
-  ],
-  "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
-}
-```
-
-</details>
-
----
-
-### `exportFlowTemplate`
-
-Export a Flow Template with all referenced automations resolved and bundled alongside.
-
-`GET /v2/flows/templates/{flowId}/export`
-
-**Parameters**
-
-| Name | In | Type | Required | Description |
-| ---- | -- | ---- | -------- | ----------- |
-| `flowId` | path | string | Yes |  |
-
-**Sample Call**
-
-```bash
-epilot workflow-definition exportFlowTemplate \
-  -p flowId=7hj28akg
-```
-
-Using positional args for path parameters:
-
-```bash
-epilot workflow-definition exportFlowTemplate 7hj28akg
-```
-
-With JSONata filter:
-
-```bash
-epilot workflow-definition exportFlowTemplate -p flowId=7hj28akg --jsonata '$'
-```
-
-<details>
-<summary>Sample Response</summary>
-
-```json
-{
-  "id": "string",
-  "org_id": "string",
-  "name": "string",
-  "description": "string",
-  "trigger": {
-    "type": "automation",
-    "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
-  },
-  "enabled": true,
-  "version": 2,
-  "created_at": "2021-04-27T12:01:13.000Z",
-  "updated_at": "2021-04-27T12:01:13.000Z",
-  "due_date": "2021-04-27T12:00:00.000Z",
-  "due_date_config": {
-    "duration": 0,
-    "unit": "minutes",
-    "type": "WORKFLOW_STARTED",
-    "task_id": "string",
-    "phase_id": "string"
-  },
-  "assigned_to": ["string"],
-  "available_in_ecp": true,
-  "additional_triggers": [
-    {
-      "id": "string",
-      "type": "manual",
-      "entity_schema": "string"
-    },
-    {
-      "id": "string",
-      "type": "automation",
-      "automation_id": "string",
-      "trigger_config": []
-    }
-  ],
-  "phases": [
-    {
-      "id": "string",
-      "name": "string",
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "assigned_to": ["string"],
-      "taxonomies": ["string"]
-    }
-  ],
-  "tasks": [
-    {
-      "id": "string",
-      "name": "string",
-      "description": {},
-      "journey": {},
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "requirements": [],
-      "assigned_to": ["string"],
-      "ecp": {},
-      "installer": {},
-      "taxonomies": ["string"],
-      "phase_id": "string",
-      "task_type": "MANUAL"
-    },
-    {
-      "id": "string",
-      "name": "string",
-      "description": {},
-      "journey": {},
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "requirements": [],
-      "assigned_to": ["string"],
-      "ecp": {},
-      "installer": {},
+      "partner": {},
       "taxonomies": ["string"],
       "phase_id": "string",
       "task_type": "MANUAL",
@@ -1493,216 +1453,21 @@ epilot workflow-definition exportFlowTemplate -p flowId=7hj28akg --jsonata '$'
   ],
   "taxonomies": ["string"],
   "singleClosingReasonSelection": true,
-  "_resolved_automations": {}
-}
-```
-
-</details>
-
----
-
-### `importFlowTemplate`
-
-Import a Flow Template from an export payload. Creates all automations and the flow in the caller's organization.
-
-`POST /v2/flows/templates/import`
-
-**Request Body** (required)
-
-**Sample Call**
-
-```bash
-epilot workflow-definition importFlowTemplate
-```
-
-With request body:
-
-```bash
-epilot workflow-definition importFlowTemplate \
-  -d '{
-  "id": "string",
-  "org_id": "string",
-  "name": "string",
-  "description": "string",
-  "trigger": {
-    "type": "automation",
-    "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
-  },
-  "enabled": true,
-  "version": 2,
-  "created_at": "2021-04-27T12:01:13.000Z",
-  "updated_at": "2021-04-27T12:01:13.000Z",
-  "due_date": "2021-04-27T12:00:00.000Z",
-  "due_date_config": {
-    "duration": 0,
-    "unit": "minutes",
-    "type": "WORKFLOW_STARTED",
-    "task_id": "string",
-    "phase_id": "string"
-  },
-  "assigned_to": ["string"],
-  "available_in_ecp": true,
-  "additional_triggers": [
+  "_manifest": ["string"],
+  "linear": true,
+  "limit_warnings": [
     {
-      "id": "string",
-      "type": "manual",
-      "entity_schema": "string"
-    },
-    {
-      "id": "string",
-      "type": "automation",
-      "automation_id": "string",
-      "trigger_config": []
+      "i18nKey": "string",
+      "message": "string",
+      "max": 0,
+      "current": 0,
+      "node_id": "string",
+      "task_name": "string",
+      "branch_name": "string",
+      "param_name": "string",
+      "path": []
     }
-  ],
-  "phases": [
-    {
-      "id": "string",
-      "name": "string",
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "assigned_to": ["string"],
-      "taxonomies": ["string"]
-    }
-  ],
-  "tasks": [
-    {
-      "id": "string",
-      "name": "string",
-      "description": {},
-      "journey": {},
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "requirements": [],
-      "assigned_to": ["string"],
-      "ecp": {},
-      "installer": {},
-      "taxonomies": ["string"],
-      "phase_id": "string",
-      "task_type": "MANUAL"
-    },
-    {
-      "id": "string",
-      "name": "string",
-      "description": {},
-      "journey": {},
-      "due_date": "2021-04-27T12:00:00.000Z",
-      "due_date_config": {},
-      "requirements": [],
-      "assigned_to": ["string"],
-      "ecp": {},
-      "installer": {},
-      "taxonomies": ["string"],
-      "phase_id": "string",
-      "task_type": "MANUAL",
-      "automation_config": {},
-      "trigger_mode": "manual",
-      "schedule": {},
-      "created_automatically": false
-    }
-  ],
-  "edges": [
-    {
-      "id": "string",
-      "from_id": "string",
-      "to_id": "string",
-      "condition_id": "string",
-      "none_met": true
-    }
-  ],
-  "closing_reasons": [
-    {
-      "id": "string",
-      "title": "string",
-      "status": "ACTIVE",
-      "lastUpdateTime": "string",
-      "creationTime": "string"
-    }
-  ],
-  "entity_sync": [
-    {
-      "trigger": {},
-      "target": {},
-      "value": {}
-    }
-  ],
-  "taxonomies": ["string"],
-  "singleClosingReasonSelection": true,
-  "_resolved_automations": {}
-}'
-```
-
-Using stdin pipe:
-
-```bash
-cat body.json | epilot workflow-definition importFlowTemplate
-```
-
-With JSONata filter:
-
-```bash
-epilot workflow-definition importFlowTemplate --jsonata 'flow'
-```
-
-<details>
-<summary>Sample Response</summary>
-
-```json
-{
-  "flow": {
-    "id": "string",
-    "org_id": "string",
-    "name": "string",
-    "description": "string",
-    "trigger": {
-      "type": "automation",
-      "automation_id": "g92j2-sg9ug92hjt1gh-9s9gajgs-a979gg"
-    },
-    "enabled": true,
-    "version": 2,
-    "created_at": "2021-04-27T12:01:13.000Z",
-    "updated_at": "2021-04-27T12:01:13.000Z",
-    "due_date": "2021-04-27T12:00:00.000Z",
-    "due_date_config": {
-      "duration": 0,
-      "unit": "minutes",
-      "type": "WORKFLOW_STARTED",
-      "task_id": "string",
-      "phase_id": "string"
-    },
-    "assigned_to": ["string"],
-    "available_in_ecp": true,
-    "additional_triggers": [
-      {},
-      {}
-    ],
-    "phases": [
-      {}
-    ],
-    "tasks": [
-      {},
-      {}
-    ],
-    "edges": [
-      {}
-    ],
-    "closing_reasons": [
-      {}
-    ],
-    "entity_sync": [
-      {}
-    ],
-    "taxonomies": ["string"],
-    "singleClosingReasonSelection": true
-  },
-  "_id_mappings": {
-    "flow_id": {
-      "old": "string",
-      "new": "string"
-    },
-    "task_ids": {},
-    "automation_ids": {}
-  }
+  ]
 }
 ```
 
@@ -1791,6 +1556,7 @@ epilot workflow-definition getDefinition -p definitionId=7hj28a --jsonata 'id'
       "type": "STEP",
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"]
     }
   ],
@@ -1806,7 +1572,8 @@ epilot workflow-definition getDefinition -p definitionId=7hj28a --jsonata 'id'
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"]
 }
 ```
 
@@ -1886,6 +1653,7 @@ epilot workflow-definition updateDefinition \
       "type": "STEP",
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"]
     }
   ],
@@ -1901,7 +1669,8 @@ epilot workflow-definition updateDefinition \
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"]
 }'
 ```
 
@@ -1973,6 +1742,7 @@ epilot workflow-definition updateDefinition -p definitionId=7hj28a --jsonata 'id
       "type": "STEP",
       "ecp": {},
       "installer": {},
+      "partner": {},
       "taxonomies": ["string"]
     }
   ],
@@ -1988,7 +1758,8 @@ epilot workflow-definition updateDefinition -p definitionId=7hj28a --jsonata 'id
     }
   ],
   "taxonomies": ["string"],
-  "singleClosingReasonSelection": true
+  "singleClosingReasonSelection": true,
+  "_manifest": ["string"]
 }
 ```
 
@@ -2006,7 +1777,7 @@ Delete Workflow Definition.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `definitionId` | path | string | Yes | Id of the definition to de deleted. |
+| `definitionId` | path | string | Yes | Unique identifier of the workflow definition to be deleted. |
 
 **Sample Call**
 
@@ -2039,7 +1810,7 @@ Get all Closing Reasons defined in the organization by default all Active.
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `includeInactive` | query | boolean | No | Filter Closing Reasons by status like active inactiv |
+| `includeInactive` | query | boolean | No | When set to true, includes inactive closing reasons in the response. By default, only active closing reasons are returned. |
 
 **Sample Call**
 

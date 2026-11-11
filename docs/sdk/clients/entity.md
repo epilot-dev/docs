@@ -31,9 +31,11 @@ const { data } = await entityClient.listSchemas(...)
 
 **Schemas**
 - [`listSchemas`](#listschemas)
+- [`listSchemasV2`](#listschemasv2)
 - [`getSchema`](#getschema)
 - [`putSchema`](#putschema)
 - [`deleteSchema`](#deleteschema)
+- [`getSchemaHead`](#getschemahead)
 - [`getJsonSchema`](#getjsonschema)
 - [`getSchemaExample`](#getschemaexample)
 - [`getSchemaVersions`](#getschemaversions)
@@ -74,12 +76,19 @@ const { data } = await entityClient.listSchemas(...)
 - [`deleteEntity`](#deleteentity)
 - [`autocomplete`](#autocomplete)
 - [`wipeAllEntities`](#wipeallentities)
+- [`listWipeJobs`](#listwipejobs)
+- [`applyChangeset`](#applychangeset)
+- [`dismissChangeset`](#dismisschangeset)
+- [`listChangesets`](#listchangesets)
 
 **Activity**
 - [`createActivity`](#createactivity)
 - [`getActivity`](#getactivity)
 - [`attachActivity`](#attachactivity)
 - [`getEntityActivityFeed`](#getentityactivityfeed)
+
+**AI**
+- [`getEntitySummary`](#getentitysummary)
 
 **Relations**
 - [`getRelations`](#getrelations)
@@ -94,6 +103,10 @@ const { data } = await entityClient.listSchemas(...)
 **Import-Export**
 - [`exportEntities`](#exportentities)
 - [`importEntities`](#importentities)
+- [`getLatestEntityImport`](#getlatestentityimport)
+- [`getEntityImportHistory`](#getentityimporthistory)
+- [`abortEntityImport`](#abortentityimport)
+- [`discardEntityImport`](#discardentityimport)
 
 **Saved Views**
 - [`listSavedViews`](#listsavedviews)
@@ -130,6 +143,10 @@ const { data } = await entityClient.listSchemas(...)
 - [`IsTemplate`](#istemplate)
 - [`SchemaId`](#schemaid)
 - [`EntitySchema`](#entityschema)
+- [`SchemaHead`](#schemahead)
+- [`WipeJob`](#wipejob)
+- [`WipeJobConflictError`](#wipejobconflicterror)
+- [`SchemaVersionConflictError`](#schemaversionconflicterror)
 - [`EntitySchemaItem`](#entityschemaitem)
 - [`GenerateEntityTableAIFiltersRequest`](#generateentitytableaifiltersrequest)
 - [`GenerateEntityTableAIFiltersResponse`](#generateentitytableaifiltersresponse)
@@ -158,6 +175,7 @@ const { data } = await entityClient.listSchemas(...)
 - [`UserRelationAttribute`](#userrelationattribute)
 - [`PartnerOrganisationAttribute`](#partnerorganisationattribute)
 - [`PortalAccessAttribute`](#portalaccessattribute)
+- [`PortalRoleAttribute`](#portalroleattribute)
 - [`DefaultAddressFields`](#defaultaddressfields)
 - [`AddressAttribute`](#addressattribute)
 - [`AddressRelationAttribute`](#addressrelationattribute)
@@ -170,6 +188,7 @@ const { data } = await entityClient.listSchemas(...)
 - [`TagsAttribute`](#tagsattribute)
 - [`MessageEmailAddressAttribute`](#messageemailaddressattribute)
 - [`NumberAttribute`](#numberattribute)
+- [`TableAttribute`](#tableattribute)
 - [`ConsentAttribute`](#consentattribute)
 - [`OrderedListAttribute`](#orderedlistattribute)
 - [`EmailAttribute`](#emailattribute)
@@ -181,7 +200,13 @@ const { data } = await entityClient.listSchemas(...)
 - [`SummaryAttribute`](#summaryattribute)
 - [`GroupHeadline`](#groupheadline)
 - [`GroupHeadlineWithCompositeID`](#groupheadlinewithcompositeid)
+- [`BaseConditionDefinition`](#baseconditiondefinition)
+- [`ScalarConditionDefinition`](#scalarconditiondefinition)
+- [`SelectConditionDefinition`](#selectconditiondefinition)
+- [`LocationConditionDefinition`](#locationconditiondefinition)
+- [`ConditionDefinition`](#conditiondefinition)
 - [`EntitySlug`](#entityslug)
+- [`AdjustInstallmentCapabilityConfig`](#adjustinstallmentcapabilityconfig)
 - [`EntityCapability`](#entitycapability)
 - [`EntityCapabilityWithCompositeID`](#entitycapabilitywithcompositeid)
 - [`EntityViewDisabled`](#entityviewdisabled)
@@ -219,10 +244,16 @@ const { data } = await entityClient.listSchemas(...)
 - [`EntitySearchOptions`](#entitysearchoptions)
 - [`FieldsParam`](#fieldsparam)
 - [`EntityImportParams`](#entityimportparams)
+- [`ImportRowOutcomeCounts`](#importrowoutcomecounts)
+- [`ImportJobSummary`](#importjobsummary)
+- [`ImportIssue`](#importissue)
+- [`ImportFailureCode`](#importfailurecode)
+- [`ImportProgress`](#importprogress)
 - [`GraphQueryRequest`](#graphqueryrequest)
 - [`GraphSeed`](#graphseed)
 - [`GraphDefinition`](#graphdefinition)
 - [`GraphNode`](#graphnode)
+- [`GraphNodeFilter`](#graphnodefilter)
 - [`GraphEdge`](#graphedge)
 - [`GraphQueryResponse`](#graphqueryresponse)
 - [`EntitySearchResults`](#entitysearchresults)
@@ -232,8 +263,10 @@ const { data } = await entityClient.listSchemas(...)
 - [`ActivityType`](#activitytype)
 - [`Activity`](#activity)
 - [`EntityOperation`](#entityoperation)
+- [`EntityOperationSourceContext`](#entityoperationsourcecontext)
 - [`BaseActivityItem`](#baseactivityitem)
 - [`ActivityItem`](#activityitem)
+- [`EntitySummary`](#entitysummary)
 - [`BlueprintEntityId`](#blueprintentityid)
 - [`ListSavedViewsResults`](#listsavedviewsresults)
 - [`SavedViewId`](#savedviewid)
@@ -256,6 +289,14 @@ const { data } = await entityClient.listSchemas(...)
 - [`ESClusterAssignment`](#esclusterassignment)
 - [`SettingFlag`](#settingflag)
 - [`ErrorObject`](#errorobject)
+- [`ChangesetCreator`](#changesetcreator)
+- [`Changeset`](#changeset)
+- [`ChangesetMap`](#changesetmap)
+- [`MeterReadingChangesetEntry`](#meterreadingchangesetentry)
+- [`EditMode`](#editmode)
+- [`EditModeConfig`](#editmodeconfig)
+- [`FuzzyConfig`](#fuzzyconfig)
+- [`MatchStrategy`](#matchstrategy)
 
 ### `listSchemas`
 
@@ -266,7 +307,9 @@ Get the latest versions of all schemas
 ```ts
 const { data } = await client.listSchemas({
   unpublished: true,
+  latest: true,
   exclude: ['...'],
+  include: ['...'],
 })
 ```
 
@@ -282,6 +325,9 @@ const { data } = await client.listSchemas({
       "updated_at": "string",
       "comment": "string",
       "source": {},
+      "frozen": true,
+      "latest": true,
+      "_summary": true,
       "slug": "contact",
       "version": 1,
       "blueprint": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -294,6 +340,7 @@ const { data } = await client.listSchemas({
       "category": "customer_relations",
       "published": false,
       "draft": false,
+      "require_change_comment": false,
       "icon": "person",
       "title_template": "{{first_name}} {{last_name}}",
       "ui_config": {},
@@ -303,8 +350,78 @@ const { data } = await client.listSchemas({
       "dialog_config": {},
       "attributes": [],
       "_purpose": ["string"],
+      "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "explicit_search_mappings": {},
-      "group_headlines": []
+      "group_headlines": [],
+      "conditions": []
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `listSchemasV2`
+
+Get the latest versions of all schemas.
+Returns summary schemas by default (only summary attributes, no capabilities).
+Use ?full=true for complete schemas.
+
+`GET /v2/entity/schemas`
+
+```ts
+const { data } = await client.listSchemasV2({
+  full: true,
+  unpublished: true,
+  latest: true,
+  exclude: ['...'],
+  include: ['...'],
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "created_at": "string",
+      "updated_at": "string",
+      "comment": "string",
+      "source": {},
+      "frozen": true,
+      "latest": true,
+      "_summary": true,
+      "slug": "contact",
+      "version": 1,
+      "blueprint": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "feature_flag": "FF_MY_FEATURE_FLAG",
+      "enable_setting": ["360_features"],
+      "name": "Contact",
+      "plural": "Contacts",
+      "description": "Example description",
+      "docs_url": "https://docs.epilot.io/docs/pricing/entities",
+      "category": "customer_relations",
+      "published": false,
+      "draft": false,
+      "require_change_comment": false,
+      "icon": "person",
+      "title_template": "{{first_name}} {{last_name}}",
+      "ui_config": {},
+      "capabilities": [],
+      "group_settings": [],
+      "layout_settings": {},
+      "dialog_config": {},
+      "attributes": [],
+      "_purpose": ["string"],
+      "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
+      "explicit_search_mappings": {},
+      "group_headlines": [],
+      "conditions": []
     }
   ]
 }
@@ -316,7 +433,8 @@ const { data } = await client.listSchemas({
 
 ### `getSchema`
 
-By default gets the latest version of the Schema and to get the specific version of schema pass the id.
+Gets the latest version of the Schema.
+Pass ?id= to get a specific version by ID.
 
 `GET /v1/entity/schemas/{slug}`
 
@@ -324,6 +442,7 @@ By default gets the latest version of the Schema and to get the specific version
 const { data } = await client.getSchema({
   slug: 'example',
   id: '123e4567-e89b-12d3-a456-426614174000',
+  latest: true,
 })
 ```
 
@@ -340,6 +459,9 @@ const { data } = await client.getSchema({
     "id": "string",
     "type": "string"
   },
+  "frozen": true,
+  "latest": true,
+  "_summary": true,
   "slug": "contact",
   "version": 1,
   "blueprint": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -352,6 +474,7 @@ const { data } = await client.getSchema({
   "category": "customer_relations",
   "published": false,
   "draft": false,
+  "require_change_comment": false,
   "icon": "person",
   "title_template": "{{first_name}} {{last_name}}",
   "ui_config": {
@@ -383,7 +506,24 @@ const { data } = await client.getSchema({
     },
     "sharing": {
       "show_sharing_button": true
-    }
+    },
+    "grid_layout": {
+      "id": "string",
+      "columns": 0,
+      "cells": [0]
+    },
+    "widget_order": ["string"],
+    "widget_visibility": {
+      "next_best_action": true,
+      "address_map": false
+    },
+    "widget_widths": {
+      "address_map": "full_width",
+      "recent_communications": "one_third_width"
+    },
+    "custom_tabs": [
+      {}
+    ]
   },
   "capabilities": [
     {
@@ -391,13 +531,17 @@ const { data } = await client.getSchema({
       "name": "customer_messaging",
       "title": "Messaging",
       "attributes": [],
+      "overridable_attribute": false,
+      "managed_fields": ["status"],
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "app_id": "123e4567-e89b-12d3-a456-426614174000",
+      "adjust_installment": {},
       "ui_config": {},
       "ui_hooks": [],
       "feature_flag": "FF_MY_FEATURE_FLAG",
-      "settings_flag": []
+      "settings_flag": [],
+      "schemas": []
     }
   ],
   "group_settings": [
@@ -434,6 +578,7 @@ const { data } = await client.getSchema({
     }
   ],
   "_purpose": ["string"],
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "explicit_search_mappings": {
     "image": {
       "type": "keyword",
@@ -454,6 +599,14 @@ const { data } = await client.getSchema({
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
     }
+  ],
+  "conditions": [
+    {
+      "id": "d5839b94-ba20-4225-a78e-76951d352bd6",
+      "name": "delivery_area",
+      "label": "Delivery Area",
+      "type": "string"
+    }
   ]
 }
 ```
@@ -464,7 +617,7 @@ const { data } = await client.getSchema({
 
 ### `putSchema`
 
-Create or update a schema with a new version
+Create or update a schema with a new version.
 
 `PUT /v1/entity/schemas/{slug}`
 
@@ -473,6 +626,8 @@ const { data } = await client.putSchema(
   {
     slug: 'example',
     draft: true,
+    base_version: 1,
+    base_updated_at: 'example',
   },
   {
     slug: 'contact',
@@ -487,6 +642,7 @@ const { data } = await client.putSchema(
     category: 'customer_relations',
     published: false,
     draft: false,
+    require_change_comment: false,
     icon: 'person',
     title_template: '{{first_name}} {{last_name}}',
     ui_config: {
@@ -518,7 +674,24 @@ const { data } = await client.putSchema(
       },
       sharing: {
         show_sharing_button: true
-      }
+      },
+      grid_layout: {
+        id: 'string',
+        columns: 0,
+        cells: [0]
+      },
+      widget_order: ['string'],
+      widget_visibility: {
+        next_best_action: true,
+        address_map: false
+      },
+      widget_widths: {
+        address_map: 'full_width',
+        recent_communications: 'one_third_width'
+      },
+      custom_tabs: [
+        { /* ... */ }
+      ]
     },
     capabilities: [
       {
@@ -526,13 +699,17 @@ const { data } = await client.putSchema(
         name: 'customer_messaging',
         title: 'Messaging',
         attributes: [ /* ... */ ],
+        overridable_attribute: false,
+        managed_fields: ['status'],
         _purpose: ['taxonomy-slug:classification-slug'],
         _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
         app_id: '123e4567-e89b-12d3-a456-426614174000',
+        adjust_installment: { /* ... */ },
         ui_config: { /* ... */ },
         ui_hooks: [ /* ... */ ],
         feature_flag: 'FF_MY_FEATURE_FLAG',
-        settings_flag: [ /* ... */ ]
+        settings_flag: [ /* ... */ ],
+        schemas: [ /* ... */ ]
       }
     ],
     group_settings: [
@@ -570,6 +747,7 @@ const { data } = await client.putSchema(
       /* ... 5 more */
     ],
     _purpose: ['string'],
+    _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
     explicit_search_mappings: {
       image: {
         type: 'keyword',
@@ -590,6 +768,14 @@ const { data } = await client.putSchema(
         _purpose: ['taxonomy-slug:classification-slug'],
         _manifest: ['123e4567-e89b-12d3-a456-426614174000']
       }
+    ],
+    conditions: [
+      {
+        id: 'd5839b94-ba20-4225-a78e-76951d352bd6',
+        name: 'delivery_area',
+        label: 'Delivery Area',
+        type: 'string'
+      }
     ]
   },
 )
@@ -608,6 +794,9 @@ const { data } = await client.putSchema(
     "id": "string",
     "type": "string"
   },
+  "frozen": true,
+  "latest": true,
+  "_summary": true,
   "slug": "contact",
   "version": 1,
   "blueprint": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -620,6 +809,7 @@ const { data } = await client.putSchema(
   "category": "customer_relations",
   "published": false,
   "draft": false,
+  "require_change_comment": false,
   "icon": "person",
   "title_template": "{{first_name}} {{last_name}}",
   "ui_config": {
@@ -651,7 +841,24 @@ const { data } = await client.putSchema(
     },
     "sharing": {
       "show_sharing_button": true
-    }
+    },
+    "grid_layout": {
+      "id": "string",
+      "columns": 0,
+      "cells": [0]
+    },
+    "widget_order": ["string"],
+    "widget_visibility": {
+      "next_best_action": true,
+      "address_map": false
+    },
+    "widget_widths": {
+      "address_map": "full_width",
+      "recent_communications": "one_third_width"
+    },
+    "custom_tabs": [
+      {}
+    ]
   },
   "capabilities": [
     {
@@ -659,13 +866,17 @@ const { data } = await client.putSchema(
       "name": "customer_messaging",
       "title": "Messaging",
       "attributes": [],
+      "overridable_attribute": false,
+      "managed_fields": ["status"],
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "app_id": "123e4567-e89b-12d3-a456-426614174000",
+      "adjust_installment": {},
       "ui_config": {},
       "ui_hooks": [],
       "feature_flag": "FF_MY_FEATURE_FLAG",
-      "settings_flag": []
+      "settings_flag": [],
+      "schemas": []
     }
   ],
   "group_settings": [
@@ -702,6 +913,7 @@ const { data } = await client.putSchema(
     }
   ],
   "_purpose": ["string"],
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "explicit_search_mappings": {
     "image": {
       "type": "keyword",
@@ -722,6 +934,14 @@ const { data } = await client.putSchema(
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
     }
+  ],
+  "conditions": [
+    {
+      "id": "d5839b94-ba20-4225-a78e-76951d352bd6",
+      "name": "delivery_area",
+      "label": "Delivery Area",
+      "type": "string"
+    }
   ]
 }
 ```
@@ -741,6 +961,36 @@ const { data } = await client.deleteSchema({
   slug: 'example',
 })
 ```
+
+---
+
+### `getSchemaHead`
+
+Lightweight lookup of the schema version saves currently land on top of. Meant for editors
+to detect that someone else saved while they were editing, without fetching the schema.
+
+`GET /v1/entity/schemas/{slug}/head`
+
+```ts
+const { data } = await client.getSchemaHead({
+  slug: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "slug": "contact",
+  "id": "string",
+  "version": 0,
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "created_by": "string"
+}
+```
+
+</details>
 
 ---
 
@@ -924,6 +1174,9 @@ const { data } = await client.getSchemaVersions({
       "updated_at": "string",
       "comment": "string",
       "source": {},
+      "frozen": true,
+      "latest": true,
+      "_summary": true,
       "slug": "contact",
       "version": 1,
       "blueprint": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -936,6 +1189,7 @@ const { data } = await client.getSchemaVersions({
       "category": "customer_relations",
       "published": false,
       "draft": false,
+      "require_change_comment": false,
       "icon": "person",
       "title_template": "{{first_name}} {{last_name}}",
       "ui_config": {},
@@ -945,8 +1199,10 @@ const { data } = await client.getSchemaVersions({
       "dialog_config": {},
       "attributes": [],
       "_purpose": ["string"],
+      "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "explicit_search_mappings": {},
-      "group_headlines": []
+      "group_headlines": [],
+      "conditions": []
     }
   ],
   "drafts": [
@@ -956,6 +1212,9 @@ const { data } = await client.getSchemaVersions({
       "updated_at": "string",
       "comment": "string",
       "source": {},
+      "frozen": true,
+      "latest": true,
+      "_summary": true,
       "slug": "contact",
       "version": 1,
       "blueprint": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -968,6 +1227,7 @@ const { data } = await client.getSchemaVersions({
       "category": "customer_relations",
       "published": false,
       "draft": false,
+      "require_change_comment": false,
       "icon": "person",
       "title_template": "{{first_name}} {{last_name}}",
       "ui_config": {},
@@ -977,12 +1237,15 @@ const { data } = await client.getSchemaVersions({
       "dialog_config": {},
       "attributes": [],
       "_purpose": ["string"],
+      "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "explicit_search_mappings": {},
-      "group_headlines": []
+      "group_headlines": [],
+      "conditions": []
     }
   ],
   "versions_more": true,
-  "drafts_more": true
+  "drafts_more": true,
+  "frozen_version": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 }
 ```
 
@@ -1013,13 +1276,17 @@ const { data } = await client.listAvailableCapabilities({
       "name": "customer_messaging",
       "title": "Messaging",
       "attributes": [],
+      "overridable_attribute": false,
+      "managed_fields": ["status"],
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "app_id": "123e4567-e89b-12d3-a456-426614174000",
+      "adjust_installment": {},
       "ui_config": {},
       "ui_hooks": [],
       "feature_flag": "FF_MY_FEATURE_FLAG",
-      "settings_flag": []
+      "settings_flag": [],
+      "schemas": []
     }
   ]
 }
@@ -1051,6 +1318,9 @@ const { data } = await client.listSchemaBlueprints()
       "updated_at": "string",
       "comment": "string",
       "source": {},
+      "frozen": true,
+      "latest": true,
+      "_summary": true,
       "slug": "contact",
       "version": 1,
       "blueprint": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -1063,6 +1333,7 @@ const { data } = await client.listSchemaBlueprints()
       "category": "customer_relations",
       "published": false,
       "draft": false,
+      "require_change_comment": false,
       "icon": "person",
       "title_template": "{{first_name}} {{last_name}}",
       "ui_config": {},
@@ -1072,8 +1343,10 @@ const { data } = await client.listSchemaBlueprints()
       "dialog_config": {},
       "attributes": [],
       "_purpose": ["string"],
+      "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "explicit_search_mappings": {},
-      "group_headlines": []
+      "group_headlines": [],
+      "conditions": []
     }
   ]
 }
@@ -1099,6 +1372,7 @@ const { data } = await client.searchEntities(
     from: 0,
     size: 10,
     hydrate: false,
+    anonymize: false,
     fields: ['_id', '_title', 'first_name', 'account', '!account.*._files', '**._product'],
     aggs: {
       'contact-count-per-tag': {
@@ -1204,6 +1478,7 @@ const { data } = await client.listEntities(
     from: 0,
     size: 10,
     hydrate: false,
+    anonymize: false,
     fields: ['_id', '_title', 'first_name', 'account', '!account.*._files', '**._product'],
     aggs: {
       'contact-count-per-tag': {
@@ -1314,7 +1589,8 @@ const { data } = await client.queryEntityGraph(
         }
       ]
     },
-    hydrate: false
+    hydrate: false,
+    apply_changesets: false
   },
 )
 ```
@@ -1635,7 +1911,9 @@ const { data } = await client.getEntityV2({
   id: '123e4567-e89b-12d3-a456-426614174000',
   slug: 'example',
   hydrate: true,
+  anonymize: true,
   fields: ['...'],
+  apply_changesets: true,
 })
 ```
 
@@ -1773,6 +2051,7 @@ const { data } = await client.getEntity({
   id: '123e4567-e89b-12d3-a456-426614174000',
   slug: 'example',
   hydrate: true,
+  anonymize: true,
 })
 ```
 
@@ -1845,6 +2124,7 @@ const { data } = await client.updateEntity(
     fill_activity: true,
     async: true,
     validate: true,
+    direct: true,
   },
   {
     _id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
@@ -1915,6 +2195,7 @@ const { data } = await client.patchEntity(
     dry_run: true,
     async: true,
     validate: true,
+    direct: true,
   },
   {
     _id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
@@ -1988,16 +2269,18 @@ const { data } = await client.deleteEntity({
 
 ### `autocomplete`
 
-Autocomplete entity attributes
+Autocomplete entity attributes.
 
 `GET /v1/entity:autocomplete`
 
 ```ts
 const { data } = await client.autocomplete({
+  anonymize: true,
   input: 'example',
   attribute: 'example',
   slug: 'example',
   size: 1,
+  from: 1,
 })
 ```
 
@@ -2029,6 +2312,86 @@ const { data } = await client.wipeAllEntities(
   },
 )
 ```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "id": "string",
+  "schemas": ["contact"],
+  "status": "running",
+  "current_step": "SANITY_CHECK",
+  "created_at": "1970-01-01T00:00:00.000Z",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "finished_at": "1970-01-01T00:00:00.000Z",
+  "created_by": {
+    "user_id": "string",
+    "email": "string",
+    "display_name": "string"
+  },
+  "entity_totals": {},
+  "total_entities": 0,
+  "progress": {
+    "indices_deleted": 0,
+    "entities_deleted": 0,
+    "relations_deleted": 0,
+    "activities_deleted": 0
+  },
+  "error": "string"
+}
+```
+
+</details>
+
+---
+
+### `listWipeJobs`
+
+Lists the most recent wipe jobs of the organization, newest first.
+
+`GET /v1/entity:wipeJobs`
+
+```ts
+const { data } = await client.listWipeJobs({
+  limit: 1,
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "results": [
+    {
+      "id": "string",
+      "schemas": ["contact"],
+      "status": "running",
+      "current_step": "SANITY_CHECK",
+      "created_at": "1970-01-01T00:00:00.000Z",
+      "updated_at": "1970-01-01T00:00:00.000Z",
+      "finished_at": "1970-01-01T00:00:00.000Z",
+      "created_by": {
+        "user_id": "string",
+        "email": "string",
+        "display_name": "string"
+      },
+      "entity_totals": {},
+      "total_entities": 0,
+      "progress": {
+        "indices_deleted": 0,
+        "entities_deleted": 0,
+        "relations_deleted": 0,
+        "activities_deleted": 0
+      },
+      "error": "string"
+    }
+  ]
+}
+```
+
+</details>
 
 ---
 
@@ -2111,6 +2474,7 @@ Get activity by id
 
 ```ts
 const { data } = await client.getActivity({
+  anonymize: true,
   id: '123e4567-e89b-12d3-a456-426614174000',
   operations_size: 1,
   operations_from: 1,
@@ -2149,7 +2513,10 @@ const { data } = await client.getActivity({
       "operation": "createEntity",
       "params": {},
       "payload": {},
-      "diff": {}
+      "diff": {},
+      "source_context": {},
+      "_workflow_origin": {},
+      "_automation_chain": ["string"]
     }
   ]
 }
@@ -2217,6 +2584,125 @@ const { data } = await client.attachActivity({
 
 ---
 
+### `applyChangeset`
+
+Applies the proposed value from a pending changeset to the entity attribute
+and removes the changeset. Used for human approval of pending changes.
+
+`POST /v1/entity/{slug}/{id}/changesets/{attribute}:apply`
+
+```ts
+const { data } = await client.applyChangeset({
+  slug: 'example',
+  id: '123e4567-e89b-12d3-a456-426614174000',
+  attribute: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_org": "123",
+  "_owners": [
+    {
+      "org_id": "123",
+      "user_id": "123"
+    }
+  ],
+  "_schema": "contact",
+  "_tags": ["example", "mock"],
+  "_created_at": "2021-02-09T12:41:43.662Z",
+  "_updated_at": "2021-02-09T12:41:43.662Z",
+  "_acl": {
+    "view": ["org:456", "org:789"],
+    "edit": ["org:456"],
+    "delete": ["org:456"]
+  },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
+}
+```
+
+</details>
+
+---
+
+### `dismissChangeset`
+
+Removes a pending changeset without applying it. The attribute value remains unchanged.
+
+`POST /v1/entity/{slug}/{id}/changesets/{attribute}:dismiss`
+
+```ts
+const { data } = await client.dismissChangeset(
+  {
+    slug: 'example',
+    id: '123e4567-e89b-12d3-a456-426614174000',
+    attribute: 'example',
+  },
+  {
+    reason: 'string'
+  },
+)
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_org": "123",
+  "_owners": [
+    {
+      "org_id": "123",
+      "user_id": "123"
+    }
+  ],
+  "_schema": "contact",
+  "_tags": ["example", "mock"],
+  "_created_at": "2021-02-09T12:41:43.662Z",
+  "_updated_at": "2021-02-09T12:41:43.662Z",
+  "_acl": {
+    "view": ["org:456", "org:789"],
+    "edit": ["org:456"],
+    "delete": ["org:456"]
+  },
+  "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
+}
+```
+
+</details>
+
+---
+
+### `listChangesets`
+
+Returns all pending changesets for an entity.
+
+`GET /v1/entity/{slug}/{id}/changesets`
+
+```ts
+const { data } = await client.listChangesets({
+  anonymize: true,
+  slug: 'example',
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{}
+```
+
+</details>
+
+---
+
 ### `getEntityActivityFeed`
 
 Get activity feed for an entity
@@ -2225,6 +2711,7 @@ Get activity feed for an entity
 
 ```ts
 const { data } = await client.getEntityActivityFeed({
+  anonymize: true,
   slug: 'example',
   id: '123e4567-e89b-12d3-a456-426614174000',
   after: 'example',
@@ -2267,6 +2754,36 @@ const { data } = await client.getEntityActivityFeed({
 
 ---
 
+### `getEntitySummary`
+
+Get the latest AI generated summary of an entity. Summaries are generated by the
+ai-agents-api `skill:entity-summary` and stored here when the execution completes.
+
+`GET /v1/entity/{slug}/{id}/summary`
+
+```ts
+const { data } = await client.getEntitySummary({
+  slug: 'example',
+  id: '123e4567-e89b-12d3-a456-426614174000',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "summary": "string",
+  "variant": "short",
+  "execution_id": "7b4cfc0f-1d5e-4f3a-9b4a-2c7d1f9e8a10",
+  "created_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
 ### `getRelations`
 
 Returns 1st level direct relations for an entity.
@@ -2278,6 +2795,7 @@ const { data } = await client.getRelations({
   slug: 'example',
   id: '123e4567-e89b-12d3-a456-426614174000',
   hydrate: true,
+  anonymize: true,
   include_reverse: true,
   from: 1,
   size: 1,
@@ -2411,6 +2929,7 @@ const { data } = await client.getRelationsV2({
   slug: 'example',
   id: '123e4567-e89b-12d3-a456-426614174000',
   hydrate: true,
+  anonymize: true,
   query: 'example',
   include_reverse: true,
   from: 1,
@@ -2473,6 +2992,7 @@ const { data } = await client.getRelationsV3({
   slug: 'example',
   id: '123e4567-e89b-12d3-a456-426614174000',
   hydrate: true,
+  anonymize: true,
   include_reverse: true,
   from: 1,
   size: 1,
@@ -2634,6 +3154,7 @@ const { data } = await client.exportEntities(
     from: 0,
     size: 10,
     hydrate: false,
+    anonymize: false,
     fields: ['_id', '_title', 'first_name', 'account', '!account.*._files', '**._product'],
     aggs: {
       'contact-count-per-tag': {
@@ -2669,10 +3190,229 @@ const { data } = await client.importEntities(
       bucket: 'my-bucket',
       key: 'imports/my-import.json'
     },
-    schema: 'contact'
+    schema: 'contact',
+    unique_key: ['email'],
+    dry_run: false,
+    dry_run_job_id: 'string',
+    trigger_automations: false
   },
 )
 ```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "jobPollId": "string",
+  "trigger_automations": true,
+  "started_by": "string",
+  "status": "PROCESSING",
+  "total": 0,
+  "importedEntitiesCount": 0,
+  "failedEntitiesCount": 0,
+  "importedEntitiesUrl": "string",
+  "failedEntitiesUrl": "string",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "failure_reason": "string",
+  "failure_code": "invalid_csv_bad_headers",
+  "abortable": true,
+  "dry_run": true,
+  "unique_key": ["string"],
+  "outcome_counts": {
+    "error": 0,
+    "skipped_empty_key": 0,
+    "skipped_duplicate_in_file": 0,
+    "skipped_id_not_found": 0,
+    "skipped_ambiguous": 0,
+    "create": 0,
+    "unchanged": 0,
+    "update": 0
+  },
+  "report_url": "string",
+  "S3Reference": {
+    "bucket": "string",
+    "key": "string"
+  },
+  "issues": [
+    {
+      "severity": "blocking",
+      "reason": "string",
+      "column": "string",
+      "count": 0,
+      "example_rows": [0]
+    }
+  ],
+  "phase": "scanning",
+  "heartbeat_at": "1970-01-01T00:00:00.000Z",
+  "started_at": "1970-01-01T00:00:00.000Z",
+  "finished_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `getLatestEntityImport`
+
+Get the latest import job of a schema
+
+`GET /v1/entity:import:latest`
+
+```ts
+const { data } = await client.getLatestEntityImport({
+  schema: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "jobPollId": "string",
+  "trigger_automations": true,
+  "started_by": "string",
+  "status": "PROCESSING",
+  "total": 0,
+  "importedEntitiesCount": 0,
+  "failedEntitiesCount": 0,
+  "importedEntitiesUrl": "string",
+  "failedEntitiesUrl": "string",
+  "updated_at": "1970-01-01T00:00:00.000Z",
+  "failure_reason": "string",
+  "failure_code": "invalid_csv_bad_headers",
+  "abortable": true,
+  "dry_run": true,
+  "unique_key": ["string"],
+  "outcome_counts": {
+    "error": 0,
+    "skipped_empty_key": 0,
+    "skipped_duplicate_in_file": 0,
+    "skipped_id_not_found": 0,
+    "skipped_ambiguous": 0,
+    "create": 0,
+    "unchanged": 0,
+    "update": 0
+  },
+  "report_url": "string",
+  "S3Reference": {
+    "bucket": "string",
+    "key": "string"
+  },
+  "issues": [
+    {
+      "severity": "blocking",
+      "reason": "string",
+      "column": "string",
+      "count": 0,
+      "example_rows": [0]
+    }
+  ],
+  "phase": "scanning",
+  "heartbeat_at": "1970-01-01T00:00:00.000Z",
+  "started_at": "1970-01-01T00:00:00.000Z",
+  "finished_at": "1970-01-01T00:00:00.000Z"
+}
+```
+
+</details>
+
+---
+
+### `getEntityImportHistory`
+
+List the import jobs of a schema
+
+`GET /v1/entity:importHistory`
+
+```ts
+const { data } = await client.getEntityImportHistory({
+  schema: 'example',
+  limit: 1,
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "jobs": [
+    {
+      "job_id": "string",
+      "schema": "string",
+      "status": "PROCESSING",
+      "dry_run": true,
+      "trigger_automations": true,
+      "started_by": "string",
+      "started_at": "1970-01-01T00:00:00.000Z",
+      "finished_at": "1970-01-01T00:00:00.000Z",
+      "file_name": "string",
+      "total": 0,
+      "importedEntitiesCount": 0,
+      "failedEntitiesCount": 0,
+      "outcome_counts": {
+        "error": 0,
+        "skipped_empty_key": 0,
+        "skipped_duplicate_in_file": 0,
+        "skipped_id_not_found": 0,
+        "skipped_ambiguous": 0,
+        "create": 0,
+        "unchanged": 0,
+        "update": 0
+      },
+      "failure_code": "invalid_csv_bad_headers",
+      "unique_key": ["string"]
+    }
+  ]
+}
+```
+
+</details>
+
+---
+
+### `abortEntityImport`
+
+Abort a running entity import
+
+`POST /v1/entity:abortImport`
+
+```ts
+const { data } = await client.abortEntityImport({
+  job_id: 'example',
+  schema: 'example',
+})
+```
+
+---
+
+### `discardEntityImport`
+
+Discard a finished dry run
+
+`POST /v1/entity:discardImport`
+
+```ts
+const { data } = await client.discardEntityImport({
+  job_id: 'example',
+  schema: 'example',
+})
+```
+
+<details>
+<summary>Response</summary>
+
+```json
+{
+  "status": "string",
+  "jobPollId": "string"
+}
+```
+
+</details>
 
 ---
 
@@ -2688,6 +3428,7 @@ const { data } = await client.listSavedViews({
   sort: 'example',
   from: 1,
   size: 1,
+  q: 'example',
   fields: ['...'],
 })
 ```
@@ -2709,7 +3450,8 @@ const { data } = await client.listSavedViews({
       "shared": true,
       "isFavoritedBy": ["11701"],
       "created_by": {
-        "user_id": "10598"
+        "user_id": "10598",
+        "org_id": "739224"
       },
       "ui_config": {
         "filters": {
@@ -2751,7 +3493,8 @@ const { data } = await client.createSavedView(
     shared: true,
     isFavoritedBy: ['11701'],
     created_by: {
-      user_id: '10598'
+      user_id: '10598',
+      org_id: '739224'
     },
     ui_config: {
       filters: {
@@ -2786,7 +3529,8 @@ const { data } = await client.createSavedView(
   "shared": true,
   "isFavoritedBy": ["11701"],
   "created_by": {
-    "user_id": "10598"
+    "user_id": "10598",
+    "org_id": "739224"
   },
   "ui_config": {
     "filters": {
@@ -2836,7 +3580,8 @@ const { data } = await client.getSavedView({
   "shared": true,
   "isFavoritedBy": ["11701"],
   "created_by": {
-    "user_id": "10598"
+    "user_id": "10598",
+    "org_id": "739224"
   },
   "ui_config": {
     "filters": {
@@ -2881,7 +3626,8 @@ const { data } = await client.updateSavedView(
     shared: true,
     isFavoritedBy: ['11701'],
     created_by: {
-      user_id: '10598'
+      user_id: '10598',
+      org_id: '739224'
     },
     ui_config: {
       filters: {
@@ -2916,7 +3662,8 @@ const { data } = await client.updateSavedView(
   "shared": true,
   "isFavoritedBy": ["11701"],
   "created_by": {
-    "user_id": "10598"
+    "user_id": "10598",
+    "org_id": "739224"
   },
   "ui_config": {
     "filters": {
@@ -2958,7 +3705,8 @@ const { data } = await client.patchSavedView(
     shared: true,
     isFavoritedBy: ['11701'],
     created_by: {
-      user_id: '10598'
+      user_id: '10598',
+      org_id: '739224'
     },
     ui_config: {
       filters: {
@@ -2993,7 +3741,8 @@ const { data } = await client.patchSavedView(
   "shared": true,
   "isFavoritedBy": ["11701"],
   "created_by": {
-    "user_id": "10598"
+    "user_id": "10598",
+    "org_id": "739224"
   },
   "ui_config": {
     "filters": {
@@ -3057,7 +3806,8 @@ const { data } = await client.listFavoriteViewsForUser()
       "shared": true,
       "isFavoritedBy": ["11701"],
       "created_by": {
-        "user_id": "10598"
+        "user_id": "10598",
+        "org_id": "739224"
       },
       "ui_config": {
         "filters": {
@@ -3375,7 +4125,7 @@ const { data } = await client.updateClassificationsForTaxonomy(
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"]
     }
   ],
-  "deleted": {}
+  "deleted": ["taxonomy-slug:classification-slug"]
 }
 ```
 
@@ -3612,6 +4362,7 @@ const { data } = await client.taxonomiesClassificationsSearch(
     query: 'example',
     archived: true,
     include_archived: 'example',
+    exclude_types: ['...'],
   },
   {
     classificationIds: [
@@ -3916,6 +4667,7 @@ const { data } = await client.createSchemaAttribute(
     required: false,
     readonly: false,
     deprecated: false,
+    overridable_attribute: false,
     default_value: {},
     group: 'string',
     order: 0,
@@ -3923,6 +4675,7 @@ const { data } = await client.createSchemaAttribute(
     hide_label: true,
     icon: 'string',
     render_condition: 'string',
+    data_classification: 'public',
     _purpose: ['taxonomy-slug:classification-slug'],
     _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
     constraints: {
@@ -3949,6 +4702,23 @@ const { data } = await client.createSchemaAttribute(
     exclude_from_search: false,
     repeatable: true,
     has_primary: true,
+    edit_mode: 'direct',
+    edit_mode_config: {
+      match_strategy: 'exact',
+      fuzzy_config: {
+        type: 'suffix',
+        suffix_length: 0,
+        fields_to_ignore: ['string'],
+        regex_flags: 'string',
+        country_code: 'string',
+        match_on: 'string',
+        key: 'string',
+        mode: 'subset',
+        ordered: true,
+        require_tags_match: true,
+        pattern: 'string'
+      }
+    },
     type: 'string',
     multiline: true,
     rich_text: true,
@@ -3972,6 +4742,7 @@ const { data } = await client.createSchemaAttribute(
   "required": false,
   "readonly": false,
   "deprecated": false,
+  "overridable_attribute": false,
   "default_value": {},
   "group": "string",
   "order": 0,
@@ -3979,6 +4750,7 @@ const { data } = await client.createSchemaAttribute(
   "hide_label": true,
   "icon": "string",
   "render_condition": "string",
+  "data_classification": "public",
   "_purpose": ["taxonomy-slug:classification-slug"],
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "constraints": {
@@ -4005,6 +4777,23 @@ const { data } = await client.createSchemaAttribute(
   "exclude_from_search": false,
   "repeatable": true,
   "has_primary": true,
+  "edit_mode": "direct",
+  "edit_mode_config": {
+    "match_strategy": "exact",
+    "fuzzy_config": {
+      "type": "suffix",
+      "suffix_length": 0,
+      "fields_to_ignore": ["string"],
+      "regex_flags": "string",
+      "country_code": "string",
+      "match_on": "string",
+      "key": "string",
+      "mode": "subset",
+      "ordered": true,
+      "require_tags_match": true,
+      "pattern": "string"
+    }
+  },
   "type": "string",
   "multiline": true,
   "rich_text": true,
@@ -4043,6 +4832,7 @@ const { data } = await client.getSchemaAttribute({
   "required": false,
   "readonly": false,
   "deprecated": false,
+  "overridable_attribute": false,
   "default_value": {},
   "group": "string",
   "order": 0,
@@ -4050,6 +4840,7 @@ const { data } = await client.getSchemaAttribute({
   "hide_label": true,
   "icon": "string",
   "render_condition": "string",
+  "data_classification": "public",
   "_purpose": ["taxonomy-slug:classification-slug"],
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "constraints": {
@@ -4076,6 +4867,23 @@ const { data } = await client.getSchemaAttribute({
   "exclude_from_search": false,
   "repeatable": true,
   "has_primary": true,
+  "edit_mode": "direct",
+  "edit_mode_config": {
+    "match_strategy": "exact",
+    "fuzzy_config": {
+      "type": "suffix",
+      "suffix_length": 0,
+      "fields_to_ignore": ["string"],
+      "regex_flags": "string",
+      "country_code": "string",
+      "match_on": "string",
+      "key": "string",
+      "mode": "subset",
+      "ordered": true,
+      "require_tags_match": true,
+      "pattern": "string"
+    }
+  },
   "type": "string",
   "multiline": true,
   "rich_text": true,
@@ -4109,6 +4917,7 @@ const { data } = await client.putSchemaAttribute(
     required: false,
     readonly: false,
     deprecated: false,
+    overridable_attribute: false,
     default_value: {},
     group: 'string',
     order: 0,
@@ -4116,6 +4925,7 @@ const { data } = await client.putSchemaAttribute(
     hide_label: true,
     icon: 'string',
     render_condition: 'string',
+    data_classification: 'public',
     _purpose: ['taxonomy-slug:classification-slug'],
     _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
     constraints: {
@@ -4142,6 +4952,23 @@ const { data } = await client.putSchemaAttribute(
     exclude_from_search: false,
     repeatable: true,
     has_primary: true,
+    edit_mode: 'direct',
+    edit_mode_config: {
+      match_strategy: 'exact',
+      fuzzy_config: {
+        type: 'suffix',
+        suffix_length: 0,
+        fields_to_ignore: ['string'],
+        regex_flags: 'string',
+        country_code: 'string',
+        match_on: 'string',
+        key: 'string',
+        mode: 'subset',
+        ordered: true,
+        require_tags_match: true,
+        pattern: 'string'
+      }
+    },
     type: 'string',
     multiline: true,
     rich_text: true,
@@ -4165,6 +4992,7 @@ const { data } = await client.putSchemaAttribute(
   "required": false,
   "readonly": false,
   "deprecated": false,
+  "overridable_attribute": false,
   "default_value": {},
   "group": "string",
   "order": 0,
@@ -4172,6 +5000,7 @@ const { data } = await client.putSchemaAttribute(
   "hide_label": true,
   "icon": "string",
   "render_condition": "string",
+  "data_classification": "public",
   "_purpose": ["taxonomy-slug:classification-slug"],
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "constraints": {
@@ -4198,6 +5027,23 @@ const { data } = await client.putSchemaAttribute(
   "exclude_from_search": false,
   "repeatable": true,
   "has_primary": true,
+  "edit_mode": "direct",
+  "edit_mode_config": {
+    "match_strategy": "exact",
+    "fuzzy_config": {
+      "type": "suffix",
+      "suffix_length": 0,
+      "fields_to_ignore": ["string"],
+      "regex_flags": "string",
+      "country_code": "string",
+      "match_on": "string",
+      "key": "string",
+      "mode": "subset",
+      "ordered": true,
+      "require_tags_match": true,
+      "pattern": "string"
+    }
+  },
   "type": "string",
   "multiline": true,
   "rich_text": true,
@@ -4236,6 +5082,7 @@ const { data } = await client.deleteSchemaAttribute({
   "required": false,
   "readonly": false,
   "deprecated": false,
+  "overridable_attribute": false,
   "default_value": {},
   "group": "string",
   "order": 0,
@@ -4243,6 +5090,7 @@ const { data } = await client.deleteSchemaAttribute({
   "hide_label": true,
   "icon": "string",
   "render_condition": "string",
+  "data_classification": "public",
   "_purpose": ["taxonomy-slug:classification-slug"],
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "constraints": {
@@ -4269,6 +5117,23 @@ const { data } = await client.deleteSchemaAttribute({
   "exclude_from_search": false,
   "repeatable": true,
   "has_primary": true,
+  "edit_mode": "direct",
+  "edit_mode_config": {
+    "match_strategy": "exact",
+    "fuzzy_config": {
+      "type": "suffix",
+      "suffix_length": 0,
+      "fields_to_ignore": ["string"],
+      "regex_flags": "string",
+      "country_code": "string",
+      "match_on": "string",
+      "key": "string",
+      "mode": "subset",
+      "ordered": true,
+      "require_tags_match": true,
+      "pattern": "string"
+    }
+  },
   "type": "string",
   "multiline": true,
   "rich_text": true,
@@ -4305,6 +5170,7 @@ const { data } = await client.createSchemaCapability(
         required: false,
         readonly: false,
         deprecated: false,
+        overridable_attribute: false,
         default_value: {},
         group: 'string',
         order: 0,
@@ -4312,6 +5178,7 @@ const { data } = await client.createSchemaCapability(
         hide_label: true,
         icon: 'string',
         render_condition: 'string',
+        data_classification: 'public',
         _purpose: ['taxonomy-slug:classification-slug'],
         _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
         constraints: { /* ... */ },
@@ -4326,6 +5193,8 @@ const { data } = await client.createSchemaCapability(
         exclude_from_search: false,
         repeatable: true,
         has_primary: true,
+        edit_mode: 'direct',
+        edit_mode_config: { /* ... */ },
         type: 'string',
         multiline: true,
         rich_text: true,
@@ -4342,6 +5211,7 @@ const { data } = await client.createSchemaCapability(
         required: false,
         readonly: false,
         deprecated: false,
+        overridable_attribute: false,
         default_value: {},
         group: 'string',
         order: 0,
@@ -4349,6 +5219,7 @@ const { data } = await client.createSchemaCapability(
         hide_label: true,
         icon: 'string',
         render_condition: 'string',
+        data_classification: 'public',
         _purpose: ['taxonomy-slug:classification-slug'],
         _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
         constraints: { /* ... */ },
@@ -4363,13 +5234,20 @@ const { data } = await client.createSchemaCapability(
         exclude_from_search: false,
         repeatable: true,
         has_primary: true,
+        edit_mode: 'direct',
+        edit_mode_config: { /* ... */ },
         type: 'link'
       },
-      /* ... 32 more */
+      /* ... 34 more */
     ],
+    overridable_attribute: false,
+    managed_fields: ['status'],
     _purpose: ['taxonomy-slug:classification-slug'],
     _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
     app_id: '123e4567-e89b-12d3-a456-426614174000',
+    adjust_installment: {
+      journey_id: 'adjust-installment-flow'
+    },
     ui_config: {
       is_filterable: true
     },
@@ -4386,7 +5264,10 @@ const { data } = await client.createSchemaCapability(
         icon: 'email',
         disabled: true,
         header: true,
-        requiredPermission: { /* ... */ }
+        requiredPermission: { /* ... */ },
+        default_visible: false,
+        default_width: 'half_width',
+        pricing_tier_setting: 'entity_address_maps'
       }
     ],
     feature_flag: 'FF_MY_FEATURE_FLAG',
@@ -4394,6 +5275,11 @@ const { data } = await client.createSchemaCapability(
       {
         name: 'string',
         enabled: true
+      }
+    ],
+    schemas: [
+      {
+        schema: 'contact'
       }
     ],
     composite_id: 'contact:97644baa-083f-4e49-9188-fcff2ecaad7d',
@@ -4422,6 +5308,7 @@ const { data } = await client.createSchemaCapability(
       "required": false,
       "readonly": false,
       "deprecated": false,
+      "overridable_attribute": false,
       "default_value": {},
       "group": "string",
       "order": 0,
@@ -4429,6 +5316,7 @@ const { data } = await client.createSchemaCapability(
       "hide_label": true,
       "icon": "string",
       "render_condition": "string",
+      "data_classification": "public",
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "constraints": {},
@@ -4443,6 +5331,8 @@ const { data } = await client.createSchemaCapability(
       "exclude_from_search": false,
       "repeatable": true,
       "has_primary": true,
+      "edit_mode": "direct",
+      "edit_mode_config": {},
       "type": "string",
       "multiline": true,
       "rich_text": true,
@@ -4459,6 +5349,7 @@ const { data } = await client.createSchemaCapability(
       "required": false,
       "readonly": false,
       "deprecated": false,
+      "overridable_attribute": false,
       "default_value": {},
       "group": "string",
       "order": 0,
@@ -4466,6 +5357,7 @@ const { data } = await client.createSchemaCapability(
       "hide_label": true,
       "icon": "string",
       "render_condition": "string",
+      "data_classification": "public",
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "constraints": {},
@@ -4480,12 +5372,19 @@ const { data } = await client.createSchemaCapability(
       "exclude_from_search": false,
       "repeatable": true,
       "has_primary": true,
+      "edit_mode": "direct",
+      "edit_mode_config": {},
       "type": "link"
     }
   ],
+  "overridable_attribute": false,
+  "managed_fields": ["status"],
   "_purpose": ["taxonomy-slug:classification-slug"],
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "app_id": "123e4567-e89b-12d3-a456-426614174000",
+  "adjust_installment": {
+    "journey_id": "adjust-installment-flow"
+  },
   "ui_config": {
     "is_filterable": true
   },
@@ -4502,7 +5401,10 @@ const { data } = await client.createSchemaCapability(
       "icon": "email",
       "disabled": true,
       "header": true,
-      "requiredPermission": {}
+      "requiredPermission": {},
+      "default_visible": false,
+      "default_width": "half_width",
+      "pricing_tier_setting": "entity_address_maps"
     }
   ],
   "feature_flag": "FF_MY_FEATURE_FLAG",
@@ -4510,6 +5412,11 @@ const { data } = await client.createSchemaCapability(
     {
       "name": "string",
       "enabled": true
+    }
+  ],
+  "schemas": [
+    {
+      "schema": "contact"
     }
   ],
   "composite_id": "contact:97644baa-083f-4e49-9188-fcff2ecaad7d",
@@ -4553,6 +5460,7 @@ const { data } = await client.getSchemaCapability({
       "required": false,
       "readonly": false,
       "deprecated": false,
+      "overridable_attribute": false,
       "default_value": {},
       "group": "string",
       "order": 0,
@@ -4560,6 +5468,7 @@ const { data } = await client.getSchemaCapability({
       "hide_label": true,
       "icon": "string",
       "render_condition": "string",
+      "data_classification": "public",
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "constraints": {},
@@ -4574,6 +5483,8 @@ const { data } = await client.getSchemaCapability({
       "exclude_from_search": false,
       "repeatable": true,
       "has_primary": true,
+      "edit_mode": "direct",
+      "edit_mode_config": {},
       "type": "string",
       "multiline": true,
       "rich_text": true,
@@ -4590,6 +5501,7 @@ const { data } = await client.getSchemaCapability({
       "required": false,
       "readonly": false,
       "deprecated": false,
+      "overridable_attribute": false,
       "default_value": {},
       "group": "string",
       "order": 0,
@@ -4597,6 +5509,7 @@ const { data } = await client.getSchemaCapability({
       "hide_label": true,
       "icon": "string",
       "render_condition": "string",
+      "data_classification": "public",
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "constraints": {},
@@ -4611,12 +5524,19 @@ const { data } = await client.getSchemaCapability({
       "exclude_from_search": false,
       "repeatable": true,
       "has_primary": true,
+      "edit_mode": "direct",
+      "edit_mode_config": {},
       "type": "link"
     }
   ],
+  "overridable_attribute": false,
+  "managed_fields": ["status"],
   "_purpose": ["taxonomy-slug:classification-slug"],
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "app_id": "123e4567-e89b-12d3-a456-426614174000",
+  "adjust_installment": {
+    "journey_id": "adjust-installment-flow"
+  },
   "ui_config": {
     "is_filterable": true
   },
@@ -4633,7 +5553,10 @@ const { data } = await client.getSchemaCapability({
       "icon": "email",
       "disabled": true,
       "header": true,
-      "requiredPermission": {}
+      "requiredPermission": {},
+      "default_visible": false,
+      "default_width": "half_width",
+      "pricing_tier_setting": "entity_address_maps"
     }
   ],
   "feature_flag": "FF_MY_FEATURE_FLAG",
@@ -4641,6 +5564,11 @@ const { data } = await client.getSchemaCapability({
     {
       "name": "string",
       "enabled": true
+    }
+  ],
+  "schemas": [
+    {
+      "schema": "contact"
     }
   ],
   "composite_id": "contact:97644baa-083f-4e49-9188-fcff2ecaad7d",
@@ -4679,6 +5607,7 @@ const { data } = await client.putSchemaCapability(
         required: false,
         readonly: false,
         deprecated: false,
+        overridable_attribute: false,
         default_value: {},
         group: 'string',
         order: 0,
@@ -4686,6 +5615,7 @@ const { data } = await client.putSchemaCapability(
         hide_label: true,
         icon: 'string',
         render_condition: 'string',
+        data_classification: 'public',
         _purpose: ['taxonomy-slug:classification-slug'],
         _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
         constraints: { /* ... */ },
@@ -4700,6 +5630,8 @@ const { data } = await client.putSchemaCapability(
         exclude_from_search: false,
         repeatable: true,
         has_primary: true,
+        edit_mode: 'direct',
+        edit_mode_config: { /* ... */ },
         type: 'string',
         multiline: true,
         rich_text: true,
@@ -4716,6 +5648,7 @@ const { data } = await client.putSchemaCapability(
         required: false,
         readonly: false,
         deprecated: false,
+        overridable_attribute: false,
         default_value: {},
         group: 'string',
         order: 0,
@@ -4723,6 +5656,7 @@ const { data } = await client.putSchemaCapability(
         hide_label: true,
         icon: 'string',
         render_condition: 'string',
+        data_classification: 'public',
         _purpose: ['taxonomy-slug:classification-slug'],
         _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
         constraints: { /* ... */ },
@@ -4737,13 +5671,20 @@ const { data } = await client.putSchemaCapability(
         exclude_from_search: false,
         repeatable: true,
         has_primary: true,
+        edit_mode: 'direct',
+        edit_mode_config: { /* ... */ },
         type: 'link'
       },
-      /* ... 32 more */
+      /* ... 34 more */
     ],
+    overridable_attribute: false,
+    managed_fields: ['status'],
     _purpose: ['taxonomy-slug:classification-slug'],
     _manifest: ['123e4567-e89b-12d3-a456-426614174000'],
     app_id: '123e4567-e89b-12d3-a456-426614174000',
+    adjust_installment: {
+      journey_id: 'adjust-installment-flow'
+    },
     ui_config: {
       is_filterable: true
     },
@@ -4760,7 +5701,10 @@ const { data } = await client.putSchemaCapability(
         icon: 'email',
         disabled: true,
         header: true,
-        requiredPermission: { /* ... */ }
+        requiredPermission: { /* ... */ },
+        default_visible: false,
+        default_width: 'half_width',
+        pricing_tier_setting: 'entity_address_maps'
       }
     ],
     feature_flag: 'FF_MY_FEATURE_FLAG',
@@ -4768,6 +5712,11 @@ const { data } = await client.putSchemaCapability(
       {
         name: 'string',
         enabled: true
+      }
+    ],
+    schemas: [
+      {
+        schema: 'contact'
       }
     ],
     composite_id: 'contact:97644baa-083f-4e49-9188-fcff2ecaad7d',
@@ -4796,6 +5745,7 @@ const { data } = await client.putSchemaCapability(
       "required": false,
       "readonly": false,
       "deprecated": false,
+      "overridable_attribute": false,
       "default_value": {},
       "group": "string",
       "order": 0,
@@ -4803,6 +5753,7 @@ const { data } = await client.putSchemaCapability(
       "hide_label": true,
       "icon": "string",
       "render_condition": "string",
+      "data_classification": "public",
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "constraints": {},
@@ -4817,6 +5768,8 @@ const { data } = await client.putSchemaCapability(
       "exclude_from_search": false,
       "repeatable": true,
       "has_primary": true,
+      "edit_mode": "direct",
+      "edit_mode_config": {},
       "type": "string",
       "multiline": true,
       "rich_text": true,
@@ -4833,6 +5786,7 @@ const { data } = await client.putSchemaCapability(
       "required": false,
       "readonly": false,
       "deprecated": false,
+      "overridable_attribute": false,
       "default_value": {},
       "group": "string",
       "order": 0,
@@ -4840,6 +5794,7 @@ const { data } = await client.putSchemaCapability(
       "hide_label": true,
       "icon": "string",
       "render_condition": "string",
+      "data_classification": "public",
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "constraints": {},
@@ -4854,12 +5809,19 @@ const { data } = await client.putSchemaCapability(
       "exclude_from_search": false,
       "repeatable": true,
       "has_primary": true,
+      "edit_mode": "direct",
+      "edit_mode_config": {},
       "type": "link"
     }
   ],
+  "overridable_attribute": false,
+  "managed_fields": ["status"],
   "_purpose": ["taxonomy-slug:classification-slug"],
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "app_id": "123e4567-e89b-12d3-a456-426614174000",
+  "adjust_installment": {
+    "journey_id": "adjust-installment-flow"
+  },
   "ui_config": {
     "is_filterable": true
   },
@@ -4876,7 +5838,10 @@ const { data } = await client.putSchemaCapability(
       "icon": "email",
       "disabled": true,
       "header": true,
-      "requiredPermission": {}
+      "requiredPermission": {},
+      "default_visible": false,
+      "default_width": "half_width",
+      "pricing_tier_setting": "entity_address_maps"
     }
   ],
   "feature_flag": "FF_MY_FEATURE_FLAG",
@@ -4884,6 +5849,11 @@ const { data } = await client.putSchemaCapability(
     {
       "name": "string",
       "enabled": true
+    }
+  ],
+  "schemas": [
+    {
+      "schema": "contact"
     }
   ],
   "composite_id": "contact:97644baa-083f-4e49-9188-fcff2ecaad7d",
@@ -4927,6 +5897,7 @@ const { data } = await client.deleteSchemaCapability({
       "required": false,
       "readonly": false,
       "deprecated": false,
+      "overridable_attribute": false,
       "default_value": {},
       "group": "string",
       "order": 0,
@@ -4934,6 +5905,7 @@ const { data } = await client.deleteSchemaCapability({
       "hide_label": true,
       "icon": "string",
       "render_condition": "string",
+      "data_classification": "public",
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "constraints": {},
@@ -4948,6 +5920,8 @@ const { data } = await client.deleteSchemaCapability({
       "exclude_from_search": false,
       "repeatable": true,
       "has_primary": true,
+      "edit_mode": "direct",
+      "edit_mode_config": {},
       "type": "string",
       "multiline": true,
       "rich_text": true,
@@ -4964,6 +5938,7 @@ const { data } = await client.deleteSchemaCapability({
       "required": false,
       "readonly": false,
       "deprecated": false,
+      "overridable_attribute": false,
       "default_value": {},
       "group": "string",
       "order": 0,
@@ -4971,6 +5946,7 @@ const { data } = await client.deleteSchemaCapability({
       "hide_label": true,
       "icon": "string",
       "render_condition": "string",
+      "data_classification": "public",
       "_purpose": ["taxonomy-slug:classification-slug"],
       "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
       "constraints": {},
@@ -4985,12 +5961,19 @@ const { data } = await client.deleteSchemaCapability({
       "exclude_from_search": false,
       "repeatable": true,
       "has_primary": true,
+      "edit_mode": "direct",
+      "edit_mode_config": {},
       "type": "link"
     }
   ],
+  "overridable_attribute": false,
+  "managed_fields": ["status"],
   "_purpose": ["taxonomy-slug:classification-slug"],
   "_manifest": ["123e4567-e89b-12d3-a456-426614174000"],
   "app_id": "123e4567-e89b-12d3-a456-426614174000",
+  "adjust_installment": {
+    "journey_id": "adjust-installment-flow"
+  },
   "ui_config": {
     "is_filterable": true
   },
@@ -5007,7 +5990,10 @@ const { data } = await client.deleteSchemaCapability({
       "icon": "email",
       "disabled": true,
       "header": true,
-      "requiredPermission": {}
+      "requiredPermission": {},
+      "default_visible": false,
+      "default_width": "half_width",
+      "pricing_tier_setting": "entity_address_maps"
     }
   ],
   "feature_flag": "FF_MY_FEATURE_FLAG",
@@ -5015,6 +6001,11 @@ const { data } = await client.deleteSchemaCapability({
     {
       "name": "string",
       "enabled": true
+    }
+  ],
+  "schemas": [
+    {
+      "schema": "contact"
     }
   ],
   "composite_id": "contact:97644baa-083f-4e49-9188-fcff2ecaad7d",
@@ -5480,6 +6471,7 @@ type EntitySchema = {
   category?: string
   published?: boolean
   draft?: boolean
+  require_change_comment?: boolean
   icon?: string
   title_template?: string
   ui_config?: {
@@ -5532,6 +6524,23 @@ type EntitySchema = {
     sharing?: {
       show_sharing_button?: { ... }
     }
+    grid_layout?: {
+      id?: { ... }
+      columns?: { ... }
+      cells?: { ... }
+    }
+    widget_order?: string[]
+    widget_visibility?: Record<string, boolean>
+    widget_widths?: Record<string, "one_third_width" | "half_width" | "two_third_width" | "full_width">
+    custom_tabs?: Array<{
+      id: { ... }
+      slug: { ... }
+      title: { ... }
+      order: { ... }
+      icon?: { ... }
+      type: { ... }
+      widgets?: { ... }
+    }>
   }
   capabilities: Array<{
     id?: string
@@ -5548,26 +6557,75 @@ type EntitySchema = {
       required?: { ... }
       readonly?: { ... }
       deprecated?: { ... }
-      default_value?: { ... }
-      group?: { ... }
-      order?: { ... }
-      layout?: { ... }
-      hide_label?: { ... }
-      icon?: { ... }
-      render_condition?: { ... }
-      _purpose?: { ... }
-      _manifest?: { ... }
-      constraints?: { ... }
-      feature_flag?: { ... }
-      settings_flag?: { ... }
-      value_formatter?: { ... }
-      preview_value_formatter?: { ... }
-      entity_builder_disable_edit?: { ... }
-      protected?: { ... }
-      info_helpers?: { ... }
-      explicit_searchable?: { ... }
-      exclude_from_search?: { ... }
+      overridable_attribute?: { ... }
   // ...
+}
+```
+
+### `SchemaHead`
+
+```ts
+type SchemaHead = {
+  slug: string
+  id?: string
+  version: number
+  updated_at?: string // date-time
+  created_by?: string
+}
+```
+
+### `WipeJob`
+
+A request to wipe entity data of an organization, and its progress
+
+```ts
+type WipeJob = {
+  id: string
+  schemas: string[]
+  status: "running" | "succeeded" | "failed"
+  current_step: "SANITY_CHECK" | "DELETE_ELASTIC_INDICES" | "DELETE_DYNAMODB_ENTITIES" | "DELETE_DYNAMODB_RELATIONS" | "DELETE_DYNAMODB_ACTIVITIES" | "DELETE_CLICKHOUSE_ENTITIES" | "DELETE_CLICKHOUSE_ENTITY_OPERATIONS" | "DELETE_S3_FILES" | "SUCCESS" | "FAIL"
+  created_at: string // date-time
+  updated_at: string // date-time
+  finished_at?: string // date-time
+  created_by?: {
+    user_id?: string
+    email?: string
+    display_name?: string
+  }
+  entity_totals: Record<string, number>
+  total_entities: number
+  progress: {
+    indices_deleted?: number
+    entities_deleted?: number
+    relations_deleted?: number
+    activities_deleted?: number
+  }
+  error?: string
+}
+```
+
+### `WipeJobConflictError`
+
+```ts
+type WipeJobConflictError = {
+  status?: number
+  error?: string
+  message: string
+  conflicting_schemas: string[]
+}
+```
+
+### `SchemaVersionConflictError`
+
+```ts
+type SchemaVersionConflictError = {
+  status?: number
+  error?: string
+  message?: string
+  base_version?: number
+  current_version?: number
+  current_updated_at?: string // date-time
+  current_created_by?: string
 }
 ```
 
@@ -5583,6 +6641,9 @@ type EntitySchemaItem = {
     id?: string
     type?: string
   }
+  frozen?: boolean
+  latest?: boolean
+  _summary?: boolean
   slug: string
   version?: number
   blueprint?: string // uuid
@@ -5595,6 +6656,7 @@ type EntitySchemaItem = {
   category?: string
   published?: boolean
   draft?: boolean
+  require_change_comment?: boolean
   icon?: string
   title_template?: string
   ui_config?: {
@@ -5647,33 +6709,29 @@ type EntitySchemaItem = {
     sharing?: {
       show_sharing_button?: { ... }
     }
+    grid_layout?: {
+      id?: { ... }
+      columns?: { ... }
+      cells?: { ... }
+    }
+    widget_order?: string[]
+    widget_visibility?: Record<string, boolean>
+    widget_widths?: Record<string, "one_third_width" | "half_width" | "two_third_width" | "full_width">
+    custom_tabs?: Array<{
+      id: { ... }
+      slug: { ... }
+      title: { ... }
+      order: { ... }
+      icon?: { ... }
+      type: { ... }
+      widgets?: { ... }
+    }>
   }
   capabilities: Array<{
     id?: string
     name: string
     title?: string
     attributes?: Array<{
-      id?: { ... }
-      name: { ... }
-      label: { ... }
-      placeholder?: { ... }
-      hidden?: { ... }
-      show_in_table?: { ... }
-      sortable?: { ... }
-      required?: { ... }
-      readonly?: { ... }
-      deprecated?: { ... }
-      default_value?: { ... }
-      group?: { ... }
-      order?: { ... }
-      layout?: { ... }
-      hide_label?: { ... }
-      icon?: { ... }
-      render_condition?: { ... }
-      _purpose?: { ... }
-      _manifest?: { ... }
-      constraints?: { ... }
-      feature_flag?: { ... }
   // ...
 }
 ```
@@ -5691,15 +6749,7 @@ type GenerateEntityTableAIFiltersRequest = {
     name?: string
     group?: string
     allowedSchemas?: string[]
-    relatedOptions?: Array<{
-      type?: { ... }
-      label: { ... }
-      label_type?: { ... }
-      name?: { ... }
-      group?: { ... }
-      allowedSchemas?: { ... }
-      relatedOptions?: { ... }
-    }>
+    relatedOptions?: { ... }[]
   }>
 }
 ```
@@ -5734,23 +6784,7 @@ type EntityTableFilterOption = {
   name?: string
   group?: string
   allowedSchemas?: string[]
-  relatedOptions?: Array<{
-    type?: "search" | "filter"
-    label: string
-    label_type?: string
-    name?: string
-    group?: string
-    allowedSchemas?: string[]
-    relatedOptions?: Array<{
-      type?: { ... }
-      label: { ... }
-      label_type?: { ... }
-      name?: { ... }
-      group?: { ... }
-      allowedSchemas?: { ... }
-      relatedOptions?: { ... }
-    }>
-  }>
+  relatedOptions?: { ... }[]
 }
 ```
 
@@ -5816,6 +6850,7 @@ type Attribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -5823,6 +6858,7 @@ type Attribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -5845,6 +6881,23 @@ type Attribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "string"
   multiline?: boolean
   rich_text?: boolean
@@ -5860,6 +6913,7 @@ type Attribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -5867,6 +6921,7 @@ type Attribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -5884,27 +6939,6 @@ type Attribute = {
     hint_text_key?: string
     hint_custom_component?: string
     hint_tooltip_placement?: string
-  }
-  explicit_searchable?: boolean
-  exclude_from_search?: boolean
-  repeatable?: boolean
-  has_primary?: boolean
-  type: "link"
-} | {
-  id?: string
-  name: string
-  label: string
-  placeholder?: string
-  hidden?: boolean
-  show_in_table?: boolean
-  sortable?: boolean
-  required?: boolean
-  readonly?: boolean
-  deprecated?: boolean
-  default_value?: unknown
-  group?: string
-  order?: number
-  layout?: string
   // ...
 }
 ```
@@ -5932,6 +6966,7 @@ type BaseAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -5939,6 +6974,7 @@ type BaseAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -5961,6 +6997,23 @@ type BaseAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
 }
 ```
 
@@ -5978,6 +7031,7 @@ type TextAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -5985,6 +7039,7 @@ type TextAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6007,6 +7062,23 @@ type TextAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "string"
   multiline?: boolean
   rich_text?: boolean
@@ -6028,6 +7100,7 @@ type LinkAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6035,6 +7108,7 @@ type LinkAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6057,6 +7131,23 @@ type LinkAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "link"
 }
 ```
@@ -6075,6 +7166,7 @@ type InternalAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6082,6 +7174,7 @@ type InternalAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6104,6 +7197,23 @@ type InternalAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "internal"
 }
 ```
@@ -6122,6 +7232,7 @@ type BooleanAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6129,6 +7240,7 @@ type BooleanAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6151,6 +7263,23 @@ type BooleanAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "boolean"
   display_type?: "switch" | "checkbox"
 }
@@ -6170,6 +7299,7 @@ type DateAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6177,6 +7307,7 @@ type DateAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6199,6 +7330,23 @@ type DateAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "date" | "datetime"
 }
 ```
@@ -6217,6 +7365,7 @@ type CountryAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6224,6 +7373,7 @@ type CountryAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6246,6 +7396,23 @@ type CountryAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "country"
 }
 ```
@@ -6264,6 +7431,7 @@ type SelectAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6271,6 +7439,7 @@ type SelectAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6293,6 +7462,23 @@ type SelectAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "select" | "radio"
   options?: Array<{
     value: string
@@ -6316,6 +7502,7 @@ type MultiSelectAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6323,6 +7510,7 @@ type MultiSelectAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6345,6 +7533,23 @@ type MultiSelectAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "multiselect" | "checkbox"
   disable_case_sensitive?: boolean
   allow_extra_options?: boolean
@@ -6370,6 +7575,7 @@ type StatusAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6377,6 +7583,7 @@ type StatusAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6399,6 +7606,23 @@ type StatusAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "status"
   options?: Array<string | {
     value: string
@@ -6421,6 +7645,7 @@ type SequenceAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6428,6 +7653,7 @@ type SequenceAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6450,6 +7676,23 @@ type SequenceAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "sequence"
   prefix?: string
   start_number?: number
@@ -6470,6 +7713,7 @@ type FileAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6477,6 +7721,7 @@ type FileAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6499,12 +7744,30 @@ type FileAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "image" | "file"
   multiple?: boolean
   allowed_extensions?: string[]
   display_images_landscaped?: boolean
   enable_description?: boolean
   default_access_control?: "public-read" | "private"
+  file_size_bytes?: number
 }
 ```
 
@@ -6522,6 +7785,7 @@ type CurrencyAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6529,6 +7793,7 @@ type CurrencyAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6551,6 +7816,23 @@ type CurrencyAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "currency"
   currency_selector_only?: boolean
   currency: Array<{
@@ -6600,6 +7882,7 @@ type RelationAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6607,6 +7890,7 @@ type RelationAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6629,12 +7913,28 @@ type RelationAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "list-view"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "relation"
   relation_type?: "has_many" | "has_one"
   reverse_attributes?: Record<string, string>
   relation_affinity_mode?: "weak" | "strong"
   enable_relation_picker?: boolean
-  edit_mode?: "list-view"
   details_view_mode_enabled?: boolean
   relation_picker_filter?: {
     q: string
@@ -6676,6 +7976,7 @@ type UserRelationAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6683,6 +7984,7 @@ type UserRelationAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6705,6 +8007,23 @@ type UserRelationAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "relation_user"
   multiple?: boolean
 }
@@ -6724,6 +8043,7 @@ type PartnerOrganisationAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6731,6 +8051,7 @@ type PartnerOrganisationAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6753,6 +8074,23 @@ type PartnerOrganisationAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "partner_organisation"
 }
 ```
@@ -6771,6 +8109,7 @@ type PortalAccessAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6778,6 +8117,7 @@ type PortalAccessAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6800,7 +8140,90 @@ type PortalAccessAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "portal_access"
+}
+```
+
+### `PortalRoleAttribute`
+
+```ts
+type PortalRoleAttribute = {
+  id?: string
+  name: string
+  label: string
+  placeholder?: string
+  hidden?: boolean
+  show_in_table?: boolean
+  sortable?: boolean
+  required?: boolean
+  readonly?: boolean
+  deprecated?: boolean
+  overridable_attribute?: boolean
+  default_value?: unknown
+  group?: string
+  order?: number
+  layout?: string
+  hide_label?: boolean
+  icon?: string
+  render_condition?: string
+  data_classification?: "public" | "pii"
+  _purpose?: string[]
+  _manifest?: string // uuid[]
+  constraints?: object
+  feature_flag?: string
+  settings_flag?: Array<{
+    name?: string
+    enabled?: boolean
+  }>
+  value_formatter?: string
+  preview_value_formatter?: string
+  entity_builder_disable_edit?: boolean
+  protected?: boolean
+  info_helpers?: {
+    hint_text?: string
+    hint_text_key?: string
+    hint_custom_component?: string
+    hint_tooltip_placement?: string
+  }
+  explicit_searchable?: boolean
+  exclude_from_search?: boolean
+  repeatable?: boolean
+  has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
+  type: "portal_role"
 }
 ```
 
@@ -6843,6 +8266,7 @@ type AddressAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6850,6 +8274,7 @@ type AddressAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6872,6 +8297,23 @@ type AddressAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "address"
   default_address_fields?: string[]
 }
@@ -6891,6 +8333,7 @@ type AddressRelationAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6898,6 +8341,7 @@ type AddressRelationAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6920,6 +8364,23 @@ type AddressRelationAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "relation_address"
   default_address_fields?: string[]
 }
@@ -6939,6 +8400,7 @@ type PaymentMethodRelationAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6946,6 +8408,7 @@ type PaymentMethodRelationAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -6968,6 +8431,23 @@ type PaymentMethodRelationAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "relation_payment_method"
 }
 ```
@@ -6986,6 +8466,7 @@ type InvitationEmailAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -6993,6 +8474,7 @@ type InvitationEmailAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7015,6 +8497,23 @@ type InvitationEmailAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "invitation_email"
 }
 ```
@@ -7033,6 +8532,7 @@ type AutomationAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7040,6 +8540,7 @@ type AutomationAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7062,6 +8563,23 @@ type AutomationAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "automation"
 }
 ```
@@ -7080,6 +8598,7 @@ type InternalUserAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7087,6 +8606,7 @@ type InternalUserAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7109,6 +8629,23 @@ type InternalUserAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "internal_user"
 }
 ```
@@ -7127,6 +8664,7 @@ type PurposeAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7134,6 +8672,7 @@ type PurposeAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7156,6 +8695,23 @@ type PurposeAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "purpose"
 }
 ```
@@ -7174,6 +8730,7 @@ type RepeatableAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7181,6 +8738,7 @@ type RepeatableAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7203,6 +8761,23 @@ type RepeatableAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
 }
 ```
 
@@ -7220,6 +8795,7 @@ type TagsAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7227,6 +8803,7 @@ type TagsAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7249,6 +8826,23 @@ type TagsAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "tags"
   options?: string[]
   suggestions?: string[]
@@ -7269,6 +8863,7 @@ type MessageEmailAddressAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7276,6 +8871,7 @@ type MessageEmailAddressAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7298,6 +8894,23 @@ type MessageEmailAddressAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "message_email_address"
   address?: string
   send_status?: string
@@ -7319,6 +8932,7 @@ type NumberAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7326,6 +8940,7 @@ type NumberAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7348,10 +8963,108 @@ type NumberAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "number"
   data_type?: "number" | "string"
   format?: string
   show_separator?: boolean
+}
+```
+
+### `TableAttribute`
+
+```ts
+type TableAttribute = {
+  id?: string
+  name: string
+  label: string
+  placeholder?: string
+  hidden?: boolean
+  show_in_table?: boolean
+  sortable?: boolean
+  required?: boolean
+  readonly?: boolean
+  deprecated?: boolean
+  overridable_attribute?: boolean
+  default_value?: unknown
+  group?: string
+  order?: number
+  layout?: string
+  hide_label?: boolean
+  icon?: string
+  render_condition?: string
+  data_classification?: "public" | "pii"
+  _purpose?: string[]
+  _manifest?: string // uuid[]
+  constraints?: object
+  feature_flag?: string
+  settings_flag?: Array<{
+    name?: string
+    enabled?: boolean
+  }>
+  value_formatter?: string
+  preview_value_formatter?: string
+  entity_builder_disable_edit?: boolean
+  protected?: boolean
+  info_helpers?: {
+    hint_text?: string
+    hint_text_key?: string
+    hint_custom_component?: string
+    hint_tooltip_placement?: string
+  }
+  explicit_searchable?: boolean
+  exclude_from_search?: boolean
+  repeatable?: boolean
+  has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
+  type: "table"
+  columns?: Array<{
+    name: string
+    label: string
+    type?: "string" | "number" | "date" | "boolean"
+    width?: string
+    required?: boolean
+    bold?: boolean
+  }>
+  min_rows?: number
+  max_rows?: number
+  transposed?: boolean
+  column_header?: {
+    template?: string
+    start?: number
+  }
 }
 ```
 
@@ -7369,6 +9082,7 @@ type ConsentAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7376,6 +9090,7 @@ type ConsentAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7398,6 +9113,23 @@ type ConsentAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "consent"
   topic: string
   identifiers?: string[]
@@ -7418,6 +9150,7 @@ type OrderedListAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7425,6 +9158,7 @@ type OrderedListAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7447,6 +9181,23 @@ type OrderedListAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "ordered_list"
 }
 ```
@@ -7465,6 +9216,7 @@ type EmailAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7472,6 +9224,7 @@ type EmailAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7494,6 +9247,23 @@ type EmailAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "email"
 }
 ```
@@ -7512,6 +9282,7 @@ type PhoneAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7519,6 +9290,7 @@ type PhoneAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7541,6 +9313,23 @@ type PhoneAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "phone"
 }
 ```
@@ -7559,6 +9348,7 @@ type PaymentAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7566,6 +9356,7 @@ type PaymentAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7588,6 +9379,23 @@ type PaymentAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "payment"
 }
 ```
@@ -7606,6 +9414,7 @@ type PriceComponentAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7613,6 +9422,7 @@ type PriceComponentAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7635,6 +9445,23 @@ type PriceComponentAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "price_component"
 }
 ```
@@ -7653,6 +9480,7 @@ type ComputedAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7660,6 +9488,7 @@ type ComputedAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7682,6 +9511,23 @@ type ComputedAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "computed"
   computed?: boolean
   amount_field?: string
@@ -7703,6 +9549,7 @@ type PartnerStatusAttribute = {
   required?: boolean
   readonly?: boolean
   deprecated?: boolean
+  overridable_attribute?: boolean
   default_value?: unknown
   group?: string
   order?: number
@@ -7710,6 +9557,7 @@ type PartnerStatusAttribute = {
   hide_label?: boolean
   icon?: string
   render_condition?: string
+  data_classification?: "public" | "pii"
   _purpose?: string[]
   _manifest?: string // uuid[]
   constraints?: object
@@ -7732,6 +9580,23 @@ type PartnerStatusAttribute = {
   exclude_from_search?: boolean
   repeatable?: boolean
   has_primary?: boolean
+  edit_mode?: "direct" | "external" | "approval"
+  edit_mode_config?: {
+    match_strategy?: "exact" | "fuzzy" | "any"
+    fuzzy_config?: {
+      type: { ... }
+      suffix_length?: { ... }
+      fields_to_ignore?: { ... }
+      regex_flags?: { ... }
+      country_code?: { ... }
+      match_on?: { ... }
+      key?: { ... }
+      mode?: { ... }
+      ordered?: { ... }
+      require_tags_match?: { ... }
+      pattern?: { ... }
+    }
+  }
   type: "partner_status"
 }
 ```
@@ -7805,12 +9670,101 @@ type GroupHeadlineWithCompositeID = {
 }
 ```
 
+### `BaseConditionDefinition`
+
+```ts
+type BaseConditionDefinition = {
+  id: string // uuid
+  name: string
+  label: string
+}
+```
+
+### `ScalarConditionDefinition`
+
+```ts
+type ScalarConditionDefinition = {
+  id: string // uuid
+  name: string
+  label: string
+  type: "string" | "number" | "date" | "daterange" | "boolean"
+}
+```
+
+### `SelectConditionDefinition`
+
+```ts
+type SelectConditionDefinition = {
+  id: string // uuid
+  name: string
+  label: string
+  type: "select"
+  options?: Array<string | {
+    value: string
+    title?: string
+  }>
+}
+```
+
+### `LocationConditionDefinition`
+
+```ts
+type LocationConditionDefinition = {
+  id: string // uuid
+  name: string
+  label: string
+  type: "location"
+  format?: "postal_code" | "postal_code_city" | "power_grid_operator" | "gas_grid_operator"
+}
+```
+
+### `ConditionDefinition`
+
+One dimension that conditional variants of an entity type are keyed by. `type`
+discriminates the variants: only a `select` condition carries `options`, and only a
+`location` condition carries `format`.
+
+
+```ts
+type ConditionDefinition = {
+  id: string // uuid
+  name: string
+  label: string
+  type: "string" | "number" | "date" | "daterange" | "boolean"
+} | {
+  id: string // uuid
+  name: string
+  label: string
+  type: "select"
+  options?: Array<string | {
+    value: string
+    title?: string
+  }>
+} | {
+  id: string // uuid
+  name: string
+  label: string
+  type: "location"
+  format?: "postal_code" | "postal_code_city" | "power_grid_operator" | "gas_grid_operator"
+}
+```
+
 ### `EntitySlug`
 
 URL-friendly identifier for the entity schema
 
 ```ts
 type EntitySlug = string
+```
+
+### `AdjustInstallmentCapabilityConfig`
+
+Configuration for adjusting a contract installment through a Journey.
+
+```ts
+type AdjustInstallmentCapabilityConfig = {
+  journey_id: string
+}
 ```
 
 ### `EntityCapability`
@@ -7833,6 +9787,7 @@ type EntityCapability = {
     required?: boolean
     readonly?: boolean
     deprecated?: boolean
+    overridable_attribute?: boolean
     default_value?: unknown
     group?: string
     order?: number
@@ -7840,6 +9795,7 @@ type EntityCapability = {
     hide_label?: boolean
     icon?: string
     render_condition?: string
+    data_classification?: "public" | "pii"
     _purpose?: string[]
     _manifest?: string // uuid[]
     constraints?: object
@@ -7862,6 +9818,11 @@ type EntityCapability = {
     exclude_from_search?: boolean
     repeatable?: boolean
     has_primary?: boolean
+    edit_mode?: "direct" | "external" | "approval"
+    edit_mode_config?: {
+      match_strategy?: { ... }
+      fuzzy_config?: { ... }
+    }
     type: "string"
     multiline?: boolean
     rich_text?: boolean
@@ -7877,6 +9838,7 @@ type EntityCapability = {
     required?: boolean
     readonly?: boolean
     deprecated?: boolean
+    overridable_attribute?: boolean
     default_value?: unknown
     group?: string
     order?: number
@@ -7884,6 +9846,7 @@ type EntityCapability = {
     hide_label?: boolean
     icon?: string
     render_condition?: string
+    data_classification?: "public" | "pii"
     _purpose?: string[]
     _manifest?: string // uuid[]
     constraints?: object
@@ -7906,18 +9869,9 @@ type EntityCapability = {
     exclude_from_search?: boolean
     repeatable?: boolean
     has_primary?: boolean
-    type: "link"
-  } | {
-    id?: string
-    name: string
-    label: string
-    placeholder?: string
-    hidden?: boolean
-    show_in_table?: boolean
-    sortable?: boolean
-    required?: boolean
-    readonly?: boolean
-    deprecated?: boolean
+    edit_mode?: "direct" | "external" | "approval"
+    edit_mode_config?: {
+      match_strategy?: { ... }
   // ...
 }
 ```
@@ -7940,6 +9894,7 @@ type EntityCapabilityWithCompositeID = {
     required?: boolean
     readonly?: boolean
     deprecated?: boolean
+    overridable_attribute?: boolean
     default_value?: unknown
     group?: string
     order?: number
@@ -7947,6 +9902,7 @@ type EntityCapabilityWithCompositeID = {
     hide_label?: boolean
     icon?: string
     render_condition?: string
+    data_classification?: "public" | "pii"
     _purpose?: string[]
     _manifest?: string // uuid[]
     constraints?: object
@@ -7969,6 +9925,11 @@ type EntityCapabilityWithCompositeID = {
     exclude_from_search?: boolean
     repeatable?: boolean
     has_primary?: boolean
+    edit_mode?: "direct" | "external" | "approval"
+    edit_mode_config?: {
+      match_strategy?: { ... }
+      fuzzy_config?: { ... }
+    }
     type: "string"
     multiline?: boolean
     rich_text?: boolean
@@ -7984,6 +9945,7 @@ type EntityCapabilityWithCompositeID = {
     required?: boolean
     readonly?: boolean
     deprecated?: boolean
+    overridable_attribute?: boolean
     default_value?: unknown
     group?: string
     order?: number
@@ -7991,6 +9953,7 @@ type EntityCapabilityWithCompositeID = {
     hide_label?: boolean
     icon?: string
     render_condition?: string
+    data_classification?: "public" | "pii"
     _purpose?: string[]
     _manifest?: string // uuid[]
     constraints?: object
@@ -8013,18 +9976,9 @@ type EntityCapabilityWithCompositeID = {
     exclude_from_search?: boolean
     repeatable?: boolean
     has_primary?: boolean
-    type: "link"
-  } | {
-    id?: string
-    name: string
-    label: string
-    placeholder?: string
-    hidden?: boolean
-    show_in_table?: boolean
-    sortable?: boolean
-    required?: boolean
-    readonly?: boolean
-    deprecated?: boolean
+    edit_mode?: "direct" | "external" | "approval"
+    edit_mode_config?: {
+      match_strategy?: { ... }
   // ...
 }
 ```
@@ -8123,6 +10077,22 @@ type BaseEntity = {
   _purpose?: string[]
   _purpose_name?: string[]
   _manifest?: string // uuid[]
+  _changesets?: Record<string, {
+    proposed_value: unknown
+    previous_value?: unknown
+    created_at: string // date-time
+    created_by?: {
+      type?: { ... }
+      id?: { ... }
+    }
+    edit_mode: "external" | "approval"
+    match_strategy?: "exact" | "fuzzy" | "any"
+    source?: string
+    related_values?: Record<string, {
+      proposed_value?: { ... }
+      previous_value?: { ... }
+    }>
+  }>
 }
 ```
 
@@ -8150,6 +10120,22 @@ type Entity = {
   _purpose?: string[]
   _purpose_name?: string[]
   _manifest?: string // uuid[]
+  _changesets?: Record<string, {
+    proposed_value: unknown
+    previous_value?: unknown
+    created_at: string // date-time
+    created_by?: {
+      type?: { ... }
+      id?: { ... }
+    }
+    edit_mode: "external" | "approval"
+    match_strategy?: "exact" | "fuzzy" | "any"
+    source?: string
+    related_values?: Record<string, {
+      proposed_value?: { ... }
+      previous_value?: { ... }
+    }>
+  }>
 }
 ```
 
@@ -8177,6 +10163,22 @@ type NullableEntity = {
   _purpose?: string[]
   _purpose_name?: string[]
   _manifest?: string // uuid[]
+  _changesets?: Record<string, {
+    proposed_value: unknown
+    previous_value?: unknown
+    created_at: string // date-time
+    created_by?: {
+      type?: { ... }
+      id?: { ... }
+    }
+    edit_mode: "external" | "approval"
+    match_strategy?: "exact" | "fuzzy" | "any"
+    source?: string
+    related_values?: Record<string, {
+      proposed_value?: { ... }
+      previous_value?: { ... }
+    }>
+  }>
 }
 ```
 
@@ -8242,6 +10244,22 @@ type EntityItem = {
   _purpose?: string[]
   _purpose_name?: string[]
   _manifest?: string // uuid[]
+  _changesets?: Record<string, {
+    proposed_value: unknown
+    previous_value?: unknown
+    created_at: string // date-time
+    created_by?: {
+      type?: { ... }
+      id?: { ... }
+    }
+    edit_mode: "external" | "approval"
+    match_strategy?: "exact" | "fuzzy" | "any"
+    source?: string
+    related_values?: Record<string, {
+      proposed_value?: { ... }
+      previous_value?: { ... }
+    }>
+  }>
 }
 ```
 
@@ -8529,6 +10547,7 @@ type EntitySearchParams = {
   from?: number
   size?: number
   hydrate?: boolean
+  anonymize?: boolean
   fields?: string[]
   aggs?: object
   include_deleted?: "true" | "false" | "only"
@@ -8569,42 +10588,16 @@ type EntityListParams = {
     exists?: {
       field: { ... }
     }
-    $and?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $or?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $not?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
+    $and?: { ... }
+    $or?: { ... }
+    $not?: { ... }
   }>
   allow_targeting_all_schemas?: boolean
   sort?: string | string[]
   from?: number
   size?: number
   hydrate?: boolean
+  anonymize?: boolean
   fields?: string[]
   aggs?: object
   include_deleted?: "true" | "false" | "only"
@@ -8639,90 +10632,10 @@ type SearchFilter = Array<{
   exists?: {
     field: string
   }
-  $and?: Array<{
-    term?: Record<string, string | number | boolean>
-    terms?: Record<string, string | number | boolean[]>
-    ids?: {
-      values?: { ... }
-    }
-    range?: Record<string, {
-      gt?: { ... }
-      gte?: { ... }
-      lt?: { ... }
-      lte?: { ... }
-      format?: { ... }
-      relation?: { ... }
-      time_zone?: { ... }
-    }>
-    exists?: {
-      field: { ... }
-    }
-    $and?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $or?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $not?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-  }>
-  $or?: Array<{
-    term?: Record<string, string | number | boolean>
-    terms?: Record<string, string | number | boolean[]>
-    ids?: {
-      values?: { ... }
-    }
-    range?: Record<string, {
-      gt?: { ... }
-      gte?: { ... }
-      lt?: { ... }
-      lte?: { ... }
-      format?: { ... }
-      relation?: { ... }
-      time_zone?: { ... }
-    }>
-    exists?: {
-      field: { ... }
-    }
-    $and?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-      exists?: { ... }
-      $and?: { ... }
-      $or?: { ... }
-      $not?: { ... }
-    }>
-    $or?: Array<{
-      term?: { ... }
-      terms?: { ... }
-      ids?: { ... }
-      range?: { ... }
-  // ...
-}
+  $and?: { ... }
+  $or?: { ... }
+  $not?: { ... }
+}>
 ```
 
 ### `SearchFilterValue`
@@ -8741,6 +10654,7 @@ type EntitySearchOptions = {
   from?: number
   size?: number
   hydrate?: boolean
+  anonymize?: boolean
   fields?: string[]
   aggs?: object
   include_deleted?: "true" | "false" | "only"
@@ -8775,6 +10689,137 @@ type EntityImportParams = {
     key: string
   }
   schema: string
+  unique_key?: string[]
+  dry_run?: boolean
+  dry_run_job_id?: string
+  trigger_automations?: boolean
+}
+```
+
+### `ImportRowOutcomeCounts`
+
+Number of rows per outcome, in the order the outcomes are evaluated.
+
+```ts
+type ImportRowOutcomeCounts = {
+  error?: number
+  skipped_empty_key?: number
+  skipped_duplicate_in_file?: number
+  skipped_id_not_found?: number
+  skipped_ambiguous?: number
+  create?: number
+  unchanged?: number
+  update?: number
+}
+```
+
+### `ImportJobSummary`
+
+One import job (import or dry run) in the import history of a schema.
+
+```ts
+type ImportJobSummary = {
+  job_id: string
+  schema: string
+  status: "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED"
+  dry_run: boolean
+  trigger_automations?: boolean
+  started_by?: string
+  started_at: string // date-time
+  finished_at?: string // date-time
+  file_name?: string
+  total?: number
+  importedEntitiesCount?: number
+  failedEntitiesCount?: number
+  outcome_counts?: {
+    error?: number
+    skipped_empty_key?: number
+    skipped_duplicate_in_file?: number
+    skipped_id_not_found?: number
+    skipped_ambiguous?: number
+    create?: number
+    unchanged?: number
+    update?: number
+  }
+  failure_code?: "invalid_csv_bad_headers" | "dry_run_required" | "dry_run_mismatch" | "dry_run_expired" | "import_file_changed" | "prescan_missing" | "import_too_large" | "token_expired" | "max_duration_exceeded" | "no_progress" | "internal_error"
+  unique_key?: string[]
+}
+```
+
+### `ImportIssue`
+
+Rows of an import job that share one reason not to be written.
+
+```ts
+type ImportIssue = {
+  severity: "blocking" | "warning"
+  reason: string
+  column?: string
+  count: number
+  example_rows: number[]
+}
+```
+
+### `ImportFailureCode`
+
+Machine readable reason of a failed job. `failure_reason` holds the human text.
+- `invalid_csv_bad_headers`: the file has neither a `_schema` nor an `_id` column
+- `dry_run_required`, `dry_run_mismatch`, `dry_run_expired`: the dry-run rule rejected the commit before any row
+- `import_file_changed`: 
+
+```ts
+type ImportFailureCode = "invalid_csv_bad_headers" | "dry_run_required" | "dry_run_mismatch" | "dry_run_expired" | "import_file_changed" | "prescan_missing" | "import_too_large" | "token_expired" | "max_duration_exceeded" | "no_progress" | "internal_error"
+```
+
+### `ImportProgress`
+
+Progress of an import job. The fields `dry_run`, `unique_key`, `outcome_counts`, `report_url`,
+`S3Reference` and `started_by` are only set for jobs started with `unique_key`, `dry_run` or `dry_run_job_id`. For those,
+`importedEntitiesCount` is `create` plus `update` and `failedEntitiesCount` counts 
+
+```ts
+type ImportProgress = {
+  jobPollId?: string
+  trigger_automations?: boolean
+  started_by?: string
+  status?: "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED"
+  total?: number
+  importedEntitiesCount?: number
+  failedEntitiesCount?: number
+  importedEntitiesUrl?: string
+  failedEntitiesUrl?: string
+  updated_at?: string // date-time
+  failure_reason?: string
+  failure_code?: "invalid_csv_bad_headers" | "dry_run_required" | "dry_run_mismatch" | "dry_run_expired" | "import_file_changed" | "prescan_missing" | "import_too_large" | "token_expired" | "max_duration_exceeded" | "no_progress" | "internal_error"
+  abortable?: boolean
+  dry_run?: boolean
+  unique_key?: string[]
+  outcome_counts?: {
+    error?: number
+    skipped_empty_key?: number
+    skipped_duplicate_in_file?: number
+    skipped_id_not_found?: number
+    skipped_ambiguous?: number
+    create?: number
+    unchanged?: number
+    update?: number
+  }
+  report_url?: string
+  S3Reference?: {
+    bucket?: string
+    key?: string
+  }
+  issues?: Array<{
+    severity: "blocking" | "warning"
+    reason: string
+    column?: string
+    count: number
+    example_rows: number[]
+  }>
+  phase?: "scanning" | "dry_run" | "importing" | "finalizing" | "done"
+  heartbeat_at?: string // date-time
+  started_at?: string // date-time
+  finished_at?: string // date-time
 }
 ```
 
@@ -8792,6 +10837,7 @@ type GraphQueryRequest = {
       schema: { ... }
       cardinality?: { ... }
       fields?: { ... }
+      filter?: { ... }
     }>
     edges: Array<{
       from: { ... }
@@ -8799,6 +10845,7 @@ type GraphQueryRequest = {
     }>
   }
   hydrate?: boolean
+  apply_changesets?: boolean
 }
 ```
 
@@ -8820,6 +10867,10 @@ type GraphDefinition = {
     schema: string
     cardinality?: "one" | "many"
     fields?: object
+    filter?: Array<{
+      attribute: { ... }
+      value: { ... }
+    }>
   }>
   edges: Array<{
     from: string
@@ -8836,6 +10887,21 @@ type GraphNode = {
   schema: string
   cardinality?: "one" | "many"
   fields?: object
+  filter?: Array<{
+    attribute: string
+    value: object
+  }>
+}
+```
+
+### `GraphNodeFilter`
+
+Entities are included in this node's result only if `attribute` exactly equals the literal `value`.
+
+```ts
+type GraphNodeFilter = {
+  attribute: string
+  value: object
 }
 ```
 
@@ -8874,6 +10940,16 @@ type GraphQueryResponse = {
     _purpose?: string[]
     _purpose_name?: string[]
     _manifest?: string // uuid[]
+    _changesets?: Record<string, {
+      proposed_value: { ... }
+      previous_value?: { ... }
+      created_at: { ... }
+      created_by?: { ... }
+      edit_mode: { ... }
+      match_strategy?: { ... }
+      source?: { ... }
+      related_values?: { ... }
+    }>
   } | Array<{
     _id?: object
     _org?: string
@@ -8895,6 +10971,16 @@ type GraphQueryResponse = {
     _purpose?: string[]
     _purpose_name?: string[]
     _manifest?: string // uuid[]
+    _changesets?: Record<string, {
+      proposed_value: { ... }
+      previous_value?: { ... }
+      created_at: { ... }
+      created_by?: { ... }
+      edit_mode: { ... }
+      match_strategy?: { ... }
+      source?: { ... }
+      related_values?: { ... }
+    }>
   }>>
   edges: Array<{
     from: string
@@ -8929,6 +11015,16 @@ type EntitySearchResults = {
     _purpose?: string[]
     _purpose_name?: string[]
     _manifest?: string // uuid[]
+    _changesets?: Record<string, {
+      proposed_value: { ... }
+      previous_value?: { ... }
+      created_at: { ... }
+      created_by?: { ... }
+      edit_mode: { ... }
+      match_strategy?: { ... }
+      source?: { ... }
+      related_values?: { ... }
+    }>
   }>
   aggregations?: object
   stable_query_id?: string
@@ -8944,8 +11040,9 @@ Advanced: explicit Elasticsearch index mapping definitions for entity data
 ```ts
 type SearchMappings = Record<string, {
   index?: boolean
-  type?: "keyword" | "text" | "boolean" | "integer" | "long" | "float" | "date" | "flattened" | "nested"
+  type?: "keyword" | "text" | "boolean" | "integer" | "long" | "float" | "date" | "flattened" | "nested" | "object"
   fields?: unknown
+  dynamic?: boolean
 }>
 ```
 
@@ -9035,6 +11132,16 @@ type EntityOperation = {
     _purpose?: string[]
     _purpose_name?: string[]
     _manifest?: string // uuid[]
+    _changesets?: Record<string, {
+      proposed_value: { ... }
+      previous_value?: { ... }
+      created_at: { ... }
+      created_by?: { ... }
+      edit_mode: { ... }
+      match_strategy?: { ... }
+      source?: { ... }
+      related_values?: { ... }
+    }>
   }
   diff?: {
     added?: {
@@ -9051,6 +11158,7 @@ type EntityOperation = {
       _purpose?: { ... }
       _purpose_name?: { ... }
       _manifest?: { ... }
+      _changesets?: { ... }
     }
     updated?: {
       _id?: { ... }
@@ -9066,6 +11174,7 @@ type EntityOperation = {
       _purpose?: { ... }
       _purpose_name?: { ... }
       _manifest?: { ... }
+      _changesets?: { ... }
     }
     deleted?: {
       _id?: { ... }
@@ -9081,8 +11190,34 @@ type EntityOperation = {
       _purpose?: { ... }
       _purpose_name?: { ... }
       _manifest?: { ... }
+      _changesets?: { ... }
     }
   }
+  source_context?: {
+    source: "portal" | "epilot" | "erp" | "system" | "api" | "external" | "journey" | "automation" | "unknown"
+    source_label?: string
+    source_system?: string
+    source_reference?: string
+    actor_type?: "user" | "portal_user" | "api_client" | "automation" | "system"
+    actor_id?: string
+    effective_at?: string // date-time
+  // ...
+}
+```
+
+### `EntityOperationSourceContext`
+
+Billing and audit source context for the operation event.
+
+```ts
+type EntityOperationSourceContext = {
+  source: "portal" | "epilot" | "erp" | "system" | "api" | "external" | "journey" | "automation" | "unknown"
+  source_label?: string
+  source_system?: string
+  source_reference?: string
+  actor_type?: "user" | "portal_user" | "api_client" | "automation" | "system"
+  actor_id?: string
+  effective_at?: string // date-time
 }
 ```
 
@@ -9134,13 +11269,41 @@ type ActivityItem = {
       _purpose?: { ... }
       _purpose_name?: { ... }
       _manifest?: { ... }
+      _changesets?: { ... }
     }
     diff?: {
       added?: { ... }
       updated?: { ... }
       deleted?: { ... }
     }
+    source_context?: {
+      source: { ... }
+      source_label?: { ... }
+      source_system?: { ... }
+      source_reference?: { ... }
+      actor_type?: { ... }
+      actor_id?: { ... }
+      effective_at?: { ... }
+    }
+    _workflow_origin?: {
+      workflow_exec_id?: { ... }
+      flow_template_id?: { ... }
+    }
+    _automation_chain?: string[]
   }>
+}
+```
+
+### `EntitySummary`
+
+Latest AI generated summary of an entity
+
+```ts
+type EntitySummary = {
+  summary: string
+  variant: "short" | "detailed" | "action_points"
+  execution_id: string
+  created_at: string // date-time
 }
 ```
 
@@ -9196,6 +11359,7 @@ type SavedViewPartial = {
   isFavoritedBy?: string[]
   created_by?: {
     user_id?: string
+    org_id?: string
   } | {
     source?: "SYSTEM" | "BLUEPRINT"
   }
@@ -9217,6 +11381,7 @@ type SavedView = {
   isFavoritedBy?: string[]
   created_by?: {
     user_id?: string
+    org_id?: string
   } | {
     source?: "SYSTEM" | "BLUEPRINT"
   }
@@ -9242,14 +11407,14 @@ type Taxonomy = {
   created_by?: string
   enabled?: boolean
   order?: number
-  enabled_locations?: "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | string[]
+  enabled_locations?: "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | "user" | string[]
 }
 ```
 
 ### `TaxonomyLocationId`
 
 ```ts
-type TaxonomyLocationId = "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment"
+type TaxonomyLocationId = "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | "user"
 ```
 
 ### `TaxonomySearchIncludeArchivedParam`
@@ -9279,7 +11444,7 @@ type TaxonomyClassification = {
   updated_at?: string // date-time
   archived?: boolean
   starred?: boolean
-  enabled_locations?: "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | string[]
+  enabled_locations?: "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | "user" | string[]
   enabled_purposes?: string[]
   _manifest?: string // uuid[]
 }
@@ -9329,7 +11494,7 @@ type ClassificationsUpdate = {
     updated_at?: string // date-time
     archived?: boolean
     starred?: boolean
-    enabled_locations?: "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | string[]
+    enabled_locations?: "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | "user" | string[]
     enabled_purposes?: string[]
     _manifest?: string // uuid[]
   }>
@@ -9343,7 +11508,7 @@ type ClassificationsUpdate = {
     updated_at?: string // date-time
     archived?: boolean
     starred?: boolean
-    enabled_locations?: "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | string[]
+    enabled_locations?: "account" | "contact" | "contract" | "email_template" | "file" | "journey" | "meter_counter" | "meter" | "opportunity" | "order" | "partner" | "price" | "product" | "submission" | "tax" | "message" | "portal_user" | "request" | "comment" | "user" | string[]
     enabled_purposes?: string[]
     _manifest?: string // uuid[]
   }>
@@ -9427,4 +11592,188 @@ type ErrorObject = {
   status?: number
   error?: string
 }
+```
+
+### `ChangesetCreator`
+
+Identifies the actor that created the changeset.
+
+```ts
+type ChangesetCreator = {
+  type?: "user" | "portal_user" | "api_client" | "automation"
+  id?: string
+}
+```
+
+### `Changeset`
+
+A pending proposed change for a single entity attribute, awaiting external confirmation or human approval.
+
+```ts
+type Changeset = {
+  proposed_value: unknown
+  previous_value?: unknown
+  created_at: string // date-time
+  created_by?: {
+    type?: "user" | "portal_user" | "api_client" | "automation"
+    id?: string
+  }
+  edit_mode: "external" | "approval"
+  match_strategy?: "exact" | "fuzzy" | "any"
+  source?: string
+  related_values?: Record<string, {
+    proposed_value?: unknown
+    previous_value?: unknown
+  }>
+}
+```
+
+### `ChangesetMap`
+
+Map of attribute name to pending changeset. At most one changeset per attribute.
+
+```ts
+type ChangesetMap = Record<string, {
+  proposed_value: unknown
+  previous_value?: unknown
+  created_at: string // date-time
+  created_by?: {
+    type?: "user" | "portal_user" | "api_client" | "automation"
+    id?: string
+  }
+  edit_mode: "external" | "approval"
+  match_strategy?: "exact" | "fuzzy" | "any"
+  source?: string
+  related_values?: Record<string, {
+    proposed_value?: unknown
+    previous_value?: unknown
+  }>
+}>
+```
+
+### `MeterReadingChangesetEntry`
+
+A meter readings changeset entry — service-managed by metering-api.
+Stored on `Meter._meter_readings_changeset` array attribute. Each entry mirrors a
+ClickHouse meter reading row plus a changeset metadata overlay.
+
+Note: `org_id` is NOT stored on the entry. The entries live on the Meter entity,
+whic
+
+```ts
+type MeterReadingChangesetEntry = {
+  value: number
+  direction?: "feed-in" | "feed-out"
+  timestamp?: string // date-time
+  meter_id: string // uuid
+  counter_id: string // uuid
+  source?: string
+  reason?: string
+  read_by?: string
+  status?: "valid" | "in-validation" | "implausible"
+  external_id?: string
+  remark?: string
+  metadata?: Record<string, string>
+  changeset_id: string
+  edit_mode: "external" | "approval"
+  match_strategy?: "exact" | "fuzzy"
+  timestamp_tolerance?: "exact" | {
+    type: "same-day"
+    timezone?: string
+  } | {
+    type: "within-seconds"
+    seconds: number
+  }
+  fuzzy_config?: {
+    percentage_threshold?: number
+    absolute_threshold?: number
+  }
+  created_at: string // date-time
+  created_by?: {
+    type?: "user" | "portal_user" | "api_client" | "automation"
+    id?: string
+  }
+  previous?: {
+    value?: number
+    direction?: "feed-in" | "feed-out"
+    timestamp?: string // date-time
+  }
+}
+```
+
+### `EditMode`
+
+Controls whether a write goes through immediately or is held as a pending entry
+on the parent entity's `_changesets` map.
+
+- `direct`: write applied immediately. No changeset created.
+- `external`: write held as a pending changeset; auto-cleared on a matching direct/ERP write.
+- `approval`: write he
+
+```ts
+type EditMode = "direct" | "external" | "approval"
+```
+
+### `EditModeConfig`
+
+Configuration for `edit_mode: external` auto-clear matching.
+Fields here (`match_strategy`, `fuzzy_config`) only take effect when
+`edit_mode` is `external`. They are ignored for `edit_mode: approval`,
+which never auto-clears and is resolved exclusively via the
+`:apply` / `:dismiss` changeset endpoin
+
+```ts
+type EditModeConfig = {
+  match_strategy?: "exact" | "fuzzy" | "any"
+  fuzzy_config?: {
+    type: "suffix" | "digits_only" | "normalize_phone" | "ignore_fields" | "set_equivalent" | "entry_match" | "relation_set" | "regex"
+    suffix_length?: number
+    fields_to_ignore?: string[]
+    regex_flags?: string
+    country_code?: string
+    match_on?: string
+    key?: string | string[]
+    mode?: "subset" | "exact_set"
+    ordered?: boolean
+    require_tags_match?: boolean
+    pattern?: string
+  }
+}
+```
+
+### `FuzzyConfig`
+
+Configuration for fuzzy auto-clear matching on `edit_mode: external` attributes.
+Not used for `edit_mode: approval`.
+
+Type compatibility with attribute shape is enforced at schema save time:
+- scalar string attributes: `suffix`, `digits_only`, `regex`
+- repeatable attributes: `set_equivalent`, `entr
+
+```ts
+type FuzzyConfig = {
+  type: "suffix" | "digits_only" | "normalize_phone" | "ignore_fields" | "set_equivalent" | "entry_match" | "relation_set" | "regex"
+  suffix_length?: number
+  fields_to_ignore?: string[]
+  regex_flags?: string
+  country_code?: string
+  match_on?: string
+  key?: string | string[]
+  mode?: "subset" | "exact_set"
+  ordered?: boolean
+  require_tags_match?: boolean
+  pattern?: string
+}
+```
+
+### `MatchStrategy`
+
+Strategy for auto-clearing a changeset on an `edit_mode: external` attribute
+when a direct write (`?direct=true`) arrives — typically an ERP inbound sync.
+Ignored for `edit_mode: approval`, which does not auto-clear and is resolved
+exclusively via the `:apply` / `:dismiss` changeset endpoints.
+- `ex
+
+```ts
+type MatchStrategy = "exact" | "fuzzy" | "any"
 ```

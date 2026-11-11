@@ -156,7 +156,8 @@ epilot notification getNotificationsV2 --jsonata 'results[0]'
           "email": false,
           "in_app": false
         }
-      }
+      },
+      "allowed_channels": ["in_app"]
     }
   ]
 }
@@ -263,7 +264,8 @@ epilot notification getNotifications --jsonata 'results[0]'
           "email": false,
           "in_app": false
         }
-      }
+      },
+      "allowed_channels": ["in_app"]
     }
   ]
 }
@@ -353,6 +355,7 @@ epilot notification createNotification \
       "in_app": false
     }
   },
+  "allowed_channels": ["in_app"],
   "read_state": false,
   "visibility_user_ids": ["1", "2", "3", "4", "5"]
 }'
@@ -470,7 +473,8 @@ epilot notification getNotification -p id=1 --jsonata '$'
       "email": false,
       "in_app": false
     }
-  }
+  },
+  "allowed_channels": ["in_app"]
 }
 ```
 

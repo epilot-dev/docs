@@ -57,10 +57,34 @@ const { data } = await validationRulesClient.getValidationRules(...)
 - [`NumericCondition`](#numericcondition)
 - [`NumericNestedCondition`](#numericnestedcondition)
 - [`NumericFactCondition`](#numericfactcondition)
+- [`ComparisonRuleType`](#comparisonruletype)
+- [`Condition`](#condition)
+- [`Operator`](#operator)
+- [`ConditionValue`](#conditionvalue)
+- [`ScalarValue`](#scalarvalue)
+- [`ValueReference`](#valuereference)
+- [`EnvironmentValue`](#environmentvalue)
+- [`ExternalValue`](#externalvalue)
+- [`ParameterValue`](#parametervalue)
+- [`StaticValue`](#staticvalue)
+- [`ContextValue`](#contextvalue)
+- [`ValueAdjustment`](#valueadjustment)
+- [`RelativeDateValue`](#relativedatevalue)
+- [`RangeValue`](#rangevalue)
+- [`NoValue`](#novalue)
+- [`DocumentRuleType`](#documentruletype)
+- [`DocumentCheck`](#documentcheck)
+- [`DocumentCondition`](#documentcondition)
+- [`DocumentOperator`](#documentoperator)
+- [`DocumentConditionValue`](#documentconditionvalue)
+- [`FileTypesValue`](#filetypesvalue)
+- [`CriteriaValue`](#criteriavalue)
+- [`AppliesWhen`](#applieswhen)
+- [`ContextRequirement`](#contextrequirement)
 
 ### `getValidationRules`
 
-Get all validation rules by organization Id
+Returns all validation rules belonging to the authenticated user's organization.
 
 `GET /v1/validation-rules`
 
@@ -80,8 +104,7 @@ const { data } = await client.getValidationRules()
       "used_by": [
         {
           "type": "journey",
-          "schema_slug": "string",
-          "source_id": "string"
+          "source_id": "journey-xyz789"
         }
       ],
       "rule": {
@@ -111,6 +134,11 @@ const { data } = await client.getValidationRules()
           ]
         }
       },
+      "contexts": [
+        {
+          "schema": "contract"
+        }
+      ],
       "_schema_version": "string",
       "_id": "string",
       "_organization_id": "string",
@@ -129,7 +157,7 @@ const { data } = await client.getValidationRules()
 
 ### `createValidationRule`
 
-Create Validation Rule
+Creates a new validation rule for the authenticated organization.
 
 `POST /v1/validation-rules`
 
@@ -142,8 +170,7 @@ const { data } = await client.createValidationRule(
     used_by: [
       {
         type: 'journey',
-        schema_slug: 'string',
-        source_id: 'string'
+        source_id: 'journey-xyz789'
       }
     ],
     rule: {
@@ -172,7 +199,12 @@ const { data } = await client.createValidationRule(
           }
         ]
       }
-    }
+    },
+    contexts: [
+      {
+        schema: 'contract'
+      }
+    ]
   },
 )
 ```
@@ -187,8 +219,7 @@ const { data } = await client.createValidationRule(
   "used_by": [
     {
       "type": "journey",
-      "schema_slug": "string",
-      "source_id": "string"
+      "source_id": "journey-xyz789"
     }
   ],
   "rule": {
@@ -218,6 +249,11 @@ const { data } = await client.createValidationRule(
       ]
     }
   },
+  "contexts": [
+    {
+      "schema": "contract"
+    }
+  ],
   "_schema_version": "string",
   "_id": "string",
   "_organization_id": "string",
@@ -234,7 +270,7 @@ const { data } = await client.createValidationRule(
 
 ### `getValidationRuleById`
 
-Get validation rule by ID
+Retrieves a specific validation rule by its unique ID.
 
 `GET /v1/validation-rules/{ruleId}`
 
@@ -254,8 +290,7 @@ const { data } = await client.getValidationRuleById({
   "used_by": [
     {
       "type": "journey",
-      "schema_slug": "string",
-      "source_id": "string"
+      "source_id": "journey-xyz789"
     }
   ],
   "rule": {
@@ -285,6 +320,11 @@ const { data } = await client.getValidationRuleById({
       ]
     }
   },
+  "contexts": [
+    {
+      "schema": "contract"
+    }
+  ],
   "_schema_version": "string",
   "_id": "string",
   "_organization_id": "string",
@@ -301,7 +341,7 @@ const { data } = await client.getValidationRuleById({
 
 ### `updateValidationRule`
 
-Update Validation Rule (partial update)
+Partially updates an existing validation rule by ID. Only the fields provided in the request body are updated.
 
 `PATCH /v1/validation-rules/{ruleId}`
 
@@ -316,8 +356,7 @@ const { data } = await client.updateValidationRule(
     used_by: [
       {
         type: 'journey',
-        schema_slug: 'string',
-        source_id: 'string'
+        source_id: 'journey-xyz789'
       }
     ],
     rule: {
@@ -346,7 +385,12 @@ const { data } = await client.updateValidationRule(
           }
         ]
       }
-    }
+    },
+    contexts: [
+      {
+        schema: 'contract'
+      }
+    ]
   },
 )
 ```
@@ -361,8 +405,7 @@ const { data } = await client.updateValidationRule(
   "used_by": [
     {
       "type": "journey",
-      "schema_slug": "string",
-      "source_id": "string"
+      "source_id": "journey-xyz789"
     }
   ],
   "rule": {
@@ -392,6 +435,11 @@ const { data } = await client.updateValidationRule(
       ]
     }
   },
+  "contexts": [
+    {
+      "schema": "contract"
+    }
+  ],
   "_schema_version": "string",
   "_id": "string",
   "_organization_id": "string",
@@ -408,7 +456,7 @@ const { data } = await client.updateValidationRule(
 
 ### `deleteValidationRule`
 
-Delete Validation Rule
+Permanently deletes a validation rule by ID. Any journeys or entity attributes referencing this rule should be updated before deletion.
 
 `DELETE /v1/validation-rules/{ruleId}`
 
@@ -422,7 +470,7 @@ const { data } = await client.deleteValidationRule({
 
 ### `addUsedByReference`
 
-Add a reference to the usedBy array
+Adds a single `used_by` reference to an existing validation rule.
 
 `POST /v1/validation-rules/{ruleId}/used-by`
 
@@ -433,8 +481,7 @@ const { data } = await client.addUsedByReference(
   },
   {
     type: 'journey',
-    schema_slug: 'string',
-    source_id: 'string'
+    source_id: 'journey-xyz789'
   },
 )
 ```
@@ -449,8 +496,7 @@ const { data } = await client.addUsedByReference(
   "used_by": [
     {
       "type": "journey",
-      "schema_slug": "string",
-      "source_id": "string"
+      "source_id": "journey-xyz789"
     }
   ],
   "rule": {
@@ -480,6 +526,11 @@ const { data } = await client.addUsedByReference(
       ]
     }
   },
+  "contexts": [
+    {
+      "schema": "contract"
+    }
+  ],
   "_schema_version": "string",
   "_id": "string",
   "_organization_id": "string",
@@ -496,7 +547,7 @@ const { data } = await client.addUsedByReference(
 
 ### `removeUsedByReference`
 
-Remove a reference from the usedBy array
+Removes a specific `used_by` reference from an existing validation rule.
 
 `DELETE /v1/validation-rules/{ruleId}/used-by`
 
@@ -507,8 +558,7 @@ const { data } = await client.removeUsedByReference(
   },
   {
     type: 'journey',
-    schema_slug: 'string',
-    source_id: 'string'
+    source_id: 'journey-xyz789'
   },
 )
 ```
@@ -523,8 +573,7 @@ const { data } = await client.removeUsedByReference(
   "used_by": [
     {
       "type": "journey",
-      "schema_slug": "string",
-      "source_id": "string"
+      "source_id": "journey-xyz789"
     }
   ],
   "rule": {
@@ -554,6 +603,11 @@ const { data } = await client.removeUsedByReference(
       ]
     }
   },
+  "contexts": [
+    {
+      "schema": "contract"
+    }
+  ],
   "_schema_version": "string",
   "_id": "string",
   "_organization_id": "string",
@@ -571,6 +625,8 @@ const { data } = await client.removeUsedByReference(
 ## Schemas
 
 ### `GetValidationRulesResponse`
+
+Response envelope for listing all validation rules within an organization.
 
 ```ts
 type GetValidationRulesResponse = {
@@ -599,7 +655,7 @@ type UpdateValidationRuleRequest = {
   title?: string
   placeholder?: string
   used_by?: Array<{
-    type: "journey" | "entity"
+    type: "journey" | "entity" | "portal"
     schema_slug?: string
     source_id?: string
   }>
@@ -630,7 +686,32 @@ type UpdateValidationRuleRequest = {
     } | {
       not: { ... }
     }
+  } | {
+    input_type: "number" | "date" | "text"
+    conditions: Array<{
+      id: { ... }
+      operator: { ... }
+      value: { ... }
+      error_message: { ... }
+      applies_when?: { ... }
+      allow_failure?: { ... }
+    }>
+  } | {
+    input_type: "document"
+    check: {
+      level: { ... }
+    }
+    conditions: Array<{
+      id: { ... }
+      operator: { ... }
+      value: { ... }
+      error_message: { ... }
+      allow_failure?: { ... }
+    }>
   }
+  contexts?: Array<{
+    schema: string
+  }>
 }
 ```
 
@@ -641,7 +722,7 @@ type ValidationRuleBase = {
   title?: string
   placeholder?: string
   used_by?: Array<{
-    type: "journey" | "entity"
+    type: "journey" | "entity" | "portal"
     schema_slug?: string
     source_id?: string
   }>
@@ -672,7 +753,32 @@ type ValidationRuleBase = {
     } | {
       not: { ... }
     }
+  } | {
+    input_type: "number" | "date" | "text"
+    conditions: Array<{
+      id: { ... }
+      operator: { ... }
+      value: { ... }
+      error_message: { ... }
+      applies_when?: { ... }
+      allow_failure?: { ... }
+    }>
+  } | {
+    input_type: "document"
+    check: {
+      level: { ... }
+    }
+    conditions: Array<{
+      id: { ... }
+      operator: { ... }
+      value: { ... }
+      error_message: { ... }
+      allow_failure?: { ... }
+    }>
   }
+  contexts?: Array<{
+    schema: string
+  }>
 }
 ```
 
@@ -694,11 +800,11 @@ type ValidationRule = {
 
 ### `UsedBy`
 
-Describes where and how a validation rule is applied.
+Describes where and how a validation rule is applied. Used to track associations between rules and the journeys, entity schemas or portals that reference them.
 
 ```ts
 type UsedBy = {
-  type: "journey" | "entity"
+  type: "journey" | "entity" | "portal"
   schema_slug?: string
   source_id?: string
 }
@@ -1598,5 +1704,1227 @@ type NumericFactCondition = {
   params?: {
     errorMessage?: string
   }
+}
+```
+
+### `ComparisonRuleType`
+
+Declarative validation rule (schema version v2). Supports predefined comparison operators
+over number, date and text inputs, with static, dynamic (context path), relative-date and
+external (app-provided) comparison values.
+
+
+```ts
+type ComparisonRuleType = {
+  input_type: "number" | "date" | "text"
+  conditions: Array<{
+    id: string
+    operator: "equal" | "notEqual" | "greaterThan" | "greaterThanInclusive" | "lessThan" | "lessThanInclusive" | "between" | "dateBefore" | "dateOnOrBefore" | "dateAfter" | "dateOnOrAfter" | "dateBetween" | "notInFuture" | "notInPast" | "contains" | "doesNotContain" | "startsWith" | "endsWith" | "regexMatch" | "lengthBetween" | "maxDigits" | "maxDecimals"
+    value: {
+      source: { ... }
+      data: { ... }
+    } | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      offset: { ... }
+      unit: { ... }
+      anchor?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      min: { ... }
+      max: { ... }
+    } | {
+      source: { ... }
+    }
+    error_message: string
+    applies_when?: {
+      path: { ... }
+      operator: { ... }
+      value?: { ... }
+    }
+    allow_failure?: boolean
+  }>
+}
+```
+
+### `Condition`
+
+A single comparison the input value must satisfy.
+
+```ts
+type Condition = {
+  id: string
+  operator: "equal" | "notEqual" | "greaterThan" | "greaterThanInclusive" | "lessThan" | "lessThanInclusive" | "between" | "dateBefore" | "dateOnOrBefore" | "dateAfter" | "dateOnOrAfter" | "dateBetween" | "notInFuture" | "notInPast" | "contains" | "doesNotContain" | "startsWith" | "endsWith" | "regexMatch" | "lengthBetween" | "maxDigits" | "maxDecimals"
+  value: {
+    source: "static"
+    data: number | string | boolean
+  } | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "relative_date"
+    offset: number | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    unit: "days" | "months" | "years"
+    anchor?: "today" | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "range"
+    min: {
+      source: { ... }
+      data: { ... }
+    } | {
+      source: { ... }
+      path: { ... }
+  // ...
+}
+```
+
+### `Operator`
+
+Predefined comparison operator. Compatibility (enforced at write time):
+- number: equal, notEqual, greaterThan, greaterThanInclusive, lessThan, lessThanInclusive, between, regexMatch,
+  maxDigits, maxDecimals
+- date: dateBefore, dateOnOrBefore, dateAfter, dateOnOrAfter, dateBetween, notInFuture, not
+
+```ts
+type Operator = "equal" | "notEqual" | "greaterThan" | "greaterThanInclusive" | "lessThan" | "lessThanInclusive" | "between" | "dateBefore" | "dateOnOrBefore" | "dateAfter" | "dateOnOrAfter" | "dateBetween" | "notInFuture" | "notInPast" | "contains" | "doesNotContain" | "startsWith" | "endsWith" | "regexMatch" | "lengthBetween" | "maxDigits" | "maxDecimals"
+```
+
+### `ConditionValue`
+
+The comparison value of a condition - a scalar, a range of scalars, or nothing (unary operators).
+
+```ts
+type ConditionValue = {
+  source: "static"
+  data: number | string | boolean
+} | {
+  source: "context"
+  path: string
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | { ... } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+} | {
+  source: "relative_date"
+  offset: number | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }
+  unit: "days" | "months" | "years"
+  anchor?: "today" | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+  // ...
+}
+```
+
+### `ScalarValue`
+
+A single comparison value - static, resolved from context, a relative date, an organisation environment variable, an external value, or a parameter the consuming surface supplies.
+
+```ts
+type ScalarValue = {
+  source: "static"
+  data: number | string | boolean
+} | {
+  source: "context"
+  path: string
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | { ... } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+} | {
+  source: "relative_date"
+  offset: number | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }
+  unit: "days" | "months" | "years"
+  anchor?: "today" | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+  // ...
+}
+```
+
+### `ValueReference`
+
+A value resolved at evaluation time instead of written into the rule, identified by
+`source`. Each field that accepts a reference lists the sources it allows; a rule using
+any other source is rejected when it is saved.
+
+
+```ts
+type ValueReference = {
+  source: "context"
+  path: string
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | { ... }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+} | {
+  source: "environment"
+  key: string
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | { ... }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+} | {
+  source: "external"
+  app_id: string
+  hook_id: string
+  result_id: string
+  inputs?: Record<string, {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }>
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | { ... }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+} | {
+  source: "parameter"
+  name: string
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | { ... }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+}
+```
+
+### `EnvironmentValue`
+
+A comparison value resolved at evaluation time from an organisation environment variable
+(environments-api). The rule stores the key, never the value, so one change to the variable
+reaches every rule that references it and a blueprint install never overwrites the
+organisation's own value.
+
+Only brow
+
+```ts
+type EnvironmentValue = {
+  source: "environment"
+  key: string
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | { ... } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+}
+```
+
+### `ExternalValue`
+
+A comparison value produced at evaluation time by an External Values hook of an installed
+app (component type `EXTERNAL_VALUES`). The rule stores the reference only; the value is
+resolved server-side by the external-values-api, which executes the hook's HTTP call with
+the app's credentials and retur
+
+```ts
+type ExternalValue = {
+  source: "external"
+  app_id: string
+  hook_id: string
+  result_id: string
+  inputs?: Record<string, {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }>
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | { ... } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+}
+```
+
+### `ParameterValue`
+
+A comparison value supplied by the consumer that evaluates the rule, identified by a name
+the rule chooses (e.g. `start_date`). The rule stores the name only. The consumer binds the
+name to a source of its own - a journey binds it to the value of another block - and
+resolves it at evaluation time, s
+
+```ts
+type ParameterValue = {
+  source: "parameter"
+  name: string
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | { ... }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+}
+```
+
+### `StaticValue`
+
+A fixed comparison value.
+
+```ts
+type StaticValue = {
+  source: "static"
+  data: number | string | boolean
+}
+```
+
+### `ContextValue`
+
+A dynamic comparison value resolved from runtime context, e.g. `contract.installment_amount`
+or `previous_reading.value`. The first path segment must match the `name` of a declared
+context requirement.
+
+
+```ts
+type ContextValue = {
+  source: "context"
+  path: string
+  adjust?: {
+    type: "percent" | "absolute"
+    value: number | { ... } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    direction: "increase" | "decrease"
+    rounding?: "up" | "down"
+  }
+}
+```
+
+### `ValueAdjustment`
+
+Adjusts a context-resolved numeric value before comparison, e.g. "context value plus 10 percent".
+Used to express tolerance bands such as "at most 10% above the current instalment amount".
+
+
+```ts
+type ValueAdjustment = {
+  type: "percent" | "absolute"
+  value: number | {
+    source: "context"
+    path: string
+    adjust?: { ... }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: { ... }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: { ... }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: { ... }
+  }
+  direction: "increase" | "decrease"
+  rounding?: "up" | "down"
+}
+```
+
+### `RelativeDateValue`
+
+A date relative to the evaluation moment, e.g. "today minus 30 days". Only valid for date rules.
+
+```ts
+type RelativeDateValue = {
+  source: "relative_date"
+  offset: number | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }
+  unit: "days" | "months" | "years"
+  anchor?: "today" | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }
+}
+```
+
+### `RangeValue`
+
+A lower and upper bound for range operators (between, dateBetween, lengthBetween). Bounds are inclusive.
+
+```ts
+type RangeValue = {
+  source: "range"
+  min: {
+    source: "static"
+    data: number | string | boolean
+  } | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "relative_date"
+    offset: number | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    unit: "days" | "months" | "years"
+    anchor?: "today" | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }
+  max: {
+    source: "static"
+    data: number | string | boolean
+  } | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+  // ...
+}
+```
+
+### `NoValue`
+
+No comparison value - used by unary operators such as notInFuture / notInPast.
+
+```ts
+type NoValue = {
+  source: "none"
+}
+```
+
+### `DocumentRuleType`
+
+Declarative validation rule (schema version v2) for uploaded files. The rule declares how deep
+the check goes (`check.level`) and the conditions the file must satisfy. Property conditions
+(file type, size, page count, image resolution, blank and password-protected detection) are
+deterministic and av
+
+```ts
+type DocumentRuleType = {
+  input_type: "document"
+  check: {
+    level: "basic" | "standard" | "advanced"
+  }
+  conditions: Array<{
+    id: string
+    operator: "fileTypeIn" | "sizeBelow" | "pageCountBetween" | "resolutionAtLeast" | "resolutionAtMost" | "isNotBlank" | "isNotPasswordProtected" | "meetsCriteria"
+    value: {
+      source: { ... }
+      data: { ... }
+    } | {
+      source: { ... }
+      min: { ... }
+      max: { ... }
+    } | {
+      source: { ... }
+    } | {
+      source: { ... }
+      types: { ... }
+    } | {
+      source: { ... }
+      text: { ... }
+    }
+    error_message: string
+    allow_failure?: boolean
+  }>
+}
+```
+
+### `DocumentCheck`
+
+How deep the document check goes. Levels are cumulative.
+
+```ts
+type DocumentCheck = {
+  level: "basic" | "standard" | "advanced"
+}
+```
+
+### `DocumentCondition`
+
+A single check the uploaded file must satisfy.
+
+```ts
+type DocumentCondition = {
+  id: string
+  operator: "fileTypeIn" | "sizeBelow" | "pageCountBetween" | "resolutionAtLeast" | "resolutionAtMost" | "isNotBlank" | "isNotPasswordProtected" | "meetsCriteria"
+  value: {
+    source: "static"
+    data: number | string | boolean
+  } | {
+    source: "range"
+    min: {
+      source: { ... }
+      data: { ... }
+    } | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      offset: { ... }
+      unit: { ... }
+      anchor?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    max: {
+      source: { ... }
+      data: { ... }
+    } | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      offset: { ... }
+      unit: { ... }
+      anchor?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+  } | {
+    source: "none"
+  } | {
+    source: "file_types"
+    types: "image" | "pdf" | "document" | "spreadsheet"[]
+  } | {
+    source: "criteria"
+    text: string
+  }
+  error_message: string
+  allow_failure?: boolean
+}
+```
+
+### `DocumentOperator`
+
+Predefined document check. Value compatibility (enforced at write time):
+- fileTypeIn: `file_types` value listing the accepted file categories.
+- sizeBelow: static integer, maximum file size in bytes.
+- pageCountBetween: `range` of static non-negative integers (inclusive).
+- resolutionAtLeast / reso
+
+```ts
+type DocumentOperator = "fileTypeIn" | "sizeBelow" | "pageCountBetween" | "resolutionAtLeast" | "resolutionAtMost" | "isNotBlank" | "isNotPasswordProtected" | "meetsCriteria"
+```
+
+### `DocumentConditionValue`
+
+The value of a document condition - a static scalar, a range, nothing, accepted file categories, or a free-text criterion.
+
+```ts
+type DocumentConditionValue = {
+  source: "static"
+  data: number | string | boolean
+} | {
+  source: "range"
+  min: {
+    source: "static"
+    data: number | string | boolean
+  } | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "relative_date"
+    offset: number | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+    unit: "days" | "months" | "years"
+    anchor?: "today" | {
+      source: { ... }
+      path: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      key: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      app_id: { ... }
+      hook_id: { ... }
+      result_id: { ... }
+      inputs?: { ... }
+      adjust?: { ... }
+    } | {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }
+  max: {
+    source: "static"
+    data: number | string | boolean
+  } | {
+    source: "context"
+  // ...
+}
+```
+
+### `FileTypesValue`
+
+Accepted file categories; each category expands to a mime list at check time.
+
+```ts
+type FileTypesValue = {
+  source: "file_types"
+  types: "image" | "pdf" | "document" | "spreadsheet"[]
+}
+```
+
+### `CriteriaValue`
+
+A free-text requirement judged against the document's extracted content, e.g. "The photo shows
+an electricity meter with the meter number and the current reading fully legible." One requirement
+per condition keeps results specific and lets each requirement be graded separately.
+
+
+```ts
+type CriteriaValue = {
+  source: "criteria"
+  text: string
+}
+```
+
+### `AppliesWhen`
+
+Optional precondition on a condition: the condition only takes part in the
+validation when this comparison over context holds. Examples: apply the
+dual-tariff reference only when `contract.htnt` is not empty, or run a
+plausibility check only when a context value reaches a threshold.
+
+
+```ts
+type AppliesWhen = {
+  path: string
+  operator: "equal" | "notEqual" | "greaterThan" | "greaterThanInclusive" | "lessThan" | "lessThanInclusive" | "isEmpty" | "isNotEmpty"
+  value?: number | string | boolean | {
+    source: "context"
+    path: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "environment"
+    key: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "external"
+    app_id: string
+    hook_id: string
+    result_id: string
+    inputs?: Record<string, {
+      source: { ... }
+      name: { ... }
+      adjust?: { ... }
+    }>
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  } | {
+    source: "parameter"
+    name: string
+    adjust?: {
+      type: { ... }
+      value: { ... }
+      direction: { ... }
+      rounding?: { ... }
+    }
+  }
+}
+```
+
+### `ContextRequirement`
+
+An entity context source the rule needs at evaluation time, referenced by `context`
+value paths via the schema slug as their first segment (e.g. `contract.installment_amount`).
+How the source is resolved (which entity instance) is decided by the consuming surface,
+not by the rule. Meter reading comp
+
+```ts
+type ContextRequirement = {
+  schema: string
 }
 ```

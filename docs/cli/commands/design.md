@@ -5,7 +5,7 @@ description: "epilot CLI commands for the Design Builder API v2: quick start, co
 
 # Design Builder API v2
 
-- **Base URL:** `https://design-builder-api.epilot.io`
+- **Base URL:** `https://design-builder-api.sls.epilot.io`
 - **API Docs:** [https://docs.epilot.io/api/design](https://docs.epilot.io/api/design)
 
 ## Quick Start
@@ -44,6 +44,7 @@ epilot design getAllDesigns
 - [`getDesign`](#getdesign) — Search for a especific design owned by user organization
 - [`updateDesign`](#updatedesign) — Update a especific design owned by user organization
 - [`deleteDesign`](#deletedesign) — Search and delete for a especific design owned by user organization
+- [`duplicateDesign`](#duplicatedesign) — Duplicate an existing design owned by the user organization. The copy carries over the style, custom CSS and name (marke
 - [`getThemeFromDesign`](#getthemefromdesign) — Search for a especific design owned by user organization and parse them to a new or old theme
 - [`getFiles`](#getfiles) — List all files for the user organization bucket
 - [`uploadFile`](#uploadfile) — Upload a new file for the user organization bucket
@@ -66,20 +67,34 @@ epilot design getAllDesigns
 With JSONata filter:
 
 ```bash
-epilot design getAllDesigns --jsonata '$'
+epilot design getAllDesigns --jsonata 'designs'
 ```
 
 <details>
 <summary>Sample Response</summary>
 
 ```json
-[
-  {
-    "designs": [
-      {}
-    ]
-  }
-]
+{
+  "designs": [
+    {
+      "id": "string",
+      "created_at": "2021-01-30T08:30:00Z",
+      "created_by": "string",
+      "edited": true,
+      "last_modified_at": "string",
+      "brand_id": "string",
+      "brand_name": "string",
+      "user": {},
+      "style_name": "string",
+      "style": {},
+      "is_default": true,
+      "_manifest": ["string"],
+      "custom_theme": "string",
+      "use_custom_theme": true,
+      "design_tokens": {}
+    }
+  ]
+}
 ```
 
 </details>
@@ -116,67 +131,77 @@ epilot design addDesign \
     },
     "style_name": "string",
     "style": {
-      "logo": {
-        "main": {
-          "name": "string",
-          "display_name": "string",
-          "file_type": "LOGO",
-          "s3_object_key": "string",
-          "url": "string"
-        }
-      },
-      "palette": {
-        "primary": "string",
-        "secondary": "string",
-        "error": "string",
-        "background": "string",
-        "paper": "string",
-        "navbar": "string",
-        "portal_login_background": "string"
-      },
-      "typography": {
-        "font": {
-          "font_id": "string",
-          "font_name": "string",
-          "font_family": "string",
-          "font_weight_regular": "string",
-          "font_weight_medium": "string",
-          "font_weight_bold": "string",
-          "urls": [
-            {
-              "type": "WOFF2",
-              "url": "string"
-            }
-          ]
-        },
-        "primary": "string",
-        "secondary": "string"
-      },
-      "shape": {
-        "border_radius": 0
-      },
-      "consumer": {
-        "widgets": [
-          {
-            "id": "string",
-            "name": "string"
-          }
-        ],
-        "customer_portals": [
-          {
-            "id": "string",
-            "name": "string"
-          }
-        ]
-      }
+      "logo": {},
+      "palette": {},
+      "typography": {},
+      "shape": {},
+      "consumer": {}
     },
     "is_default": true,
+    "_manifest": ["string"],
     "custom_theme": "string",
     "use_custom_theme": true,
     "design_tokens": {
       "coupon": "string",
       "cashback": "string",
-      "custom_css": "string"
+      "custom_css": "string",
+      "accent_color": "string",
+      "outline_color": "string",
+      "divider_color": "string",
+      "link_color": "string",
+      "link_hover_color": "string",
+      "font_size_scale": "xs",
+      "topbar_height": 0,
+      "topbar_logo_alignment": "flex-start",
+      "logo_size": 0,
+      "input_background": "string",
+      "input_border_color": "string",
+      "input_text_color": "string",
+      "input_label_color": "string",
+      "input_border_radius": 0,
+      "input_height": 0,
+      "input_variant": "outlined",
+      "button_primary_bg": "string",
+      "button_primary_text": "string",
+      "button_primary_hover_bg": "string",
+      "button_primary_hover_text": "string",
+      "button_outlined_border": "string",
+      "button_outlined_text": "string",
+      "button_outlined_hover_bg": "string",
+      "button_outlined_hover_text": "string",
+      "button_ghost_bg": "string",
+      "button_ghost_text": "string",
+      "button_ghost_hover_bg": "string",
+      "button_ghost_hover_text": "string",
+      "button_border_radius": 0,
+      "button_height": 0,
+      "card_background": "string",
+      "card_border_color": "string",
+      "card_variant": "shadow",
+      "summary_card_background": "string",
+      "toggle_selected_bg": "string",
+      "toggle_selected_text": "string",
+      "toggle_hover_bg": "string",
+      "toggle_hover_text": "string",
+      "toggle_border_color": "string",
+      "dropdown_hover_bg": "string",
+      "dropdown_hover_text": "string",
+      "dropdown_selected_bg": "string",
+      "dropdown_selected_text": "string",
+      "switch_unchecked_color": "string",
+      "switch_unchecked_bg": "string",
+      "switch_border_radius": 0,
+      "checkbox_unchecked_color": "string",
+      "checkbox_label_color": "string",
+      "radio_unchecked_color": "string",
+      "radio_label_color": "string",
+      "datepicker_selected_bg": "string",
+      "datepicker_selected_color": "string",
+      "datepicker_border_radius": 0,
+      "chip_background": "string",
+      "chip_hover_background": "string",
+      "chip_text_color": "string",
+      "chip_hover_text_color": "string"
     }
   }
 }'
@@ -222,12 +247,70 @@ epilot design addDesign --jsonata 'design'
       "consumer": {}
     },
     "is_default": true,
+    "_manifest": ["string"],
     "custom_theme": "string",
     "use_custom_theme": true,
     "design_tokens": {
       "coupon": "string",
       "cashback": "string",
-      "custom_css": "string"
+      "custom_css": "string",
+      "accent_color": "string",
+      "outline_color": "string",
+      "divider_color": "string",
+      "link_color": "string",
+      "link_hover_color": "string",
+      "font_size_scale": "xs",
+      "topbar_height": 0,
+      "topbar_logo_alignment": "flex-start",
+      "logo_size": 0,
+      "input_background": "string",
+      "input_border_color": "string",
+      "input_text_color": "string",
+      "input_label_color": "string",
+      "input_border_radius": 0,
+      "input_height": 0,
+      "input_variant": "outlined",
+      "button_primary_bg": "string",
+      "button_primary_text": "string",
+      "button_primary_hover_bg": "string",
+      "button_primary_hover_text": "string",
+      "button_outlined_border": "string",
+      "button_outlined_text": "string",
+      "button_outlined_hover_bg": "string",
+      "button_outlined_hover_text": "string",
+      "button_ghost_bg": "string",
+      "button_ghost_text": "string",
+      "button_ghost_hover_bg": "string",
+      "button_ghost_hover_text": "string",
+      "button_border_radius": 0,
+      "button_height": 0,
+      "card_background": "string",
+      "card_border_color": "string",
+      "card_variant": "shadow",
+      "summary_card_background": "string",
+      "toggle_selected_bg": "string",
+      "toggle_selected_text": "string",
+      "toggle_hover_bg": "string",
+      "toggle_hover_text": "string",
+      "toggle_border_color": "string",
+      "dropdown_hover_bg": "string",
+      "dropdown_hover_text": "string",
+      "dropdown_selected_bg": "string",
+      "dropdown_selected_text": "string",
+      "switch_unchecked_color": "string",
+      "switch_unchecked_bg": "string",
+      "switch_border_radius": 0,
+      "checkbox_unchecked_color": "string",
+      "checkbox_label_color": "string",
+      "radio_unchecked_color": "string",
+      "radio_label_color": "string",
+      "datepicker_selected_bg": "string",
+      "datepicker_selected_color": "string",
+      "datepicker_border_radius": 0,
+      "chip_background": "string",
+      "chip_hover_background": "string",
+      "chip_text_color": "string",
+      "chip_hover_text_color": "string"
     }
   }
 }
@@ -247,7 +330,7 @@ Search for a especific design owned by user organization
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `designId` | path | string | Yes | Id of the design |
+| `designId` | path | string | Yes |  |
 
 **Sample Call**
 
@@ -296,12 +379,70 @@ epilot design getDesign -p designId=4a062990-a6a3-11eb-9828-4f3da7d4935a --jsona
       "consumer": {}
     },
     "is_default": true,
+    "_manifest": ["string"],
     "custom_theme": "string",
     "use_custom_theme": true,
     "design_tokens": {
       "coupon": "string",
       "cashback": "string",
-      "custom_css": "string"
+      "custom_css": "string",
+      "accent_color": "string",
+      "outline_color": "string",
+      "divider_color": "string",
+      "link_color": "string",
+      "link_hover_color": "string",
+      "font_size_scale": "xs",
+      "topbar_height": 0,
+      "topbar_logo_alignment": "flex-start",
+      "logo_size": 0,
+      "input_background": "string",
+      "input_border_color": "string",
+      "input_text_color": "string",
+      "input_label_color": "string",
+      "input_border_radius": 0,
+      "input_height": 0,
+      "input_variant": "outlined",
+      "button_primary_bg": "string",
+      "button_primary_text": "string",
+      "button_primary_hover_bg": "string",
+      "button_primary_hover_text": "string",
+      "button_outlined_border": "string",
+      "button_outlined_text": "string",
+      "button_outlined_hover_bg": "string",
+      "button_outlined_hover_text": "string",
+      "button_ghost_bg": "string",
+      "button_ghost_text": "string",
+      "button_ghost_hover_bg": "string",
+      "button_ghost_hover_text": "string",
+      "button_border_radius": 0,
+      "button_height": 0,
+      "card_background": "string",
+      "card_border_color": "string",
+      "card_variant": "shadow",
+      "summary_card_background": "string",
+      "toggle_selected_bg": "string",
+      "toggle_selected_text": "string",
+      "toggle_hover_bg": "string",
+      "toggle_hover_text": "string",
+      "toggle_border_color": "string",
+      "dropdown_hover_bg": "string",
+      "dropdown_hover_text": "string",
+      "dropdown_selected_bg": "string",
+      "dropdown_selected_text": "string",
+      "switch_unchecked_color": "string",
+      "switch_unchecked_bg": "string",
+      "switch_border_radius": 0,
+      "checkbox_unchecked_color": "string",
+      "checkbox_label_color": "string",
+      "radio_unchecked_color": "string",
+      "radio_label_color": "string",
+      "datepicker_selected_bg": "string",
+      "datepicker_selected_color": "string",
+      "datepicker_border_radius": 0,
+      "chip_background": "string",
+      "chip_hover_background": "string",
+      "chip_text_color": "string",
+      "chip_hover_text_color": "string"
     }
   }
 }
@@ -321,7 +462,7 @@ Update a especific design owned by user organization
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `designId` | path | string | Yes | Id of the design |
+| `designId` | path | string | Yes |  |
 
 **Request Body** (required)
 
@@ -349,67 +490,77 @@ epilot design updateDesign \
     },
     "style_name": "string",
     "style": {
-      "logo": {
-        "main": {
-          "name": "string",
-          "display_name": "string",
-          "file_type": "LOGO",
-          "s3_object_key": "string",
-          "url": "string"
-        }
-      },
-      "palette": {
-        "primary": "string",
-        "secondary": "string",
-        "error": "string",
-        "background": "string",
-        "paper": "string",
-        "navbar": "string",
-        "portal_login_background": "string"
-      },
-      "typography": {
-        "font": {
-          "font_id": "string",
-          "font_name": "string",
-          "font_family": "string",
-          "font_weight_regular": "string",
-          "font_weight_medium": "string",
-          "font_weight_bold": "string",
-          "urls": [
-            {
-              "type": "WOFF2",
-              "url": "string"
-            }
-          ]
-        },
-        "primary": "string",
-        "secondary": "string"
-      },
-      "shape": {
-        "border_radius": 0
-      },
-      "consumer": {
-        "widgets": [
-          {
-            "id": "string",
-            "name": "string"
-          }
-        ],
-        "customer_portals": [
-          {
-            "id": "string",
-            "name": "string"
-          }
-        ]
-      }
+      "logo": {},
+      "palette": {},
+      "typography": {},
+      "shape": {},
+      "consumer": {}
     },
     "is_default": true,
+    "_manifest": ["string"],
     "custom_theme": "string",
     "use_custom_theme": true,
     "design_tokens": {
       "coupon": "string",
       "cashback": "string",
-      "custom_css": "string"
+      "custom_css": "string",
+      "accent_color": "string",
+      "outline_color": "string",
+      "divider_color": "string",
+      "link_color": "string",
+      "link_hover_color": "string",
+      "font_size_scale": "xs",
+      "topbar_height": 0,
+      "topbar_logo_alignment": "flex-start",
+      "logo_size": 0,
+      "input_background": "string",
+      "input_border_color": "string",
+      "input_text_color": "string",
+      "input_label_color": "string",
+      "input_border_radius": 0,
+      "input_height": 0,
+      "input_variant": "outlined",
+      "button_primary_bg": "string",
+      "button_primary_text": "string",
+      "button_primary_hover_bg": "string",
+      "button_primary_hover_text": "string",
+      "button_outlined_border": "string",
+      "button_outlined_text": "string",
+      "button_outlined_hover_bg": "string",
+      "button_outlined_hover_text": "string",
+      "button_ghost_bg": "string",
+      "button_ghost_text": "string",
+      "button_ghost_hover_bg": "string",
+      "button_ghost_hover_text": "string",
+      "button_border_radius": 0,
+      "button_height": 0,
+      "card_background": "string",
+      "card_border_color": "string",
+      "card_variant": "shadow",
+      "summary_card_background": "string",
+      "toggle_selected_bg": "string",
+      "toggle_selected_text": "string",
+      "toggle_hover_bg": "string",
+      "toggle_hover_text": "string",
+      "toggle_border_color": "string",
+      "dropdown_hover_bg": "string",
+      "dropdown_hover_text": "string",
+      "dropdown_selected_bg": "string",
+      "dropdown_selected_text": "string",
+      "switch_unchecked_color": "string",
+      "switch_unchecked_bg": "string",
+      "switch_border_radius": 0,
+      "checkbox_unchecked_color": "string",
+      "checkbox_label_color": "string",
+      "radio_unchecked_color": "string",
+      "radio_label_color": "string",
+      "datepicker_selected_bg": "string",
+      "datepicker_selected_color": "string",
+      "datepicker_border_radius": 0,
+      "chip_background": "string",
+      "chip_hover_background": "string",
+      "chip_text_color": "string",
+      "chip_hover_text_color": "string"
     }
   }
 }'
@@ -445,7 +596,7 @@ Search and delete for a especific design owned by user organization
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `designId` | path | string | Yes | Id of the design |
+| `designId` | path | string | Yes |  |
 
 **Sample Call**
 
@@ -468,6 +619,138 @@ epilot design deleteDesign -p designId=4a062990-a6a3-11eb-9828-4f3da7d4935a --js
 
 ---
 
+### `duplicateDesign`
+
+Duplicate an existing design owned by the user organization. The copy carries over the style, custom CSS and name (marke
+
+`POST /v1/designs/{designId}/duplicate`
+
+**Parameters**
+
+| Name | In | Type | Required | Description |
+| ---- | -- | ---- | -------- | ----------- |
+| `designId` | path | string | Yes |  |
+
+**Sample Call**
+
+```bash
+epilot design duplicateDesign \
+  -p designId=4a062990-a6a3-11eb-9828-4f3da7d4935a
+```
+
+Using positional args for path parameters:
+
+```bash
+epilot design duplicateDesign 4a062990-a6a3-11eb-9828-4f3da7d4935a
+```
+
+With JSONata filter:
+
+```bash
+epilot design duplicateDesign -p designId=4a062990-a6a3-11eb-9828-4f3da7d4935a --jsonata 'design'
+```
+
+<details>
+<summary>Sample Response</summary>
+
+```json
+{
+  "design": {
+    "id": "string",
+    "created_at": "2021-01-30T08:30:00Z",
+    "created_by": "string",
+    "edited": true,
+    "last_modified_at": "string",
+    "brand_id": "string",
+    "brand_name": "string",
+    "user": {
+      "emailaddress": "string",
+      "fullname": "string",
+      "name": "string",
+      "userid": "string"
+    },
+    "style_name": "string",
+    "style": {
+      "logo": {},
+      "palette": {},
+      "typography": {},
+      "shape": {},
+      "consumer": {}
+    },
+    "is_default": true,
+    "_manifest": ["string"],
+    "custom_theme": "string",
+    "use_custom_theme": true,
+    "design_tokens": {
+      "coupon": "string",
+      "cashback": "string",
+      "custom_css": "string",
+      "accent_color": "string",
+      "outline_color": "string",
+      "divider_color": "string",
+      "link_color": "string",
+      "link_hover_color": "string",
+      "font_size_scale": "xs",
+      "topbar_height": 0,
+      "topbar_logo_alignment": "flex-start",
+      "logo_size": 0,
+      "input_background": "string",
+      "input_border_color": "string",
+      "input_text_color": "string",
+      "input_label_color": "string",
+      "input_border_radius": 0,
+      "input_height": 0,
+      "input_variant": "outlined",
+      "button_primary_bg": "string",
+      "button_primary_text": "string",
+      "button_primary_hover_bg": "string",
+      "button_primary_hover_text": "string",
+      "button_outlined_border": "string",
+      "button_outlined_text": "string",
+      "button_outlined_hover_bg": "string",
+      "button_outlined_hover_text": "string",
+      "button_ghost_bg": "string",
+      "button_ghost_text": "string",
+      "button_ghost_hover_bg": "string",
+      "button_ghost_hover_text": "string",
+      "button_border_radius": 0,
+      "button_height": 0,
+      "card_background": "string",
+      "card_border_color": "string",
+      "card_variant": "shadow",
+      "summary_card_background": "string",
+      "toggle_selected_bg": "string",
+      "toggle_selected_text": "string",
+      "toggle_hover_bg": "string",
+      "toggle_hover_text": "string",
+      "toggle_border_color": "string",
+      "dropdown_hover_bg": "string",
+      "dropdown_hover_text": "string",
+      "dropdown_selected_bg": "string",
+      "dropdown_selected_text": "string",
+      "switch_unchecked_color": "string",
+      "switch_unchecked_bg": "string",
+      "switch_border_radius": 0,
+      "checkbox_unchecked_color": "string",
+      "checkbox_label_color": "string",
+      "radio_unchecked_color": "string",
+      "radio_label_color": "string",
+      "datepicker_selected_bg": "string",
+      "datepicker_selected_color": "string",
+      "datepicker_border_radius": 0,
+      "chip_background": "string",
+      "chip_hover_background": "string",
+      "chip_text_color": "string",
+      "chip_hover_text_color": "string"
+    }
+  }
+}
+```
+
+</details>
+
+---
+
 ### `getThemeFromDesign`
 
 Search for a especific design owned by user organization and parse them to a new or old theme
@@ -478,9 +761,9 @@ Search for a especific design owned by user organization and parse them to a new
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `designId` | path | string | Yes | Id of the design |
+| `designId` | path | string | Yes |  |
 | `orgId` | query | string | No | Organization id of the user |
-| `theme` | query | "NEW" \| "OLD" | Yes | Type of theme to be parsed and returned |
+| `theme` | query | "NEW" \| "OLD" | Yes |  |
 
 **Sample Call**
 
@@ -499,14 +782,63 @@ epilot design getThemeFromDesign 4a062990-a6a3-11eb-9828-4f3da7d4935a
 With JSONata filter:
 
 ```bash
-epilot design getThemeFromDesign -p designId=4a062990-a6a3-11eb-9828-4f3da7d4935a -p theme=NEW --jsonata '$'
+epilot design getThemeFromDesign -p designId=4a062990-a6a3-11eb-9828-4f3da7d4935a -p theme=NEW --jsonata 'theme'
 ```
 
 <details>
 <summary>Sample Response</summary>
 
 ```json
-{}
+{
+  "theme": "NEW",
+  "design": {
+    "id": "string",
+    "last_modified_at": "string",
+    "style_name": "string",
+    "style": {
+      "logo": {
+        "main": {
+          "name": "string",
+          "display_name": "string",
+          "file_type": "LOGO",
+          "s3_object_key": "string",
+          "url": "string",
+          "file_id": "string"
+        }
+      },
+      "palette": {
+        "primary": "string",
+        "secondary": "string",
+        "error": "string",
+        "background": "string",
+        "paper": "string",
+        "navbar": "string",
+        "portal_login_background": "string"
+      },
+      "typography": {
+        "font": {
+          "font_id": "string",
+          "font_name": "string",
+          "font_family": "string",
+          "font_weight_regular": "string",
+          "font_weight_medium": "string",
+          "font_weight_bold": "string",
+          "urls": [
+            {
+              "type": "WOFF2",
+              "url": "string"
+            }
+          ]
+        },
+        "primary": "string",
+        "secondary": "string"
+      }
+    },
+    "custom_theme": "string",
+    "use_custom_theme": true,
+    "journey_design_tokens": {}
+  }
+}
 ```
 
 </details>
@@ -523,7 +855,7 @@ List all files for the user organization bucket
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `type` | query | "LOGO" \| "FONT" | No | Type of files to be returned |
+| `type` | query | "LOGO" \| "FONT" \| "IMAGE" | No | Type of files to be returned |
 
 **Sample Call**
 
@@ -547,7 +879,8 @@ epilot design getFiles --jsonata '$'
     "display_name": "string",
     "file_type": "LOGO",
     "s3_object_key": "string",
-    "url": "string"
+    "url": "string",
+    "file_id": "string"
   }
 ]
 ```
@@ -583,7 +916,8 @@ epilot design uploadFile --jsonata '$'
   "display_name": "string",
   "file_type": "LOGO",
   "s3_object_key": "string",
-  "url": "string"
+  "url": "string",
+  "file_id": "string"
 }
 ```
 
@@ -601,8 +935,8 @@ Search for a especific design owned by user organization
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `consumerId` | path | string | Yes | Id of the design |
-| `application` | path | string | Yes | Type of application that uses the design |
+| `consumerId` | path | string | Yes |  |
+| `application` | path | string | Yes |  |
 
 **Sample Call**
 
@@ -652,12 +986,70 @@ epilot design getConsumerDesign -p consumerId=4a062990-a6a3-11eb-9828-4f3da7d493
       "consumer": {}
     },
     "is_default": true,
+    "_manifest": ["string"],
     "custom_theme": "string",
     "use_custom_theme": true,
     "design_tokens": {
       "coupon": "string",
       "cashback": "string",
-      "custom_css": "string"
+      "custom_css": "string",
+      "accent_color": "string",
+      "outline_color": "string",
+      "divider_color": "string",
+      "link_color": "string",
+      "link_hover_color": "string",
+      "font_size_scale": "xs",
+      "topbar_height": 0,
+      "topbar_logo_alignment": "flex-start",
+      "logo_size": 0,
+      "input_background": "string",
+      "input_border_color": "string",
+      "input_text_color": "string",
+      "input_label_color": "string",
+      "input_border_radius": 0,
+      "input_height": 0,
+      "input_variant": "outlined",
+      "button_primary_bg": "string",
+      "button_primary_text": "string",
+      "button_primary_hover_bg": "string",
+      "button_primary_hover_text": "string",
+      "button_outlined_border": "string",
+      "button_outlined_text": "string",
+      "button_outlined_hover_bg": "string",
+      "button_outlined_hover_text": "string",
+      "button_ghost_bg": "string",
+      "button_ghost_text": "string",
+      "button_ghost_hover_bg": "string",
+      "button_ghost_hover_text": "string",
+      "button_border_radius": 0,
+      "button_height": 0,
+      "card_background": "string",
+      "card_border_color": "string",
+      "card_variant": "shadow",
+      "summary_card_background": "string",
+      "toggle_selected_bg": "string",
+      "toggle_selected_text": "string",
+      "toggle_hover_bg": "string",
+      "toggle_hover_text": "string",
+      "toggle_border_color": "string",
+      "dropdown_hover_bg": "string",
+      "dropdown_hover_text": "string",
+      "dropdown_selected_bg": "string",
+      "dropdown_selected_text": "string",
+      "switch_unchecked_color": "string",
+      "switch_unchecked_bg": "string",
+      "switch_border_radius": 0,
+      "checkbox_unchecked_color": "string",
+      "checkbox_label_color": "string",
+      "radio_unchecked_color": "string",
+      "radio_label_color": "string",
+      "datepicker_selected_bg": "string",
+      "datepicker_selected_color": "string",
+      "datepicker_border_radius": 0,
+      "chip_background": "string",
+      "chip_hover_background": "string",
+      "chip_text_color": "string",
+      "chip_hover_text_color": "string"
     }
   }
 }
@@ -677,7 +1069,7 @@ Add a consumer that uses a specific design
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `designId` | path | string | Yes | Id of the design |
+| `designId` | path | string | Yes |  |
 | `application` | path | string | Yes | Type of application that uses the design |
 
 **Request Body** (required)
@@ -688,7 +1080,7 @@ Add a consumer that uses a specific design
 epilot design addConsumer \
   -p designId=4a062990-a6a3-11eb-9828-4f3da7d4935a \
   -p application=journey \
-  -d '{"consumer_id":"string","consumer_name":"string","should_delete":"string"}'
+  -d '{"consumer_id":"4a062990-a6a3-11eb-9828-4f3da7d4935a","consumer_name":"string","should_delete":"string"}'
 ```
 
 Using positional args for path parameters:
@@ -721,7 +1113,7 @@ Remove a consumer that uses a specific design
 
 | Name | In | Type | Required | Description |
 | ---- | -- | ---- | -------- | ----------- |
-| `designId` | path | string | Yes | Id of the design |
+| `designId` | path | string | Yes |  |
 | `application` | path | string | Yes | Type of application that uses the design |
 
 **Request Body** (required)
@@ -732,7 +1124,7 @@ Remove a consumer that uses a specific design
 epilot design removeConsumer \
   -p designId=4a062990-a6a3-11eb-9828-4f3da7d4935a \
   -p application=journey \
-  -d '{"consumer_id":"string","consumer_name":"string","should_delete":"string"}'
+  -d '{"consumer_id":"4a062990-a6a3-11eb-9828-4f3da7d4935a","should_delete":"string"}'
 ```
 
 Using positional args for path parameters:
