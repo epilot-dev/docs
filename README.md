@@ -24,3 +24,23 @@ For that, all you need to do is follow the instructions below:
 3. Finally to bypass CORS you will want to get this Chrome [extension](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc)
 
 When you are done, just deploy your `openapi.yml` as you normally would. And don't forget to update your client sdk [here](https://github.com/epilot-dev/sdk-js).
+
+## Search
+
+The site search is a local plugin in [`src/plugins/search`](src/plugins/search):
+
+- `indexer.js` runs after `npm run build` and writes `build/search-index.json`. It indexes every section of the rendered docs and changelog pages, and every operation of the OpenAPI specs listed in `redoc.config.js`.
+- `engine.js` ranks results in the browser (BM25F with field weights, stemming, prefix and typo matching, title and phrase boosts).
+- `theme/SearchBar` is the search dialog (`Ctrl/⌘ K` or `/`).
+
+The dev server (`npm start`) has no index of its own: it serves the one from the last `npm run build`.
+
+After changing the ranking, verify it against the built index:
+
+```bash
+npm run build
+npm run test:search                       # relevance checks
+npm run test:search -- "webhook signature"  # print the results of a query
+```
+
+To keep an element out of the index, add a `data-search-ignore` attribute to it.
