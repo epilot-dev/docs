@@ -87,6 +87,11 @@
       "nullable": true,
       "description": "End Date"
     },
+    "auto_add_recipients": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Add New Recipients Automatically"
+    },
     "target": {
       "$ref": "#/definitions/BaseRelation",
       "description": "Target"
