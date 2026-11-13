@@ -66,7 +66,7 @@ Content-Type: application/json
 
 {
   "code": "BULK_CAPACITY_EXHAUSTED",
-  "message": "The bulk capacity is exhausted: this organisation has used up its allowance and every bulk slot is taken. Nothing of this request was accepted. The request can be retried after the Retry-After interval."
+  "message": "The capacity for large data loads is in use, and this organization is over its allowance for everyday traffic. Nothing of this request was accepted. Send the request again after the Retry-After interval."
 }
 ```
 
@@ -88,7 +88,7 @@ Interactive events do not count towards the allowance and are never refused for 
 ```json title="503 — a mixed request: the interactive event was accepted"
 {
   "code": "BULK_CAPACITY_EXHAUSTED",
-  "message": "The bulk capacity is exhausted: this organisation has used up its allowance and every bulk slot is taken. Nothing of this request was accepted. The request can be retried after the Retry-After interval.",
+  "message": "Some events of this request were not accepted; see results",
   "correlation_id": "018f8e9b-5a1b-7c4e-9b2a-4f0f6c1d7a21",
   "results": [
     {
@@ -100,13 +100,13 @@ Interactive events do not count towards the allowance and are never refused for 
     {
       "event_id": "0199c3f2-8a42-7a10-9c3e-5b7d2e1f0a66",
       "status": "error",
-      "message": "The bulk capacity is exhausted: this organisation has used up its allowance and every bulk slot is taken. Nothing of this request was accepted. The request can be retried after the Retry-After interval."
+      "message": "This event was not accepted: the capacity for large data loads is in use, and this organization is over its allowance for everyday traffic. Send the event again after the Retry-After interval."
     }
   ]
 }
 ```
 
-- **Read `results`, not `message`.** The top-level `message` is the same text as for a request refused whole. Events with `success` were accepted; events with `error` and the capacity message were refused.
+- **`results` says which events were accepted.** Events with `success` were accepted. Events with `error` and a message that starts with "This event was not accepted" were refused.
 - **Retry the refused events** after the `Retry-After` interval. You can also send the whole request again if every event carries a `deduplication_id`: the accepted events then come back `skipped`.
 - **A close is not applied.** A `correlation_complete: true` on such a request is ignored with the reason `retry_requested`, as the response's `correlation_close` says. The retry closes the correlation; see [What Became of the Close](./interactive-inbound.md#what-became-of-the-close).
 
@@ -116,16 +116,41 @@ Events that asked for interactive processing but run as everyday traffic, becaus
 
 A file import counts as a whole. A large import is recognized as a large load when it starts, and its rows are processed as described above.
 
-If the capacity for large loads is exhausted when an import needs it, the import does not fail. It waits and tries again by itself, for several hours:
+If the capacity for large loads is in use when an import needs it, the import does not fail. It waits and tries again by itself, for several hours, and nothing needs to be done:
 
-- While it waits, its status stays `PROCESSING` and its progress does not advance.
-- Rows already sent stay sent. The import continues where it stopped, and no row is sent twice.
+- Its status stays `PROCESSING`.
+- While it waits, its `progress` carries a `waiting_for_capacity` object. epilot's import screens show such an import as **Waiting for capacity**.
+- Rows already sent stay sent. When capacity is free, the import continues where it stopped, and no row is sent twice.
 - You can abort the import while it waits.
 
-Only if no capacity becomes free in that time does the import fail, with the error code `BULK_CAPACITY_EXHAUSTED` and this message:
+```json title="GET /v2/erp/imports/{importId} — an import waiting for capacity (excerpt)"
+{
+  "import_id": "7c1e4b2a-93d5-4f08-b6a1-2e9d0c4f5a37",
+  "status": "PROCESSING",
+  "progress": {
+    "processed_rows": 0,
+    "total_rows": 250000,
+    "waiting_for_capacity": {
+      "since": "2026-11-16T08:12:04Z",
+      "retry_at": "2026-11-16T08:47:05Z",
+      "gives_up_at": "2026-11-16T14:12:04Z"
+    }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `since` | When this wait began. It does not change while the same wait continues. |
+| `retry_at` | When the import tries again, if known. |
+| `gives_up_at` | The earliest time at which the import fails if capacity is still not free. It can fail a little later, never earlier. |
+
+`waiting_for_capacity` is present only while the import waits. It is gone as soon as the import continues, when it is aborted, and when it ends. An import that never had to wait does not carry it. The field is the same on the single-import and list endpoints of both import APIs, `/v2/erp/imports` and `/v2/imports`.
+
+Only if no capacity becomes free in time does the import fail, with the error code `BULK_CAPACITY_EXHAUSTED` and this message:
 
 ```text
-the platform cannot take more rows for this organisation right now and stopped the import — rows already sent stay sent, please run the import again in a little while
+the capacity for large data loads stayed in use for the whole waiting time and the import was stopped. Rows already sent stay sent, please run the import again later
 ```
 
 Run the import again later: validate it, then execute it. The rows that were already sent are sent again and update the same entities.
