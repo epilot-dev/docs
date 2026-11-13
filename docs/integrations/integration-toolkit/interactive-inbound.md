@@ -15,7 +15,7 @@ Your push stays asynchronous. Each push carries the **correlation id** the porta
 - An end customer is waiting for your push to land: registration, contract addition, or customer identification in a journey.
 - Your middleware answers a [portal extension hook](/docs/apps/components/portal-extension) such as `registrationIdentifiersCheck` or `contractIdentification` and then pushes the customer's data.
 
-Bulk and scheduled syncs do not need it and keep using the inbound API as they are.
+Bulk and scheduled syncs do not need it and keep using the inbound API as they are. See [Large Data Loads](./large-data-loads.md) for how large ones are processed.
 :::
 
 ## How It Works
@@ -202,7 +202,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
   }'
 ```
 
-"Accepted" means the request answered with success for every event. If a push is answered with a retry (a 422 with partial results, or a 429), retry it until it is accepted before you send the close. Give every event a `deduplication_id`, so a retried request — a closing one included — is recognized as the same request and not processed a second time.
+"Accepted" means the request answered with success for every event. If a push is answered with a retry (a 422 with partial results, a 429, or a [503](./large-data-loads.md#when-capacity-is-exhausted)), retry it until it is accepted before you send the close. Give every event a `deduplication_id`, so a retried request — a closing one included — is recognized as the same request and not processed a second time.
 
 If you cannot place the close correctly, leave it out: a close that arrives too early does more harm than none. The response says whether the close was applied; see [Closing Rules](#closing-rules).
 
@@ -247,7 +247,7 @@ An empty `events` array is accepted only together with `correlation_complete: tr
 | Field | Description |
 |---|---|
 | `correlation_id` | The request's correlation id, echoed, or generated when you sent none — so a push without a portal in the loop still gets an id it can look up later. |
-| `correlation_close` | Present when the request carried `correlation_complete: true`, on a 200, 422 or 429 alike. Says whether the close was applied; see [What Became of the Close](#what-became-of-the-close). |
+| `correlation_close` | Present when the request carried `correlation_complete: true`, on a 200, 422 or 429 alike, and on a 503 that lists `results`. Says whether the close was applied; see [What Became of the Close](#what-became-of-the-close). |
 | `results[].interactive` | `true` when the event was **processed as interactive**: it was recorded and the wait can see it. Present when interactive processing was requested, or the use case is set to `always`. |
 | `results[].lane` | The lane that actually carried the event: `interactive`, or the organization's normal lane (`priority`, `default` or `deferred`). Over the [rate limit](#rate-limits) an event is still `"interactive": true` but runs on a normal lane. |
 | `results[].message` | Why `interactive` is `false`. |
@@ -267,7 +267,7 @@ A request that does not ask for interactive processing is processed exactly as a
 
 - **The close needs a request-level `correlation_id`.** It closes that correlation and no other; the correlation is never inferred from per-event ids. `correlation_complete: true` without a request-level `correlation_id` is rejected with **400** and raises `CORRELATION_ID_MISSING`.
 - **The request's own events count.** The correlation closes after the request's events are recorded. Closing twice is a no-op.
-- **Only a fully accepted request closes.** A response that asks you to retry (a 422 with partial results, or a 429), or a request one of whose events the queue refused, closes nothing — so a close never overtakes events that are still being retried.
+- **Only a fully accepted request closes.** A response that asks you to retry (a 422 with partial results, a 429, or a 503), or a request one of whose events the queue refused, closes nothing — so a close never overtakes events that are still being retried.
 - **A retried close still closes.** If the response to your closing request was lost and you send it again with the same `deduplication_id`s, the events are skipped as duplicates and the close is applied to the correlation they were recorded under the first time.
 - **A request with events never creates a correlation.** It closes one that exists, whatever became of its own events — also when some went over the 32-event limit. If the correlation does not exist yet and none of the request's events was recorded under it (the use case does not allow interactive processing, `interactive` was left out, or every event carried its own `correlation_id`), the close is ignored: closing an empty correlation would tell the portal "nothing is coming" while the data is being written.
 - **A request without events creates the correlation closed.** For a correlation id epilot has never seen, it returns 200, raises `CORRELATION_CLOSED_EMPTY`, and the portal's wait answers `complete` with `events_received: 0` at once. Creating the correlation costs one unit of the [interactive budget](#rate-limits); closing one that exists costs nothing.
@@ -299,7 +299,7 @@ Every request that sets `correlation_complete: true` gets a `correlation_close` 
 
 | Reason | What to do |
 |---|---|
-| `retry_requested` | The response is a 422 or a 429. Retry the request with `correlation_complete` still set; it closes then. |
+| `retry_requested` | The response is a 422, a 429 or a 503. Retry the request with `correlation_complete` still set; it closes then. |
 | `queue_refused` | One of the request's events was refused. Send the close again once every event is accepted. |
 | `other_integration` | The correlation belongs to another integration. Use a correlation id of your own. |
 | `events_under_own_correlation_ids`, `events_duplicate`, `events_not_configured`, `events_not_interactive`, `events_unrecorded` | The correlation does not exist, and this request recorded none of its events under it: they carried their own correlation ids, were duplicates, matched no use case, or were not processed as interactive. Send the close under the correlation the events were recorded under, or send the events with `interactive: true` to a use case that allows it. |
@@ -679,6 +679,8 @@ Each item in `results` is the same correlation summary the wait returns, without
 
 The interactive lane stays fast because no single organization can fill it. Every organization has a budget for interactive events: by default a sustained **120 interactive events per 5 minutes, with a burst of 40**. Organizations with higher registration volume can agree a higher budget with epilot.
 
+Events on the interactive lane do not count towards an organization's allowance for [large data loads](./large-data-loads.md#what-counts), and they are never refused for lack of capacity.
+
 How a request is charged:
 
 - **Once per request, at ingest, for the events it admits as interactive.** Duplicates, events rejected with 422 and events over a correlation's 32-event limit cost nothing, so a retry pays only for the events it newly admits.
@@ -686,11 +688,12 @@ How a request is charged:
 - **All or nothing.** If the budget cannot cover the whole charge, all of the request's events run on the normal lane. A request is never split across lanes.
 - **A close without events** costs one unit, and only when it creates the correlation. Closing a correlation that exists costs nothing. When the budget is spent, such a close still closes a correlation that exists, but creates none, and `correlation_close` says `rate_limited`.
 
-When the budget is spent, nothing is rejected and nothing is lost:
+When the budget is spent, the events are not rejected because of that, and nothing is lost:
 
 - The events are processed on the organization's normal lane. Their results keep `"interactive": true`, and `lane` names the lane that carried them.
 - They are still recorded, so the close, the wait and the status endpoints keep working. The answer simply takes as long as a bulk event does, and the portal's wait may time out and retry.
 - `INTERACTIVE_RATE_LIMITED` appears in monitoring for the request.
+- They count as everyday traffic for [large data loads](./large-data-loads.md). In the rare case that the organization goes over its allowance while the capacity for large loads is exhausted, they are refused with `503` like any other event. Send them again after the `Retry-After` interval.
 
 A steady stream of `INTERACTIVE_RATE_LIMITED` usually means that a bulk sync sets `interactive: true` on every request. Bulk pushes are not slower without the flag, but with it they use up the budget your registrations need.
 
