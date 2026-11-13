@@ -96,6 +96,17 @@
       "nullable": true,
       "description": "Language"
     },
+    "docgen_layout_mode": {
+      "type": "string",
+      "enum": [
+        "org_default",
+        "legacy",
+        "improved",
+        null
+      ],
+      "nullable": true,
+      "description": "Document layout"
+    },
     "alt_text": {
       "type": "string",
       "nullable": true,

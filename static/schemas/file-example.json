@@ -24,6 +24,7 @@
   "type": "document",
   "readable_size": "string",
   "language": "de",
+  "docgen_layout_mode": "org_default",
   "alt_text": "string",
   "access_control": "private",
   "public_url": "string",
