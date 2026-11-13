@@ -103,10 +103,15 @@ Things worth knowing before you use it:
 - **14-day horizon.** The event is rebuilt from the stored inbound payload, which is
   kept for 14 days — see [retention](./overview.md#how-long-data-is-kept). Older
   events return `not_found`.
-- **Always HTTP 200.** Per-event outcomes are in `results`, one entry per requested id
-  in request order, with a `status` of `success` / `queued`, `not_found`, `skipped`,
-  `ignored` or `error`. Compare `replayed` against the number of ids you sent rather
-  than trusting the status code.
+- **HTTP 200, with one exception.** Per-event outcomes are in `results`, one entry per
+  requested id in request order, with a `status` of `success` / `queued`, `not_found`,
+  `skipped`, `ignored` or `error`. Compare `replayed` against the number of ids you sent
+  rather than trusting the status code.
+- **A replay counts as inbound traffic.** If it takes your organization over its
+  allowance while the capacity for large loads is exhausted, the whole replay is
+  refused with `503`, a `Retry-After` header and `BULK_CAPACITY_EXHAUSTED`, and nothing
+  of it is queued. Send it again after the `Retry-After` interval — see
+  [Large Data Loads](../large-data-loads.md#when-capacity-is-exhausted).
 - **A replay is a new event.** It is assigned a fresh `event_id` and a new
   `correlation_id` prefixed `replay_`, so the replayed run is distinguishable from the
   original in monitoring rather than overwriting it.
