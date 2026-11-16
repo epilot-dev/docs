@@ -33,14 +33,159 @@ Add a top-level `options` array to your `manifest.json`:
 |---|---|---|
 | `key` | ✓ | Unique identifier across the whole app. This is what you reference everywhere (`{{Options.api_key}}`, `input.app_options.api_key`, proxy auth) — treat it as a public contract |
 | `type` | ✓ | `text`, `number`, `boolean`, `secret` or `object` |
-| `label` | — | Human-readable label shown to the installing organization |
-| `description` | — | Help text shown below the input |
+| `label` | — | Human-readable label shown to the installing organization — a string or [translations](#translated-texts) |
+| `description` | — | Help text shown below the input — a string or [translations](#translated-texts) |
+| `placeholder` | — | Example shown in the empty input (`text`, `number`, `secret`) |
 | `required` | — | The app installs, but is marked *partially successful* and stays unusable until all required options are filled |
+| `default` | — | Value used until the organization sets one — see [Defaults](#defaults) |
+| `choices` | — | Fixed set of accepted values, shown as a dropdown — see [Choices](#choices) |
+| `format`, `pattern`, `min`, `max` | — | Rules a value must satisfy — see [Validating values](#validating-values) |
+| `visible_if` | — | Show the option only while other options have certain values — see [Conditional options](#conditional-options) |
+| `group` | — | Section the option is shown under — see [Groups](#groups) |
 | `sensitive` | — | Write-only, server-side only — see below. Always `true` for `type: secret` |
 | `repeatable` | — | The value becomes a list of entries (each gets a stable server-assigned `id`) |
 | `fields` | `object` type | Declares the sub-fields of an `object` option — primitives only, no nesting |
 
 The installing organization sees all app options in a single **App settings** card on the app's configuration page.
+
+## Choices
+
+Give a `text` or `number` option a fixed set of values and it is shown as a dropdown instead of a free-text field:
+
+```json
+{
+  "key": "auth_mode",
+  "type": "text",
+  "label": "Authentication",
+  "default": "none",
+  "choices": [
+    { "value": "none", "label": { "de": "Keine", "en": "None" } },
+    { "value": "basic", "label": "Username & password" },
+    { "value": "bearer" }
+  ]
+}
+```
+
+- The stored value is the plain `value` — your proxy, functions and `{{Options.auth_mode}}` templates see `"basic"`, never the label.
+- `label` is optional; a choice without one is shown by its value.
+- Values must be unique and match the option type (strings for `text`, numbers for `number`).
+- Saving a value that is not one of the choices is rejected.
+- For a `repeatable` option, every entry must be one of the choices.
+
+## Defaults
+
+`default` is the option's value for as long as the installing organization has not set one:
+
+```json
+{ "key": "timeout", "type": "number", "default": 25, "min": 1, "max": 60 }
+```
+
+- A default is the **effective value everywhere** values are read: the API Proxy, functions, browser components and [`visible_if`](#conditional-options) conditions.
+- A `required` option with a default counts as filled.
+- Supported for non-repeatable, non-sensitive `text`, `number` and `boolean` options. `false` and `0` are valid defaults.
+- The default must itself satisfy the option's `choices`, `format`, `pattern`, `min` and `max`.
+- Clearing a field brings the default back.
+
+:::caution Changing a default changes behavior
+Installations that never set a value follow the default of the version they are on. If you change a default in a new version, those installations change with it when they update.
+:::
+
+## Validating values
+
+Rules are checked in the configuration UI as the installer types and again by the platform when the configuration is saved. A save with a value that breaks a rule is rejected with `400` and the code `INVALID_OPTION_VALUES`; nothing is stored.
+
+| Field | Applies to | Rule |
+|---|---|---|
+| `format` | `text` | `hostname` (a bare host name — no scheme, port or path), `url` (an absolute `http(s)` URL) or `email` |
+| `pattern` | `text`, `secret` | A regular expression the **whole** value must match (max. 200 characters). Values longer than 2000 characters never match |
+| `pattern_message` | with `pattern` | Message shown when the pattern does not match — a string or [translations](#translated-texts) |
+| `min`, `max` | `number` | Smallest and largest accepted value |
+
+```json
+{
+  "key": "api_host",
+  "type": "text",
+  "required": true,
+  "format": "hostname",
+  "placeholder": "api.example.com"
+},
+{
+  "key": "customer_no",
+  "type": "text",
+  "pattern": "[A-Z]{2}\\d{6}",
+  "pattern_message": { "de": "Zwei Großbuchstaben und sechs Ziffern", "en": "Two capital letters and six digits" }
+}
+```
+
+A few things to know:
+
+- **Empty values are never a rule violation.** Whether a value is needed at all is what `required` is for.
+- **Secrets are checked before they are encrypted**, and a rejected secret is never echoed back in the error.
+- **Updating to a new version never fails on old values.** If stored values no longer fit the rules of the new version, the update goes through and the installation is disabled until an admin corrects them.
+
+## Conditional options
+
+`visible_if` shows an option only while other options have certain values. Use it for settings that only make sense in one mode:
+
+```json
+"options": [
+  {
+    "key": "auth_mode",
+    "type": "text",
+    "default": "none",
+    "choices": [{ "value": "none" }, { "value": "basic" }, { "value": "bearer" }, { "value": "header" }]
+  },
+  { "key": "username", "type": "text", "required": true, "visible_if": { "auth_mode": "basic" } },
+  { "key": "password", "type": "secret", "required": true, "visible_if": { "auth_mode": "basic" } },
+  { "key": "token", "type": "secret", "required": true, "visible_if": { "auth_mode": ["bearer", "header"] } }
+]
+```
+
+- Each entry maps an option key to the value it must have, or to a list of accepted values. **All** entries must match.
+- **A hidden option is not asked for.** It does not appear in the configuration UI, and when it is `required` it does not keep the installation from being enabled. This is what lets you mark the password as required without blocking installations that use no authentication.
+- The controlling option must be a non-sensitive, non-repeatable `text`, `number` or `boolean` option. Secrets cannot control visibility — their value is never readable in the browser.
+- An unset controlling option falls back to its `default`. An unset `boolean` counts as `false`.
+- Conditions can chain. An option whose controlling option is hidden is hidden as well.
+- If the controlling option declares `choices`, the expected values must be among them — a typo like `"Basic"` is rejected on deploy.
+- Deploys with a condition on an unknown option, on the option itself, or with circular conditions are rejected.
+
+:::caution Hidden options keep their stored value
+Switching from `basic` to `none` hides the password field but does not delete the stored password, so switching back needs no re-entry. The flip side: your functions and the API Proxy still receive those values. **Check the controlling option** (`auth_mode === "basic"`), not whether a password happens to be present.
+:::
+
+## Groups
+
+Arrange options into sections with a top-level `option_groups` array and a `group` on each option:
+
+```json title="manifest.json"
+{
+  "option_groups": [
+    { "key": "server", "label": { "de": "Server", "en": "Server" } },
+    {
+      "key": "auth",
+      "label": { "de": "Authentifizierung", "en": "Authentication" },
+      "description": "Credentials stay server-side and never reach the browser."
+    }
+  ],
+  "options": [
+    { "key": "api_host", "type": "text", "group": "server" },
+    { "key": "auth_mode", "type": "text", "group": "auth" },
+    { "key": "notes", "type": "text" }
+  ]
+}
+```
+
+Options without a group are shown first, followed by one section per group in the order the groups are declared. Group keys must be unique, and an option may only name a declared group.
+
+## Translated texts
+
+`label`, `description`, `placeholder`, `pattern_message`, choice labels and group labels accept either a plain string or translations:
+
+```json
+{ "key": "api_host", "type": "text", "label": { "de": "API-Host", "en": "API host" } }
+```
+
+`de` is required when you use translations; `en` is optional and falls back to German. The configuration UI shows the text in the user's language.
 
 ## Sensitive vs. non-sensitive
 
@@ -57,6 +202,8 @@ Options of `type: secret` are stored encrypted and are always sensitive. Set `se
 
 Marking an option `required: true` doesn't block the installation itself — the app installs, but is flagged as **partially successful** and cannot be used until the organization fills in all required values.
 
+Two things count as filled without the organization typing anything: an option with a [`default`](#defaults), and an option that is currently hidden by [`visible_if`](#conditional-options).
+
 ![Partial installation](/img/apps/component-option-partially-installed.png)
 
 ## Consuming options
@@ -68,6 +215,9 @@ Where the configured values show up, by surface:
 | [API Proxy](/docs/apps/components/api-proxy) | Reference option keys in the auth configuration — credentials are injected server-side | ✓ |
 | [Portal Extension](/docs/apps/components/portal-extension) / [External Product Catalog](/docs/apps/components/external-product-catalog) hooks | `{{Options.api_key}}` template variables — resolved server-side when the hook fires | ✓ |
 | [Functions](/docs/apps/functions/writing-functions) | `input.app_options` contains **all** option values — functions always run server-side | ✓ |
-| Custom Journey Block, Custom Capability, Custom Page, Custom Portal Block (browser code) | Options are passed into your component per its surface contract | Non-sensitive only |
+| Custom Capability, Custom Page, Flow Action Config (App Bridge surfaces) | [`getOptions()`](/docs/apps/app-surfaces#reading-app-options) from `@epilot/app-bridge` | Non-sensitive only |
+| Custom Journey Block, Custom Portal Block | Options are passed into your component per its surface contract | Non-sensitive only |
+
+Every consumer receives the **effective** value of an option: what the organization configured, or the declared [`default`](#defaults) if nothing is set.
 
 Anything that executes in a browser only ever receives non-sensitive options. There is no way to read a sensitive value from frontend code — route those calls through the API Proxy instead, which attaches the credentials server-side.

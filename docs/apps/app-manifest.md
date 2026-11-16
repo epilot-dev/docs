@@ -66,6 +66,7 @@ The `$schema` reference gives you validation and autocompletion in editors like 
 | `notifications` | — | Email + events (`app.installed`, `app.uninstalled`) you want to be notified about |
 | `permissions` | — | The grants your app's server-side code needs — shown to the installing org for consent, see [Permissions](/docs/apps/configure-permissions) |
 | `options` | — | Settings the installing org fills in — shared by all components and functions, see [App Options](/docs/apps/app-options) |
+| `option_groups` | — | Sections the options are shown under in the configuration UI, see [Groups](/docs/apps/app-options#groups) |
 | `blueprint` | — | `manifest_id` of a blueprint to install alongside the app |
 | `assets.logo` | — | Local path to the app logo, uploaded on deploy |
 | `functions` | — | Server-side [functions](/docs/apps/functions/overview) (workflow actions and cron), see below |

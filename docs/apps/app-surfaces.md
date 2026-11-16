@@ -149,6 +149,33 @@ const session = await initialize({
 });
 ```
 
+### Reading App Options
+
+The [app options](/docs/apps/app-options) an organization configured for your app arrive with the initialization handshake — no API call needed. Read them with `getOptions()`:
+
+```typescript title="Reading app options"
+import { initialize, getOptions } from '@epilot/app-bridge';
+
+interface MyOptions {
+  api_host: string;
+  auth_mode: 'none' | 'basic';
+  page_size: number;
+}
+
+async function main() {
+  await initialize();
+
+  const { api_host, auth_mode } = getOptions<MyOptions>();
+}
+```
+
+- **Only non-sensitive options are included.** Secrets and options declared `sensitive` never reach the browser — call your backend through the [API Proxy](/docs/apps/components/api-proxy), which attaches credentials server-side.
+- Values are the **effective** values: an option nobody configured has its declared [`default`](/docs/apps/app-options#defaults).
+- `getOptions()` returns `{}` when no options are available, so treat every key as optional. This is the case when the user may not view the app installation.
+- Options are also available on the session: `(await initialize()).options`.
+
+Requires `@epilot/app-bridge` 0.3.0 or later.
+
 ---
 
 ## Entity Surface Implementation
@@ -856,6 +883,7 @@ For a complete, production-ready example of a Custom Page app, see the **Energy 
 |----------|---------|-------------|
 | `initialize(options?)` | `Promise<AppBridgeSession>` | Initialize the app bridge and establish the postMessage channel with the parent epilot app. Returns session data with an OAuth token and the user's language. Safe to call multiple times - subsequent calls return the cached session. |
 | `getSession()` | `AppBridgeSession` | Get the cached session synchronously. Throws `AppBridgeNotInitializedError` if called before `initialize()`. |
+| `getOptions<T>()` | `Partial<T>` | Get the non-sensitive [app option](/docs/apps/app-options) values of the installation, delivered with the handshake. Returns `{}` when none are available. Throws `AppBridgeNotInitializedError` if called before `initialize()`. |
 | `isInitialized()` | `boolean` | Check whether the app bridge has been initialized. |
 
 **InitOptions:**
@@ -933,7 +961,8 @@ const unsubscribe = epilot.subscribeToParentMessages('my-event', (data) => {
 ```typescript
 import type {
   // Session
-  AppBridgeSession,    // { token: string; lang: string }
+  AppBridgeSession,    // { token: string; lang: string; options?: AppOptions }
+  AppOptions,          // Record<string, unknown> — option values keyed by option key
   InitOptions,         // { contentHeight?: number; timeout?: number }
   RequestOptions,      // { timeout?: number }
 
