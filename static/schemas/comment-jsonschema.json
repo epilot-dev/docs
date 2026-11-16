@@ -142,6 +142,11 @@
       "nullable": true,
       "description": "Date & Time"
     },
+    "phone_conversation_id": {
+      "type": "string",
+      "nullable": true,
+      "description": "Phone Conversation ID"
+    },
     "personal_consultation_duration": {
       "type": "string",
       "enum": [
