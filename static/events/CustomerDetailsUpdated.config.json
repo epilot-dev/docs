@@ -2,7 +2,7 @@
   "event_name": "CustomerDetailsUpdated",
   "event_title": "Customer Details Updated",
   "event_description": "Triggered when key customer details are changed on a Contact entity",
-  "event_version": "1.0",
+  "event_version": "1.1",
   "event_tags": [
     "builtin",
     "erp",
@@ -59,9 +59,19 @@
         "cardinality": "one"
       },
       {
+        "id": "accounts",
+        "schema": "account",
+        "cardinality": "many"
+      },
+      {
         "id": "billing_account",
         "schema": "billing_account",
         "cardinality": "one"
+      },
+      {
+        "id": "billing_accounts",
+        "schema": "billing_account",
+        "cardinality": "many"
       },
       {
         "id": "portal_user",
@@ -76,7 +86,15 @@
       },
       {
         "from": "contact",
+        "to": "accounts"
+      },
+      {
+        "from": "contact",
         "to": "billing_account"
+      },
+      {
+        "from": "contact",
+        "to": "billing_accounts"
       },
       {
         "from": "contact",
