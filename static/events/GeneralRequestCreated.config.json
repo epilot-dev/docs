@@ -2,7 +2,7 @@
   "event_name": "GeneralRequestCreated",
   "event_title": "Contact Form",
   "event_description": "Customer request via contact form",
-  "event_version": "1.0",
+  "event_version": "1.1",
   "event_tags": [
     "builtin",
     "erp",
@@ -35,6 +35,11 @@
         "id": "billing_account",
         "schema": "billing_account",
         "cardinality": "one"
+      },
+      {
+        "id": "billing_accounts",
+        "schema": "billing_account",
+        "cardinality": "many"
       }
     ],
     "edges": [
@@ -49,6 +54,10 @@
       {
         "from": "ticket",
         "to": "billing_account"
+      },
+      {
+        "from": "ticket",
+        "to": "billing_accounts"
       }
     ]
   },

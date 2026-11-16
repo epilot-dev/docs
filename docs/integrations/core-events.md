@@ -17,6 +17,8 @@ See the [API Changelog](/api/changelog) for the full history of additions and ch
 
 Events follow a consistent structure with common metadata fields and event-specific payloads. Each event may include hydrated entity data from the entity graph.
 
+An entity node is either a single object or a list. A contact can have several billing accounts and accounts, and a ticket can link several billing accounts. Events that start from a contact or a ticket therefore carry `billing_accounts` (and `CustomerDetailsUpdated` also carries `accounts`) with every related entity. The single `billing_account` and `account` fields stay for compatibility, but hold an arbitrary one of them when there are several, so read the list when your integration acts per billing account.
+
 ### Common Event Fields
 
 All events include these fields:
