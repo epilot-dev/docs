@@ -93,7 +93,16 @@
       "description": "Expiration Date"
     },
     "role": {
-      "type": "string",
+      "type": [
+        "string",
+        "array"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "default_end_customer_portal_role"
+      ],
       "nullable": true,
       "description": "Role: Portal role of this user. Empty uses the portal's default role."
     },
