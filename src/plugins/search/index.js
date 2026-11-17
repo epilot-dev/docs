@@ -22,7 +22,7 @@ const DEFAULT_OPTIONS = {
   // API reference pages rendered by Redoc: [{ routePath, specUrl, layout: { title } }]
   specs: [],
   // Routes that are listings or navigation, not content.
-  exclude: [/^\/$/, /^\/(404|search)\//, /^\/blog\//, /^\/api\/changelog\/(page\/.*)?$/],
+  exclude: [/^\/$/, /^\/(404|search)\//, /^\/blog\//, /^\/api\/changelog\/((page|tags)\/.*)?$/],
   // Generated reference pages repeat what the guides and the API reference
   // say. They are searchable, but rank below both.
   weights: [

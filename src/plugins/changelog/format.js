@@ -62,7 +62,9 @@ function inferTags(text) {
     rest = rest.replace(breakingPrefix, '').replace(breakingSuffix, '');
   }
 
-  if (/\bdeprecated\b/i.test(rest)) tags.push('deprecated');
+  // "is now deprecated", but not "the deprecated endpoint was removed"
+  const removesDeprecated = /\bdeprecated\b[^.;]*\b(was|were) removed\b|\breplac\w+ the deprecated\b/i;
+  if (/\bdeprecated\b/i.test(rest) && !removesDeprecated.test(rest)) tags.push('deprecated');
   if (!tags.includes('breaking') && /\bmust (be prepared|handle)\b/i.test(rest)) tags.push('action');
   if (/^New\b/.test(rest)) tags.push('new');
   if (tags.length === 0) tags.push('changed');
@@ -168,4 +170,19 @@ function describeSection(body) {
   return `${label}: ${text}`;
 }
 
-module.exports = { TAGS, parseSection, renderSection, describeSection };
+// Change types that get a page of their own (/api/changelog/tags/breaking). The pages
+// are not paginated, so only the types with few entries qualify.
+const PAGE_TAGS = ['breaking', 'deprecated'];
+
+/** Labels of the change types in a section that have a page of their own. */
+function sectionTags(body) {
+  const present = new Set(
+    parseSection(body)
+      .filter((block) => block.type === 'change')
+      .flatMap((change) => change.tags),
+  );
+
+  return TAGS.filter((tag) => PAGE_TAGS.includes(tag.id) && present.has(tag.id)).map((tag) => tag.label);
+}
+
+module.exports = { TAGS, parseSection, renderSection, describeSection, sectionTags };

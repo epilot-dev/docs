@@ -6,7 +6,7 @@ const { aliasedSitePath, docuHash, normalizeUrl } = require('@docusaurus/utils')
 const fs = require('fs-extra');
 const Joi = require('joi');
 
-const { describeSection, renderSection } = require('./format');
+const { describeSection, renderSection, sectionTags } = require('./format');
 
 /**
  * @param {string} section
@@ -22,6 +22,7 @@ function processSection(section, routeBasePath, dateHourMap) {
   const body = section.replace(/^## .*\n?/, '').trim();
   const content = renderSection(body);
   const description = describeSection(body);
+  const tags = sectionTags(body);
 
   if (!dateHourMap[date]) dateHourMap[date] = 23;
   const hour = dateHourMap[date]--;
@@ -42,7 +43,9 @@ function processSection(section, routeBasePath, dateHourMap) {
     content: `---
 title: "${title}"
 date: ${dateTime}
-slug: ${fullSlug}${description ? `\ndescription: ${JSON.stringify(description)}` : ''}
+slug: ${fullSlug}${tags.length > 0 ? `\ntags: [${tags.join(', ')}]` : ''}${
+      description ? `\ndescription: ${JSON.stringify(description)}` : ''
+    }
 ---
 
 ${content}`,
@@ -68,6 +71,7 @@ async function ChangelogPlugin(context, options) {
     path: changelogOutputDir,
     blogListComponent: '@theme/ChangelogList',
     blogPostComponent: '@theme/ChangelogPage',
+    blogTagsPostsComponent: '@theme/ChangelogTagPage',
   });
 
   return {
