@@ -28,6 +28,8 @@ type Props = {
   basePath: string;
   /** The filter this page shows. */
   filter: string;
+  /** Which APIs this page lists: the core APIs (default), or all of them. */
+  scope?: 'core' | 'all';
   items: { content: Entry }[];
   children?: React.ReactNode;
 };
@@ -69,7 +71,15 @@ function groupByDate(entries: { content: Entry }[]) {
 }
 
 /** A page of changelog entries: the changelog itself, or the entries of one change type. */
-function ChangelogEntries({ title, description, basePath, filter, items, children }: Props): JSX.Element {
+function ChangelogEntries({
+  title,
+  description,
+  basePath,
+  filter,
+  scope = 'core',
+  items,
+  children,
+}: Props): JSX.Element {
   const groups = groupByDate(items.filter(({ content }) => content.metadata));
   const toc = groups.map(({ date, entries }) => ({
     value: formatDate(date),
@@ -99,18 +109,34 @@ function ChangelogEntries({ title, description, basePath, filter, items, childre
                       Subscribe via RSS
                     </a>
                   </p>
-                  <nav className={styles.filters} aria-label="Filter changes" data-search-ignore>
-                    {FILTERS.map(({ id, label, path }) => (
-                      <Link
-                        key={id}
-                        to={`${basePath}${path}`}
-                        className={`${styles.filter} ${id === filter ? styles.filterActive : ''}`}
-                        aria-current={id === filter ? 'page' : undefined}
-                      >
-                        {label}
-                      </Link>
-                    ))}
-                  </nav>
+                  {scope === 'all' ? (
+                    <p className={styles.scope} data-search-ignore>
+                      Showing changes to all APIs. This includes APIs for specific platform features, which are not part
+                      of the <Link to="/api#api-reference">core APIs</Link> integrations are built on and change more
+                      often. <Link to={basePath}>Show core APIs only</Link>
+                    </p>
+                  ) : (
+                    <>
+                      <nav className={styles.filters} aria-label="Filter changes" data-search-ignore>
+                        {FILTERS.map(({ id, label, path }) => (
+                          <Link
+                            key={id}
+                            to={`${basePath}${path}`}
+                            className={`${styles.filter} ${id === filter ? styles.filterActive : ''}`}
+                            aria-current={id === filter ? 'page' : undefined}
+                          >
+                            {label}
+                          </Link>
+                        ))}
+                      </nav>
+                      <p className={styles.scope} data-search-ignore>
+                        Showing the <Link to="/api#api-reference">core APIs</Link>: the APIs integrations are built on,
+                        which we keep stable and backwards compatible, together with the core entities and events. APIs
+                        for specific platform features change more often and are left out here.{' '}
+                        <Link to={`${basePath}/all`}>Show all APIs</Link>
+                      </p>
+                    </>
+                  )}
                   {groups.map(({ date, entries }) => (
                     <section key={date} className={styles.day}>
                       <h2 id={date} className={styles.date}>

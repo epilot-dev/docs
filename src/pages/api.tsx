@@ -24,6 +24,37 @@ const toc = [
   { value: 'API Reference', id: 'api-reference', children: [], level: 2 },
 ];
 
+function ApiTable({ specs }: { specs: Spec[] }): JSX.Element {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>API</th>
+          <th>SDK Client</th>
+        </tr>
+      </thead>
+      <tbody>
+        {specs.map((spec) => {
+          const slug = spec.routePath.replace('/api/', '');
+
+          return (
+            <tr key={spec.routePath}>
+              <td>
+                <Link to={spec.routePath}>{spec.layout.title}</Link>
+              </td>
+              <td>
+                <a href={`https://www.npmjs.com/package/@epilot/${slug}-client`}>
+                  <code>@epilot/{slug}-client</code>
+                </a>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+}
+
 function ApiIntro(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   const windowSize = useWindowSize();
@@ -31,6 +62,10 @@ function ApiIntro(): JSX.Element {
 
   const redocusaurusOpts = siteConfig.presets.find((preset) => preset[0] === 'redocusaurus');
   const specs: Spec[] = redocusaurusOpts?.[1]?.['specs'] ?? [];
+  // Tier 2 APIs (see redoc.config.js) are listed below the core APIs, collapsed.
+  const moreApiPaths = (siteConfig.customFields?.moreApiPaths ?? []) as string[];
+  const coreApis = specs.filter((spec) => !moreApiPaths.includes(spec.routePath));
+  const moreApis = specs.filter((spec) => moreApiPaths.includes(spec.routePath));
 
   return (
     <Layout
@@ -175,32 +210,24 @@ yarn add @epilot/entity-client`}</code>
                   </p>
 
                   <h2 id="api-reference">API Reference</h2>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>API</th>
-                        <th>SDK Client</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {specs.map((spec) => {
-                        const slug = spec.routePath.replace('/api/', '');
-
-                        return (
-                          <tr key={spec.routePath}>
-                            <td>
-                              <Link to={spec.routePath}>{spec.layout.title}</Link>
-                            </td>
-                            <td>
-                              <a href={`https://www.npmjs.com/package/@epilot/${slug}-client`}>
-                                <code>@epilot/{slug}-client</code>
-                              </a>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                  <p>
+                    The core APIs are the ones integrations are built on: entities, workflows, automations, webhooks,
+                    files, messaging, pricing and access management. They are covered by the{' '}
+                    <Link to="#versioning">compatibility guarantees</Link> above, and the{' '}
+                    <Link to="/api/changelog">API Changelog</Link> lists their changes by default.
+                  </p>
+                  <ApiTable specs={coreApis} />
+                  {moreApis.length > 0 && (
+                    <details>
+                      <summary>More APIs ({moreApis.length})</summary>
+                      <p>
+                        APIs for specific platform features. They are public and documented, but most integrations do
+                        not need them, and their changes are listed in the{' '}
+                        <Link to="/api/changelog/all">changelog of all APIs</Link> only.
+                      </p>
+                      <ApiTable specs={moreApis} />
+                    </details>
+                  )}
                 </div>
               </div>
               {renderTocDesktop && (

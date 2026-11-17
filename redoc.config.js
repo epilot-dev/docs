@@ -1,5 +1,11 @@
 // Adding an API here also publishes it to static/openapi-specs/apis.json,
 // the discovery document used by MCP clients (npm run generate-api-discovery).
+//
+// `tier: 2` marks an API that is public and documented, but not part of the core
+// surface we expect third parties to integrate with. Tier 2 APIs are listed under
+// "More APIs" in the API reference, and their changes are left out of the default
+// view of the API changelog (/api/changelog/all shows them). Tier 1 is the default.
+// APIs that are not listed here at all count as tier 2 in the changelog.
 module.exports.specs = [
   {
     layout: { title: 'Access Token API' },
@@ -48,6 +54,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Query API' },
+    tier: 2,
     routePath: '/api/query',
     specUrl: 'https://docs.api.epilot.io/query.yaml',
   },
@@ -63,6 +70,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Email Settings API' },
+    tier: 2,
     routePath: '/api/email-settings',
     specUrl: 'https://docs.api.epilot.io/email-settings.yaml',
   },
@@ -83,6 +91,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Address Suggestions API' },
+    tier: 2,
     routePath: '/api/address-suggestions',
     specUrl: 'https://docs.api.epilot.io/address-suggestions-api.yaml',
   },
@@ -108,6 +117,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Portal API' },
+    tier: 2,
     routePath: '/api/customer-portal',
     specUrl: 'https://docs.api.epilot.io/customer-portal.yaml',
   },
@@ -148,21 +158,25 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Sharing API' },
+    tier: 2,
     routePath: '/api/sharing',
     specUrl: 'https://docs.api.epilot.io/sharing.yaml',
   },
   {
     layout: { title: 'Partner API' },
+    tier: 2,
     routePath: '/api/partner',
     specUrl: 'https://docs.api.epilot.io/partner-directory-api.yaml',
   },
   {
     layout: { title: 'Notification API' },
+    tier: 2,
     routePath: '/api/notification',
     specUrl: 'https://docs.api.epilot.io/svc-notification-api.yaml',
   },
   {
     layout: { title: 'Blueprint Manifest API' },
+    tier: 2,
     routePath: '/api/blueprints',
     specUrl: 'https://docs.api.epilot.io/blueprint-manifest.yaml',
   },
@@ -203,6 +217,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Validation Rules API' },
+    tier: 2,
     routePath: '/api/validation-rules',
     specUrl: 'https://docs.api.epilot.io/validation-rules.yaml',
   },
@@ -223,6 +238,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Targeting API' },
+    tier: 2,
     routePath: '/api/targeting',
     specUrl: 'https://docs.api.epilot.io/targeting.yaml',
   },
@@ -238,6 +254,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Data Governance API' },
+    tier: 2,
     routePath: '/api/data-governance',
     specUrl: 'https://docs.api.epilot.io/data-governance.yaml',
   },

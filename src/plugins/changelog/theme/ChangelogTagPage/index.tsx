@@ -5,12 +5,12 @@ const PAGES = {
   Breaking: {
     title: 'API Changelog: Breaking Changes',
     description:
-      'Entries with a breaking change to an epilot API, newest first. Other changes of the same entry are listed with it.',
+      'Entries with a breaking change to a core epilot API, newest first. Other changes of the same entry are listed with it.',
   },
   Deprecated: {
     title: 'API Changelog: Deprecations',
     description:
-      'Entries that deprecate part of an epilot API, newest first. Other changes of the same entry are listed with it.',
+      'Entries that deprecate part of a core epilot API, newest first. Other changes of the same entry are listed with it.',
   },
 };
 

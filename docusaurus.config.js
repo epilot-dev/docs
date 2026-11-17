@@ -28,6 +28,10 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
     favicon: 'img/favicon.svg',
 
     organizationName: 'epilot-dev',
+    customFields: {
+      // Route paths of the tier 2 APIs (see redoc.config.js), listed under "More APIs".
+      moreApiPaths: specs.filter((spec) => spec.tier === 2).map((spec) => spec.routePath),
+    },
     projectName: 'docs',
     presets: [
       [
@@ -58,7 +62,8 @@ const DOCS_URL = process.env.DOCS_URL || 'https://docs.epilot.io'
         'redocusaurus',
         {
           debug: Boolean(process.env.DEBUG || process.env.CI),
-          specs: specs.map((spec) => ({
+          // `tier` is ours (see redoc.config.js); the preset rejects options it does not know.
+          specs: specs.map(({ tier, ...spec }) => ({
             ...spec,
             apiDocComponent: '../src/components/RedocPage',
           })),
@@ -172,6 +177,7 @@ This documentation covers all aspects of the epilot platform for developers, adm
           blogSidebarTitle: 'Changelog',
           routeBasePath: '/api/changelog',
           changelogFilename: path.join(__dirname, 'CHANGELOG.md'),
+          apis: specs,
           showReadingTime: false,
           postsPerPage: 25,
           archiveBasePath: null,

@@ -65,4 +65,13 @@ Write each section as a list of changes, one bullet per change:
 - **One entry per change.** When a change spans several APIs, write one section and name the APIs in the heading, separated by commas. Don't repeat the change per API.
 - **Roll up the small things.** Optional fields, new response codes and similar additions that nobody has to act on go into a single `[Minor]` line per section, without a title.
 
+### Core APIs and all APIs
+
+The changelog has two views:
+
+- [`/api/changelog`](https://docs.epilot.io/api/changelog), the default, lists the core API surface: the tier 1 APIs, core entities and core events. The change type pages (Breaking, Deprecated) cover the same.
+- [`/api/changelog/all`](https://docs.epilot.io/api/changelog/all) lists every section.
+
+An API is tier 1 unless it has `tier: 2` in [`redoc.config.js`](redoc.config.js). Tier 2 APIs are also grouped under "More APIs" in the API reference. An API that is in the changelog but not in `redoc.config.js` counts as tier 2. Section headings are matched to APIs by title, spec file name or route, see [`tiers.js`](src/plugins/changelog/tiers.js). The RSS feed and the entry pages include every section.
+
 Sections written before this format have no tags. Their tags are inferred from the wording (`(breaking)`, "deprecated", "must be prepared", "New …"), see [`format.js`](src/plugins/changelog/format.js).
