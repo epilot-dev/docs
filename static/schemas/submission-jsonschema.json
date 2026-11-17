@@ -47,6 +47,17 @@
       "$ref": "#/definitions/PurposeAttribute",
       "description": "Purposes"
     },
+    "language": {
+      "type": "string",
+      "enum": [
+        "de",
+        "en",
+        "fr",
+        null
+      ],
+      "nullable": true,
+      "description": "Language"
+    },
     "source": {
       "$ref": "#/definitions/LinkAttribute",
       "description": "Source"

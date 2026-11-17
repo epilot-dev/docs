@@ -13,6 +13,9 @@
   "journey_id": "string",
   "journey_type": "string",
   "access_mode": "PUBLIC",
+  "available_languages": [
+    "string"
+  ],
   "design": "string",
   "created_by": [
     {
