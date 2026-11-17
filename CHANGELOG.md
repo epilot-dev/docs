@@ -4,7 +4,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-16 Workflows Execution API, Scheduler API
 
-- [New] [Action needed] **Put flow tasks on hold** — Tasks can be put on hold, and a hold can be expired manually or by a schedule. Be prepared for the new hold expiry target type when reading schedules.
+- [New] **Put flow tasks on hold** — Tasks can be put on hold, and a hold can be expired manually or by a schedule. Be prepared for the new hold expiry target type when reading schedules.
   - `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` accepts a new optional `put_on_hold` field
   - Tasks return new optional `hold` and `on_hold_config` fields wherever executions and tasks are read
   - New `POST /v2/flows/executions/{execution_id}/tasks/{task_id}/hold/expire` endpoint for expiring a task hold
@@ -55,7 +55,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-11 AI Agents API
 
-- [New] [Action needed] **Journey input parameters for agents** — Agent input parameters support the new `journey`, `journey-task`, and `journey-context` types. Be prepared for them wherever agents are read.
+- [New] **Journey input parameters for agents** — Agent input parameters support the new `journey`, `journey-task`, and `journey-context` types. Be prepared for them wherever agents are read.
   - Accepted when creating or updating agents (`POST /v1/agents`, `PUT /v1/agents/{agent_id}`)
   - Accepted in `agent_override` on `POST /v1/agents/{agent_id}/execute/stream` and `POST /v1/chat`
 - [New] **File attachments for agent executions** — `POST /v1/agents/{agent_id}/execute` and `POST /v1/agents/{agent_id}/execute/stream` accept a new optional `input.attachments` field.
@@ -107,7 +107,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-11 Organization API
 
-- [Action needed] **Preview organizations** — Organizations can report the new `Preview` value for `organization_use`, which is also accepted by `PATCH /v2/organization/{org_id}`.
+- [New] **Preview organizations** — Organizations can report the new `Preview` value for `organization_use`, which is also accepted by `PATCH /v2/organization/{org_id}`.
 
 ## 2026-11-11 Phone Integration API
 
@@ -146,19 +146,19 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-10 Pricing API
 
-- [Action needed] **Grid operator condition formats** — Conditional pricing conditions support the new `power_grid_operator` and `gas_grid_operator` formats.
+- [New] **Grid operator condition formats** — Conditional pricing conditions support the new `power_grid_operator` and `gas_grid_operator` formats.
   - Returned by `GET /v1/conditional-pricing/{slug}/condition-sets` and `GET /v1/conditional-pricing/{slug}/conditions:usage`
 - [New] **Where conditions are used** — `GET /v1/conditional-pricing/{slug}/conditions:usage` returns where conditional pricing conditions are used.
 - [Minor] `POST /v1/public/integration/{integrationId}/providers:search` accepts a new optional `grid_filter` field
 
 ## 2026-11-10 Targeting API
 
-- [Breaking] **Campaign setup takes a list of product recommendations** — `POST /v1/campaign:setup` requires a new `product_recommendations` field and exactly one target, and its response changed.
+- [Changed] **Campaign setup takes a list of product recommendations** — `POST /v1/campaign:setup` requires a new `product_recommendations` field and exactly one target, and its response changed.
   - `product_recommendations` is required and replaces the removed `product_recommendation` field
   - `campaign.target_ids` must contain exactly one target
   - The response returns a required `product_recommendation_ids` list instead of `product_recommendation_id` and no longer returns `journey_id`
 - [Breaking] **Campaign dates are date-time values** — `start_date` and `end_date` returned by `POST /v1/campaign/{campaign_id}/status` and `POST /v1/campaign:match` are now date-time values instead of dates.
-- [New] [Action needed] **Scheduled campaigns** — Campaigns can be scheduled with a start and end date. Be prepared for the new `scheduled` status.
+- [New] **Scheduled campaigns** — Campaigns can be scheduled with a start and end date. Be prepared for the new `scheduled` status.
   - `POST /v1/campaign:setup` accepts new optional `campaign.start_date` and `campaign.end_date` fields
   - Campaigns can report the new `scheduled` status
   - `POST /v1/campaign/{campaign_id}/status` can respond with `409`
@@ -168,21 +168,21 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-11-10 Campaign Entity
 
 - [Breaking] **Campaign dates are date-time values** — `start_date` and `end_date` are now date-time values instead of dates.
-- [Action needed] **Scheduled status** — Campaigns support the new `scheduled` status.
+- [New] **Scheduled status** — Campaigns support the new `scheduled` status.
 
 ## 2026-11-09 Blueprint Manifest API
 
-- [New] [Action needed] **Source drift tracking** — Blueprints can track drift from their source organization. Be prepared for the new `source_resources_missing` job error code.
+- [New] **Source drift tracking** — Blueprints can track drift from their source organization. Be prepared for the new `source_resources_missing` job error code.
   - New optional `source_drift` field, accepted on `POST /v2/blueprint-manifest/blueprints` and `PUT /v2/blueprint-manifest/blueprints/{blueprint_id}` and returned wherever blueprints and blueprint jobs are read
   - Job errors can report `source_resources_missing` with optional `missing_count` and `exclude_count` details
 
 ## 2026-11-09 Entity API
 
-- [Action needed] **Grid operator condition formats** — Entity schema conditions support the new `power_grid_operator` and `gas_grid_operator` formats, accepted by `PUT /v1/entity/schemas/{slug}` and returned wherever entity schemas are read.
+- [New] **Grid operator condition formats** — Entity schema conditions support the new `power_grid_operator` and `gas_grid_operator` formats, accepted by `PUT /v1/entity/schemas/{slug}` and returned wherever entity schemas are read.
 
 ## 2026-11-09 Integration Toolkit API
 
-- [New] [Action needed] **Sandbox lane for ERP update events** — ERP update events can be processed in a new `sandbox` lane. Be prepared for the new lane value and monitoring code.
+- [New] **Sandbox lane for ERP update events** — ERP update events can be processed in a new `sandbox` lane. Be prepared for the new lane value and monitoring code.
   - `lane` is returned by `POST /v1/erp/updates/events`, `POST /v2/erp/updates/events`, `POST /v3/erp/updates/events`, and `GET /v3/erp/updates/events/{event_id}`
   - Monitoring events, associated events, and trace spans can report the new `SANDBOX_LANE` code
 
@@ -209,13 +209,13 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-09 Lead Entity
 
-- [Breaking] **Lead scoring attributes removed** — The lead scoring attributes were removed from the lead schema and replaced by the scoring capability.
+- [Changed] **Lead scoring attributes removed** — The lead scoring attributes were removed from the lead schema and replaced by the scoring capability.
   - `lead_score`, `lead_score_grade`, `lead_score_status`, `lead_score_calculated_at`, `lead_score_reasoning`
   - The sub-score fields `score_urgency`, `score_system_size`, `score_partner`, `score_property`, `score_data_quality`, `score_switching_pressure`, `score_customer_relationship`, `score_source`
 
 ## 2026-11-08 Email Settings API
 
-- [New] [Action needed] **Sync Outlook mailboxes from a custom date or the last day** — Mailbox syncs can start from a custom date or cover just the last day. Be prepared for the new `1d` and `custom` timeframe values.
+- [New] **Sync Outlook mailboxes from a custom date or the last day** — Mailbox syncs can start from a custom date or cover just the last day. Be prepared for the new `1d` and `custom` timeframe values.
   - `POST /v2/outlook/mailbox/{email}/sync` accepts a new optional `since` field, and `timeframe` is now optional
   - Sync timeframes support the new `1d` and `custom` values, also accepted by `POST /v2/outlook/mailbox/connect` as `mailboxSyncTimeframe`
   - `GET /v2/outlook/mailbox/{email}/sync/status` returns a new optional `timeframe_start` field
@@ -237,12 +237,12 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-06 Design Builder API
 
-- [Breaking] **Spark theme removed** — Designs no longer include Spark theme properties in requests or responses across the design endpoints, and `GET /v1/designs/{designId}/parse` no longer returns `design.spark_theme`.
+- [Changed] **Spark theme removed** — Designs no longer include Spark theme properties in requests or responses across the design endpoints, and `GET /v1/designs/{designId}/parse` no longer returns `design.spark_theme`.
 - [New] **Generate documents from designs** — `POST /v1/designs/document/generate` generates documents from designs.
 
 ## 2026-11-06 Validation Rules API
 
-- [New] [Action needed] **Validation rules for customer portals** — Validation rules can be linked to customer portals. Be prepared for the new `portal` value for `used_by` types, which is accepted and returned across the validation rule endpoints.
+- [New] **Validation rules for customer portals** — Validation rules can be linked to customer portals. Be prepared for the new `portal` value for `used_by` types, which is accepted and returned across the validation rule endpoints.
 
 ## 2026-11-05 Automation API
 
@@ -257,7 +257,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-05 Workflows Execution API
 
-- [Breaking] **Bulk jobs start flows for a query** — Bulk jobs can start flows for all entities matching a query. Starting a bulk job is limited to one flow template, and the bulk job response changed.
+- [Changed] **Bulk jobs start flows for a query** — Bulk jobs can start flows for all entities matching a query. Starting a bulk job is limited to one flow template, and the bulk job response changed.
   - `POST /v2/flows/executions:bulk-start` accepts a new optional `entities_query` and a new optional `flow_template_id`
   - `entities` is now optional and accepts up to 1000 entities (previously 200)
   - `flow_template_ids` is deprecated and limited to a single template
@@ -277,13 +277,13 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-04 Configuration Hub API
 
-- [Action needed] **Organization settings as configuration resources** — Organization settings can be managed as configuration resources through the new `org_setting` resource type, which is accepted and returned across the compare, inventory, lineage, types, and resource endpoints.
+- [New] **Organization settings as configuration resources** — Organization settings can be managed as configuration resources through the new `org_setting` resource type, which is accepted and returned across the compare, inventory, lineage, types, and resource endpoints.
 - [New] **Plan sync jobs before applying them** — Sync jobs can be planned, reviewed and approved before they are applied.
   - New `GET /v1/configs/sync-jobs/{id}/plan`, `POST /v1/configs/sync-jobs/{id}/plan/apply`, and `POST /v1/configs/sync-jobs/{id}/plan/replan` endpoints
   - New `GET /v1/configs/sync-jobs/{id}/plan/diffs` and `GET /v1/configs/sync-jobs/{id}/plan/diffs/{type}/{source_id}` endpoints
   - Sync jobs return new optional planning and approval fields: `plan_only`, `plan_summary`, `planned_at`, `expires_at`, `approvals`, `approved_at`, `approved_by`, `applied_by`, `applied_from_plan`
   - `GET /v1/configs/sync-jobs/{id}/resources` accepts a new optional `plan_action` filter and returns per-resource `plan` and `excluded_from_apply` fields
-- [New] [Action needed] **Health checks for sync jobs** — Sync jobs can be health-checked. Be prepared for the new `source_org_reference` finding code.
+- [New] **Health checks for sync jobs** — Sync jobs can be health-checked. Be prepared for the new `source_org_reference` finding code.
   - New `GET /v1/configs/sync-jobs/{id}/health` and `POST /v1/configs/sync-jobs/{id}/health:run` endpoints
   - Sync jobs return a new optional `health_check` field
   - `GET /v1/configs/health` can report the new `source_org_reference` finding code
@@ -340,7 +340,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-03 Email Settings API
 
-- [New] [Action needed] **Two years of Outlook history** — Outlook mailboxes can now sync up to two years of history. Be prepared for the new `2y` timeframe value.
+- [New] **Two years of Outlook history** — Outlook mailboxes can now sync up to two years of history. Be prepared for the new `2y` timeframe value.
   - `mailboxSyncTimeframe` on `POST /v2/outlook/mailbox/connect` accepts `2y`
   - `timeframe` on `POST /v2/outlook/mailbox/{email}/sync` accepts `2y`
   - `GET /v2/outlook/mailbox/{email}/sync/status` can return `2y`
@@ -374,7 +374,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-11-01 Core Entities
 
-- [New] [Action needed] **Rain water, EEG and warm water** — Contracts and meters can now be classified as rain water, renewable energy (EEG) or hot water. Be prepared for the new values.
+- [New] **Rain water, EEG and warm water** — Contracts and meters can now be classified as rain water, renewable energy (EEG) or hot water. Be prepared for the new values.
   - Contract `branch` and meter `sector` accept `rain_water`, `eeg`, and `warm_water`
 
 ## 2026-10-30 Blueprint Manifest API
@@ -406,13 +406,13 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-29 Email Settings API
 
-- [New] [Action needed] **Link messages by identifier attributes** — A new `AutoLinkIdentifierAttributesSetting` setting type links messages automatically by identifier attributes. Be prepared for the new setting type.
+- [New] **Link messages by identifier attributes** — A new `AutoLinkIdentifierAttributesSetting` setting type links messages automatically by identifier attributes. Be prepared for the new setting type.
   - Configured through new optional `schemas` and `excluded_senders` fields
   - Accepted on `POST /v1/email-settings` and `POST /v1/email-settings/{id}` and returned wherever settings are read
 
 ## 2026-10-29 Integration Toolkit API
 
-- [New] [Action needed] **File imports** — Run file imports through the API, with reusable import templates. Be prepared for the new `file_import` integration type.
+- [New] **File imports** — Run file imports through the API, with reusable import templates. Be prepared for the new `file_import` integration type.
   - `integration_type` accepts the new `file_import` value when creating or updating integrations and returns it wherever integrations are read
   - `GET` and `POST /v2/imports`, `GET` and `DELETE /v2/imports/{importId}`, `GET /v2/imports/{importId}/results`
   - `POST /v2/imports/{importId}:validate`, `:execute`, `:abort`, and `:suggest-templates`
@@ -445,7 +445,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-28 Sharing API
 
-- [Breaking] **Reduced shape for listed sharing configurations** — Items returned by `GET /v1/sharing/configurations:list` use a reduced partner sharing configuration shape.
+- [Changed] **Reduced shape for listed sharing configurations** — Items returned by `GET /v1/sharing/configurations:list` use a reduced partner sharing configuration shape.
   - No longer included: fields such as `partner_org_id`, `sharing_org_id`, `entities`, `offered_entities`, `users`, `user_limit`, `partner_status`, and role details
 
 ## 2026-10-28 Event: Meter Reading Added
@@ -456,7 +456,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-27 AI Agents API
 
-- [New] [Action needed] **Human approval for agent tool calls** — Agent tool calls can require human approval. Be prepared for the new `approval_required` event type in streams.
+- [New] **Human approval for agent tool calls** — Agent tool calls can require human approval. Be prepared for the new `approval_required` event type in streams.
   - `POST /v1/chat`, `POST /v1/agents/{agent_id}/execute/stream`, and `GET /v1/executions/{execution_id}/stream` can emit the new `approval_required` event type with an `approval` payload
   - `POST /v1/chat` accepts a new optional `tool_approval` field for answering an approval, with `message` now optional
   - Pending actions carry a new optional `approval_note`
@@ -478,7 +478,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-23 Workflows Definition API, Workflows Execution API
 
-- [New] [Action needed] **Pass the workflow's main context to automations** — Tasks and triggers can define which context an automation receives, including the workflow's main context. Be prepared for the new `main_context` source value.
+- [New] **Pass the workflow's main context to automations** — Tasks and triggers can define which context an automation receives, including the workflow's main context. Be prepared for the new `main_context` source value.
   - Flow template tasks accept a new optional `tasks[].input_context` field on `POST /v2/flows/templates` and `PUT /v2/flows/templates/{flowId}`; it is returned wherever flow templates are read
   - Automation input contexts accept the new `main_context` value for `source`, together with new optional `also_pass` and `with_relations` fields, and a new optional `output_context.attach_to_contexts` field
   - On executions these are accepted on `POST /v2/flows/executions`, `POST /v2/flows/executions/{execution_id}/tasks`, and `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever flow executions and tasks are read
@@ -498,7 +498,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-22 Entity API
 
-- [New] [Action needed] **Portal role attributes** — Entity schemas can define portal role attributes. Be prepared for the new `PortalRoleAttribute` attribute type.
+- [New] **Portal role attributes** — Entity schemas can define portal role attributes. Be prepared for the new `PortalRoleAttribute` attribute type.
   - Accepted when creating or updating schema attributes, capabilities, and schemas
   - Returned wherever entity schemas are read
 
@@ -545,7 +545,7 @@ This changelog covers breaking changes, new features, and significant updates to
 - [New] **Organization-wide board access** — Boards can define access for the whole organization and report the caller's own access.
   - New optional `org_access` field, accepted when creating or updating a board
   - New optional `my_access` field wherever boards are read
-- [New] [Action needed] **Group by flow template** — Boards and flow queries can group by flow template. Be prepared for the new `flow_template_id` value when reading boards.
+- [New] **Group by flow template** — Boards and flow queries can group by flow template. Be prepared for the new `flow_template_id` value when reading boards.
   - `config.group_by.field` on `POST /v1/kanban/board` and `PUT /v1/kanban/board/{boardId}`
   - `group_by.field` on `POST /v1/kanban/query/flows:execute`
 
@@ -555,7 +555,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-20 AI Agents API
 
-- [Breaking] **Knowledge source endpoints removed** — The knowledge source endpoints were removed without deprecation.
+- [Changed] **Knowledge source endpoints removed** — The knowledge source endpoints were removed without deprecation.
   - `POST /v1/knowledge/file-uploads`
   - `GET /v1/knowledge/sources`
   - `GET` and `DELETE /v1/knowledge/sources/{source_id}`
@@ -564,7 +564,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-20 App API, External Values API
 
-- [New] [Action needed] **`value` context requirement for hooks** — App hooks can declare a new `value` context requirement type. Be prepared for it when reading app components and hooks.
+- [New] **`value` context requirement for hooks** — App hooks can declare a new `value` context requirement type. Be prepared for it when reading app components and hooks.
   - `configuration.hooks[].contexts` on app components
   - `hooks[].contexts` on hooks returned by `GET /v1/external-values`
 - [Changed] **Longer hook timeouts** — The maximum `timeout_ms` for app hooks was increased from 5000 to 20000 milliseconds.
@@ -612,7 +612,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-20 Snapshot API
 
-- [New] [Action needed] **Skipped org snapshots** — Scheduled org snapshots can now be skipped. Be prepared for the new `skipped` status.
+- [New] **Skipped org snapshots** — Scheduled org snapshots can now be skipped. Be prepared for the new `skipped` status.
   - `last_status` on `GET` and `PUT /v1/org-snapshot-schedule` can return `skipped`, together with a new optional `last_status_reason` field
 - [Minor] `DELETE /v1/snapshots/{id}` can respond with `409` when a conflicting operation is in progress
 
@@ -625,7 +625,7 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-10-19 Pricing API
 
 - `fields` is no longer accepted on `POST /v1/public/catalog` (breaking)
-- The required `warnings` field was removed from the `POST /v2/public/catalog` response (breaking)
+- [Changed] The required `warnings` field was removed from the `POST /v2/public/catalog` response
 
 ## 2026-10-19 Notification Template Entity
 
@@ -770,7 +770,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 - Query results now report the queried time range and period comparison through new optional `timeRange` and `comparison` fields — returned by `POST /v1/query:execute`, `POST /v2/query:execute`, and `POST /v2/query/domain/entities:execute`
 - The semantic model (`GET /v2/query/semantic-model`) now includes a new required `tables.analytics_datasets` table
-- Chart templates can now belong to the new `service` category: `category` on `GET /v2/query/chart-templates` can return `service`, so consumers must be prepared for this additional category
+- [New] Chart templates can now belong to the new `service` category: `category` on `GET /v2/query/chart-templates` can return `service`, so consumers must be prepared for this additional category
 
 ## 2026-10-07 Snapshot API
 
@@ -822,7 +822,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-10-02 Journey Config API
 
-- Journey environment variables now support typed values: `type` on `GET /v1/journey/environment-variables` can return the new `Text`, `Number`, `Boolean`, `List<Text>`, `List<Number>`, and `List<Boolean>` values, with `value` holding a matching scalar or list — so consumers must be prepared for these additional types
+- [New] Journey environment variables now support typed values: `type` on `GET /v1/journey/environment-variables` can return the new `Text`, `Number`, `Boolean`, `List<Text>`, `List<Number>`, and `List<Boolean>` values, with `value` holding a matching scalar or list — so consumers must be prepared for these additional types
 - `GET /v1/journey/configuration/{id}/environment` now returns the resolved `variables` together with any `variableErrors`, and can now also be called with portal authentication
 
 ## 2026-10-02 Organization API
@@ -860,7 +860,7 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-09-29 Integration Toolkit API
 
 - New `POST /v1/integrations/{integrationId}/outbound/mapping-simulation` endpoint was added for simulating outbound mappings
-- Dead-lettered outbound messages can now be redriven with the current mapping re-applied through a new optional `reapply_mapping` field on `POST /v1/integrations/{integrationId}/outbound/messages/dlq/redrive` — redrive results can now return the new `mapping_failed` status together with a `mapping_error`, so consumers must be prepared for this additional status
+- [New] Dead-lettered outbound messages can now be redriven with the current mapping re-applied through a new optional `reapply_mapping` field on `POST /v1/integrations/{integrationId}/outbound/messages/dlq/redrive` — redrive results can now return the new `mapping_failed` status together with a `mapping_error`, so consumers must be prepared for this additional status
 - `POST /v2/integrations/{integrationId}/monitoring/stats` can now filter by correlation through new optional `correlation_id` and `correlation_ids` fields, and group results by the new `correlation_id` value of `group_by`
 - New `GET /v2/erp/imports/{importId}/download` and `GET /v2/erp/imports/{importId}/preview` endpoints were added for downloading and previewing an import
 - `validation.entity_details_truncated` was removed from import responses on all `/v2/erp/imports` endpoints (breaking)
@@ -888,7 +888,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-09-23 Integration Toolkit API
 
-- Conditional entity mappings no longer take `conditional.folds`; the rows a conditional mapping is built from are now described by a new required `conditional.from_rows` instead — affecting use case and integration create/update endpoints, `POST /v1/erp/updates/direct_simulation`, the mapping simulation endpoints, and everywhere use cases and integrations are read (breaking)
+- [Changed] Conditional entity mappings no longer take `conditional.folds`; the rows a conditional mapping is built from are now described by a new required `conditional.from_rows` instead — affecting use case and integration create/update endpoints, `POST /v1/erp/updates/direct_simulation`, the mapping simulation endpoints, and everywhere use cases and integrations are read
 - Import jobs can now fail with the new `CHUNK_TOO_LARGE` error code, and validation reports the new issue codes `CONDITIONAL_TARGET_MODE_UNSUPPORTED` and `GROUPING_KEY_IS_SORT_COLUMN`, replacing `GROUPING_KEY_IS_FOLD_COLUMN` — returned by all `/v2/erp/imports` endpoints
 
 ## 2026-09-23 Journey Config API
@@ -902,7 +902,7 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-09-22 Workflows Execution API
 
 - `edges[].end_type` was removed from flow executions: it is no longer returned wherever flow executions are read (breaking)
-- Workflow stages can now report that they were never reached: `stages[].status` returns the new `NOT_REACHED` value from `POST /v2/flows/executions:portal-search` and `POST /v2/flows/executions:portal-search-batch` — so consumers must be prepared for this additional status
+- [Changed] Workflow stages can now report that they were never reached: `stages[].status` returns the new `NOT_REACHED` value from `POST /v2/flows/executions:portal-search` and `POST /v2/flows/executions:portal-search-batch` — so consumers must be prepared for this additional status
 - Execution contexts now report by which task they were added, and when and by which task they were promoted or demoted, through new optional `contexts[].added_by_task_id`, `contexts[].promoted_at`, `contexts[].promoted_by_task_id`, and `contexts[].demoted_by_task_id` fields — accepted on `POST /v2/flows/executions` and `PATCH /v2/flows/executions/{execution_id}` and returned wherever flow executions are read
 - Automations can now write their result into a context through a new optional `automation_config.output_context` field on a task and on the trigger — accepted on `POST /v2/flows/executions`, `POST /v2/flows/executions/{execution_id}/tasks`, and `PATCH /v2/flows/executions/{execution_id}/tasks/{task_id}` and returned wherever flow executions are read
 - Task conditions can now be evaluated against the main context: `tasks[].conditions[].statements[].source.origin_type` returns the new `main_context` value — so consumers must be prepared for this additional value
@@ -935,11 +935,11 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-09-18 Journey Config API
 
-- Journey environment variables can now hold a list of links: `type` returns the new `List<Link>` value with a matching `value` shape, and `GET /v1/journey/environment-variables` can additionally return a map value shape — so consumers reading `GET /v1/journey/environment-variables` and `GET /v1/journey/configuration/{id}/environment` must be prepared for these additional value shapes
+- [New] Journey environment variables can now hold a list of links: `type` returns the new `List<Link>` value with a matching `value` shape, and `GET /v1/journey/environment-variables` can additionally return a map value shape — so consumers reading `GET /v1/journey/environment-variables` and `GET /v1/journey/configuration/{id}/environment` must be prepared for these additional value shapes
 
 ## 2026-09-17 Blueprint Manifest API
 
-- The blueprint patch endpoints were removed: `GET` and `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches`, `GET /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}`, `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches:detect`, `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}:apply`, and `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}/orgs/{org_id}:retry` (breaking)
+- [Changed] The blueprint patch endpoints were removed: `GET` and `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches`, `GET /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}`, `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches:detect`, `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}:apply`, and `POST /v2/blueprint-manifest/blueprints/{blueprint_id}/patches/{patch_id}/orgs/{org_id}:retry`
 - The v2 blueprint install, export, and publish endpoints were removed: `POST /v2/blueprint-manifest/blueprint:install`, `POST /v2/blueprint-manifest/blueprints/{blueprint_id}:export`, and `POST /v2/blueprint-manifest/blueprints:publish` (breaking)
 - `POST /v3/blueprint-manifest/blueprints/{blueprint_id}:publish` now accepts optional `name`, `slug`, and `version` fields for the blueprint being published
 
@@ -1054,7 +1054,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-09-10 Integration Toolkit API
 
-- Monitoring events are no longer reported as `skipped`: their `level` takes the new `info` value instead, accepted on `POST /v2/integrations/{integrationId}/monitoring/events` and returned by the monitoring event, associated event, and trace endpoints (breaking)
+- [Changed] Monitoring events are no longer reported as `skipped`: their `level` takes the new `info` value instead, accepted on `POST /v2/integrations/{integrationId}/monitoring/events` and returned by the monitoring event, associated event, and trace endpoints
 - Monitoring statistics follow the same move: `POST /v2/integrations/{integrationId}/monitoring/stats` and `POST /v2/integrations/{integrationId}/monitoring/time-series` now report an `info_count` per bucket and breakdown, while `skipped_count` is deprecated and will be removed in a future version
 
 ## 2026-09-09 AI Agents API
@@ -1142,7 +1142,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-09-01 Integration Toolkit API
 
-- The entity sync status endpoint moved from `GET /v1/entities/{entityId}/sync-status` to `GET /v1/integrations/entities/{entityId}/sync-status`; the old path was removed without deprecation (breaking)
+- [Changed] The entity sync status endpoint moved from `GET /v1/entities/{entityId}/sync-status` to `GET /v1/integrations/entities/{entityId}/sync-status`; the old path was removed without deprecation
 
 ## 2026-09-01 Journey Config API
 
@@ -1285,7 +1285,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-08-20 Billing API
 
-- Configuration history entries are now one of several typed rows distinguished by `change_type` — an installment amount change or a contract pricing change — instead of a single flat shape; the fields that were previously always present (`changed_at`, `created_at`, `entity_id`, `entity_type`, `event_id`, `new_value`, `org_id`, `schema_version`, `source`) and the optional `context`, `effective_at`, `previous_value`, `source_label`, `source_reference`, and `source_system` fields are no longer part of the common row, so consumers must read them from the specific row type — affecting `GET /v1/billing/billing_accounts/{id}/configuration_history`, `GET /v1/billing/contracts/{id}/configuration_history`, and the pricing information endpoints (breaking)
+- [Changed] Configuration history entries are now one of several typed rows distinguished by `change_type` — an installment amount change or a contract pricing change — instead of a single flat shape; the fields that were previously always present (`changed_at`, `created_at`, `entity_id`, `entity_type`, `event_id`, `new_value`, `org_id`, `schema_version`, `source`) and the optional `context`, `effective_at`, `previous_value`, `source_label`, `source_reference`, and `source_system` fields are no longer part of the common row, so consumers must read them from the specific row type — affecting `GET /v1/billing/billing_accounts/{id}/configuration_history`, `GET /v1/billing/contracts/{id}/configuration_history`, and the pricing information endpoints
 - Contract pricing changes are now tracked in the configuration history: `change_type` accepts and returns the new `contract_pricing_changed` value, and a new optional `history_change_types` query parameter lets several change types be requested at once on all four configuration history and pricing information endpoints
 - Pricing information (`GET /v1/billing/contracts/{id}/pricing_information` and `GET /v1/billing/billing_accounts/{id}/pricing_information`) now returns the full `base_prices` and `working_prices` lists of a contract, reports a `tariff_type` for each base and working price, and accepts a new optional `include_history` query parameter for returning the configuration history along with it
 
@@ -1360,10 +1360,10 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-08-14 Integration Toolkit API
 
-- `POST /v2/erp/imports` no longer accepts `integration_id` and `use_case_slug` — the import determines its use case itself (breaking)
+- [Changed] `POST /v2/erp/imports` no longer accepts `integration_id` and `use_case_slug` — the import determines its use case itself
 - New `POST /v2/erp/imports/{importId}:validate` endpoint added for validating an import before executing it, and `POST /v2/erp/imports/{importId}:suggest-use-cases` for suggesting matching use cases — the suggestion response reports `file_columns` once for the whole import rather than per suggestion, and every suggestion carries the `entity_types` it would create
-- `POST /v2/erp/imports/{importId}:execute` now accepts an optional request body and answers with `202` instead of `200`, or with `422` when the import cannot be executed; `POST /v2/erp/imports` answers with `201` instead of `202` and accepts a new optional `include_preview` field for returning a preview of the import along with it (breaking)
-- Import error reporting changed: `error.type` was replaced by a required `error.code`, `integration_id` is no longer guaranteed, and a new optional `validation.issues` list reports individual validation problems — each issue names the affected `columns` as objects with a required `name` and an optional `entity`, may point at a specific `row`, and no longer always carries a `message` — affecting `GET /v2/erp/imports`, `GET /v2/erp/imports/{importId}`, and the validate, execute, and abort endpoints (breaking)
+- [Changed] `POST /v2/erp/imports/{importId}:execute` now accepts an optional request body and answers with `202` instead of `200`, or with `422` when the import cannot be executed; `POST /v2/erp/imports` answers with `201` instead of `202` and accepts a new optional `include_preview` field for returning a preview of the import along with it
+- [Changed] Import error reporting changed: `error.type` was replaced by a required `error.code`, `integration_id` is no longer guaranteed, and a new optional `validation.issues` list reports individual validation problems — each issue names the affected `columns` as objects with a required `name` and an optional `entity`, may point at a specific `row`, and no longer always carries a `message` — affecting `GET /v2/erp/imports`, `GET /v2/erp/imports/{importId}`, and the validate, execute, and abort endpoints
 - Use case configuration gained a set of new optional fields — `direction`, `constants`, `lookups`, `fan_out`, `file_source`, `upload`, `params_mapping`, `required_params`, `ack_tracking`, and `event_filter` — `response` is no longer required, request steps now also allow the `PUT` and `PATCH` methods, and a new `file_proxy` delivery type was added for forwarding files to an external system; use cases additionally report an optional `changed_by`, and `GET /v1/integrations/{integrationId}/outbound-status` reports an optional `file_proxy` status
 - Mapping simulation (`POST /v1/erp/updates/mapping_simulation` and `POST /v2/erp/updates/mapping_simulation`) now always reports a `mode` for each entity update and meter reading update, and adds optional `pricing`, `prune_scope_updates`, and `meter_readings_prune_scope_updates` details
 
@@ -1393,7 +1393,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-08-12 Email Settings API
 
-- `smtp_port` is now a string instead of an integer in all SMTP connection responses (`GET`/`POST /v2/smtp/connections` and `GET`/`PUT /v2/smtp/connections/{connectionId}`); requests accept both a string and an integer (breaking)
+- [Changed] `smtp_port` is now a string instead of an integer in all SMTP connection responses (`GET`/`POST /v2/smtp/connections` and `GET`/`PUT /v2/smtp/connections/{connectionId}`); requests accept both a string and an integer
 - New optional `skip_test` query parameter added to `POST /v2/smtp/connections` and `PUT /v2/smtp/connections/{connectionId}` for saving a connection without testing it first
 
 ## 2026-08-12 Journey Config API
@@ -1492,7 +1492,7 @@ This changelog covers breaking changes, new features, and significant updates to
 ## 2026-08-05 Calendar API
 
 - New `POST /v1/calendar/events/{event_id}/share` and `DELETE /v1/calendar/events/{event_id}/share/{user_id}` endpoints added for sharing a calendar event with a user and for revoking that share
-- Absence adjustments now carry a `status`, which is required when creating one via `POST /v1/calendar/absence/users/{user_id}/adjustments` and is always returned by the adjustment read, list, create, and update endpoints; an optional `type` field was added alongside it (breaking)
+- [Changed] Absence adjustments now carry a `status`, which is required when creating one via `POST /v1/calendar/absence/users/{user_id}/adjustments` and is always returned by the adjustment read, list, create, and update endpoints; an optional `type` field was added alongside it
 - New optional `include_busy` parameter added to `GET /v1/calendar/absence/users`, `GET /v1/calendar/absence/users/{user_id}`, `POST /v1/calendar/absence:search`, and `POST /v1/calendar/absence:search-now`, including busy time from users' calendars in the returned intervals
 
 ## 2026-08-05 Workflows Definition API
@@ -1796,7 +1796,7 @@ This changelog covers breaking changes, new features, and significant updates to
 
 ## 2026-06-24 Event: Location Move Requested
 
-- The single `meter_counter` field was replaced by a `meter_counters` array, so moves involving multiple meter counters are now fully represented (breaking)
+- [Changed] The single `meter_counter` field was replaced by a `meter_counters` array, so moves involving multiple meter counters are now fully represented
 
 ## 2026-06-22 Email Template API
 
