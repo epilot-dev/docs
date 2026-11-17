@@ -59,7 +59,7 @@ Settings reach the customer's browser, so they are never secret. Keep API keys i
 
 ## Updates
 
-Raise the version in `package.json` and deploy again. Blocks already placed in a portal load the new version on their next page load: new settings start at their default, and the values admins saved stay.
+Raise the version in `package.json` and deploy again. Blocks already placed in a portal switch to the new version on their own, usually within a minute or two: new settings start at their default, and the values admins saved stay.
 
 ## Learn more
 
