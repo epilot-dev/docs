@@ -3,6 +3,7 @@ import DocPageStyles from '@docusaurus/theme-classic/lib-next/theme/DocPage/styl
 import { ThemeClassNames, useWindowSize } from '@docusaurus/theme-common';
 import ApiSidebar from '@site/src/components/ApiSidebar';
 import type { Props } from '@theme/BlogPostPage';
+import ChangelogContent from '@theme/ChangelogContent';
 import ChangelogPaginator from '@theme/ChangelogPaginator';
 import Layout from '@theme/Layout';
 import TOC from '@theme/TOC';
@@ -11,8 +12,8 @@ import React from 'react';
 import styles from './styles.module.css';
 
 function ChangelogPage(props: Props): JSX.Element {
-  const { content: ChangelogContent } = props;
-  const { metadata, toc } = ChangelogContent;
+  const { content: ChangelogEntry } = props;
+  const { metadata, toc } = ChangelogEntry;
   const { title, description, nextItem, prevItem } = metadata;
 
   const windowSize = useWindowSize();
@@ -37,7 +38,9 @@ function ChangelogPage(props: Props): JSX.Element {
                   <header>
                     <h1 className={styles.changelogHeader}>{title}</h1>
                   </header>
-                  <ChangelogContent />
+                  <ChangelogContent>
+                    <ChangelogEntry />
+                  </ChangelogContent>
                 </div>
                 {(nextItem || prevItem) && <ChangelogPaginator nextItem={nextItem} prevItem={prevItem} />}
               </article>

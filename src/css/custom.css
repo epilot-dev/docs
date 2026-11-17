@@ -297,3 +297,68 @@ html[data-theme='dark'] .button.button--primary {
   order: 2;
   margin-left: auto;
 }
+
+/* API changelog: change type tags and collapsed API details (src/plugins/changelog/format.js) */
+.changelog-tag {
+  --changelog-tag-color: var(--ifm-color-emphasis-700);
+  display: inline-block;
+  margin-right: 0.15rem;
+  padding: 0 0.5em;
+  border: 1px solid var(--changelog-tag-color);
+  border-radius: 999px;
+  color: var(--changelog-tag-color);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  vertical-align: 0.1em;
+  white-space: nowrap;
+}
+
+.changelog-tag--breaking {
+  --changelog-tag-color: var(--ifm-color-danger-dark);
+  background: var(--ifm-color-danger-dark);
+  color: #fff;
+}
+
+.changelog-tag--action {
+  --changelog-tag-color: var(--ifm-color-warning-darkest);
+}
+
+.changelog-tag--deprecated {
+  --changelog-tag-color: var(--ifm-color-warning-darkest);
+  border-style: dashed;
+}
+
+.changelog-tag--new {
+  --changelog-tag-color: var(--ifm-color-success-darkest);
+}
+
+.changelog-tag--changed,
+.changelog-tag--fix {
+  --changelog-tag-color: var(--ifm-color-primary);
+}
+
+[data-theme='dark'] .changelog-tag--action,
+[data-theme='dark'] .changelog-tag--deprecated {
+  --changelog-tag-color: var(--ifm-color-warning);
+}
+
+[data-theme='dark'] .changelog-tag--new {
+  --changelog-tag-color: var(--ifm-color-success);
+}
+
+details.changelog-details {
+  margin: -0.5rem 0 1.25rem;
+  font-size: 0.9rem;
+}
+
+details.changelog-details > summary {
+  color: var(--ifm-color-emphasis-700);
+  cursor: pointer;
+}
+
+details.changelog-details > ul {
+  margin: 0.4rem 0 0;
+}

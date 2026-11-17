@@ -4,6 +4,7 @@ import { ThemeClassNames, useWindowSize } from '@docusaurus/theme-common';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import ApiSidebar from '@site/src/components/ApiSidebar';
 import BlogListPaginator from '@theme/BlogListPaginator';
+import ChangelogContent from '@theme/ChangelogContent';
 import Layout from '@theme/Layout';
 import TOC from '@theme/TOC';
 import React from 'react';
@@ -78,7 +79,9 @@ function ChangelogList(props): JSX.Element {
                             {date} {apiName}
                           </Link>
                         </h2>
-                        <BlogPostContent />
+                        <ChangelogContent>
+                          <BlogPostContent />
+                        </ChangelogContent>
                       </section>
                     );
                   })}

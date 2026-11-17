@@ -6,6 +6,8 @@ const { aliasedSitePath, docuHash, normalizeUrl } = require('@docusaurus/utils')
 const fs = require('fs-extra');
 const Joi = require('joi');
 
+const { describeSection, renderSection } = require('./format');
+
 /**
  * @param {string} section
  * @param {string} routeBasePath
@@ -17,7 +19,9 @@ function processSection(section, routeBasePath, dateHourMap) {
 
   const date = titleMatch[1];
   const apiName = titleMatch[2].trim();
-  const content = section.replace(/^## .*\n?/, '').trim();
+  const body = section.replace(/^## .*\n?/, '').trim();
+  const content = renderSection(body);
+  const description = describeSection(body);
 
   if (!dateHourMap[date]) dateHourMap[date] = 23;
   const hour = dateHourMap[date]--;
@@ -38,7 +42,7 @@ function processSection(section, routeBasePath, dateHourMap) {
     content: `---
 title: "${title}"
 date: ${dateTime}
-slug: ${fullSlug}
+slug: ${fullSlug}${description ? `\ndescription: ${JSON.stringify(description)}` : ''}
 ---
 
 ${content}`,
@@ -49,7 +53,9 @@ ${content}`,
  * Docusaurus Changelog Plugin
  *
  * Processes a single CHANGELOG.md with date-based sections (## YYYY-MM-DD API Name)
- * and generates a paginated blog-style changelog with RSS feed.
+ * and generates a paginated blog-style changelog with RSS feed. A section can name
+ * several APIs, separated by commas, when one change spans them. The format of the
+ * changes inside a section is described in ./format.js.
  *
  * @param {import('@docusaurus/types').LoadContext} context
  * @param {object} options
@@ -72,7 +78,8 @@ async function ChangelogPlugin(context, options) {
         throw new Error('Changelog plugin requires options.changelogFilename to be set');
       }
 
-      await fs.ensureDir(changelogOutputDir);
+      // Generated on every load. Emptied first so renamed or merged sections leave no stale entries.
+      await fs.emptyDir(changelogOutputDir);
 
       const fileContent = await fs.readFile(options.changelogFilename, 'utf-8');
 

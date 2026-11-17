@@ -6,6 +6,7 @@
  */
 
 declare module '@theme/ChangelogPaginator';
+declare module '@theme/ChangelogContent';
 
 declare module '@theme/ChangelogItem';
 declare module '@theme/ChangelogItem/Header';

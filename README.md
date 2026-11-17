@@ -44,3 +44,25 @@ npm run test:search -- "webhook signature"  # print the results of a query
 ```
 
 To keep an element out of the index, add a `data-search-ignore` attribute to it.
+
+## API Changelog
+
+[`CHANGELOG.md`](CHANGELOG.md) is the source of the [API changelog](https://docs.epilot.io/api/changelog). The plugin in [`src/plugins/changelog`](src/plugins/changelog) turns every `## YYYY-MM-DD <API name>` section into an entry, with an RSS feed.
+
+Write each section as a list of changes, one bullet per change:
+
+```md
+## 2026-10-23 Workflows Definition API, Workflows Execution API
+
+- [New] [Action needed] **Pass the workflow's main context to automations** — Tasks and triggers can define which context an automation receives. Be prepared for the new `main_context` source value.
+  - Flow template tasks accept a new optional `tasks[].input_context` field on `POST /v2/flows/templates`
+  - Automation input contexts accept the new `main_context` value for `source`
+- [Minor] `DELETE /v1/snapshots/{id}` can respond with `409` when a conflicting operation is in progress
+```
+
+- **Say what changed for the consumer first.** `**Title** — summary` tells a reader what they can now do or have to do. The endpoints, fields and values go into nested bullets, which are shown collapsed as "API details".
+- **Tag every change.** `[Breaking]`, `[Action needed]` (not breaking by our rules, but consumers have to handle something, like a new enum value), `[Deprecated]`, `[New]`, `[Changed]`, `[Fix]` or `[Minor]`. A change can have several tags. Changes are shown most important first.
+- **One entry per change.** When a change spans several APIs, write one section and name the APIs in the heading, separated by commas. Don't repeat the change per API.
+- **Roll up the small things.** Optional fields, new response codes and similar additions that nobody has to act on go into a single `[Minor]` line per section, without a title.
+
+Sections written before this format have no tags. Their tags are inferred from the wording (`(breaking)`, "deprecated", "must be prepared", "New …"), see [`format.js`](src/plugins/changelog/format.js).
