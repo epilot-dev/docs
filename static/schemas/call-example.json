@@ -32,6 +32,9 @@
     ]
   },
   "duration": "string",
+  "call_direction": "inbound",
+  "callback_requested": true,
+  "phone_number": "string",
   "recording": {
     "type": "link",
     "title": "Visit Website",

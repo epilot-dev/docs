@@ -60,6 +60,26 @@
       "nullable": true,
       "description": "Duration (seconds)"
     },
+    "call_direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound",
+        null
+      ],
+      "nullable": true,
+      "description": "Call Direction"
+    },
+    "callback_requested": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Callback Requested"
+    },
+    "phone_number": {
+      "type": "string",
+      "nullable": true,
+      "description": "Phone Number"
+    },
     "recording": {
       "$ref": "#/definitions/LinkAttribute",
       "description": "Recording"
