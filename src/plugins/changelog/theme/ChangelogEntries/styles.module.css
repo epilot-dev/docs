@@ -36,8 +36,9 @@
   text-decoration: none;
 }
 
-.filterActive,
-.filterActive:hover {
+/* Two classes, so this wins over .filter whatever order the bundled CSS ends up in. */
+.filter.filterActive,
+.filter.filterActive:hover {
   border-color: var(--ifm-color-primary);
   background: var(--ifm-color-primary);
   color: #fff;

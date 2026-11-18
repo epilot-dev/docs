@@ -212,6 +212,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Kanban API' },
+    tier: 2,
     routePath: '/api/kanban',
     specUrl: 'https://docs.api.epilot.io/kanban.yaml',
   },
@@ -260,6 +261,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Deadlines API' },
+    tier: 2,
     routePath: '/api/deadlines',
     specUrl: 'https://docs.api.epilot.io/deadlines.yaml',
   },
