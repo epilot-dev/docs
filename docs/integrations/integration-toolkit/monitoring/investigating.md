@@ -103,7 +103,7 @@ Things worth knowing before you use it:
 - **14-day horizon.** The event is rebuilt from the stored inbound payload, which is
   kept for 14 days — see [retention](./overview.md#how-long-data-is-kept). Older
   events return `not_found`.
-- **HTTP 200, with one exception.** Per-event outcomes are in `results`, one entry per
+- **HTTP 200, unless nothing was queued.** Per-event outcomes are in `results`, one entry per
   requested id in request order, with a `status` of `success` / `queued`, `not_found`,
   `skipped`, `ignored` or `error`. Compare `replayed` against the number of ids you sent
   rather than trusting the status code.
@@ -112,6 +112,16 @@ Things worth knowing before you use it:
   refused with `503`, a `Retry-After` header and `BULK_CAPACITY_EXHAUSTED`, and nothing
   of it is queued. Send it again after the `Retry-After` interval — see
   [Large Data Loads](../large-data-loads.md#when-capacity-is-exhausted).
+- **A replay can be throttled.** If nothing of it was queued, it is refused with `503`,
+  `Retry-After: 2` and `INGEST_THROTTLED`, and you can send it again as it was — see
+  [When Ingestion Is Busy](../large-data-loads.md#when-ingestion-is-busy). If the queue
+  took a part of it, the answer is `200` with a `Retry-After` header: the events with
+  `success` are queued, the others have `error`. Replay only the events that are not
+  `success`. Replaying the whole request would queue the first ones a second time,
+  because every replay gets new deduplication ids.
+- **Not active yet.** The two `503` responses belong to the processing of
+  [large data loads](../large-data-loads.md), which is switched off in every
+  environment for now.
 - **A replay is a new event.** It is assigned a fresh `event_id` and a new
   `correlation_id` prefixed `replay_`, so the replayed run is distinguishable from the
   original in monitoring rather than overwriting it.

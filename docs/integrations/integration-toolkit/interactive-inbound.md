@@ -202,7 +202,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v3/erp/updates/events' \
   }'
 ```
 
-"Accepted" means the request answered with success for every event. If a push is answered with a retry (a 422 with partial results, a 429, or a [503](./large-data-loads.md#when-capacity-is-exhausted)), retry it until it is accepted before you send the close. Give every event a `deduplication_id`, so a retried request — a closing one included — is recognized as the same request and not processed a second time.
+"Accepted" means the request answered with success for every event. If a push is answered with a retry (a 422 with partial results, a 429, or a [503](./large-data-loads.md#what-to-do)), retry it until it is accepted before you send the close. Give every event a `deduplication_id`, so a retried request — a closing one included — is recognized as the same request and not processed a second time.
 
 If you cannot place the close correctly, leave it out: a close that arrives too early does more harm than none. The response says whether the close was applied; see [Closing Rules](#closing-rules).
 
@@ -693,7 +693,7 @@ When the budget is spent, the events are not rejected because of that, and nothi
 - The events are processed on the organization's normal lane. Their results keep `"interactive": true`, and `lane` names the lane that carried them.
 - They are still recorded, so the close, the wait and the status endpoints keep working. The answer simply takes as long as a bulk event does, and the portal's wait may time out and retry.
 - `INTERACTIVE_RATE_LIMITED` appears in monitoring for the request.
-- They count as everyday traffic for [large data loads](./large-data-loads.md). In the rare case that the organization goes over its allowance while the capacity for large loads is exhausted, they are refused with `503` like any other event. Send them again after the `Retry-After` interval.
+- They count as everyday traffic for [large data loads](./large-data-loads.md). In the rare case that the organization goes over its allowance while the capacity for large loads is exhausted, or that its allowance cannot be checked, they are refused with `503` like any other event. Send them again after the `Retry-After` interval.
 
 A steady stream of `INTERACTIVE_RATE_LIMITED` usually means that a bulk sync sets `interactive: true` on every request. Bulk pushes are not slower without the flag, but with it they use up the budget your registrations need.
 

@@ -693,7 +693,7 @@ alerting are documented in the [Monitoring section](./monitoring/overview.md).
 | Event submission | 100 events per request |
 | API requests | 1000 requests per minute per organization |
 
-Large loads, such as migrations and full resyncs, are processed on capacity set aside for them. See [Large Data Loads](./large-data-loads.md), including the one response a client has to handle for them.
+Large loads, such as migrations and full resyncs, are processed on capacity set aside for them. See [Large Data Loads](./large-data-loads.md), including the responses a client has to handle and the limits on the size of one event and one request. This processing is not active yet; the page says what is in effect today.
 
 ## Security
 

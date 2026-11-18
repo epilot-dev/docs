@@ -9,6 +9,10 @@ slug: /integrations/integration-toolkit/sandbox-organizations
 
 A sandbox organization is where you build and verify an integration: its mappings, its use cases and the real-time flows your end customers will use. The Integration Toolkit processes a sandbox's everyday inbound traffic exactly as it does a production organization's. [Large data loads](./large-data-loads.md) are the difference: in a sandbox, they share a small capacity with the large loads of all other sandbox organizations and run at a deliberately low rate.
 
+:::caution Not active yet
+The handling of large loads on this page belongs to the processing described on [Large Data Loads](./large-data-loads.md). It is built and tested, but switched off in every environment, and there is no date for switching it on. The page says what happens once it is on.
+:::
+
 :::info What this means for you
 - **Everyday traffic is processed as in production.** Single events, small batches and test runs are as quick as in a production organization.
 - **Large loads take much longer.** A full data load can take many times longer in a sandbox than in a production organization.
@@ -27,7 +31,7 @@ Everything on [Large Data Loads](./large-data-loads.md) applies to sandboxes, wi
 - **Everyday traffic**, within the organization's allowance, is processed together with every other organization's, as in production.
 - **Large loads**, whether sent through the inbound API, as a file import or as a replay, run on the capacity all sandboxes share.
 - **Interactive events** run exactly as in production, within the same [rate limits](./interactive-inbound.md#rate-limits), so you can test registrations and contract additions end to end.
-- **The `503` response** described in [When Capacity Is Exhausted](./large-data-loads.md#when-capacity-is-exhausted) can occur in a sandbox as well, and is handled the same way.
+- **The `503` responses** described in [When Capacity Is Exhausted](./large-data-loads.md#when-capacity-is-exhausted) and [When Ingestion Is Busy](./large-data-loads.md#when-ingestion-is-busy) can occur in a sandbox as well, and are handled the same way. The [size limits](./large-data-loads.md#size-limits) apply too.
 
 ## How You Notice It
 
