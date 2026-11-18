@@ -70,6 +70,19 @@
       "nullable": true,
       "description": "Call Direction"
     },
+    "call_outcome": {
+      "type": "string",
+      "enum": [
+        "connected",
+        "missed_call",
+        "no_answer",
+        "busy",
+        "failed",
+        null
+      ],
+      "nullable": true,
+      "description": "Call Outcome"
+    },
     "callback_requested": {
       "type": "boolean",
       "nullable": true,
