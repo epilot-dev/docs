@@ -19,6 +19,7 @@
   "system_template": true,
   "portal_id": "string",
   "editor_type": "standard",
+  "design_id": "string",
   "_files": {
     "$relation": [
       {
