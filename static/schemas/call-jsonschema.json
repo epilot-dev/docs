@@ -93,6 +93,11 @@
       "nullable": true,
       "description": "Phone Number"
     },
+    "queue": {
+      "type": "string",
+      "nullable": true,
+      "description": "Queue"
+    },
     "recording": {
       "$ref": "#/definitions/LinkAttribute",
       "description": "Recording"

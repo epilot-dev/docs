@@ -36,6 +36,7 @@
   "call_outcome": "connected",
   "callback_requested": true,
   "phone_number": "string",
+  "queue": "string",
   "recording": {
     "type": "link",
     "title": "Visit Website",
