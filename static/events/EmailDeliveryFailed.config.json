@@ -1,0 +1,173 @@
+{
+  "event_name": "EmailDeliveryFailed",
+  "event_title": "Email Delivery Failed",
+  "event_description": "Triggered when an email sent from epilot bounces, is rejected, or cannot be sent. One event per failure notification. Carries message metadata (subject, tags, thread, related entities) for filtering; the message body and attachments are never included.",
+  "event_version": "1.0",
+  "event_tags": [
+    "builtin",
+    "messaging",
+    "email"
+  ],
+  "schema_fields": {
+    "message_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Entity ID of the message that failed"
+      },
+      "required": true
+    },
+    "thread_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Entity ID of the thread the message belongs to"
+      },
+      "required": false
+    },
+    "sender": {
+      "json_schema": {
+        "type": "string",
+        "description": "Email address the message was sent from (the mailbox to check when sends keep failing)"
+      },
+      "required": false
+    },
+    "recipients": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Recipients this failure is about. BOUNCE/REJECT: only the recipients newly bounced or rejected by this notification. ERROR: every recipient, because the send itself failed."
+      },
+      "required": true
+    },
+    "status": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "BOUNCE",
+          "REJECT",
+          "ERROR"
+        ],
+        "description": "BOUNCE: the recipient mail server returned the email. REJECT: the email was rejected before sending. ERROR: the email could not be sent (e.g. Outlook or SMTP connection error)."
+      },
+      "required": true
+    },
+    "error_detail": {
+      "json_schema": {
+        "type": "string",
+        "description": "Provider error text: bounce diagnostic code, reject reason or send error"
+      },
+      "required": false
+    },
+    "provider": {
+      "json_schema": {
+        "type": "string",
+        "description": "Sending provider of the message, e.g. \"outlook\". Absent for emails sent by epilot."
+      },
+      "required": false
+    },
+    "email_message_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "RFC 5322 Message-ID header of the email, to correlate with mail server logs"
+      },
+      "required": false
+    },
+    "subject": {
+      "json_schema": {
+        "type": "string",
+        "description": "Subject of the email"
+      },
+      "required": false
+    },
+    "sent_at": {
+      "json_schema": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When the email was sent"
+      },
+      "required": false
+    },
+    "sent_by_user_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "epilot user ID of the person who sent the email"
+      },
+      "required": false
+    },
+    "tags": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Tags on the message"
+      },
+      "required": false
+    },
+    "thread_topic": {
+      "json_schema": {
+        "type": "string",
+        "description": "Topic of the thread the message belongs to"
+      },
+      "required": false
+    },
+    "inbox_bucket_id": {
+      "json_schema": {
+        "type": "string",
+        "description": "Inbox bucket of the thread (see GET /v2/email-settings/inbox-buckets)"
+      },
+      "required": false
+    },
+    "related_entities": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "attribute": {
+              "type": "string",
+              "description": "Message attribute holding the relation, e.g. \"ticket\""
+            },
+            "entity_id": {
+              "type": "string",
+              "description": "ID of the related entity"
+            }
+          },
+          "required": [
+            "attribute",
+            "entity_id"
+          ],
+          "additionalProperties": false
+        },
+        "description": "Entities the message is related to (tickets, opportunities, contacts, ...), excluding its thread"
+      },
+      "required": false
+    },
+    "send_source": {
+      "json_schema": {
+        "type": "string",
+        "enum": [
+          "manual",
+          "automation",
+          "workflow",
+          "partner",
+          "bulk",
+          "system"
+        ],
+        "description": "Who sent the email: \"manual\" (a user in the inbox), \"automation\" (an automation, including the emails of a campaign), \"workflow\", \"partner\", \"bulk\" or \"system\". Absent when the sender was not recorded."
+      },
+      "required": false
+    },
+    "automation_flow_ids": {
+      "json_schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "IDs of the automation flows behind the email, the flow that sent it last; earlier IDs are the automations whose changes triggered it. A campaign sends its emails through its own flow (the campaign's flow_id). Absent when no automation sent the email or the flow was not recorded."
+      },
+      "required": false
+    }
+  }
+}

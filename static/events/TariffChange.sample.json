@@ -3,7 +3,7 @@
   "_event_time": "1970-01-01T00:00:00.000Z",
   "_event_id": "string",
   "_event_name": "TariffChange",
-  "_event_version": "1.1",
+  "_event_version": "1.2",
   "_event_source": "string",
   "_ack_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "_trigger_source_type": "api",
@@ -1315,5 +1315,64 @@
       "_created_at": "1970-01-01T00:00:00.000Z",
       "_updated_at": "1970-01-01T00:00:00.000Z"
     }
-  ]
+  ],
+  "portal_user": {
+    "_schema": "portal_user",
+    "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "_org": "123",
+    "_title": "John Doe",
+    "_tags": [
+      "family:label"
+    ],
+    "_purpose": [
+      "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+    ],
+    "email": [
+      {
+        "_tags": [
+          "string"
+        ],
+        "email": "user@example.com"
+      }
+    ],
+    "secondary_identifier": "string",
+    "origin": "string",
+    "access_status": true,
+    "expires_at": "2025-01-01",
+    "mapping_status": "Pending",
+    "registration_status": "Registration Pending",
+    "external_id": "string",
+    "mapped_contact": {
+      "$relation": [
+        {
+          "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+          "_tags": [
+            "example"
+          ]
+        }
+      ]
+    },
+    "represents": {
+      "$relation": [
+        {
+          "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+          "_tags": [
+            "example"
+          ]
+        }
+      ]
+    },
+    "_files": {
+      "$relation": [
+        {
+          "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+          "_tags": [
+            "example"
+          ]
+        }
+      ]
+    },
+    "_created_at": "1970-01-01T00:00:00.000Z",
+    "_updated_at": "1970-01-01T00:00:00.000Z"
+  }
 }

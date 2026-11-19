@@ -2,7 +2,7 @@
   "event_name": "LocationMoveRequested",
   "event_title": "Move Request",
   "event_description": "Customer request to move or relocate a service",
-  "event_version": "2.1",
+  "event_version": "2.2",
   "event_tags": [
     "builtin",
     "erp",
@@ -55,6 +55,16 @@
         "id": "billing_accounts",
         "schema": "billing_account",
         "cardinality": "many"
+      },
+      {
+        "id": "contact",
+        "schema": "contact",
+        "cardinality": "one"
+      },
+      {
+        "id": "portal_user",
+        "schema": "portal_user",
+        "cardinality": "one"
       }
     ],
     "edges": [
@@ -89,6 +99,14 @@
       {
         "from": "ticket",
         "to": "billing_accounts"
+      },
+      {
+        "from": "ticket",
+        "to": "contact"
+      },
+      {
+        "from": "contact",
+        "to": "portal_user"
       }
     ]
   },

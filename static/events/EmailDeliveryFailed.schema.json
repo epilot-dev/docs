@@ -1,0 +1,210 @@
+{
+  "type": "object",
+  "properties": {
+    "_org_id": {
+      "type": "string",
+      "description": "epilot tenant/organization ID",
+      "example": "123"
+    },
+    "_event_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when event occurred"
+    },
+    "_event_id": {
+      "type": "string",
+      "description": "Unique event identifier (ULID)"
+    },
+    "_event_name": {
+      "type": "string",
+      "description": "Event name from catalog",
+      "example": "EmailDeliveryFailed"
+    },
+    "_event_version": {
+      "type": "string",
+      "description": "Schema version number",
+      "example": "1.0"
+    },
+    "_event_source": {
+      "type": "string",
+      "description": "Source that triggered the event"
+    },
+    "_ack_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Acknowledgement ID for tracking event delivery (UUID)"
+    },
+    "_trigger_source_type": {
+      "type": "string",
+      "description": "The type of system that triggered the event. Examples: api, automation, operation, portal_user",
+      "example": "api"
+    },
+    "_trigger_source": {
+      "type": "string",
+      "description": "Identifier of the specific trigger source. Examples: user ID, automation execution ID, activity ID, portal user email",
+      "example": "api_123456"
+    },
+    "_automation_chain": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 100,
+      "description": "Ordered automation flow ids that caused this event; propagated verbatim for automation loop prevention"
+    },
+    "_has_pending_changesets": {
+      "type": "boolean",
+      "description": "True when the triggering entity (or meter counter) has at least one pending changeset"
+    },
+    "_changeset_edit_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Distinct edit modes across the PENDING changesets — only \"external\" (synced from an external system) or \"approval\" (awaiting approval). A \"direct\" write is applied immediately, is not a pending changeset, and so never appears here."
+    },
+    "_changeset_attributes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Keys identifying pending changesets. For attribute changesets these are attribute names (e.g. `billing_cycle`); for meter-reading changesets these are the changeset IDs from `meter._meter_readings_changeset`"
+    },
+    "_changeset_edit_modes_by_attribute": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "not": {}
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "description": "Per-key edit mode map; keys are a subset of _changeset_attributes (attribute names for entity changesets, changeset IDs for meter-reading changesets) — only those whose pending changeset has an \"external\" or \"approval\" mode. A \"direct\"/unrecognised mode is omitted here, though the key still appears in _changeset_attributes. Enables fine-grained webhook conditions such as `_changeset_edit_modes_by_attribute.billing_cycle equals approval`"
+    },
+    "message_id": {
+      "type": "string",
+      "description": "Entity ID of the message that failed"
+    },
+    "thread_id": {
+      "type": "string",
+      "description": "Entity ID of the thread the message belongs to"
+    },
+    "sender": {
+      "type": "string",
+      "description": "Email address the message was sent from (the mailbox to check when sends keep failing)"
+    },
+    "recipients": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Recipients this failure is about. BOUNCE/REJECT: only the recipients newly bounced or rejected by this notification. ERROR: every recipient, because the send itself failed."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "BOUNCE",
+        "REJECT",
+        "ERROR"
+      ],
+      "description": "BOUNCE: the recipient mail server returned the email. REJECT: the email was rejected before sending. ERROR: the email could not be sent (e.g. Outlook or SMTP connection error)."
+    },
+    "error_detail": {
+      "type": "string",
+      "description": "Provider error text: bounce diagnostic code, reject reason or send error"
+    },
+    "provider": {
+      "type": "string",
+      "description": "Sending provider of the message, e.g. \"outlook\". Absent for emails sent by epilot."
+    },
+    "email_message_id": {
+      "type": "string",
+      "description": "RFC 5322 Message-ID header of the email, to correlate with mail server logs"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Subject of the email"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the email was sent"
+    },
+    "sent_by_user_id": {
+      "type": "string",
+      "description": "epilot user ID of the person who sent the email"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags on the message"
+    },
+    "thread_topic": {
+      "type": "string",
+      "description": "Topic of the thread the message belongs to"
+    },
+    "inbox_bucket_id": {
+      "type": "string",
+      "description": "Inbox bucket of the thread (see GET /v2/email-settings/inbox-buckets)"
+    },
+    "related_entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attribute": {
+            "type": "string",
+            "description": "Message attribute holding the relation, e.g. \"ticket\""
+          },
+          "entity_id": {
+            "type": "string",
+            "description": "ID of the related entity"
+          }
+        },
+        "required": [
+          "attribute",
+          "entity_id"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Entities the message is related to (tickets, opportunities, contacts, ...), excluding its thread"
+    },
+    "send_source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "automation",
+        "workflow",
+        "partner",
+        "bulk",
+        "system"
+      ],
+      "description": "Who sent the email: \"manual\" (a user in the inbox), \"automation\" (an automation, including the emails of a campaign), \"workflow\", \"partner\", \"bulk\" or \"system\". Absent when the sender was not recorded."
+    },
+    "automation_flow_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs of the automation flows behind the email, the flow that sent it last; earlier IDs are the automations whose changes triggered it. A campaign sends its emails through its own flow (the campaign's flow_id). Absent when no automation sent the email or the flow was not recorded."
+    }
+  },
+  "required": [
+    "_org_id",
+    "_event_time",
+    "_event_id",
+    "_event_name",
+    "_event_version",
+    "_event_source",
+    "_ack_id",
+    "message_id",
+    "recipients",
+    "status"
+  ],
+  "additionalProperties": true
+}
