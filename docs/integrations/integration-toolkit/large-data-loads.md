@@ -9,10 +9,6 @@ slug: /integrations/integration-toolkit/large-data-loads
 
 An initial migration, a full resync or a large file import sends far more events than an integration's everyday traffic. The Integration Toolkit recognizes such a load by itself and processes it on capacity set aside for it, so that it does not slow down other organizations and is not slowed down by them.
 
-:::caution Not active yet
-What this page describes is built and tested, but it is switched off in every environment, production included. There is no date for switching it on. Until then, large loads are processed as before, and no request is refused for lack of capacity. The page says what happens once it is on, so that you can prepare your client.
-:::
-
 :::info What this means for you
 - **Everyday traffic is processed promptly.** Another organization's large load does not slow it down.
 - **Large loads need no configuration.** They are recognized automatically. Nothing is rejected in the normal case, nothing is lost, and the results are the same as for any other event.
@@ -21,6 +17,7 @@ What this page describes is built and tested, but it is switched off in every en
 - **Order is kept.** Events for the same entity are processed in the order in which they were accepted, also when a large load starts and when it ends. See [Order of Events](#order-of-events).
 - **Two responses to handle.** Rarely, a request is answered with `503` and a `Retry-After` header: with the code `BULK_CAPACITY_EXHAUSTED` when the capacity for large loads is in use, or with `INGEST_THROTTLED` when ingestion is busy for a moment. Wait for the `Retry-After` interval and send the same request again. See [When Capacity Is Exhausted](#when-capacity-is-exhausted) and [When Ingestion Is Busy](#when-ingestion-is-busy).
 - **A limit on the size of one event and one request.** An event may produce at most 5,000 updates, and a request at most 25,000. See [Size Limits](#size-limits).
+- **You can book a window for a planned load.** In the Integration Hub or through the API, so that a migration runs on its own capacity from its first event. See [Bulk Import Windows](#bulk-import-windows).
 :::
 
 ## Everyday Traffic and Large Loads
@@ -31,7 +28,7 @@ An organization that sends more than its allowance covers is treated as running 
 
 - **At a pace that follows the health of the services behind it**, not as fast as the events arrive. A load moves faster when the platform is quiet and slower when it is busy, so that it does not degrade everyday traffic.
 - **With the same ordering rules as everyday traffic.** What the inbound API says about the order of events, under `group_id` in the [API reference](https://docs.epilot.io/api/erp-integration), applies to a large load as well. The order is also kept between the events sent before the load was recognized and the load itself; see [Order of Events](#order-of-events).
-- **Until the load has finished** and the organization has been quiet for a while. After that, its events count as everyday traffic again.
+- **Until the load has finished** and the organization has paused: for 15 minutes without new events, or for 3 minutes when the load has run for at least 30 minutes and only a trickle of events follows it (fewer than about one event every two seconds). After that, its events count as everyday traffic again.
 
 Your large load does not slow down other organizations, and their large loads do not slow down your everyday traffic.
 
@@ -183,9 +180,6 @@ One event can turn into many entity updates, for example when its mapping create
 
 An update is one entity that the event's mapping writes. An event that produces exactly 5,000 updates is accepted; 5,001 are refused. Meter readings are not counted, and file imports are not limited this way.
 
-:::caution Not enforced in production yet
-In staging and production the limits are only observed today: epilot records the events and requests that would exceed them, and nothing is refused. They are enforced in epilot's own development environment. They will be enforced in production before the processing of large loads described on this page is switched on. Build your client to them now.
-:::
 
 ```json title="422 — one event of the request is too large"
 {
@@ -265,9 +259,63 @@ the capacity for large data loads stayed in use for the whole waiting time and t
 
 Run the import again later: validate it, then execute it. The rows that were already sent are sent again and update the same entities.
 
+## Bulk Import Windows {#bulk-import-windows}
+
+A large load is recognized by itself, but only after it has used up the organization's allowance: its first events are processed as everyday traffic, and the rest waits for the short pause of [step 2](#what-a-large-load-looks-like). If you know when a migration or a full resync will run, book a **bulk import window** for it. During the window, your organization's events run on their own capacity from the first event, and a pause between two batches of the load does not end it.
+
+A window applies to the whole organization, to every integration and file import, not to a single integration.
+
+### In the Integration Hub
+
+1. Open an integration and go to the **Monitoring** tab.
+2. In the **Bulk import window** card, choose **Plan a bulk import**.
+3. Pick the start date and time (in your time zone), the duration in hours, and add a note on what the load is, for example "Initial migration of all contracts".
+4. Save. The card shows the window as **Scheduled**, and as **Active** while it runs.
+
+You can edit a window until it starts, and cancel it at any time. Cancelling an active window does not stop or slow down what is already running: the load continues and ends by the normal rules.
+
+While your organization's events run on their own capacity, whether in a window or because a load was recognized, the card says so, with the number of updates still waiting:
+
+- **Getting your lane ready:** earlier updates are finishing first; this is the short pause of step 2.
+- **Your updates run on their own lane:** the load is being processed.
+
+Booking, editing and cancelling need the permission to manage integrations. Everyone who can view integrations sees the card.
+
+### Rules for a Window
+
+| Rule | Value |
+|---|---|
+| Length | at most 24 hours |
+| Start | at most 30 days ahead, not in the past |
+| Note | required, at most 500 characters |
+| Windows per organization | one at a time; booking a new one replaces a window that has not started |
+
+The capacity for windows is shared by all organizations. If too many windows overlap, a booking is refused; choose another time, or contact epilot support for a very large migration.
+
+### Through the API
+
+The same window can be read, booked and cancelled with the Integration Toolkit API. The organization is the one of the token.
+
+```http title="Book a window"
+PUT /v1/bulk-imports/window
+Content-Type: application/json
+
+{
+  "starts_at": "2026-11-24T06:00:00Z",
+  "ends_at": "2026-11-24T18:00:00Z",
+  "note": "Initial migration of all contracts"
+}
+```
+
+- `GET /v1/bulk-imports/window` returns the window, if there is one, with its `status` (`scheduled`, `active` or `ended`), and the organization's current processing in `lane`.
+- `DELETE /v1/bulk-imports/window` cancels the window.
+- A refused booking is answered with `409` and an `error_code`, for example `window-active` (an active window cannot be replaced, only cancelled), `window-too-long` or `too-many-windows`.
+
+See the [API reference](https://docs.epilot.io/api/erp-integration) for the full schema.
+
 ## Planning a Migration {#planning-a-migration}
 
-- **Tell epilot about a very large migration in advance.** For an initial load of a whole customer base, or a full resync, ask your epilot contact or epilot support ahead of time and agree on a time window. epilot can then set capacity aside for that window, so that it is ready when your load starts.
+- **Book a bulk import window for the migration.** See [Bulk Import Windows](#bulk-import-windows). For an initial load of a whole customer base, also tell your epilot contact or epilot support ahead of time.
 - **Verify the mapping on a subset first.** Use the [mapping simulation endpoint](./overview.md#inbound-api) and a small batch. A mapping error in a large load repeats for every event.
 - **Handle both `503` responses before you start**, and give every event a `deduplication_id`. See [What to Do](#what-to-do).
 - **Keep events and requests within the size limits.** At most 5,000 updates per event and 25,000 per request. See [Size Limits](#size-limits).

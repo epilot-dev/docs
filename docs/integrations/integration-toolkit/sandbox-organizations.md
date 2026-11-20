@@ -9,15 +9,12 @@ slug: /integrations/integration-toolkit/sandbox-organizations
 
 A sandbox organization is where you build and verify an integration: its mappings, its use cases and the real-time flows your end customers will use. The Integration Toolkit processes a sandbox's everyday inbound traffic exactly as it does a production organization's. [Large data loads](./large-data-loads.md) are the difference: in a sandbox, they share a small capacity with the large loads of all other sandbox organizations and run at a deliberately low rate.
 
-:::caution Not active yet
-The handling of large loads on this page belongs to the processing described on [Large Data Loads](./large-data-loads.md). It is built and tested, but switched off in every environment, and there is no date for switching it on. The page says what happens once it is on.
-:::
-
 :::info What this means for you
 - **Everyday traffic is processed as in production.** Single events, small batches and test runs are as quick as in a production organization.
 - **Large loads take much longer.** A full data load can take many times longer in a sandbox than in a production organization.
 - **Nothing is lost.** Every event a sandbox accepts is processed, with the same results as in production.
 - **Real-time flows are unaffected.** Events sent with [interactive inbound](./interactive-inbound.md) keep their own lane in a sandbox too.
+- **A bulk import window works here too.** A [booked window](./large-data-loads.md#bulk-import-windows) puts a sandbox's load on the shared sandbox capacity from its first event; it still runs at the low rate.
 :::
 
 ## Which Organizations Are Sandboxes

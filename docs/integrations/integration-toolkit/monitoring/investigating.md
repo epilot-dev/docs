@@ -119,9 +119,6 @@ Things worth knowing before you use it:
   `success` are queued, the others have `error`. Replay only the events that are not
   `success`. Replaying the whole request would queue the first ones a second time,
   because every replay gets new deduplication ids.
-- **Not active yet.** The two `503` responses belong to the processing of
-  [large data loads](../large-data-loads.md), which is switched off in every
-  environment for now.
 - **A replay is a new event.** It is assigned a fresh `event_id` and a new
   `correlation_id` prefixed `replay_`, so the replayed run is distinguishable from the
   original in monitoring rather than overwriting it.
