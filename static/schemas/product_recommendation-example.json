@@ -29,6 +29,46 @@
       }
     ]
   },
+  "source_products": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "source_prices": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "offer_products": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "offer_prices": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
   "_files": {
     "$relation": [
       {

@@ -70,6 +70,22 @@
       "$ref": "#/definitions/BaseRelation",
       "description": "Source Price"
     },
+    "source_products": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Current products"
+    },
+    "source_prices": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Current prices"
+    },
+    "offer_products": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Offered products"
+    },
+    "offer_prices": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Offered prices"
+    },
     "_files": {
       "$ref": "#/definitions/BaseRelation"
     },
