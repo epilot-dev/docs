@@ -44,6 +44,14 @@ Portal Extensions enhance epilot's customer and installer portals with new secti
 Use cases: Custom dashboard widgets, specialized tools, data visualizations
 ```
 
+### [Custom Portal Blocks](/docs/apps/components/custom-portal-block)
+
+Custom Portal Blocks are small web apps that customer portals embed on their pages. Admins add them in the Portal Builder like any other block and configure each placed block separately. The block reads the logged-in customer's data in the portal's language and theme.
+
+```
+Use cases: Customer dashboards, contract and request overviews, energy and device views
+```
+
 ### [External Product Catalog](/docs/apps/components/external-product-catalog)
 
 External Product Catalog components integrate third-party product catalogs into epilot. They enable Product Blocks to fetch and display products and pricing from external systems, allowing customers to browse and select items from external catalogs directly within their journey experience.
