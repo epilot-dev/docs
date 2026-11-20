@@ -481,7 +481,7 @@ $epilot
   .append('#embed-target')
 ```
 
-The Journey also automatically picks up URL search parameters from the host page. Values passed via `.contextData()` take precedence when keys overlap.
+The Journey also automatically picks up URL search parameters from the host page, whether or not they are declared as context parameters in the Journey Builder, and includes them in the submission's `journey_context`. Values passed via `.contextData()` take precedence when keys overlap. Parameters reserved by the Journey app (`journeyId`, `journeyToken`, `previewId`, `nonce`, `asOrganizationId`, `embedSource`, `dataInjectionOptions`, `mode`, `lang`, `topBar`, `isEmbedded`, `debug`, `preview`) are consumed by the app instead of being forwarded.
 
 ## Data Injection
 
@@ -799,6 +799,10 @@ Some `OptionsInit` fields from the legacy script have no SDK equivalent:
 > The legacy `name` option **is** supported as `.name(value)`, which sets the iframe's `name` and `title`, or the web component's `title`.
 
 ## Changelog
+
+### 2026-07-31
+
+- Fixed: `.contextData()` no longer discards the host page's URL query parameters. Both are merged into `journey_context`, with `.contextData()` taking precedence only on overlapping keys. The `.asWebComponent()` backend was affected worst, losing every query parameter; `.asIframe()` kept the ones declared as context parameters in the Journey Builder but lost the rest.
 
 ### 2026-06-11
 

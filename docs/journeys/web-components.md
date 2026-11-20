@@ -166,6 +166,12 @@ Numeric values are coerced to strings internally.
 
 The Journey also automatically picks up **URL search query parameters** from the host page and includes them as context data. For example, if the page URL is `https://example.com/energy?utm_source=google&campaign=summer`, the `utm_source` and `campaign` values will be included in the context data automatically. Values passed explicitly via the `context-data` attribute take precedence over query parameters when keys overlap.
 
+Query parameters do **not** need to be declared as context parameters in the Journey Builder to be picked up — any parameter of the host page URL ends up in the submission's `journey_context`. The exception are parameters reserved by the Journey app itself, which are consumed instead of being forwarded: `journeyId`, `journeyToken`, `previewId`, `nonce`, `asOrganizationId`, `embedSource`, `dataInjectionOptions`, `mode`, `lang`, `topBar`, `isEmbedded`, `debug` and `preview`. Pick a distinct name for tracking parameters to avoid the collision.
+
+:::tip
+Open the browser console on the embedding page to verify what the Journey received. On initialization it logs `Initialized or updated Journey with id: <journey-id> with following parameters`, including the resolved context data and query parameters.
+:::
+
 ## Data Injection
 
 Data injection allows you to pre-fill Journey fields with data and optionally start from a specific step. This is useful when your website has already collected some information (e.g. a product selection or address) and you want to carry it into the Journey.
@@ -493,6 +499,11 @@ If you are currently embedding Journeys using iframes with the `__epilot` embed 
 The attribute names on the Web Component map directly to the options you previously passed to `__epilot.init()`, converted to kebab-case (e.g. `topBar` becomes `top-bar`, `scrollToTop` becomes `scroll-to-top`).
 
 ## Changelog
+
+### 2026-07-31
+
+- Fixed: setting the `context-data` attribute no longer discards the host page's URL query parameters. Both are merged into `journey_context`, with `context-data` taking precedence only on overlapping keys. Previously any `context-data` value dropped every query parameter, since the attribute is the web component's only context source.
+- The resolved configuration is now logged to the browser console on initialization, matching iframe embeds. Invalid attributes are reported there too, and no longer prevent the element from rendering.
 
 ### 2026-06-11
 
