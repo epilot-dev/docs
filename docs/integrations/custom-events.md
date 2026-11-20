@@ -79,6 +79,12 @@ When the event fires, epilot hydrates this graph and puts each node into the pay
 
 Because `graph_source` is a full JSONata expression, it also covers type coercion (`$number(ticket.value)`), constants (`'EUR'`), fallbacks and conditionals.
 
+#### Field types must match the stored values
+
+Every projected value is validated against its field's `json_schema` before the event is sent. The type must match what the entity actually stores: a customer number saved as the number `4711` does not pass a field declared `"type": "string"`, and the event is rejected instead of published. Either declare the stored type, or convert the value in the expression (`$string(contact.customer_number)`). [Preview](#2-preview-it-against-a-real-entity) names such a mismatch: `customer_number must be string, but the value is a number`.
+
+A field whose expression finds no value is left out of the payload. That is valid for an optional field; a `required` field without a value fails validation. Preview lists every left-out field as a warning, so you can tell an entity that has no value from a mapping that reads the wrong attribute.
+
 Custom event fields are **always** projected from the entity graph. Unlike some built-ins, a custom event never accepts caller-supplied field values — a `fields` object sent to the trigger endpoint is ignored.
 
 #### Mapping modes
@@ -89,6 +95,27 @@ Custom event fields are **always** projected from the entity graph. Unlike some 
 | `jsonata` | One JSONata expression in `mapping.jsonata` returns the complete payload object. `schema_fields` still defines the schema the result is validated against. |
 
 In `jsonata` mode the expression is evaluated against the hydrated nodes plus an `operation` object holding the entity-operation context. It must return an object, and it cannot write system-owned fields.
+
+#### Entity data or mapped fields only
+
+`mapping.payload` decides whether the hydrated entities travel with the event:
+
+| `mapping.payload` | Builder option | What the event carries |
+|---|---|---|
+| `extend` (default) | **Add to the entity data** | Your fields, followed by every graph node: the complete root entity and its related entities, with all their attributes. |
+| `replace` | **Only the mapped fields** | Only your fields. The graph is still hydrated to compute them, but no node is sent. |
+
+```json
+{
+  "mapping": { "mode": "guided", "payload": "replace" }
+}
+```
+
+:::info Good to know
+With `extend`, consumers receive every attribute of every entity in the graph. That can include personal data such as birth dates, addresses or consents. For most integrations this is the right default: the receiving system gets the full picture and new attributes arrive without a new event version. If the receiving system should only get specific values, use `replace` and map exactly those fields.
+:::
+
+The choice is part of the published definition: later versions keep what the event carries, because consumers already parse it.
 
 ### Triggers
 
@@ -108,7 +135,7 @@ Setting `automation_trigger_only: true` restricts triggering to Automation with 
 
 ### The published payload
 
-A custom event payload is assembled in this order, with later parts overriding earlier ones: common metadata, the entity-operation context (entity triggers only), the hydrated graph nodes, then your projected fields.
+A custom event payload is assembled in this order, with later parts overriding earlier ones: common metadata, the entity-operation context (entity triggers only), the hydrated graph nodes, then your projected fields. With [`mapping.payload: replace`](#entity-data-or-mapped-fields-only) the graph nodes are left out.
 
 ```json
 {
@@ -146,7 +173,7 @@ Open **Event Catalog** in epilot 360 and choose **Create event**. The builder is
 1. **Event details** — start from scratch or [derive from a built-in event](#derive-from-a-built-in-event), then set the API name, title and description. The API name is reserved as soon as the draft is saved, so a late collision cannot cost you the rest of the work.
 2. **Triggers** — choose the root entity, then enable API, Automation and/or entity changes. For entity changes, pick create and/or update and optionally narrow by changed attributes and purposes.
 3. **Related data** — expand the root entity along the relation attributes its schema defines, and choose whether each node carries all attributes or only selected ones.
-4. **Payload** — add payload fields and map each one to entity data, or switch to a single JSONata expression. A live preview renders the resulting event from generated sample data or from a real entity of the root schema.
+4. **Payload** — add payload fields and map each one to entity data, or switch to a single JSONata expression, and choose whether the event [adds your fields to the entity data or carries only them](#entity-data-or-mapped-fields-only). A live preview renders the resulting event from generated sample data or from a real entity of the root schema: search it by name or paste its ID. The entity must belong to the organization you build the event in. The preview flags values whose type does not match their field and lists the fields the sample has no value for.
 5. **Preview and publish** — review the assembled event and publish version 1.0.
 
 ## Lifecycle
@@ -172,6 +199,18 @@ Three rules follow from this:
 - **A draft is not immutable.** It has no consumers yet, so `PUT /v1/events/{event_name}` replaces its whole definition. The event name is its identity and cannot change.
 - **Publishing freezes version 1.0.** After publishing, only the activation overlay — `enabled`, `auto_trigger` and `success_criteria` — can change, through `PATCH /v1/events/{event_name}`.
 - **Deprecation is one-way.** A deprecated event is disabled, never fires again, and cannot be restored.
+
+### Status, `enabled` and `auto_trigger`
+
+Three fields describe an event's state. They answer different questions:
+
+| Field | Question it answers |
+|---|---|
+| `event_status` | Where is the definition in its lifecycle? `draft`, `active` or `deprecated`. |
+| `enabled` | Is the event switched on for your organization? A disabled event does not fire, and an explicit trigger returns `403`. |
+| `auto_trigger` | Do entity changes fire it automatically? With `false` it fires only when triggered explicitly through the API or an Automation. Always `false` for Automation-only events. |
+
+A draft always reads `event_status: draft`, `enabled: false` and `auto_trigger: false`, and that is what the create and replace responses show. These values describe the draft, not the event you publish: publishing sets `enabled` and `auto_trigger` (both default to `true`) and `event_status` becomes `active`. A response saved before publishing keeps the draft values, so read the current state with `GET /v1/events/{event_name}`.
 
 ## Derive from a built-in event
 
@@ -258,7 +297,9 @@ To change a draft, send the complete definition again with `PUT /v1/events/Insta
 
 ### 2. Preview it against a real entity
 
-Preview runs the same hydration and projection the producer runs, so what you see is what will be published. It does not publish anything.
+Preview runs the same hydration and projection the producer runs, so what you see is what will be published, and it fails wherever publishing would fail. It does not publish anything.
+
+A custom event belongs to the organization that created it. The seed must be an entity of that same organization, with the seed node's schema: an ID copied from another organization or sandbox is not found.
 
 ```bash
 curl -X POST "https://event-catalog.sls.epilot.io/v1/events/InstallmentChangeRequested:preview" \
@@ -267,7 +308,41 @@ curl -X POST "https://event-catalog.sls.epilot.io/v1/events/InstallmentChangeReq
   -d '{ "seed": { "entity_id": "9b1c7d2e-4a5f-4c83-9e61-7d0a2f3b5c48", "node_id": "ticket" } }'
 ```
 
-A projection or schema failure returns `400` with the offending field paths.
+A successful preview returns the payload plus `warnings`: what this sample leaves out without failing. Optional fields without a value are listed by field name; while the event [carries the entity data](#entity-data-or-mapped-fields-only), related entities the sample does not have are listed by node ID. Warnings never block publishing.
+
+```json
+{
+  "payload": { "_event_name": "InstallmentChangeRequested", "installment_amount": 42.5, "...": "..." },
+  "errors": [],
+  "warnings": [
+    {
+      "path": "change_reason",
+      "message": "has no value on this sample (ticket.sonstiger_grund ? ticket.sonstiger_grund : ticket.aenderungsgrund), so the field is left out of the event"
+    }
+  ]
+}
+```
+
+Anything that would stop the event returns `400`. `issues` names each problem; `error` repeats them in one line:
+
+| Problem | `error` starts with | `issues[].path` |
+|---|---|---|
+| The seed is not an entity of this organization | `Seed entity not found in this organization` | `seed.entity_id` |
+| The seed is an entity of another schema | `Seed entity has the wrong schema` | `seed.entity_id` |
+| A value does not match its field type, or a required field has no value | `Custom event payload failed JSON Schema validation` | the field, for example `customer_number` |
+| An expression fails | `Custom event projection failed` | the field |
+
+```json
+{
+  "status": 400,
+  "error": "Custom event payload failed JSON Schema validation: customer_number must be string, but the value is a number",
+  "issues": [
+    { "path": "customer_number", "message": "must be string, but the value is a number" }
+  ]
+}
+```
+
+Messages name the type that was found, never the value itself.
 
 ### 3. Publish version 1.0
 
@@ -289,7 +364,7 @@ curl -X POST "https://event-catalog.sls.epilot.io/v1/events/InstallmentChangeReq
   -d '{ "seed": { "entity_id": "9b1c7d2e-4a5f-4c83-9e61-7d0a2f3b5c48", "node_id": "ticket" } }'
 ```
 
-The seed is required, because a custom event always projects from a hydrated graph. Any `fields` you send are ignored.
+The seed is required, because a custom event always projects from a hydrated graph, and like in preview it must be an entity of your organization. Any `fields` you send are ignored. Invalid input returns `400` with `issues`, in the same shape as preview.
 
 ### Deprecate it
 
@@ -331,10 +406,10 @@ A definition is rejected unless all of the following hold:
 - An entity trigger uses only `createEntity` / `updateEntity`, and its schema has exactly one matching `cardinality: one` node to seed from.
 - Purposes use `purpose_filters` with non-empty stable IDs and display names — plain `purpose` names are accepted only when inherited unchanged from a pinned built-in version.
 - At least one trigger source is enabled, and Automation-only rules hold where they apply.
-- No field is reserved, collides with a node ID, or uses built-in attachment semantics.
+- No field is reserved, collides with a node ID (allowed with `mapping.payload: replace`, where no node is sent), or uses built-in attachment semantics.
 - The canonical example generated from the definition validates against the event's own JSON Schema.
 
-Validation failures return `400` with one entry per problem, each naming the path that failed.
+Validation failures return `400` with `issues`: one `{ "path", "message" }` entry per problem, each naming the path that failed, for example `schema_fields.customer_number.graph_source`.
 
 ## Current limitations
 
