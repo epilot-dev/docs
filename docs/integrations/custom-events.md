@@ -102,7 +102,7 @@ In `jsonata` mode the expression is evaluated against the hydrated nodes plus an
 
 | `mapping.payload` | Builder option | What the event carries |
 |---|---|---|
-| `extend` (default) | **Add to the entity data** | Your fields, followed by every graph node: the complete root entity and its related entities, with all their attributes. |
+| `extend` (default) | **Add to the entity data** | Your fields, followed by every graph node: the root entity and its related entities, with all their attributes unless a node lists [`fields`](#entity-graph). |
 | `replace` | **Only the mapped fields** | Only your fields. The graph is still hydrated to compute them, but no node is sent. |
 
 ```json
@@ -112,7 +112,7 @@ In `jsonata` mode the expression is evaluated against the hydrated nodes plus an
 ```
 
 :::info Good to know
-With `extend`, consumers receive every attribute of every entity in the graph. That can include personal data such as birth dates, addresses or consents. For most integrations this is the right default: the receiving system gets the full picture and new attributes arrive without a new event version. If the receiving system should only get specific values, use `replace` and map exactly those fields.
+With `extend`, consumers receive the hydrated entities, which can include personal data such as birth dates, addresses or consents. Most integrations need this: the receiving system gets the full picture and new attributes arrive without a new event version. To keep the entity data but leave attributes out, narrow a node with `fields`. If the receiving system should only get specific values, use `replace` and map exactly those fields.
 :::
 
 The choice is part of the published definition: later versions keep what the event carries, because consumers already parse it.
@@ -299,7 +299,7 @@ To change a draft, send the complete definition again with `PUT /v1/events/Insta
 
 Preview runs the same hydration and projection the producer runs, so what you see is what will be published, and it fails wherever publishing would fail. It does not publish anything.
 
-A custom event belongs to the organization that created it. The seed must be an entity of that same organization, with the seed node's schema: an ID copied from another organization or sandbox is not found.
+A custom event belongs to the organization that created it. The seed must be an entity of that same organization, with the seed node's schema: an ID copied from another organization or sandbox is not found. The seed node cannot be listed in `skip_hydration`, because the event is built from it.
 
 ```bash
 curl -X POST "https://event-catalog.sls.epilot.io/v1/events/InstallmentChangeRequested:preview" \
@@ -323,14 +323,14 @@ A successful preview returns the payload plus `warnings`: what this sample leave
 }
 ```
 
-Anything that would stop the event returns `400`. `issues` names each problem; `error` repeats them in one line:
+Anything that would stop the event returns `400`. `issues` names each problem; `error` summarises them:
 
 | Problem | `error` starts with | `issues[].path` |
 |---|---|---|
 | The seed is not an entity of this organization | `Seed entity not found in this organization` | `seed.entity_id` |
 | The seed is an entity of another schema | `Seed entity has the wrong schema` | `seed.entity_id` |
 | A value does not match its field type, or a required field has no value | `Custom event payload failed JSON Schema validation` | the field, for example `customer_number` |
-| An expression fails | `Custom event projection failed` | the field |
+| An expression fails | `Custom event projection failed` | the field, or `mapping.jsonata` in `jsonata` mode |
 
 ```json
 {
@@ -342,7 +342,7 @@ Anything that would stop the event returns `400`. `issues` names each problem; `
 }
 ```
 
-Messages name the type that was found, never the value itself.
+Messages name the type that was found or the reason an expression failed, never the value itself.
 
 ### 3. Publish version 1.0
 
