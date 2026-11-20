@@ -122,6 +122,22 @@ the response carries a generated id instead.
 `status` of the event (`success`, `skipped` for a duplicate, `ignored` or `error`, the last three with a
 `message`) and its `event_id`.
 
+### When to Retry
+
+Three responses ask you to send a request again:
+
+| Status | Meaning | What to do |
+|---|---|---|
+| `429` | Some events could not be accepted right now: their deduplication check was throttled, or another request with the same `deduplication_id` is still being processed. Those events have `status: "error"`. | Wait for the `Retry-After` interval, then send the whole request again. Events with a `deduplication_id` that this request accepted come back `skipped`. |
+| `503` with `BULK_CAPACITY_EXHAUSTED` | Your organization went over its allowance while the capacity for large loads was in use. Nothing of the request was queued, apart from interactive events. | Wait for the `Retry-After` interval (60 seconds), then send the same request again. See [Large Data Loads](../large-data-loads.md#when-capacity-is-exhausted). |
+| `503` with `INGEST_THROTTLED` | Ingestion was busy for a moment: your organization's allowance could not be checked, or the queue that receives the events throttled the request. If the body has no `results`, nothing of the request was accepted. | Wait for the `Retry-After` interval (2 seconds), then send the same request again. See [When Ingestion Is Busy](../large-data-loads.md#when-ingestion-is-busy). |
+
+Give every event a `deduplication_id`, so that a retried event is never processed twice.
+
+A `422` with the code `EVENT_TOO_WIDE` on an event, or `REQUEST_TOO_WIDE` on the request, is not a reason to retry: the event or the request produces too many updates and has to be split. See [Size Limits](../large-data-loads.md#size-limits).
+
+The two `503` responses and the size limits belong to the processing of [large data loads](../large-data-loads.md), which is not active yet. That page says what is in effect today.
+
 ## Processing Flow
 
 Events flow through the following pipeline:
@@ -139,4 +155,5 @@ portal's correlation id and `interactive: true` with the request, and let the po
 - [Unique Identifiers](./unique-identifiers.md) - Configure entity lookup strategies
 - [Relations](./relations.md) - Link entities together
 - [Interactive Inbound](../interactive-inbound.md) - Push data an end customer is waiting for
+- [Large Data Loads](../large-data-loads.md) - How migrations and full resyncs are processed
 - [Examples](./examples.md) - See complete integration examples
