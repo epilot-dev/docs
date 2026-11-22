@@ -2,7 +2,7 @@
   "event_name": "ServiceMeterReadingAdded",
   "event_title": "Service: Meter Reading Added",
   "event_description": "Service request to add a new meter reading via ticket",
-  "event_version": "1.0",
+  "event_version": "1.1",
   "event_tags": [
     "builtin",
     "erp",
@@ -294,6 +294,11 @@
         "id": "ticket_files",
         "schema": "file",
         "cardinality": "many"
+      },
+      {
+        "id": "portal_user",
+        "schema": "portal_user",
+        "cardinality": "one"
       }
     ],
     "edges": [
@@ -320,6 +325,10 @@
       {
         "from": "contract",
         "to": "contact"
+      },
+      {
+        "from": "contact",
+        "to": "portal_user"
       }
     ]
   },

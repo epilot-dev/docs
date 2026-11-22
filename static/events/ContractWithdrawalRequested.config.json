@@ -2,7 +2,7 @@
   "event_name": "ContractWithdrawalRequested",
   "event_title": "Contract Withdrawal Request",
   "event_description": "A customer withdrew from a contract (Widerruf), e.g. through the withdrawal function required by § 356a BGB. Explicitly triggered by Automation once the withdrawal ticket is complete.",
-  "event_version": "1.1",
+  "event_version": "1.2",
   "event_tags": [
     "builtin",
     "erp",
@@ -62,6 +62,11 @@
         "id": "billing_accounts",
         "schema": "billing_account",
         "cardinality": "many"
+      },
+      {
+        "id": "portal_user",
+        "schema": "portal_user",
+        "cardinality": "one"
       }
     ],
     "edges": [
@@ -88,6 +93,10 @@
       {
         "from": "ticket",
         "to": "billing_accounts"
+      },
+      {
+        "from": "contact",
+        "to": "portal_user"
       }
     ]
   },
