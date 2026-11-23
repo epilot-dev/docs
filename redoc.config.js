@@ -128,6 +128,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Billing API' },
+    tier: 2,
     routePath: '/api/billing',
     specUrl: 'https://docs.api.epilot.io/billing.yaml',
   },
@@ -182,6 +183,7 @@ module.exports.specs = [
   },
   {
     layout: { title: 'Snapshot API' },
+    tier: 2,
     routePath: '/api/snapshot',
     specUrl: 'https://docs.api.epilot.io/snapshot-api.yaml',
   },
