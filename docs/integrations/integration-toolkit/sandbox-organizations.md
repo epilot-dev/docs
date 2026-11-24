@@ -25,7 +25,7 @@ epilot sets an organization's type when it is created: a sandbox belongs to a pr
 
 Everything on [Large Data Loads](./large-data-loads.md) applies to sandboxes, with one difference: the large load of a sandbox runs on a small capacity that all sandbox organizations share, at a deliberately low rate, until it has finished.
 
-- **Everyday traffic**, within the organization's allowance, is processed together with every other organization's, as in production.
+- **Everyday traffic**, within the organization's allowance, is processed as in production.
 - **Large loads**, whether sent through the inbound API, as a file import or as a replay, run on the capacity all sandboxes share.
 - **Interactive events** run exactly as in production, within the same [rate limits](./interactive-inbound.md#rate-limits), so you can test registrations and contract additions end to end.
 - **The `503` responses** described in [When Capacity Is Exhausted](./large-data-loads.md#when-capacity-is-exhausted) and [When Ingestion Is Busy](./large-data-loads.md#when-ingestion-is-busy) can occur in a sandbox as well, and are handled the same way. The [size limits](./large-data-loads.md#size-limits) apply too.

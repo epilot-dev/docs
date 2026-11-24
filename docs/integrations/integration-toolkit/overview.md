@@ -163,7 +163,7 @@ Push data from your ERP into epilot. Typical flows:
 
 Inbound ingestion is asynchronous. For the flows where an end customer is waiting for the push to land — portal self-registration, adding a contract — use [Interactive Inbound](./interactive-inbound.md): your middleware sends the portal's correlation id with the push, the events run on a dedicated lane, and the portal waits until exactly that data has been written.
 
-Once the processing of large data loads is switched on, large loads, such as an initial migration or a full resync, are recognized automatically and processed on capacity set aside for them, so that they do not slow down the everyday traffic of other organizations. See [Large Data Loads](./large-data-loads.md) for what to expect and the responses your client has to handle, and [Sandbox Organizations](./sandbox-organizations.md) for how large loads behave in a sandbox.
+Once the processing of large data loads is switched on, large loads, such as an initial migration or a full resync, are recognized automatically and processed on capacity set aside for them, for optimal performance of everyday traffic. See [Large Data Loads](./large-data-loads.md) for what to expect and the responses your client has to handle, and [Sandbox Organizations](./sandbox-organizations.md) for how large loads behave in a sandbox.
 
 ### Outbound (epilot to ERP)
 
