@@ -73,7 +73,38 @@ See [Entity API — Relations API](/docs/entities/entity-api#relations-api) for 
 
 Relations are defined on schemas as [relation attributes](/docs/entities/attributes#relation). Key schema properties:
 
-- `relation_type` — `"has_many"` or `"has_one"`
+- `relation_type` — `"has_many"` or `"has_one"`: the **cardinality** (how many entities the attribute holds), not the direction
 - `allowedSchemas` — restricts which entity types can be linked
-- `reverse_attributes` — automatically creates a back-reference on the related entity
+- `reverse_attributes` — makes the attribute a **reverse relation**: the related entities point to this entity, and the attribute is derived from them. Absent means a **direct relation**. See [Direction](#direction-direct-and-reverse-relations)
 - `relation_affinity_mode` — `"weak"` (preserved on duplication) or `"strong"` (discarded on duplication)
+
+### Direction: direct and reverse relations
+
+Every relation attribute has a **direction**: which of the two entities stores the link. The direction is determined by the presence of `reverse_attributes`, and is independent of `relation_type`.
+
+| | Direct relation | Reverse relation |
+|---|---|---|
+| `reverse_attributes` | absent | present |
+| Who points to whom | this entity points to the related entities | the related entities point to this entity |
+| Where the link is stored | in this attribute's value on this entity (`$relation`) | on the related entities, in the direct attribute named in `reverse_attributes` |
+| Value of this attribute | stored on this entity | derived when the entity is hydrated; nothing is stored on this entity |
+
+`relation_type` is a separate axis. It only says how many entities the attribute can hold: `has_one` for one, `has_many` for many. Either direction can use either value.
+
+`reverse_attributes` maps the slug of the related schema to the name of the direct attribute on that schema that points back:
+
+```json title="contact schema: direct relation (this contact points to an account)"
+{ "name": "account", "type": "relation", "relation_type": "has_one", "allowedSchemas": ["account"] }
+```
+
+```json title="account schema: reverse relation (the contacts that point to this account)"
+{
+  "name": "contacts",
+  "type": "relation",
+  "relation_type": "has_many",
+  "allowedSchemas": ["contact"],
+  "reverse_attributes": { "contact": "account" }
+}
+```
+
+The link lives on each contact, in `contact.account`. `account.contacts` lists the contacts whose `account` points to the account, so it is a view and not separately stored data.
