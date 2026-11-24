@@ -7,10 +7,10 @@ slug: /integrations/integration-toolkit/large-data-loads
 
 # Large Data Loads
 
-An initial migration, a full resync or a large file import sends far more events than an integration's everyday traffic. The Integration Toolkit recognizes such a load by itself and processes it on capacity set aside for it, so that it does not slow down other organizations and is not slowed down by them.
+An initial migration, a full resync or a large file import sends far more events than an integration's everyday traffic. The Integration Toolkit recognizes such a load by itself and processes it on capacity set aside for it, for optimal performance of both the load and everyday traffic.
 
 :::info What this means for you
-- **Everyday traffic is processed promptly.** Another organization's large load does not slow it down.
+- **Everyday traffic is processed promptly**, also while a large load runs.
 - **Large loads need no configuration.** They are recognized automatically. Nothing is rejected in the normal case, nothing is lost, and the results are the same as for any other event.
 - **Large loads take longer.** The first part is processed at once. After a short pause, the rest follows at a steady pace, which can take hours for a very large migration.
 - **Interactive inbound is unaffected.** Pushes an end customer is waiting for keep their own lane.
@@ -22,7 +22,7 @@ An initial migration, a full resync or a large file import sends far more events
 
 ## Everyday Traffic and Large Loads
 
-The inbound events of all organizations are processed together. Each organization has an **allowance** for that: how many events it can send in a short time and still count as everyday traffic. Single changes, delta syncs and occasional batches stay within it.
+Everyday inbound events are processed as they arrive. Each organization has an **allowance** for that: how many events it can send in a short time and still count as everyday traffic. Single changes, delta syncs and occasional batches stay within it.
 
 An organization that sends more than its allowance covers is treated as running a **large load**. A migration or a full resync does that: it sends thousands of events within minutes. From then on, the organization's events are processed on capacity set aside for the load:
 
@@ -30,7 +30,7 @@ An organization that sends more than its allowance covers is treated as running 
 - **With the same ordering rules as everyday traffic.** What the inbound API says about the order of events, under `group_id` in the [API reference](https://docs.epilot.io/api/erp-integration), applies to a large load as well. The order is also kept between the events sent before the load was recognized and the load itself; see [Order of Events](#order-of-events).
 - **Until the load has finished** and the organization has paused: for 15 minutes without new events, or for 3 minutes when the load has run for at least 30 minutes and only a trickle of events follows it (fewer than about one event every two seconds). After that, its events count as everyday traffic again.
 
-Your large load does not slow down other organizations, and their large loads do not slow down your everyday traffic.
+This keeps everyday traffic fast while a large load runs.
 
 ### What Counts {#what-counts}
 
@@ -290,7 +290,7 @@ Booking, editing and cancelling need the permission to manage integrations. Ever
 | Note | required, at most 500 characters |
 | Windows per organization | one at a time; booking a new one replaces a window that has not started |
 
-The capacity for windows is shared by all organizations. If too many windows overlap, a booking is refused; choose another time, or contact epilot support for a very large migration.
+For optimal performance, the number of windows that can run at the same time is limited. If a booking is refused, choose another time, or contact epilot support for a very large migration.
 
 ### Through the API
 
