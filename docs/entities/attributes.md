@@ -525,12 +525,12 @@ Relations are always stored as arrays via the `$relation` wrapper, regardless of
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `relation_type` | `string` | `"has_many"` or `"has_one"` |
+| `relation_type` | `string` | `"has_many"` or `"has_one"`: cardinality only, not direction |
 | `allowedSchemas` | `string[]` | Which entity schemas can be linked |
 | `enable_relation_picker` | `boolean` | Show entity search picker (default: `true`) |
 | `enable_relation_tags` | `boolean` | Allow tagging relations (default: `true`) |
 | `summary_fields` | `string[]` | Fields to display in relation summary |
-| `reverse_attributes` | `object` | Map of schema slug to reverse attribute name (e.g. `{ "contact": "account" }`) |
+| `reverse_attributes` | `object` | Makes this a reverse relation: map of related schema slug to the direct relation attribute on that schema that points to this entity (e.g. `{ "contact": "account" }`). Absent means a direct relation. See [Direction](/docs/entities/relations#direction-direct-and-reverse-relations) |
 | `relation_affinity_mode` | `string` | `"weak"` (kept on duplication) or `"strong"` (discarded on duplication) |
 | `actions` | `array` | Available relation actions (see below) |
 | `drawer_size` | `string` | Detail drawer width: `"small"`, `"medium"`, or `"large"` |
