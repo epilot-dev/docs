@@ -53,5 +53,9 @@
       }
     ]
   },
-  "automation_trigger": true
+  "automation_trigger": true,
+  "on_demand_sync": {
+    "entity_schema": "contract",
+    "seed_node": "contract"
+  }
 }
