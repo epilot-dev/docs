@@ -1,32 +1,43 @@
 ---
 title: Development Mode
 hide_title: true
-sidebar_position: 4
-description: "Learn how to run the App in development now to get changes reflected live."
+sidebar_position: 5
+description: "Use development mode to test changes to your App in your own organization without creating a new version each time."
 ---
 
-# What is Development Mode?
+# Development Mode
 
-:::tip
-Development mode lets you see changes in real-time without creating new versions. Enable it during active development to skip the upload-install-test cycle.
+Development mode lets you test changes to your App right away. While it is on, the installation of the App **in your own organization** always uses the components and options of the App's latest version, so you don't have to update the installation after every change.
+
+It also lets you point a component at a different URL, for example a local development server.
+
+:::info
+Development mode only affects the organization that owns the App. Other organizations, including connected sandboxes, keep running the version they have installed. The App must be installed in your own organization for you to see the effect.
 :::
 
-Development mode is a feature that allows you to run your app in a local development environment. This mode enables you to see changes in real-time without having to update the app every time you make a change. It is particularly useful for testing and debugging your app during the development process.
+## Switching it on
 
-## How to Run in Development Mode
+1. Open your App and select a private version.
+2. Go to the **Components** section.
+3. Turn on the **Development Mode** switch.
 
-Head over to the components section and you will find a button to run the app in development mode.
-
-It enables development mode for the ***latest private version*** of your App. Once enabled, this particular version is pinned and cannot be changed. You can make changes and immediately see the results without reinstalling your App each time. With development mode enabled, you also have the ability to override certain component configuration values.
-
+The switch is not shown while a public version is selected.
 
 ![Development Mode Overview](/img/apps/dev-mode-overview.png) ![Development Mode Versions](/img/apps/development-mode-enable.png)
 
-## Custom Journey Block Overrides
+While development mode is on, you cannot create new versions. Switch it off before you [clone a version](/docs/apps/versioning#creating-a-new-version).
 
-With development mode enabled, you can override the component URL of your Custom Journey Block. This allows you to point the component to a local development server or any other URL where your component is hosted. This way, you can test changes in real-time without having to publish a new version of your app.
+## Overriding component URLs
+
+With development mode on, some components show an extra field to override where they are loaded from:
+
+| Component | Field | Effect |
+| --- | --- | --- |
+| Custom Journey Block | **Bundle URL Override** | The block's bundle is loaded from this URL instead of the uploaded bundle. |
+| Custom Workflow Action | **Dev URL Override** | The action's configuration interface is loaded from this URL. |
 
 ![Development Mode Overview](/img/apps/override-cjb.png)
 
+For example, set the Bundle URL Override of a journey block to your local development server. When you then open a journey that uses the block, it loads your local bundle, and you see your changes without uploading a new bundle.
 
-Now once you go into a journey to connect this custom block, you will see the component url is overridden with the one you provided in the development mode. This allows you to test your changes in the context of a journey without having to publish a new version of your app.
+The override only applies while development mode is on, and only in your own organization.

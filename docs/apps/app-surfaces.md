@@ -114,6 +114,20 @@ A full standalone page within the epilot 360 portal. Custom Pages register their
 
 **See also:** [Custom Page component docs](/docs/apps/components/custom-page) for component configuration details.
 
+### Surfaces in the manifest
+
+Each surface belongs to a component type. In the [app manifest](/docs/apps/app-manifest), the component's `surfaces` object points at the entry file of your interface (`app_url`), and `assets.zip` at the directory that is uploaded on deploy.
+
+| Surface | Component type | Manifest |
+| --- | --- | --- |
+| Entity Capability | `CUSTOM_CAPABILITY` | `configuration.type: "group"`, surface key `capability_config` |
+| Entity Tab | `CUSTOM_CAPABILITY` | `configuration.type: "tab"`, surface key `capability_config` |
+| Entity Widget | `CUSTOM_CAPABILITY` | `configuration.type: "widget"`, surface key `capability_config` |
+| Flow Action Config | `CUSTOM_FLOW_ACTION` | surface key `flow_action_config` |
+| Custom Page | `CUSTOM_PAGE` | surface key `page` |
+
+See [Entity Capabilities](/docs/apps/components/entity-capability) for the configuration of the three entity surfaces.
+
 ---
 
 ## Getting Started with App Bridge
@@ -195,6 +209,7 @@ async function main() {
 
   console.log('Entity ID:', context.entityId);
   console.log('Schema:', context.schema);        // e.g., 'contact', 'order'
+  console.log('Entity:', context.entity);        // the full entity being viewed
   console.log('Capability:', context.capability); // Your app's capability config
 }
 ```
@@ -205,6 +220,7 @@ async function main() {
 |-----------|------|-------------|
 | `entityId` | `string` | UUID of the entity being viewed |
 | `schema` | `string` | Entity schema slug (e.g., `'contact'`, `'order'`, `'opportunity'`) |
+| `entity` | `Entity` | The full entity being viewed. Use it instead of fetching the entity from the Entity API: it saves a request and needs no permissions |
 | `capability` | `EntityCapability` | Capability configuration from your app manifest |
 | `isVisible` | `boolean` | Whether the tab/capability is currently visible (tabs only) |
 
@@ -369,111 +385,7 @@ When `waitForCallback` is true, the automation engine will wait for your action 
 
 ## Page Surface Implementation
 
-For Custom Page surfaces, use the page-related APIs. These APIs let you read the current page context, navigate between sub-pages, and respond to browser back/forward navigation.
-
-### Getting Page Context
-
-```typescript title="Get page context"
-import { initialize, getPageContext } from '@epilot/app-bridge';
-
-async function main() {
-  const { token, lang } = await initialize();
-
-  // Get the page context
-  const { slug, subPath, path } = await getPageContext();
-
-  console.log('Page slug:', slug);      // e.g., "energy-prices"
-  console.log('Sub-path:', subPath);     // e.g., "/dashboard"
-  console.log('Full path:', path);       // e.g., "/app/energy-prices/dashboard"
-
-  // Render based on current sub-path
-  renderPage(subPath);
-}
-```
-
-**Context Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `slug` | `string` | The page slug from the URL (e.g., `'energy-prices'`) |
-| `subPath` | `string` | Sub-path after the slug (e.g., `'/dashboard'`, `'/settings/advanced'`) |
-| `path` | `string` | Full URL path (e.g., `'/app/energy-prices/dashboard'`) |
-
-### Sub-Page Navigation
-
-Use `navigate()` to change the parent frame URL when users interact with your app's internal navigation. This enables deep-linking and updates the browser address bar.
-
-```typescript title="Navigate between sub-pages"
-import { navigate } from '@epilot/app-bridge';
-
-// Navigate to sub-pages within your app
-navigate('/dashboard');           // URL becomes /app/<slug>/dashboard
-navigate('/settings/advanced');   // URL becomes /app/<slug>/settings/advanced
-navigate('/');                    // URL becomes /app/<slug>
-```
-
-:::tip
-`navigate()` triggers a `history.pushState` in the parent frame. It does not reload the page or the iframe - your app stays mounted. Update your UI in response to the navigation.
-:::
-
-### Handling Browser Back/Forward
-
-When the user clicks the browser back or forward button, the parent frame detects the `popstate` event and notifies your app:
-
-```typescript title="React to browser navigation"
-import { onLocationChange } from '@epilot/app-bridge';
-
-const unsubscribe = onLocationChange((subPath) => {
-  console.log('Browser navigated to:', subPath);
-  renderPage(subPath);
-});
-
-// Clean up when your app unmounts
-// unsubscribe();
-```
-
-### Combining Navigate and Location Change
-
-A typical pattern is to use `navigate()` for user-initiated navigation and `onLocationChange()` for browser-initiated navigation:
-
-```typescript title="Full navigation pattern"
-import {
-  initialize,
-  getPageContext,
-  navigate,
-  onLocationChange,
-  updateContentHeight,
-} from '@epilot/app-bridge';
-
-async function main() {
-  await initialize();
-  const { subPath } = await getPageContext();
-
-  // Initial render
-  renderPage(subPath);
-
-  // Handle browser back/forward
-  onLocationChange((newSubPath) => {
-    renderPage(newSubPath);
-  });
-
-  // Handle user clicks on your internal nav
-  document.addEventListener('click', (e) => {
-    const link = (e.target as HTMLElement).closest('[data-route]');
-    if (link) {
-      e.preventDefault();
-      const route = link.getAttribute('data-route')!;
-      navigate(route);
-      renderPage(route);
-    }
-  });
-}
-
-function renderPage(subPath: string) {
-  // Your routing logic here
-  updateContentHeight(document.body.scrollHeight);
-}
-```
+Custom Pages use `getPageContext()`, `navigate()` and `onLocationChange()` to read the current route, move between sub-pages and follow the browser's back and forward buttons. The [Custom Page](/docs/apps/components/custom-page#implementing-your-page) page explains them with examples; the functions are listed in the [API reference](#page-surface-api) below.
 
 ---
 
@@ -594,287 +506,6 @@ try {
 
 ---
 
-## Complete Examples
-
-### Entity Capability App
-
-A complete example of an app that displays external CRM data for a contact:
-
-```typescript title="Entity Capability - CRM integration example"
-import {
-  initialize,
-  getEntityContext,
-  updateContentHeight,
-  authorizeClient,
-} from '@epilot/app-bridge';
-import { getClient } from '@epilot/entity-client';
-
-interface ExternalCRMData {
-  score: number;
-  lastContact: string;
-  notes: string[];
-}
-
-async function main() {
-  // 1. Initialize app bridge
-  const { token, lang } = await initialize();
-
-  // 2. Set up API client
-  const entityClient = getClient();
-  authorizeClient(entityClient, token);
-
-  // 3. Set language
-  document.documentElement.lang = lang;
-
-  // 4. Get entity context
-  const { entityId, schema } = await getEntityContext();
-
-  // 5. Fetch entity data
-  const entity = await entityClient.getEntity({ slug: schema, id: entityId });
-
-  // 6. Fetch external CRM data (your API)
-  const externalData = await fetchExternalCRM(entity.data.email);
-
-  // 7. Render UI
-  renderCRMWidget(externalData);
-
-  // 8. Update content height
-  const observer = new ResizeObserver((entries) => {
-    updateContentHeight(entries[0].contentRect.height);
-  });
-  observer.observe(document.getElementById('app')!);
-}
-
-function renderCRMWidget(data: ExternalCRMData) {
-  const app = document.getElementById('app')!;
-  app.innerHTML = `
-    <div class="crm-widget">
-      <div class="score">Score: ${data.score}</div>
-      <div class="last-contact">Last Contact: ${data.lastContact}</div>
-      <div class="notes">
-        ${data.notes.map(note => `<p>${note}</p>`).join('')}
-      </div>
-    </div>
-  `;
-}
-
-async function fetchExternalCRM(email: string): Promise<ExternalCRMData> {
-  const response = await fetch(`https://api.mycrm.com/lookup?email=${email}`);
-  return response.json();
-}
-
-main().catch(console.error);
-```
-
-### Entity Tab with Visibility Handling
-
-An app that displays a dashboard, refreshing data when the tab becomes visible:
-
-```typescript title="Entity Tab - Dashboard with visibility handling"
-import {
-  initialize,
-  getEntityContext,
-  onVisibilityChange,
-  updateContentHeight,
-} from '@epilot/app-bridge';
-
-async function main() {
-  const { token, lang } = await initialize();
-  const { entityId, schema, isVisible } = await getEntityContext();
-
-  // Initial setup
-  await setupDashboard(entityId, schema);
-
-  // Load data if tab is already visible
-  if (isVisible) {
-    await loadDashboardData(entityId);
-  }
-
-  // Refresh data when tab becomes visible
-  onVisibilityChange(async (visible) => {
-    if (visible) {
-      await loadDashboardData(entityId);
-    }
-  });
-
-  // Update height
-  updateContentHeight(document.body.scrollHeight);
-}
-
-async function setupDashboard(entityId: string, schema: string) {
-  // Initialize dashboard UI
-}
-
-async function loadDashboardData(entityId: string) {
-  // Fetch and render dashboard data
-}
-
-main().catch(console.error);
-```
-
-### Automation Action Configuration
-
-A complete configuration UI for a webhook action:
-
-```typescript title="Flow Action Config - Webhook configuration UI"
-import {
-  initialize,
-  getActionConfig,
-  updateActionConfig,
-  updateContentHeight,
-} from '@epilot/app-bridge';
-
-interface WebhookActionConfig {
-  url: string;
-  method: 'GET' | 'POST' | 'PUT';
-  headers: Record<string, string>;
-  retryCount: number;
-}
-
-async function main() {
-  await initialize();
-
-  // Get existing configuration
-  const { custom_action_config } = await getActionConfig<WebhookActionConfig>();
-  const config = custom_action_config ?? {
-    url: '',
-    method: 'POST',
-    headers: {},
-    retryCount: 3,
-  };
-
-  // Render configuration form
-  renderForm(config);
-  updateContentHeight(document.body.scrollHeight);
-}
-
-function renderForm(config: WebhookActionConfig) {
-  const app = document.getElementById('app')!;
-  app.innerHTML = `
-    <form id="config-form">
-      <div class="field">
-        <label>Webhook URL</label>
-        <input type="url" id="url" value="${config.url}" required />
-      </div>
-      <div class="field">
-        <label>HTTP Method</label>
-        <select id="method">
-          <option value="GET" ${config.method === 'GET' ? 'selected' : ''}>GET</option>
-          <option value="POST" ${config.method === 'POST' ? 'selected' : ''}>POST</option>
-          <option value="PUT" ${config.method === 'PUT' ? 'selected' : ''}>PUT</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Retry Count</label>
-        <input type="number" id="retryCount" value="${config.retryCount}" min="0" max="10" />
-      </div>
-    </form>
-  `;
-
-  // Listen for changes
-  const form = document.getElementById('config-form')!;
-  form.addEventListener('change', () => {
-    const newConfig: WebhookActionConfig = {
-      url: (document.getElementById('url') as HTMLInputElement).value,
-      method: (document.getElementById('method') as HTMLSelectElement).value as 'GET' | 'POST' | 'PUT',
-      headers: config.headers,
-      retryCount: parseInt((document.getElementById('retryCount') as HTMLInputElement).value),
-    };
-    updateActionConfig(newConfig);
-  });
-}
-
-main().catch(console.error);
-```
-
-### Custom Page App
-
-A complete example of a custom page app with sub-page navigation:
-
-```typescript title="Custom Page - Multi-page app with navigation"
-import {
-  initialize,
-  getPageContext,
-  navigate,
-  onLocationChange,
-  updateContentHeight,
-  authorizeClient,
-} from '@epilot/app-bridge';
-import { getClient } from '@epilot/entity-client';
-
-type Route = '/' | '/dashboard' | '/settings';
-
-async function main() {
-  // 1. Initialize app bridge
-  const { token, lang } = await initialize();
-
-  // 2. Set up API client
-  const entityClient = getClient();
-  authorizeClient(entityClient, token);
-
-  // 3. Get page context
-  const { slug, subPath } = await getPageContext();
-
-  // 4. Render initial page
-  renderPage(subPath as Route);
-
-  // 5. Handle browser back/forward
-  onLocationChange((newSubPath) => {
-    renderPage(newSubPath as Route);
-  });
-
-  // 6. Set up internal navigation
-  setupNavigation();
-}
-
-function setupNavigation() {
-  document.addEventListener('click', (e) => {
-    const link = (e.target as HTMLElement).closest('[data-route]');
-    if (link) {
-      e.preventDefault();
-      const route = link.getAttribute('data-route') as Route;
-      navigate(route);
-      renderPage(route);
-    }
-  });
-}
-
-function renderPage(route: Route) {
-  const app = document.getElementById('app')!;
-
-  const nav = `
-    <nav>
-      <a data-route="/" ${route === '/' ? 'class="active"' : ''}>Home</a>
-      <a data-route="/dashboard" ${route === '/dashboard' ? 'class="active"' : ''}>Dashboard</a>
-      <a data-route="/settings" ${route === '/settings' ? 'class="active"' : ''}>Settings</a>
-    </nav>
-  `;
-
-  switch (route) {
-    case '/dashboard':
-      app.innerHTML = nav + '<h1>Dashboard</h1><p>Your data here</p>';
-      break;
-    case '/settings':
-      app.innerHTML = nav + '<h1>Settings</h1><p>Configuration options</p>';
-      break;
-    default:
-      app.innerHTML = nav + '<h1>Welcome</h1><p>Choose a section above</p>';
-  }
-
-  updateContentHeight(document.body.scrollHeight);
-}
-
-main().catch(console.error);
-```
-
-:::tip Sample App
-For a complete, production-ready example of a Custom Page app, see the **Energy Spot Price Explorer** sample:
-
-[github.com/epilot-dev/epilot-app-sample-energy-prices](https://github.com/epilot-dev/epilot-app-sample-energy-prices)
-:::
-
----
-
 ## API Reference
 
 ### Session Management
@@ -892,6 +523,7 @@ For a complete, production-ready example of a Custom Page app, see the **Energy 
 |--------|------|---------|-------------|
 | `contentHeight` | `number` | `document.body.scrollHeight` | Initial iframe height in pixels to report to the parent |
 | `timeout` | `number` | `5000` | Timeout in milliseconds for the initialization handshake |
+| `retries` | `number` | `2` | How often the handshake is retried after a timeout. Set to `0` for a single attempt |
 
 ### Entity Surface API
 
@@ -946,15 +578,15 @@ import { epilot } from '@epilot/app-bridge';
 epilot.sendMessageToParent('my-event', { key: 'value' });
 
 // Subscribe to raw messages from the parent (supports wildcards)
-const unsubscribe = epilot.subscribeToParentMessages('my-event', (data) => {
-  console.log('Received:', data);
+const unsubscribe = epilot.subscribeToParentMessages('my-event', (event) => {
+  console.log('Received:', event.data);
 });
 ```
 
 | Function | Returns | Description |
 |----------|---------|-------------|
 | `epilot.sendMessageToParent(event, detail?)` | `void` | Send a raw postMessage to the parent window |
-| `epilot.subscribeToParentMessages(event, handler)` | `Unsubscribe` | Subscribe to raw postMessage events from the parent. Supports wildcard matching with `*`. |
+| `epilot.subscribeToParentMessages(event, handler)` | `Unsubscribe` | Subscribe to raw postMessage events from the parent. The handler receives the `MessageEvent`; the payload is in `event.data`. Supports wildcard matching with `*`. |
 
 ### Types
 
@@ -963,11 +595,11 @@ import type {
   // Session
   AppBridgeSession,    // { token: string; lang: string; options?: AppOptions }
   AppOptions,          // Record<string, unknown> — option values keyed by option key
-  InitOptions,         // { contentHeight?: number; timeout?: number }
+  InitOptions,         // { contentHeight?: number; timeout?: number; retries?: number }
   RequestOptions,      // { timeout?: number }
 
   // Entity Surface
-  EntityContext,       // { entityId: string; schema: string; capability?: EntityCapability; isVisible?: boolean }
+  EntityContext,       // { entityId: string; schema: string; entity?: Entity; capability?: EntityCapability; isVisible?: boolean }
   EntityCapability,    // { name?: string; app_id?: string; [key: string]: unknown }
 
   // Page Surface

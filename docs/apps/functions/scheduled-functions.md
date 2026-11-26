@@ -41,7 +41,7 @@ Two formats, both validated at deploy time (and locally by `epilot app validate`
 
 - **Jitter**: runs execute within roughly **15 minutes after** the scheduled time, not at the exact second. Design for "around 3 AM", not "at 03:00:00".
 - **Hard 60-second budget** per run.
-- **No overlap**: if the previous run is still going, the tick is skipped.
+- **No overlap**: if the previous run is still going, the tick is skipped (`schedule_overlap: "skip"`, the only supported value).
 - **At-least-once**: a failed delivery is retried; occasionally a tick may run twice — make your logic idempotent.
 - **Lifecycle**: schedules are created when an org installs your app, updated when the installation moves to a new version, and deleted on uninstall. A disabled installation (missing required options) is skipped.
 
@@ -71,8 +71,8 @@ async function handler(input, context) {
 Two more habits that keep scheduled syncs well-behaved:
 
 - **Write only on change.** Diff before you PATCH an entity — otherwise every tick touches every entity and fires the org's entity-based automations for nothing.
-- **Let single items fail individually.** Log per-item errors and continue; only return `{ error_reason }` when the whole run is broken (e.g. the target system is down), so failures in your Insights mean something.
+- **Let single items fail individually.** Log per-item errors and continue; only return `{ error_reason }` when the whole run is broken (e.g. the target system is down), so failures in your Logs mean something.
 
 ## Observability
 
-Every run is recorded in your app's **Insights** (source `APP_FUNCTION`) — successes, skips and failures with their messages, per version and per installing organization. Installing orgs see the schedule as a plain-language summary ("every 30 minutes") on the installed app's **Configuration tab**.
+Every run is recorded in your app's **Logs** (source `APP_FUNCTION`) — successes, skips and failures with their messages, per version and per installing organization. Installing orgs see the schedule on the installed app's **Configuration tab**: a `rate(...)` schedule as plain language ("every 30 minutes"), a cron schedule as its expression.

@@ -34,7 +34,7 @@ Getting started is as simple as:
 npx epilot app init my-app
 ```
 
-This creates a local monorepo with an empty `manifest.json` — the declarative source of truth for your entire app. The manifest describes your app's metadata, components, permissions, and assets.
+This creates a local monorepo with a `manifest.json` — the declarative source of truth for your entire app. The manifest describes your app's metadata, components, permissions, and assets.
 
 From there, use the CLI to add and remove components:
 
@@ -60,49 +60,36 @@ epilot app deploy
 
 `epilot app deploy` reads your manifest and syncs everything to the platform: it creates the app on first deploy, uploads component bundles, and keeps the remote state in sync with your local manifest.
 
-See the [CLI documentation](/docs/cli/commands/app) for the full command reference, and the [app-templates](https://github.com/epilot-dev/app-templates) repository for starter templates for each component type.
+See the [App CLI](/docs/apps/cli) page for all commands, and the [app-templates](https://github.com/epilot-dev/app-templates) repository for starter templates for each component type.
 
-:::tip Building with AI coding agents
-
-Every scaffolded app includes a `SKILL.md` file — a structured guide that teaches AI coding agents (like Claude Code, Cursor, or GitHub Copilot) how to work with the epilot app manifest, component types, and CLI commands. This makes it significantly faster to build, configure, and iterate on your app with AI assistance.
-
-:::
-
-You can also build your app through the UI at [https://portal.epilot.cloud/app/apps/configuration/new](https://portal.epilot.cloud/app/apps/configuration/new).
+You can also build your app in the UI: open **Apps**, go to the **Your created Apps** tab and click **Create App**, or go straight to [https://portal.epilot.cloud/app/apps/configuration/new](https://portal.epilot.cloud/app/apps/configuration/new).
 
 :::info
 
-During this phase, your app remains private and is only visible within your organization. Take advantage of this isolation to perfect your app's functionality.
+During this phase, your app is private. It is only visible to your organization and the [organizations connected to it](/docs/apps/getting-started/private-vs-public#private-apps-in-connected-organizations), such as your sandboxes.
 
 :::
 
 ## 3. Request Review
 
-When your app is ready for the spotlight:
+If you want to offer your app to other epilot customers, a version of it has to pass a review:
 
-- Ensure your app documentation is complete
-- Verify all components function as expected
-- Navigate to the version management section of your app
-- Select the version you want to publish
-- Click "Request Review" to submit for evaluation
-- Our team will assess your app against quality and security standards
-- You'll receive feedback if any improvements are needed
+1. Check the version against the [publishing requirements](/docs/apps/publishing/requirements).
+2. Open your app, select the version you want to publish and go to the **Publishing** section.
+3. Enter a technical and a marketing contact, confirm the requirements and click **Submit for Review**.
 
-The review process helps maintain high standards in the epilot marketplace and ensures all apps provide value to users.
+Our team checks the version and gets back to you if anything needs to change. The [verification process](/docs/apps/publishing/verification-process) page describes the review in detail.
 
-## 4. First Public Version: Beta Release
+An app that is only used in your own organizations does not need a review.
 
-Upon approval of your review request:
+## 4. First Public Version
 
-- Your app becomes visible in the epilot marketplace with a "Beta" label
-- Other organizations can discover and install your solution
-- You'll receive notifications when your app is installed
-- This version becomes immutable to ensure stability for users
+Once the review is approved:
 
-During the beta phase, you can gather feedback from users and make necessary adjustments to improve your app's performance and usability. 
-You can also get in touch with our team to discuss your app's promotion and marketing.
+- The version is public: it appears in the epilot Marketplace and other organizations can install it.
+- The version can no longer be changed. To release changes, [create a new version](/docs/apps/versioning) and submit it for review.
 
-Once public, you can continue developing new versions with enhanced features while users benefit from your current release.
+To be notified by email when an organization installs your app, set a notification email and enable installation notifications in the **Notifications** section of your app.
 
 ## Next Steps
 

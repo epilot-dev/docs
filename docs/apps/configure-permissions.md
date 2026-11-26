@@ -2,47 +2,52 @@
 title: Permissions
 hide_title: true
 sidebar_position: 3
+description: "How to declare the permissions your App needs and how they are granted when the App is installed."
 ---
 
 # Permissions
 
-Learn how to configure permissions your App requires to function properly. When building an app for the epilot platform, you may need to request specific permissions to access certain features or data. This guide will help you understand how to configure these permissions effectively.
+An App that reads or changes data in epilot needs permissions to do so. You declare the permissions your App needs per version. When an organization installs the App, epilot creates a role with exactly these permissions in that organization, and the App acts with that role.
 
-## What Are Permissions?
-Permissions in epilot control access to various features and data within the platform. When you create an app, you can specify which permissions your app requires to function correctly. This ensures that users have the necessary access rights to use your app without encountering permission-related issues.
+An App that only shows its own interface or only talks to external systems does not need any permissions.
 
-## How to Configure Permissions For Your App
-To configure permissions for your app, you need to create a role in your own organization and specify which grants (permissions) this role should have. This role can then be assigned to users who will be using your app.
+## Declaring permissions
 
-### Step 1: Create a Role
-1. Go to the **Access Management** section of your epilot organization (under settings).
-2. Navigate to the **Roles** tab.
-3. Click on **New Role**.
-4. Enter a name for the role (e.g., "App User Role").
-5. Click **Save** to create the role.
+Permissions are declared as a list of grants, for example "view contacts". You have two ways to set them.
 
-:::info
-A dedicated **App Role** type is coming soon. For now, please select the **User Role** for the role type.
-:::
+### In the App configuration
 
-### Step 2: Configure Permissions
-1. After creating the role, you will see a list of available permissions (grants).
-2. Go to your App configuration in the epilot platform.
-3. In the **Permissions** section, select the role you created in Step 1. and save the changes.
+In the App configuration you pick a role from your own organization, and its grants are copied into the App version.
 
-## How To Use Permissions in Your App
+1. In your organization's settings, open **Access Management** → **Roles** and create a role with the grants your App needs. Choose **User Role** as the role type.
+2. Open your App and go to the **Permissions** section.
+3. Select the role and click **Update**.
 
-Once your App is installed, a role you specified is automatically created in the customer's organization. This role will have the permissions you configured in Step 2. 
+The grants are copied at the moment you click **Update**. If you change the role later, select it again and click **Update** to apply the change to the App version.
 
-Now every component has different options to access those permissions. For example the Custom Action component can access the permissions through the `x-epilot-token` header in the http request. This token contains the necessary information to authenticate and authorize the action being performed.
+### In the App manifest
 
-Check the specific component documentation for details on how to access permissions in your app.
+If you manage your App with the [CLI](/docs/apps/cli), list the grants under `permissions` in the [App manifest](/docs/apps/app-manifest). No role is needed.
 
-## Supported Permissions by Component Type
+## Permissions and versions
 
-| Component Type            | Permissions Supported |
-|---------------------------|-----------------------|
-| Custom Journey Block      | No                   |
-| Portal Extension          | No                   |
-| Custom Action             | Yes                  |
-| API Proxy                 | No                   |
+Permissions belong to a version. Once a version is public, its permissions are locked. To change them, [create a new version](/docs/apps/versioning#creating-a-new-version) and have it [reviewed](/docs/apps/publishing/verification-process).
+
+Request only the permissions your App needs. They are checked during the review, and a customer sees them before installing.
+
+## What happens on installation
+
+When an organization installs your App and the installed version declares permissions, epilot creates a role in that organization named "Automatically created by App *your App name*". It carries the grants of the installed version. The role is removed again when the App is uninstalled.
+
+The role you used to pick the grants stays in your own organization and is not shared with anyone.
+
+## Using the permissions
+
+Your App receives a short-lived access token that carries its permissions. Use it to call the epilot APIs on behalf of the installation.
+
+| Where your code runs | How it gets the token |
+| --- | --- |
+| [Custom Workflow Action](/docs/apps/components/custom-action) | Sent as the `x-epilot-token` header of the request to your endpoint. Only sent when the App declares permissions. |
+| [Functions](/docs/apps/functions/overview) | Functions run with a token that carries the App's permissions. |
+
+Components that render inside epilot, such as journey blocks and custom pages, act as the signed-in user and do not use the App's permissions.

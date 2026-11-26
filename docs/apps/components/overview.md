@@ -36,12 +36,36 @@ These web components integrate directly into epilot's Journey Builder, allowing 
 Use cases: Data collection forms, calculators, visualizations, third-party integrations
 ```
 
-### [Portal Extensions](/docs/apps/components/portal-extension)
+### [Custom Pages](/docs/apps/components/custom-page)
 
-Portal Extensions enhance epilot's customer and installer portals with new sections, tools, or visualizations. They can be added to dashboards or specific sections to extend the portal's functionality with custom features.
+Custom Pages add a full page of your own to epilot 360, with its own entry in the navigation and its own route. Use them for interfaces that are not tied to a single entity.
 
 ```
-Use cases: Custom dashboard widgets, specialized tools, data visualizations
+Use cases: Dashboards, admin tools, overviews that span several entities
+```
+
+### [Entity Capabilities](/docs/apps/components/entity-capability)
+
+Entity Capabilities embed your interface on entity pages: as a tab, as a group inside the entity's detail view, or as a widget. The interface runs in an iframe and talks to epilot through the App Bridge.
+
+```
+Use cases: Showing data from an external system next to a contact, contract or order
+```
+
+### [Custom Portal Blocks](/docs/apps/components/custom-portal-block)
+
+Custom Portal Blocks are blocks of your own that portal builders can place on pages of the customer and installer portals and configure per placement.
+
+```
+Use cases: Custom widgets and visualizations inside a portal page
+```
+
+### [Portal Extensions](/docs/apps/components/portal-extension)
+
+Portal Extensions connect epilot's customer and installer portals to your systems through configurable hooks: they call your API at defined points, for example to check a registration, identify a contract or load consumption data. They are configuration only and have no interface of their own.
+
+```
+Use cases: Registration checks, contract identification, consumption and cost data, seamless links to external systems
 ```
 
 ### [External Product Catalog](/docs/apps/components/external-product-catalog)
@@ -52,9 +76,9 @@ External Product Catalog components integrate third-party product catalogs into 
 Use cases: Custom product catalogs, journey products, journey product recommendations
 ```
 
-### [Custom Workflow Task](/docs/apps/components/custom-action)
+### [Custom Workflow Action](/docs/apps/components/custom-action)
 
-Custom Workflow Tasks extend epilot's automation engine with your own logic. You can either call an external endpoint (webhook-style) or run TypeScript code in a sandboxed environment directly within a workflow task.
+Custom Workflow Actions extend epilot's automation engine with your own logic. You can either call an external endpoint (webhook-style) or run TypeScript code in a sandboxed environment directly within a workflow task.
 
 ```
 Use cases: Third-party integrations, data syncing, custom processing steps in workflows
@@ -90,7 +114,9 @@ Our product team regularly reviews component requests and prioritizes them based
 
 ## App Surfaces & Communication
 
-When your component runs inside epilot, it's embedded in an iframe and communicates with the parent application through the `@epilot/app-bridge` library. Different component types are displayed on different "surfaces" within epilot.
+Components with an interface inside epilot 360 — entity capabilities, custom pages and the configuration interface of a workflow action — are embedded in an iframe and communicate with the parent application through the `@epilot/app-bridge` library. Each of these places is called a "surface".
+
+Journey blocks work differently: their bundle is loaded into the journey as a web component and receives its data as element properties. Portal extensions, external product catalogs and API proxies are configuration only and have no interface.
 
 Learn more about [App Surfaces](/docs/apps/app-surfaces) to understand how your app communicates with epilot and receives authentication, entity context, and configuration data.
 
@@ -153,7 +179,7 @@ Each component type also has a ready-to-use starter template available in the [a
     <div className="col col--6">
       <div className="card" style={{height: '100%'}}>
         <div className="card__body">
-          <h3>Custom Workflow Task</h3>
+          <h3>Custom Workflow Action</h3>
           <p>Run custom logic in epilot's automation workflows</p>
           <a href="/docs/apps/components/custom-action" className="button button--secondary button--block">Start Building</a>
         </div>

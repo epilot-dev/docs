@@ -56,6 +56,8 @@ const CustomBlock = r2wc(App, {
     args: 'json',
     setValue: 'function',
     subscribe: 'function'
+    // also available: getValue, getToken ('function') and publicToken ('string'),
+    // see the Custom Journey Block reference
   }
 })
 
@@ -69,8 +71,8 @@ This is a minimal working config.
 
 ```typescript title="vite.config.ts"
 import { resolve } from 'path'
-import { defineConfig } from 'Vite'
-import react from '@Vitejs/plugin-react'
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import typescript from '@rollup/plugin-typescript'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
@@ -120,13 +122,13 @@ npm run dev
 ### Step 2: Create the custom block in the App configuration
 The business logic/internals of the App do not matter for now. We start to focus on the actual development mode. In order to create your first App go to the App configuration and click on the `Add Component` button. Add the `bundle.js` file from the `dist` folder.
 
-After you created the component, install the App initially (by selecting the `See how your app looks in the installation view` link in the top right corner of the App configuration builder), then enable the [development mode](https://docs.epilot.io/docs/apps/about-apps/development-mode). 
+After you created the component, install the App initially (by selecting the `See how your app looks in the installation view` link in the top right corner of the App configuration builder), then enable the [development mode](/docs/apps/development-mode). 
 
 **Why development mode?** If you don't enable this during development, you always need to create a new version and update the current installation to the newest version with your changes. This is tedious and takes a lot of time. The development mode always pushes the latest changes to the current installation.
 
 ### Step 3: Create a dummy journey to test your component
 
-Create a dummy journey to test your component. Add the custom block to the journey and test it. Head over to the [Journey Builder](https://portal.dev.epilot.cloud/app/journey-builder/wizard) and create a new journey. The journey should contain an Address block, as our custom journey block translates the address of the user into a map marker in OpenStreetMap. 
+Create a dummy journey to test your component. Add the custom block to the journey and test it. Head over to the [Journey Builder](https://portal.epilot.cloud/app/journey-builder/wizard) and create a new journey. The journey should contain an Address block, as our custom journey block translates the address of the user into a map marker in OpenStreetMap. 
 
 After adding the address block, head again over to the block configuration and either use the block search field or go to the bottom of the blocks to see installed Apps which provide journey blocks.
 
@@ -232,7 +234,7 @@ To submit data from your custom block, call `setValue` with your output. For exa
 useEffect(() => {
   if (!address) return
   geocode(address).then(({ lat, lng }) => {
-    props.setValue(JSON.stringify({ lat, lng }))
+    props.container.setValue(JSON.stringify({ lat, lng }))
   })
 }, [address])
 

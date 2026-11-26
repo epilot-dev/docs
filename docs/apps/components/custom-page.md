@@ -32,65 +32,43 @@ Custom Pages are ideal when your app needs more than a widget or sidebar section
 
 ### Component Configuration
 
-Add a `CUSTOM_PAGE` component to your app manifest:
+Add a `CUSTOM_PAGE` component to your app, in the App Builder or with `epilot app add-component energy-prices --type CUSTOM_PAGE`. In the [manifest](/docs/apps/app-manifest) it looks like this:
 
 ```json
 {
-  "type": "CUSTOM_PAGE",
-  "slug": "energy-prices",
-  "config": {
+  "id": "5c1d…",
+  "component_type": "CUSTOM_PAGE",
+  "name": { "de": "Energiepreise", "en": "Energy Prices" },
+  "configuration": {
+    "slug": "energy-prices",
     "nav_label": "Energy Prices",
-    "nav_icon": "lightning",
-    "nav_description": "View German energy spot prices and grid data",
-    "source": {
-      "url": "https://your-app.example.com/page"
-    }
-  }
+    "nav_icon": "lightning"
+  },
+  "surfaces": { "page": { "app_url": "./components/energy-prices/dist/index.html" } },
+  "assets": { "zip": "./components/energy-prices/dist/" }
 }
 ```
+
+The page's interface is the `page` surface. On deploy, the directory in `assets.zip` is uploaded and `app_url` points at its entry file.
 
 ### Configuration Fields
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `slug` | string | Yes | URL slug for the page route. Must be lowercase alphanumeric with hyphens, 2+ characters. Must not conflict with built-in routes. |
-| `config.nav_label` | string | Yes | Label shown in the sidebar navigation |
-| `config.nav_icon` | string | No | Icon name for the navigation item |
-| `config.nav_description` | string | No | Short description shown in the navigation tooltip |
-| `config.source.url` | string | Yes | URL of your app's page UI |
+| `configuration.slug` | string | Yes | URL slug for the page route. Must be lowercase alphanumeric with hyphens, 2+ characters. Must not conflict with built-in routes. |
+| `configuration.nav_label` | string | No | Label shown in the sidebar navigation. Falls back to the component name |
+| `configuration.nav_icon` | string | No | Icon name for the navigation item |
+| `surfaces.page.app_url` | string | Yes | Entry file of your page's interface |
 
 ### Slug Rules
 
 - Must match the pattern: `^[a-z0-9][a-z0-9-]*[a-z0-9]$` (at least 2 characters)
-- Must not conflict with reserved built-in route segments (e.g., `entity`, `portal`, `automation`, etc.)
+- Must not be a reserved built-in route segment (e.g., `entity`, `settings`, `dashboard`, `apps`, `blueprints`)
 - Must be unique across all installed apps in an organization
 
 ### Multiple Pages Per App
 
-A single app can register multiple `CUSTOM_PAGE` components, each with a different slug:
-
-```json
-{
-  "components": [
-    {
-      "type": "CUSTOM_PAGE",
-      "slug": "energy-dashboard",
-      "config": {
-        "nav_label": "Energy Dashboard",
-        "source": { "url": "https://your-app.example.com/dashboard" }
-      }
-    },
-    {
-      "type": "CUSTOM_PAGE",
-      "slug": "energy-settings",
-      "config": {
-        "nav_label": "Energy Settings",
-        "source": { "url": "https://your-app.example.com/settings" }
-      }
-    }
-  ]
-}
-```
+A single app can register multiple `CUSTOM_PAGE` components, each with a different slug, for example `energy-dashboard` and `energy-settings`.
 
 ## Implementing Your Page
 

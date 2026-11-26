@@ -54,7 +54,7 @@ npx @epilot/cli app deploy
 ## What installing organizations see
 
 - **Workflow functions** show up in the flow builder's action picker through their referencing component, under the component's name.
-- The installed app's details page shows **scheduled** functions in a compact summary on the **Configuration tab** — label plus a plain-language cadence ("every 30 minutes") — transparency about what the app runs on the org's behalf in the background. Workflow functions need no extra listing: they appear as their flow-action component cards right above.
-- Every run is recorded in the app's **Insights**, so you (the developer) can monitor failures per version and component.
+- The installed app's details page shows **scheduled** functions in a compact summary on the **Configuration tab** — label plus the cadence (a `rate(...)` schedule in plain language, e.g. "every 30 minutes"; a cron schedule as its expression) — transparency about what the app runs on the org's behalf in the background. Workflow functions need no extra listing: they appear as their flow-action component cards right above.
+- Every scheduled run, and every failed workflow run, is recorded in the app's **Logs**, so you (the developer) can monitor failures per version and component.
 
 Continue with [Writing functions](/docs/apps/functions/writing-functions) for the runtime contract.

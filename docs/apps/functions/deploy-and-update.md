@@ -28,11 +28,11 @@ This scaffolds `functions/<name>/` as its own workspace package (TypeScript, `ts
 
 ```bash
 npm run build                 # compile all functions
-npx @epilot/cli app validate  # same checks the platform runs (schedule rules, code contract)
+npx @epilot/cli app validate  # checks the manifest and schedule rules locally
 npx @epilot/cli app deploy
 ```
 
-`deploy` reads each function's built handler, inlines the code into your app version, and uploads any config-UI assets. The manifest is the single source of truth: the deployed set of functions **always exactly matches** the manifest — removing a function from the manifest removes it (and its schedules) from the version.
+`deploy` reads each function's built handler, inlines the code into your app version, and uploads any config-UI assets. The manifest is the single source of truth: the deployed set of functions matches the manifest's `functions` list — removing a function from the list removes it (and its schedules) from the version. If you remove the `functions` key altogether, nothing is sent and the previously deployed functions stay; use an empty list to remove them all.
 
 ## How updates reach installations
 
@@ -40,13 +40,13 @@ Functions are **versioned with your app**. An installation runs the function cod
 
 1. **Unpublished version** (still in development): `deploy` updates the version in place. Installations move to the new code when they update to the version.
 2. **Published (public) versions are immutable**: `deploy` automatically creates a new version. Installing orgs receive it through the regular update flow ("Update to latest" / automatic updates), which also reconciles schedules — new scheduled functions start, removed ones stop, changed cron expressions take effect.
-3. **Your own dev org**: with [development mode](/docs/apps/development-mode), your test installation follows the development version so you can iterate without version-bumping.
+3. **Your own dev org**: `epilot app deploy` re-syncs your own organization's installation, so it runs the functions you just deployed. [Development mode](/docs/apps/development-mode) applies to components and options only, not to functions.
 
 There is no separate "function update" mechanism to think about: ship a version, installations that move to it run its functions. Run bookkeeping (last run, failure counts) survives version updates as long as the function keeps its name.
 
 ## Renaming and removing
 
-- **Renaming** a scheduled function is a remove-plus-add: the old schedule (and its run bookkeeping) is dropped, a fresh one is created. Renaming a **workflow** function requires updating the referencing component's `function_name` in the same deploy — the reference is validated, so a dangling name is rejected before it can break anything.
+- **Renaming** a scheduled function is a remove-plus-add: the old schedule (and its run bookkeeping) is dropped, a fresh one is created. Renaming a **workflow** function requires updating the referencing component's `function_name` in the same deploy — the reference is validated when the component is saved. Removing a function does not check for components that still reference it, so update those in the same deploy.
 - **Removing** a scheduled function stops its schedules in every installation on their next version update; removing a workflow function requires removing (or repointing) its referencing component too. Flows that used the removed action show it as unavailable — legitimate, just changelog it.
 
 ## Publishing review

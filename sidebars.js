@@ -215,6 +215,8 @@ module.exports = {
           items: [
             'apps/components/custom-journey-block',
             'apps/components/custom-page',
+            'apps/components/entity-capability',
+            'apps/components/custom-portal-block',
             'apps/components/portal-extension',
             'apps/components/external-product-catalog',
             'apps/components/custom-action',

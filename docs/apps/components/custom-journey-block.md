@@ -72,6 +72,23 @@ React offers several key advantages:
 
 Using React with a web component wrapper gives you the best of both worlds: modern development experience and seamless integration with the Journey Builder.
 
+### What your block receives
+
+The journey sets these properties on your custom element:
+
+| Property | Description |
+| --- | --- |
+| `value` | The block's current value, as a JSON string |
+| `setValue` | Function to update the block's value |
+| `getValue` | Function to read the value of another block in the journey |
+| `subscribe` | Function to be notified when another block's value changes. Returns a function that unsubscribes |
+| `args` | The [component arguments](#component-arguments) the journey creator configured, as a JSON string. Your app's non-sensitive [option values](/docs/apps/app-options) are included |
+| `theme` | The journey's design theme, as a JSON string |
+| `required` | Whether the journey creator marked the block as required |
+| `errors` | Validation errors for the block |
+| `publicToken` | Token for [calling external APIs through the API Proxy](#calling-external-apis-via-proxy) |
+| `getToken` | Function that returns a token for the current visitor |
+
 ### Component Mapping
 
 A powerful feature of Journey Blocks is entity mapping, which lets you:
@@ -84,6 +101,7 @@ Component mapping is defined in your app configuration and establishes the relat
 
 Example mapping types:
 - `string`: For text fields and standard inputs
+- `number`: For numeric inputs
 - `boolean`: For checkboxes and toggle switches
 - `date`: For date picker components
 - `datetime`: For date and time selection components
@@ -150,7 +168,7 @@ Prefer `block_reference` over a plain `text` arg whenever your block needs anoth
 
 ### Performance Considerations
 
-- **Bundle Size**: Keep your bundle under 500KB to ensure quick loading times
+- **Bundle Size**: Keep your bundle under 500KB to ensure quick loading times. The App Builder accepts bundles up to 2 MB
 - **Lazy Loading**: Load external resources only when needed
 - **Asset Optimization**: Compress images and minimize CSS/JS
 - **Efficient DOM Operations**: Minimize DOM manipulations and reflows
@@ -219,7 +237,6 @@ function App(props: AppProps<unknown>) {
       method: 'POST',
       body: { hello: 'world' },
     })
-      .then((response) => response.json())
       .then((data) => console.log('Proxy response:', data))
       .catch((error) => console.error('Proxy error:', error));
   }, [props.container.publicToken]);
@@ -228,28 +245,9 @@ function App(props: AppProps<unknown>) {
 }
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `'my-api'` | The proxy name you configured in the App Builder |
-| `'/endpoint'` | The path appended to the proxy's target URL |
-| `appId` | Your app's ID |
-| `token` | The `publicToken` from the journey block container props |
-| `method` | HTTP method (`GET`, `POST`, `PUT`, `DELETE`, etc.) |
-| `body` | Optional request body (automatically serialized to JSON) |
+`proxy()` returns the parsed response body. The `publicToken` is only available at runtime, when the journey is rendered for an end user.
 
-:::tip
-The `publicToken` is only available at runtime when the journey is rendered for an end user. During development, you can test with a hardcoded token — just make sure to remove it before publishing.
-:::
-
-### How it works
-
-1. Your journey block calls `proxy()` with the `publicToken`
-2. The request is sent to the epilot proxy server (not directly to the third-party API)
-3. The proxy resolves the credentials configured in the App Builder (API key, Bearer token, or OAuth 2.0)
-4. The proxy forwards the request to the target API with credentials injected server-side
-5. The response is returned to your journey block
-
-This means your API keys and secrets are **never exposed** in the journey's client-side bundle or network requests visible to end users.
+Your API keys and secrets stay on the server: the proxy adds them to the request to the target API, so they never appear in the journey's bundle or in network requests visible to end users.
 
 For full details on authentication types, request signing, and security, see the [API Proxy documentation](./api-proxy.md).
 

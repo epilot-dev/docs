@@ -58,7 +58,7 @@ Workflow runs block a flow step, so keep them fast — do one thing per action. 
 
 ## Installation options
 
-Options declared on the **component** are filled in by the org admin at install time and reach your handler as `input.app_options` (secret options stay encrypted; declare the ones your function needs in the function's `secrets` list — or better, use an [API Proxy](/docs/apps/components/api-proxy)).
+Options declared on the **component** are filled in by the org admin at install time and reach your handler as `input.app_options`. Functions run server-side, so this includes sensitive and secret values. For calls to external APIs, prefer an [API Proxy](/docs/apps/components/api-proxy), which injects the credentials for you.
 
 ## Per-flow configuration UI (optional)
 
@@ -66,9 +66,16 @@ If your action needs configuration when it's added to a flow (mappings, mode swi
 
 ## Waiting for a callback
 
-Set `wait_for_callback: true` in the **component's** configuration when the action starts something asynchronous (e.g. a human approval in your system) and the flow should pause until you confirm. The flow execution pauses at your action and resumes when your system calls the automation resume endpoint with the execution's resume token.
+Set `wait_for_callback: true` in the **component's** configuration when the action starts something asynchronous (e.g. a human approval in your system) and the flow should pause until you confirm. The flow execution pauses at your action and resumes when your system calls the automation resume endpoint with the execution's resume token. Your handler receives both as `input.callback_post_url` and `input.resume_token`:
+
+```http
+POST {callback_post_url}
+Content-Type: application/json
+
+{ "resume_token": "<token>" }
+```
 
 ## Failure behavior
 
-- `{ error_reason: "..." }` fails the flow step; the message is shown to the flow's operator and recorded in your app's Insights.
+- `{ error_reason: "..." }` fails the flow step; the message is shown to the flow's operator and recorded in your app's Logs.
 - `{ skip_reason: "..." }` marks the step skipped — use it for "nothing to do here" instead of failing.

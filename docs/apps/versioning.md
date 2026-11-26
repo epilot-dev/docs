@@ -2,36 +2,52 @@
 title: Versioning
 hide_title: true
 sidebar_position: 4
-description: "Learn how to clone the version of an epilot app."
+description: "How App versions work: creating a new version, what you can change, and deleting versions."
 ---
 
 
-# Cloning Versions
-How To Safely Implement New Changes Without Affecting the Installed Version
+# Versioning
 
-## Overview
+Every App has one or more versions. A version is a snapshot of the App's components, options, functions and permissions. Organizations install one specific version, so you can keep working on a new version without affecting anyone who has your App installed.
 
-Cloning versions is a critical step in the app development lifecycle. It allows you to create a new version of your app without affecting the existing version that is installed on the epilot platform. This guide outlines the steps you'll take to clone a version and implement new changes safely.
-
-We use [semantic versioning](https://semver.org/) to manage app versions. This system allows you to indicate the type of changes in each version and ensure that users understand the impact of updating to a new version. By following these guidelines, you can maintain a clear version history and provide a smooth transition for users when updating your app.
+App versions follow [semantic versioning](https://semver.org/) (`major.minor.patch`). A new App starts at version `0.0.1`.
 
 ![Version Overview](/img/apps/versions.png)
 
-The version overview lists all available versions and their visibility status.
+The **Versioning** section of your App lists all versions and whether each one is private or public.
 
+## Private and public versions
 
-## Cloning a Version
+- A **private** version can be changed at any time. It is visible to your organization and the [organizations connected to it](/docs/apps/getting-started/private-vs-public#private-apps-in-connected-organizations), such as your sandboxes.
+- A **public** version has passed the [verification process](/docs/apps/publishing/verification-process) and is available to every organization. It can no longer be changed or deleted.
 
-When you clone a version, you create a new version of your app that is based on an existing version. This new version is a copy of the original version and allows you to make changes without affecting the installed version. 
+To change anything in a public version, create a new version from it.
 
-![Version Overview](/img/apps/version-clone-modal.png)
+## Creating a new version
 
-A new version is basically a snapshot of the existing version. You can make changes to the new version without affecting the original version. This allows you to experiment with new features, fix bugs, or make other improvements without impacting users who have already installed your app.
+You create a new version by cloning an existing one:
 
-The newly created version is marked as a private version and is only visible to your organization and the [organizations connected to it](/docs/apps/getting-started/private-vs-public#private-apps-in-connected-organizations), such as your sandboxes. This allows you to test the changes thoroughly before making the version public.
+1. Open the **Versioning** section of your App.
+2. Open the menu (⋮) of the version you want to start from and choose **Clone**.
+3. Pick the new version number: a patch, minor or major increase of the version you clone.
+4. Optionally describe what the new version changes (up to 250 characters).
 
-To make this version public, you need to request a review and follow the verification process. Once the new version is approved, it becomes available to all epilot customers in the marketplace.
+![Clone a version](/img/apps/version-clone-modal.png)
+
+The new version is a private copy of the original. Changes you make to it do not affect the original version or the organizations that have it installed.
 
 :::info
-Once a version is public and installed by users, it becomes immutable. This means that you cannot make changes to the public version directly. Instead, you need to create a new version, clone the existing version, and make the necessary changes in the new version.
+You cannot clone a version while [development mode](/docs/apps/development-mode) is on. Switch it off first.
 :::
+
+## Publishing a version
+
+To make a version public, request a review in the **Publishing** section. See the [verification process](/docs/apps/publishing/verification-process).
+
+## Deleting a version
+
+You can delete a version from its menu (⋮) in the **Versioning** section, unless:
+
+- the version is public,
+- it is the only version of the App, or
+- another organization has this version installed.

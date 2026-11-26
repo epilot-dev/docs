@@ -17,6 +17,36 @@ The editor provides you with autocomplete and validation of the configuration. T
 
 ![Portal Extension configuration editor](/img/apps/portal-extensions/editor.png)
 
+## Template variables
+
+Links and hooks are configured with templates: URLs, headers, parameters and bodies can contain `{{Variable.path}}` placeholders that epilot fills in when the link is opened or the hook runs.
+
+| Variable | Contains | Available in |
+| --- | --- | --- |
+| `Options.*` | The [app option](/docs/apps/app-options) values of the installation, including secrets | Everywhere |
+| `Env.*` | The organization's [environment variables](/docs/environments/environments-secrets) | Everywhere |
+| `Contact.*` | The contact entity of the current portal user | Everywhere except the registration hook |
+| `PortalUser.*` | The current portal user | All hooks except the registration hook |
+| `AuthResponse.*` | The response of the `auth` request, e.g. `{{AuthResponse.data.access_token}}` | Wherever an `auth` block is configured |
+| `CallResponse.*` | The response of the hook's call | `resolved` and `call.result` |
+| Context entities | The entities of the current page under their schema name with a capital first letter, e.g. `Contract.*`, `Meter.*` | Links, data retrieval, data export, visualization metadata, plausibility |
+| `Scope.*` | The time range and interval selected by the portal user | Data retrieval, data export, visualization metadata |
+| `Identifiers.*` | What the user entered to identify themselves or a contract, grouped by schema | Registration, self-assignment |
+| `Reading.*`, `MeterCounter.*` | The submitted reading and the meter register | Meter reading plausibility |
+| `Input.*` | What the portal user entered | Account management |
+
+Templates use [Liquid](https://liquidjs.com/), so its filters and tags work. epilot adds a few filters:
+
+| Filter | Result |
+| --- | --- |
+| `base64_encode` | The value encoded as Base64, e.g. `{{ Options.user | append: ":" | append: Options.password | base64_encode }}` |
+| `is_empty`, `is_not_empty` | Whether a value is empty |
+| `uuid` | A random UUID. Also available as the tag `{% uuid %}` |
+
+Every variable is also available in snake_case, e.g. `portal_user` for `PortalUser`.
+
+A hook call has **20 seconds** to answer.
+
 ## Links
 
 The easiest way to extend the functionality of portals is to link to a third party system.
@@ -91,23 +121,7 @@ The configuration above adds a new option for quick actions like this:
 
 ### Template Variables
 
-You can use template variables throughout your seamless link configuration to dynamically inject values from various sources. Template variables use the `{{Variable.path}}` syntax.
-
-#### Available Variables
-
-- **`Options.*`**: Access values from the app options configured during installation
-  - Example: `{{Options.api_url}}`, `{{Options.api_key}}`
-
-- **`Contact.*`**: Access properties from the current portal user's contact entity
-  - Example: `{{Contact.customer_number}}`, `{{Contact.email}}`
-
-- **`AuthResponse.*`**: Access data from the authentication response
-  - Example: `{{AuthResponse.data.data.token}}`, `{{AuthResponse.status}}`
-  - Use this to extract tokens or other authentication data returned by your auth endpoint
-
-- **`Entity.*`**: Access properties from the current context entities
-  - Example: `{{Contract.contract_number}}`, `{{Contract.id}}`
-
+Seamless links can use `Options`, `Env`, `Contact`, `AuthResponse` and the context entities, see [Template variables](#template-variables).
 
 ### Example Use Cases
 
@@ -169,12 +183,11 @@ The authentication step supports caching to reduce API calls and improve perform
 
 Data retrieval hooks are configured in your app configuration. Each hook defines the authentication mechanism, the data retrieval endpoint, and how to process the response.
 
-Below are examples for all three data retrieval hook types.
-All of these enable configuring users to add a Dynamic Tariff or Consumption block where your integration is pickable using the "Integration" dropdown.
+All three data retrieval hook types are configured the same way. They enable configuring users to add a Dynamic Tariff or Consumption block where your integration is pickable using the "Integration" dropdown.
 
 ![Data retrieval integration in Dynamic Tariff block](/img/apps/portal-extensions/data-retrieval-integration-portal-builder.png)
 
-##### Price Data Retrieval
+The example shows a price hook:
 
 ```json title="Price data retrieval hook"
 {
@@ -209,110 +222,30 @@ All of these enable configuring users to add a Dynamic Tariff or Consumption blo
     }
   },
   "resolved": {
-    "dataPath": "prices"
+    "data_path": "prices"
   }
 }
 ```
 
-##### Consumption Data Retrieval
+The consumption and cost hooks differ only in their `type` and in the endpoint and response path you point them at:
 
-```json title="Consumption data retrieval hook"
-{
-  "id": "consumption",
-  "type": "consumptionDataRetrieval",
-  "name": {
-    "en": "Consumption",
-    "de": "Verbrauch"
-  },
-  "intervals": ["PT1H"],
-  "auth": {
-    "url": "{{Options.api_url}}/token",
-    "method": "GET",
-    "headers": {
-      "API-Key": "{{Options.api_key}}",
-      "UID": "{{Contact.customer_number}}"
-    },
-    "cache": {
-      "key": "{{Options.api_key}}-{{Contact.customer_number}}",
-      "ttl": "3600"
-    }
-  },
-  "call": {
-    "url": "{{Options.api_url}}/consumption",
-    "headers": {
-      "Authorization": "Bearer {{AuthResponse.data.data.token}}"
-    },
-    "params": {
-      "from": "{{Scope.from}}",
-      "to": "{{Scope.to}}",
-      "interval": "{{Scope.interval}}"
-    }
-  },
-  "resolved": {
-    "dataPath": "consumptions"
-  }
-}
-```
+| Hook type | `type` |
+| --- | --- |
+| Price | `priceDataRetrieval` |
+| Consumption | `consumptionDataRetrieval` |
+| Cost | `costDataRetrieval` |
 
-##### Cost Data Retrieval
-
-```json title="Cost data retrieval hook"
-{
-  "id": "cost",
-  "type": "costDataRetrieval",
-  "name": {
-    "en": "Cost",
-    "de": "Kosten"
-  },
-  "intervals": ["PT1H"],
-  "auth": {
-    "url": "{{Options.api_url}}/token",
-    "method": "GET",
-    "headers": {
-      "API-Key": "{{Options.api_key}}",
-      "UID": "{{Contact.customer_number}}"
-    },
-    "cache": {
-      "key": "{{Options.api_key}}-{{Contact.customer_number}}",
-      "ttl": "3600"
-    }
-  },
-  "call": {
-    "url": "{{Options.api_url}}/cost",
-    "headers": {
-      "Authorization": "Bearer {{AuthResponse.data.data.token}}"
-    },
-    "params": {
-      "from": "{{Scope.from}}",
-      "to": "{{Scope.to}}",
-      "interval": "{{Scope.interval}}"
-    }
-  },
-  "resolved": {
-    "dataPath": "costs"
-  }
-}
-```
+`resolved.data_path` is the path in your response under which the list of records is found.
 
 #### Template Variables
 
-Data retrieval hooks support the same template variables as any other hook, plus additional scope variables:
+Data retrieval hooks can use `Options`, `Env`, `Contact`, `PortalUser`, `Meter`, `AuthResponse`, the context entities and `Scope`, see [Template variables](#template-variables).
 
-#### Standard Variables
-
-- **`Options.*`**: Access values from the app options configured during installation
-- **`Contact.*`**: Access properties from the current portal user's contact entity
-- **`AuthResponse.*`**: Access data from the authentication response
-- **`Entity.*`**: Access data from the context entities like `Contract`.
-
-#### Scope Variables (for `call.params`)
-
-These variables are automatically provided by epilot based on the portal user's selected time range and interval:
+`Scope` is provided by epilot from the time range and interval the portal user selected. Use it in `call.params`:
 
 - **`Scope.from`**: Start timestamp of the requested time range (ISO 8601 format)
 - **`Scope.to`**: End timestamp of the requested time range (ISO 8601 format)
 - **`Scope.interval`**: Selected time interval (ISO 8601 duration format, e.g., `"PT1H"` for hourly)
-
 
 #### Best Practices
 
@@ -349,7 +282,7 @@ A `visualizationMetadata` hook is looked up implicitly per extension (one per ex
 The metadata response has three optional fields:
 
 - **`type_options`**: the series advertised for this context. Each option's `id` matches the `type` field on the data hook records. Options also carry a localized `label`, an `aggregation_group`, a `statistical_method`, a `unit`, a Spark `color`, and a display `precision`.
-- **`intervals`**: the intervals supported for this context (`PT15M`, `PT1H`, `P1D`, `P1M`). Prefer this over the now-deprecated `intervals` field on the data-retrieval hooks, so the supported intervals can vary per meter/contract.
+- **`intervals`**: the intervals supported for this context (`PT15M`, `PT1H`, `P1D`, `P1M`, `P1Y`, or `custom` for period-based records that carry the period they cover). Prefer this over the now-deprecated `intervals` field on the data-retrieval hooks, so the supported intervals can vary per meter/contract.
 - **`data_range`**: the earliest (`from`) and latest (`to`) timestamps for which data is available, used to bound the date picker.
 
 The `statistical_method` on each type both describes the aggregation already applied to that type's data and dictates the chart shape:
@@ -392,7 +325,7 @@ Because the method is per-type, a single visualization can mix bar-shaped and li
 ```
 
 :::note
-`use_static_ips` is deprecated on all hook types — prefer `secure_proxy` (route requests through the ERP Integration secure proxy by setting `integration_id` and `use_case_slug`). The `resolved.dataPath` field has also been renamed to `resolved.data_path`; the old name still works but is deprecated.
+`use_static_ips` is deprecated on the hook types that have it — prefer `secure_proxy` (route requests through the ERP Integration secure proxy by setting `integration_id` and `use_case_slug`). The `resolved.dataPath` field has also been renamed to `resolved.data_path`; the old name still works but is deprecated.
 :::
 
 #### Examples
@@ -570,15 +503,7 @@ Any other status is treated as an error. If `resolved.error_message_path` is set
 
 #### Template Variables
 
-Data export hooks support the same variables as the data retrieval hooks:
-
-- **`Options.*`**: Access values from the app options configured during installation
-- **`Contact.*`**: Access properties from the current portal user's contact entity
-- **`PortalUser.*`**: Access properties from the current portal user
-- **`Meter.*`**: Access properties of the meter, when the export is made in a meter context
-- **`AuthResponse.*`**: Access data from the authentication response
-- **`Entity.*`**: Access data from the context entities like `Contract`
-- **`Scope.from`** / **`Scope.to`**: The time range selected by the portal user (ISO 8601 format)
+Data export hooks can use the same variables as data retrieval hooks, including `Scope.from` and `Scope.to`, see [Template variables](#template-variables).
 
 ### Data Existence Check/Retrieval
 
@@ -607,10 +532,7 @@ If no body is specified, all identifiers configured for the portal and provided 
 
 #### Template Variables
 
-Registration hooks support the standard template variables plus the identifiers context:
-
-- **`Options.*`**: Access values from the app options configured during installation
-- **`Identifiers.*`**: Access properties provided by the user to identify the entity groupped by schema
+Registration hooks can use `Options`, `Env`, `AuthResponse`, `Identifiers` and, in `call.result`, `CallResponse`, see [Template variables](#template-variables).
 
 #### Self-Assignment Hook
 
@@ -645,13 +567,7 @@ If no body is specified, all identifiers configured for the portal and provided 
 
 #### Template Variables
 
-Self-assignment hooks support the standard template variables plus the identifiers context:
-
-- **`Options.*`**: Access values from the app options configured during installation
-- **`Contact.*`**: Access properties from the current portal user's contact entity
-- **`PortalUser.*`**: Access properties from the current portal user
-- **`Identifiers.*`**: Access properties provided by the user to identify the entity groupped by schema
-- **`CallResponse.*`**: Access data from the call response (for example in `call.result`)
+Self-assignment hooks can use `Options`, `Env`, `Contact`, `PortalUser`, `AuthResponse`, `Identifiers` and `CallResponse`, see [Template variables](#template-variables).
 
 ### Data Validation
 
@@ -686,14 +602,7 @@ Use the plausibility check hook to validate meter readings before they are submi
 
 #### Template Variables
 
-Meter reading plausibility hooks support the standard template variables plus meter reading context:
-
-- **`Options.*`**: Access values from the app options configured during installation
-- **`Contact.*`**: Access properties from the current portal user's contact entity
-- **`Meter.*`**: Access properties of the meter
-- **`MeterCounter.*`**: Access properties of the meter register
-- **`Reading.*`**: Access properties of the submitted reading
-- **`CallResponse.*`**: Access data from the call response
+Meter reading plausibility hooks can use `Options`, `Env`, `Contact`, `PortalUser`, `Meter`, `MeterCounter`, `Reading`, the context entities and `CallResponse`, see [Template variables](#template-variables).
 
 ### Account Management
 
@@ -815,12 +724,8 @@ If no body is specified, `{ "portal_user_id": "...", "contact_id": "...", "email
 
 #### Template Variables
 
-Account management hooks support the standard template variables plus the request input:
+Account management hooks can use `Options`, `Env`, `Contact`, `PortalUser`, `AuthResponse` and `Input`, see [Template variables](#template-variables).
 
-- **`Options.*`**: Access values from the app options configured during installation
-- **`Contact.*`**: Access properties from the current portal user's contact entity
-- **`PortalUser.*`**: Access properties from the current portal user
-- **`AuthResponse.*`**: Access data from the authentication response
-- **`Input.*`**: Values entered by the portal user — `Input.new_email` and `Input.old_email` for the change email hook, `Input.new_password` for the change password hook (only with `require_new_password: true`)
+`Input` holds the values entered by the portal user: `Input.new_email` and `Input.old_email` for the change email hook, `Input.new_password` for the change password hook (only with `require_new_password: true`).
 
 For questions about portal extensions, [contact our developer support team](https://developers.epilot.cloud/contact).

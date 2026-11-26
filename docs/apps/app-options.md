@@ -1,7 +1,7 @@
 ---
 title: App Options
 hide_title: true
-sidebar_position: 5
+sidebar_position: 7
 ---
 
 # App Options
@@ -102,20 +102,24 @@ Rules are checked in the configuration UI as the installer types and again by th
 | `min`, `max` | `number` | Smallest and largest accepted value |
 
 ```json
-{
-  "key": "api_host",
-  "type": "text",
-  "required": true,
-  "format": "hostname",
-  "placeholder": "api.example.com"
-},
-{
-  "key": "customer_no",
-  "type": "text",
-  "pattern": "[A-Z]{2}\\d{6}",
-  "pattern_message": { "de": "Zwei Großbuchstaben und sechs Ziffern", "en": "Two capital letters and six digits" }
-}
+[
+  {
+    "key": "api_host",
+    "type": "text",
+    "required": true,
+    "format": "hostname",
+    "placeholder": "api.example.com"
+  },
+  {
+    "key": "customer_no",
+    "type": "text",
+    "pattern": "[A-Z]{2}\\d{6}",
+    "pattern_message": { "de": "Zwei Großbuchstaben und sechs Ziffern", "en": "Two capital letters and six digits" }
+  }
+]
 ```
+
+The manifest itself is validated too: `pattern_message` needs a `pattern`, and `min` must not be larger than `max`.
 
 A few things to know:
 
@@ -175,7 +179,7 @@ Arrange options into sections with a top-level `option_groups` array and a `grou
 }
 ```
 
-Options without a group are shown first, followed by one section per group in the order the groups are declared. Group keys must be unique, and an option may only name a declared group.
+Options without a group are shown first, followed by one section per group in the order the groups are declared. Every group needs a `key` and a `label`. Group keys must be unique, and an option may only name a declared group.
 
 ## Translated texts
 
@@ -216,7 +220,7 @@ Where the configured values show up, by surface:
 | [Portal Extension](/docs/apps/components/portal-extension) / [External Product Catalog](/docs/apps/components/external-product-catalog) hooks | `{{Options.api_key}}` template variables — resolved server-side when the hook fires | ✓ |
 | [Functions](/docs/apps/functions/writing-functions) | `input.app_options` contains **all** option values — functions always run server-side | ✓ |
 | Custom Capability, Custom Page, Flow Action Config (App Bridge surfaces) | [`getOptions()`](/docs/apps/app-surfaces#reading-app-options) from `@epilot/app-bridge` | Non-sensitive only |
-| Custom Journey Block, Custom Portal Block | Options are passed into your component per its surface contract | Non-sensitive only |
+| Custom Journey Block, Custom Portal Block | Options are passed into your component per its surface contract. List the keys a component needs in its `uses_options` to narrow what it receives (a scoping hint, not a security boundary) | Non-sensitive only |
 
 Every consumer receives the **effective** value of an option: what the organization configured, or the declared [`default`](#defaults) if nothing is set.
 

@@ -1,7 +1,7 @@
 ---
 title: App CLI
 hide_title: true
-sidebar_position: 6
+sidebar_position: 8
 ---
 
 # The App CLI
@@ -23,60 +23,71 @@ epilot auth login              # browser-based login
 epilot auth login --token …    # or paste a token
 ```
 
-Every `app` command also accepts `--token` / the `EPILOT_TOKEN` env var, and `--profile` for switching between accounts. Use `--server https://app.dev.sls.epilot.io` to target a non-production environment.
+Commands that talk to the platform (`deploy`, `dev`, `export`, `versions`, `review`, `api`) also accept `--token` / the `EPILOT_TOKEN` env var, and `--profile` for switching between accounts. Use `--server https://app.dev.sls.epilot.io` to target a non-production environment.
+
+Commands that work on the local project read `manifest.json` from the current directory. Pass `--path` to point them at another manifest.
 
 ## Commands
 
-### `epilot app init <name>`
+### `epilot app init [name]`
 
-Scaffolds a new app project: a monorepo with `manifest.json`, `components/`, Turborepo config and a `SKILL.md` that teaches AI coding agents how to work with the project.
+Scaffolds a new app project: a monorepo with `manifest.json`, `package.json`, `components/`, Turborepo config and a README. Without a name the project is called `my-epilot-app`.
 
 ### `epilot app add-component <name> --type <TYPE>`
 
 Adds a component package under `components/<name>/` from a template and registers it in the manifest. Types: `CUSTOM_CAPABILITY`, `CUSTOM_PAGE`, `CUSTOM_JOURNEY_BLOCK`, `CUSTOM_PORTAL_BLOCK`, `CUSTOM_FLOW_ACTION_FUNCTION` (flow action running a workflow function), `CUSTOM_FLOW_ACTION_EXTERNAL` (webhook), `PORTAL_EXTENSION`, `EXTERNAL_PRODUCT_CATALOG`, `API_PROXY`.
 
-### `epilot app add-function <name> [--type workflow|scheduled] [--schedule "<expr>"] [--label "<text>"]`
+For `CUSTOM_CAPABILITY`, `--capability-type tab|group|widget` chooses where the capability appears on an entity.
 
-Adds a server-side [function](/docs/apps/functions/overview) under `functions/<name>/` and registers it in the manifest. `--schedule` implies `--type scheduled`. Workflow functions are wired into the flow builder via a `CUSTOM_FLOW_ACTION` component that references them (`add-component … --type CUSTOM_FLOW_ACTION_FUNCTION`).
+### `epilot app add-function <name> [--type workflow|scheduled] [--schedule "<expr>"] [--timezone "<tz>"] [--label "<text>"]`
+
+Adds a server-side [function](/docs/apps/functions/overview) under `functions/<name>/` and registers it in the manifest. `--schedule` implies `--type scheduled`; `--timezone` sets the IANA timezone for a cron schedule (default `Europe/Berlin`). Workflow functions are wired into the flow builder via a `CUSTOM_FLOW_ACTION` component that references them (`add-component … --type CUSTOM_FLOW_ACTION_FUNCTION`).
 
 ```bash
 epilot app add-function reserve-slot --type workflow
 epilot app add-function nightly-sync --schedule "0 3 * * *"
 ```
 
-### `epilot app remove-component <name>`
+### `epilot app remove-component <name> [--keep-files]`
 
-Removes a component from the manifest (and optionally its directory).
+Removes a component from the manifest and deletes its directory. Pass `--keep-files` to keep the directory.
 
 ### `epilot app validate`
 
-Validates `manifest.json` locally with the same rules the platform enforces on deploy — schema shape, function types, schedule expressions (minimum interval, format), counts. Run it in CI.
+Validates `manifest.json` locally — required fields, component and function types, schedule expressions (minimum interval, format), counts. Run it in CI. It catches the common mistakes before a deploy; the platform runs the full schema validation when you deploy.
 
-### `epilot app deploy [--dry-run] [--new-version]`
+### `epilot app deploy [--dry-run] [--new-version] [--changelog "<text>"]`
 
 The sync command. It:
 
 1. creates the app on first deploy (writes `app_id` back into the manifest),
-2. updates metadata, permissions and blueprint references,
-3. inlines each function's built `handler` as code and uploads function config UIs,
-4. uploads component bundles/zips and upserts all components,
-5. deletes remote components/functions that are no longer in the manifest,
-6. creates a new version automatically when the latest one is published (published versions are immutable),
-7. re-syncs your own org's installation if the app is installed there.
+2. updates metadata, the logo, permissions and blueprint references,
+3. inlines each function's built `handler` as code,
+4. syncs app-level options and option groups,
+5. uploads component bundles/zips and upserts all components,
+6. deletes remote components that are no longer in the manifest (functions, options and option groups are only replaced when the manifest contains that key),
+7. creates a new version automatically when the latest one is published (published versions are immutable),
+8. re-syncs your own org's installation if the app is installed there.
 
-`--dry-run` prints what would change without touching anything.
+`--dry-run` prints what would change without touching anything. `--changelog` (`-m`) describes what a new version changes, up to 250 characters.
 
-### `epilot app dev`
+### `epilot app dev [--component <name>] [--url <url>] [--off]`
 
-Local development loop — serve components locally and preview them in epilot via [development mode](/docs/apps/development-mode) without deploying.
+Local development loop — serve a component from localhost and preview it in epilot via [development mode](/docs/apps/development-mode) without deploying. `--component` (`-c`) picks the component to override, `--url` (`-u`) the URL it is served from, and `--off` switches development mode off again and removes the override.
 
-### `epilot app export`
+### `epilot app export --app-id <id> [--version <version>] [-o <file>]`
 
-Reconstructs a local `manifest.json` from a deployed app — useful for migrating an app that was originally created in the UI to the CLI workflow.
+Reconstructs a local `manifest.json` from a deployed app — useful for migrating an app that was originally created in the UI to the CLI workflow. Exports the latest version unless you pass `--version`.
 
 ### `epilot app versions` / `epilot app review`
 
 List an app's versions, and submit a version for [marketplace review](/docs/apps/publishing/verification-process).
+
+```bash
+epilot app review --technical-contact dev@example.com --marketing-contact marketing@example.com
+```
+
+`review` needs both contacts. `--demo-url` adds a link to a demo, and `--version` picks the version (default: latest).
 
 ### `epilot app api <operation>`
 
