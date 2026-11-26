@@ -88,6 +88,8 @@ Set `payload_format` on the inbound use case's `configuration`:
 - File imports cannot use 2.0. An import maps each row of the file as it is, so an import template with `"payload_format": "2.0"` is refused when it is saved (`mapping: an import template cannot use payload format 2.0`), and a file import does not offer inbound use cases on 2.0.
 - Like any configuration change, a new payload format can take up to **5 minutes** to take effect for incoming events.
 
+In the Integration Hub, the option is **Payload format** on the inbound use case's **General** card, below **Interactive processing**. **Edit** opens a dialog with **1.0 · As received**, the default, and **2.0 · Envelope**; the choice is saved with the use case. The row is not shown for a use case in direct mode.
+
 ## Match the Entity a Managed Call Was Made For
 
 A managed call is often made for one entity: check a company register for an account, look up a credit score for a contact, fetch the current state of a contract. When the response is routed to an inbound use case, that use case has to find the entity again.
@@ -218,6 +220,8 @@ A managed call puts its request on the event it queues only when the inbound use
 ## Simulate the Mapping
 
 The v2 mapping simulation reads `payload_format` from the `event_configuration` it is given and builds the same root as live processing. To simulate the response of a managed call, pass the request it answers as `original_request`. It becomes the `original_request` of the root with payload format 2.0, and is ignored with 1.0.
+
+In the Integration Hub, the use case's **Test** tab shows an **Original request (optional)** field below the input event when the mapping under test has payload format 2.0. It takes a JSON object and is sent as `original_request`.
 
 ```bash title="Simulate the register lookup"
 curl -X POST 'https://integration-toolkit.sls.epilot.io/v2/erp/updates/mapping_simulation' \
