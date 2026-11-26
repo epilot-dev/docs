@@ -68,7 +68,7 @@ Some examples:
 
 The text in `raw` is passed on as it was received. It is not parsed, so XML is read with JSONata's string functions, as in the [example below](#match-the-entity-a-managed-call-was-made-for).
 
-The event itself is not changed. Monitoring shows the payload as it arrived; only the input of the mapping is built from it.
+The event itself is not changed. Monitoring shows the payload as it arrived; only the input of the mapping is built from it. A [replayed](../monitoring/investigating.md#replaying-events) event is mapped with the same envelope as the first time.
 
 ## Set the Payload Format
 
@@ -200,8 +200,6 @@ kind = "raw" and $contains(raw, "<Status>FOUND</Status>")
 - **The text is not decoded.** An XML escape such as `&amp;` stays `&amp;` in the value. Replace the escapes the API uses, for example with `$replace(…, "&amp;", "&")`.
 - **An id that no longer exists creates an entity.** If no `account` has the id from `original_request`, for example because it was deleted after the call was made, the update creates a new account.
 - **Only successful responses are routed.** A response with a status of `400` or above is returned to the caller of the managed call as an error, and nothing reaches the inbound use case.
-- **A replayed response has no request.** A managed call's inbound event that is [replayed](../monitoring/investigating.md#replaying-events) from monitoring is processed like a pushed event with the payload it arrived with: `original_request` is `null`, and a text response arrives as `{ "kind": "object", "body": { "raw": "…" } }`. Execute the managed call again instead of replaying its event.
-
 ## Move a Use Case from 1.0 to 2.0
 
 With 2.0 the payload is one level deeper, so a 1.0 mapping has to be adapted:
