@@ -24,7 +24,7 @@ A use case that receives JSON objects pushed to the inbound API gains nothing fr
 
 The mapping gets the event's payload as it came:
 
-- **An event pushed to the inbound API:** its parsed JSON.
+- **An event pushed to the inbound API:** its parsed JSON. A payload sent with format `json` that does not parse is refused when it is sent.
 - **A managed call's response:** the external API's JSON object or array as it came back. Anything else, such as XML, plain text, an empty body or a JSON number, is wrapped as `{ "raw": <value> }`.
 
 With a managed call, the shape of the root therefore depends on what the API answered on each call. The request the response belongs to is not available to the inbound mapping at all. Only the managed call's own `response_mapping` sees it, as `original_request`, and the output of that mapping goes back to the caller of the managed call, not to the inbound use case.
@@ -68,6 +68,8 @@ Some examples:
 
 The text in `raw` is passed on as it was received. It is not parsed, so XML is read with JSONata's string functions, as in the [example below](#match-the-entity-a-managed-call-was-made-for).
 
+Text sent to the inbound API with format `json` that does not parse is accepted with 2.0, as `raw`, where 1.0 refuses it. A 2.0 mapping that expects JSON should therefore check `kind` before it reads `body`, for example with the entity-level `"jsonataExpression": "kind = \"object\" ? body"`, which writes nothing for an event that is not a JSON object.
+
 The event itself is not changed. Monitoring shows the payload as it arrived; only the input of the mapping is built from it. A [replayed](../monitoring/investigating.md#replaying-events) event is mapped with the same envelope as the first time.
 
 ## Set the Payload Format
@@ -83,6 +85,7 @@ Set `payload_format` on the inbound use case's `configuration`:
 
 - The option is optional, and absent means `1.0`. The API does not write a default into a stored configuration, so a configuration without the option reads back without it. An explicit `"1.0"` is stored as sent.
 - It applies to mapped use cases. A use case in [Direct Mode](./direct-mode.md) (`direct: true`) has no mapping and ignores it.
+- File imports cannot use 2.0. An import maps each row of the file as it is, so an import template with `"payload_format": "2.0"` is refused when it is saved (`mapping: an import template cannot use payload format 2.0`), and a file import does not offer inbound use cases on 2.0.
 - Like any configuration change, a new payload format can take up to **5 minutes** to take effect for incoming events.
 
 ## Match the Entity a Managed Call Was Made For
@@ -204,11 +207,13 @@ kind = "raw" and $contains(raw, "<Status>FOUND</Status>")
 
 With 2.0 the payload is one level deeper, so a 1.0 mapping has to be adapted:
 
-- **JSON payloads:** the fields of a JSON object or array move under `body`. Either prefix the paths and expressions with `body.` (for example `body.customerNumber`, or `body.meters` in an entity-level expression that selects an array), or, for an entity without an entity-level `jsonataExpression` of its own, add `"jsonataExpression": "body"`. That restores the old root for the entity's fields for JSON objects.
+- **JSON payloads:** the fields of a JSON object or array move under `body`. Either prefix the paths and expressions with `body.` (for example `body.customerNumber`, or `body.meters` in an entity-level expression that selects an array), or, for an entity without an entity-level `jsonataExpression` of its own, add one that restores the old root for the entity's fields: `"jsonataExpression": "body"`, or `"jsonataExpression": "kind = \"object\" ? body"` to also skip an event that is not a JSON object.
 - **Meter readings:** the `jsonataExpression` of each `meter_readings` entry reads the root as well, so it needs the `body.` prefix too.
 - **Text and XML from a managed call:** already under `raw` with 1.0 (`{ "raw": <value> }`), and still under `raw` with 2.0. An expression that reads `raw` keeps working; add a `kind = "raw"` check where the API can also answer with JSON or an empty body.
 
 Change `payload_format` and the mapping in the same save. Both are part of the use case configuration, so an event is always mapped with a payload format and a mapping that belong together. Try the new mapping with the [mapping simulation](#simulate-the-mapping) first.
+
+A managed call puts its request on the event it queues only when the inbound use case it routes to is on 2.0. A response queued while the use case was still on 1.0 and processed after the switch has no request, and is read like a pushed event: `original_request` is `null`, and a text response is `kind` `object` with `body` `{ "raw": "…" }`. Switch when no managed calls are in flight, or expect the first events after the switch to read like pushed events.
 
 ## Simulate the Mapping
 
