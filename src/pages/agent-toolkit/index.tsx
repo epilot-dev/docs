@@ -3,6 +3,7 @@ import Layout from '@theme/Layout';
 import React, { useState } from 'react';
 
 import { ChatGPTIcon, ClaudeIcon, CodexIcon, PlugTabIcon } from '../../components/ClientIcons';
+
 import styles from './styles.module.css';
 
 type InstallTarget = 'claude' | 'openai' | 'other';

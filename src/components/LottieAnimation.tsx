@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import React, { useEffect, useRef } from 'react';
 
 type Props = {
   /** Path to the Lottie JSON below /static, e.g. "/animations/agent-toolkit-facade.json" */
@@ -24,30 +24,28 @@ export default function LottieAnimation({ src, ariaLabel, maxWidth = 960 }: Prop
     let observer: IntersectionObserver | null = null;
     let cancelled = false;
 
-    Promise.all([import('lottie-web'), fetch(url).then((r) => r.json())]).then(
-      ([lottieModule, animationData]) => {
-        if (cancelled) return;
-        const lottie = lottieModule.default;
-        animation = lottie.loadAnimation({
-          container,
-          renderer: 'svg',
-          loop: true,
-          autoplay: false,
-          animationData,
-        });
-        observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (!animation) return;
-              if (entry.isIntersecting) animation.play();
-              else animation.pause();
-            });
-          },
-          { threshold: 0.25 }
-        );
-        observer.observe(container);
-      }
-    );
+    Promise.all([import('lottie-web'), fetch(url).then((r) => r.json())]).then(([lottieModule, animationData]) => {
+      if (cancelled) return;
+      const lottie = lottieModule.default;
+      animation = lottie.loadAnimation({
+        container,
+        renderer: 'svg',
+        loop: true,
+        autoplay: false,
+        animationData,
+      });
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!animation) return;
+            if (entry.isIntersecting) animation.play();
+            else animation.pause();
+          });
+        },
+        { threshold: 0.25 },
+      );
+      observer.observe(container);
+    });
 
     return () => {
       cancelled = true;

@@ -2,6 +2,7 @@ import Tabs from '@theme/Tabs';
 import React, { Children, isValidElement } from 'react';
 
 import { ChatGPTIcon, ClaudeIcon, CodexIcon, PlugTabIcon } from '../ClientIcons';
+
 import styles from './styles.module.css';
 
 /**
@@ -28,6 +29,7 @@ export default function ClientTabs({ children }: { children: React.ReactNode }):
     .map((child) => {
       const { value, label } = child.props;
       const Icon = icons[value];
+
       return {
         value,
         label: (

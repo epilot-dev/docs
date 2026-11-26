@@ -28,7 +28,7 @@ When you clone a version, you create a new version of your app that is based on 
 
 A new version is basically a snapshot of the existing version. You can make changes to the new version without affecting the original version. This allows you to experiment with new features, fix bugs, or make other improvements without impacting users who have already installed your app.
 
-The newly created version is marked as a private version and is only visible to you and your organization. This allows you to test the changes thoroughly before making the version public.
+The newly created version is marked as a private version and is only visible to your organization and the [organizations connected to it](/docs/apps/getting-started/private-vs-public#private-apps-in-connected-organizations), such as your sandboxes. This allows you to test the changes thoroughly before making the version public.
 
 To make this version public, you need to request a review and follow the verification process. Once the new version is approved, it becomes available to all epilot customers in the marketplace.
 

@@ -26,9 +26,31 @@ When you first create an app on epilot, it begins as a private app with an initi
 - Build and test your app components without affecting other organizations
 - Make frequent iterative changes during development
 - Configure all aspects of your app until it meets your requirements
-- Install and test the app within your own organization exclusively
+- Install and test the app within your own organization and the organizations connected to it
 
-During this stage, your app remains completely invisible to other epilot customers and cannot be installed outside your organization. This isolation allows for risk-free experimentation and thorough testing.
+During this stage, your app remains completely invisible to other epilot customers and cannot be installed by them. The only organizations that can install a private app besides its owner are the ones [connected to the owner](#private-apps-in-connected-organizations), such as its sandboxes. This isolation allows for risk-free experimentation and thorough testing.
+
+## Private Apps in Connected Organizations
+
+Many apps are built for one company only and are never published. Such an app still has to move between that company's own organizations, for example from a sandbox, where it is tested, to production.
+
+A private app can therefore be installed in every organization that is **connected to the app's owner by a sandbox pipeline**: a production organization and each of its [sandboxes](/docs/blueprints/sandboxes). You don't have to share or publish anything.
+
+In a connected organization:
+
+- Every version of the app is available, including private ones.
+- The app is installed like any other app, and you choose which version it runs.
+- The app runs the code and assets of the owner organization. Each organization keeps its own option values.
+
+This is what lets you sync an installed private app with the Configuration Hub: select the app in the source organization and sync it to a connected organization. The target ends up on the same version as the source.
+
+:::info
+Only direct connections count. A private app owned by a production organization is available in all of its sandboxes, and an app owned by a sandbox is available in its production organization. Two sandboxes of the same production organization are not connected to each other.
+:::
+
+If two organizations are disconnected later, an app that is already installed keeps working on the version it has installed. It can no longer be moved to another private version or installed again.
+
+As long as another organization has a version of your app installed, you cannot delete that version, and you cannot delete the app.
 
 ## The Review Process: Gateway to Public Release
 

@@ -106,7 +106,7 @@ This is precisely why epilot provides dedicated sandbox accounts—isolated envi
 
 Your initial app development takes place in a protected environment:
 
-1. **Private Stage**: Your app is only available for installation within your sandbox account
+1. **Private Stage**: Your app is only available for installation within your sandbox account and the [organizations connected to it](/docs/apps/getting-started/private-vs-public#private-apps-in-connected-organizations)
 2. **Review Process**: When ready, submit your app for a formal review
 3. **Public Launch**: After approval, your app becomes available to the entire epilot community
 
