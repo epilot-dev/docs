@@ -70,6 +70,8 @@ If you know the epilot entity ID, bypass the search:
 
 This directly fetches the entity without Elasticsearch search.
 
+This is also how the inbound use case behind a [managed call](../configuration.md#managed-call-use-cases) updates the entity the call was made for: send the entity's `_id` with the call, and with [payload format 2.0](./payload-format.md#match-the-entity-a-managed-call-was-made-for) map `_id` from `original_request`. The match then does not depend on the external API echoing an identifier back.
+
 ### Email Lookup
 
 Email fields require special handling since they're stored as arrays:

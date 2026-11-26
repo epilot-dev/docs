@@ -12,6 +12,8 @@ Mapping defines how ERP data transforms into epilot entities. This page covers t
 If your middleware already produces entity-shaped payloads, you can skip mapping entirely — see [Direct Mode](./direct-mode.md).
 :::
 
+The examples on this page read the event's payload at the root, which is what a use case gets by default. With [payload format](./payload-format.md) `2.0` the root is always `{ kind, body, raw, original_request }` instead, and a JSON payload's fields are under `body`.
+
 ## Mapping Configuration
 
 A mapping configuration consists of one or more entity definitions:
@@ -810,6 +812,7 @@ Transform and validate in one expression:
 
 ## Next Steps
 
+- [Payload Format](./payload-format.md) - What the root of the mapping is, and mapping a managed call's response with its request
 - [Unique Identifiers](./unique-identifiers.md) - Advanced entity lookup strategies
 - [Relations](./relations.md) - Link entities together
 - [Pricing](./pricing.md) - Map ERP line items and calculate prices
