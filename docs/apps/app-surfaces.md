@@ -190,6 +190,42 @@ async function main() {
 
 Requires `@epilot/app-bridge` 0.3.0 or later.
 
+### Saving App Options
+
+A [Custom Page](/docs/apps/components/custom-page) can save app options of its own installation, which is how an app offers its own configuration UI for [hidden options](/docs/apps/app-options#hidden-options). The page asks the epilot host, and the host saves on behalf of the signed-in user:
+
+```typescript title="Saving app options"
+function saveOptions(values: Record<string, unknown>): Promise<Record<string, unknown>> {
+  return new Promise((resolve, reject) => {
+    const requestId = crypto.randomUUID();
+
+    const onMessage = (message: MessageEvent) => {
+      const data = message.data;
+      if (message.source !== window.parent) return;
+      if (data?.source !== 'app-bridge' || data.event !== 'app-bridge:set-options:result') return;
+      if (data.requestId !== requestId) return;
+      window.removeEventListener('message', onMessage);
+      if (data.ok) resolve(data.options);
+      else reject(new Error(data.error));
+    };
+
+    window.addEventListener('message', onMessage);
+    window.parent.postMessage(
+      { source: 'app-bridge', event: 'app-bridge:set-options', requestId, values },
+      '*',
+    );
+  });
+}
+
+const options = await saveOptions({ connections: [{ name: 'Main', url: 'https://example.com' }] });
+```
+
+- `values` maps option keys to their new values. **Options you do not name keep their value.** `null` clears an option.
+- Only app-level options your app declares can be set, and every value is checked against the option's [rules](/docs/apps/app-options#validating-values).
+- The answer carries the options as your app may read them afterwards, in the same shape as `getOptions()`.
+- On failure `error` is `forbidden` (the user may not configure apps), `invalid` (unknown option or a value that breaks a rule) or `failed`.
+- The user needs the permission to install and configure apps. Your app's own token cannot write options.
+
 ---
 
 ## Entity Surface Implementation

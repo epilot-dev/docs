@@ -43,6 +43,7 @@ Add a top-level `options` array to your `manifest.json`:
 | `visible_if` | — | Show the option only while other options have certain values — see [Conditional options](#conditional-options) |
 | `group` | — | Section the option is shown under — see [Groups](#groups) |
 | `sensitive` | — | Write-only, server-side only — see below. Always `true` for `type: secret` |
+| `hidden` | — | Not shown in the **App settings** card: your app sets the value from its own page — see [Hidden options](#hidden-options) |
 | `repeatable` | — | The value becomes a list of entries (each gets a stable server-assigned `id`) |
 | `fields` | `object` type | Declares the sub-fields of an `object` option — primitives only, no nesting |
 
@@ -180,6 +181,41 @@ Arrange options into sections with a top-level `option_groups` array and a `grou
 ```
 
 Options without a group are shown first, followed by one section per group in the order the groups are declared. Every group needs a `key` and a `label`. Group keys must be unique, and an option may only name a declared group.
+
+## Hidden options
+
+An option declared `hidden: true` is left out of the **App settings** card. The installing organization does not fill it in there; your app sets it from its own [Custom Page](/docs/apps/components/custom-page), through the epilot host. Everything else stays the same: the value is stored with the installation, applies to the whole organization, follows the option's rules, and reaches every consumer listed under [Consuming options](#consuming-options).
+
+```json title="manifest.json"
+{
+  "options": [
+    {
+      "key": "connections",
+      "type": "object",
+      "repeatable": true,
+      "hidden": true,
+      "fields": [
+        { "key": "name", "type": "text" },
+        { "key": "url", "type": "text" },
+        { "key": "default_layers", "type": "text" }
+      ]
+    }
+  ]
+}
+```
+
+Use a hidden option when the generic settings form is not enough for the job:
+
+- **A configuration page of your own.** A form that only shows the fields that apply, checks a connection before saving, or lets the admin pick from values your app loads from the external system instead of typing technical names.
+- **Lists that need more than rows of inputs.** A `repeatable` `object` option shows up in **App settings** as a plain list of fields. Hidden, the same list can be edited in a dialog with validation, status per entry and a preview.
+- **One place for settings.** If your app has a configuration page, hide the options it manages so that admins do not find the same setting in two places.
+- **Values the app maintains itself.** A setting that results from a setup step in your app, such as the id of a resource the admin selected.
+
+Your page reads the current value with [`getOptions()`](/docs/apps/app-surfaces#reading-app-options) and saves a new one as described in [Saving app options](/docs/apps/app-surfaces#saving-app-options).
+
+- **Do not combine `hidden` with `required`.** The settings card cannot ask for a hidden option, so the installation would stay disabled until your page has saved a value. Handle the "not set up yet" state in your app instead.
+- **Hidden is not secret.** A hidden, non-sensitive option is still readable in the browser, like any other non-sensitive option. Use `type: secret` or `sensitive: true` for values that must stay server-side.
+- **Saving needs permission.** The host saves with the permissions of the signed-in user. A user who may not configure apps can open your page but not save.
 
 ## Translated texts
 
