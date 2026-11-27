@@ -100,7 +100,7 @@ Managed Calls enable synchronous API calls to external partner systems with buil
 Key capabilities:
 - **Authentication** — OAuth2 client credentials, API key, or bearer token with automatic token management
 - **JSONata mapping** — Transform request and response payloads using JSONata expressions
-- **Inbound routing** — Optionally queue the response to the inbound pipeline for async entity processing
+- **Inbound routing** — Optionally queue the response to the inbound pipeline for async entity processing. With [payload format 2.0](./inbound/payload-format.md), the inbound mapping also gets the request the call was made with
 - **Secure proxy support** — Route calls through a static IP or VPN connection when needed
 
 See the [Configuration Guide](./configuration.md#managed-call-use-cases) for setup details.

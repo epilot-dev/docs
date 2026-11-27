@@ -137,6 +137,7 @@ Beyond the mapping itself, an inbound use case's `configuration` accepts the fol
 |--------|--------|---------|-------------|
 | `direct` | boolean | `false` | Skip the mapping engine and accept entity-shaped payloads. See [Direct Mode](./inbound/direct-mode.md). |
 | `interactive` | `disabled`, `on_request`, `always` | `disabled` | Whether events of this use case may be processed on the interactive lane, so that an end customer can wait for them. See [Interactive Inbound](./interactive-inbound.md#allow-interactive-processing). |
+| `payload_format` | `"1.0"`, `"2.0"` | `"1.0"` | What the root (`$`) of the use case's mappings is. `1.0` is the event's payload as it came; `2.0` is always `{ kind, body, raw, original_request }`, which also carries the request of a managed call. See [Payload Format](./inbound/payload-format.md). |
 
 ```json title="Allow the request to decide"
 {
@@ -301,6 +302,7 @@ Everything beyond the configuration contract — the polling and acknowledgement
 
 ```json
 {
+  "payload_format": "1.0 | 2.0",
   "entities": [
     {
       "entity_schema": "string",
@@ -426,7 +428,7 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/integrations/{integra
           "Accept": "application/json"
         }
       },
-      "response_mapping": "{ \"name\": data.full_name, \"email\": data.contact.email }",
+      "response_mapping": "{ \"name\": response.data.full_name, \"email\": response.data.contact.email }",
       "inbound_use_case_slug": "sync-customer"
     }
   }'
@@ -471,8 +473,8 @@ curl -X POST 'https://integration-toolkit.sls.epilot.io/v1/managed-call/get-cust
 | `operation.headers` | No | Additional request headers |
 | `operation.query_params` | No | Query parameters |
 | `request_mapping` | No | JSONata expression to transform the request body before sending |
-| `response_mapping` | No | JSONata expression to transform the response before returning |
-| `inbound_use_case_slug` | No | Slug of an inbound use case to route the response to for async entity processing |
+| `response_mapping` | No | JSONata expression to transform the response before returning. Its input is `{ "response": <the external API's response>, "original_request": <the payload the call was executed with> }`, and its output is what the caller gets back |
+| `inbound_use_case_slug` | No | Slug of an inbound use case to route the response to for async entity processing. What that use case's mapping reads is set by its [payload format](./inbound/payload-format.md): with `2.0` it gets the response together with the request the call was executed with, so it can update the entity the call was made for even when the response does not name it |
 
 ### Connector Authentication
 
