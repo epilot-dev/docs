@@ -1,0 +1,762 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "_schema"
+  ],
+  "properties": {
+    "_schema": {
+      "readOnly": true,
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "example": "bundle_contract",
+      "description": "URL-friendly identifier for the entity schema"
+    },
+    "_id": {
+      "readOnly": true,
+      "type": "string",
+      "format": "uuid",
+      "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "description": "Unique identifier for the entity"
+    },
+    "_org": {
+      "type": "string",
+      "description": "Organization Id the entity belongs to",
+      "readOnly": true,
+      "example": "123"
+    },
+    "_title": {
+      "readOnly": true,
+      "type": "string",
+      "nullable": true,
+      "example": "Entity Title",
+      "description": "Generated title for the entity based on schema title_template"
+    },
+    "_tags": {
+      "type": "array",
+      "nullable": true,
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "family:label"
+      ],
+      "description": "Entity Labels"
+    },
+    "_purpose": {
+      "$ref": "#/definitions/PurposeAttribute",
+      "description": "Purposes"
+    },
+    "contract_name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Contract Name"
+    },
+    "contract_number": {
+      "type": "string",
+      "nullable": true,
+      "description": "Contract Number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_approval_process",
+        "approved",
+        "active",
+        "terminated",
+        "expired",
+        null
+      ],
+      "nullable": true,
+      "description": "Status"
+    },
+    "branch": {
+      "type": "string",
+      "enum": [
+        "power",
+        "gas",
+        "district_heating",
+        null
+      ],
+      "nullable": true,
+      "description": "Branch"
+    },
+    "assignee": {
+      "$ref": "#/definitions/UserRelation",
+      "description": "Assignee"
+    },
+    "external_id": {
+      "type": "string",
+      "nullable": true,
+      "description": "External ID"
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "description": "Description"
+    },
+    "last_sync_at": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "nullable": true,
+      "description": "Last Sync At"
+    },
+    "customer": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Customer"
+    },
+    "contact_persons": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Contact Persons"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "nullable": true,
+      "description": "Start Date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "nullable": true,
+      "description": "End Date"
+    },
+    "supply_start_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "nullable": true,
+      "description": "Supply Start Date"
+    },
+    "supply_end_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "nullable": true,
+      "description": "Supply End Date"
+    },
+    "auto_renewal": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Automatic Renewal"
+    },
+    "renewal_duration_amount": {
+      "type": "string",
+      "nullable": true,
+      "description": "Renewal Duration"
+    },
+    "renewal_duration_unit": {
+      "type": "string",
+      "enum": [
+        "weeks",
+        "months",
+        "years",
+        null
+      ],
+      "nullable": true,
+      "description": "Renewal Duration Unit"
+    },
+    "notice_time_amount": {
+      "type": "string",
+      "nullable": true,
+      "description": "Notice Time"
+    },
+    "notice_time_unit": {
+      "type": "string",
+      "enum": [
+        "weeks",
+        "months",
+        "years",
+        null
+      ],
+      "nullable": true,
+      "description": "Notice Time Unit"
+    },
+    "termination_date": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "nullable": true,
+      "description": "Date of Termination"
+    },
+    "termination_reason": {
+      "type": "string",
+      "nullable": true,
+      "description": "Reason For Termination"
+    },
+    "pricing_model": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "tranches",
+        "spot",
+        "fixed_band",
+        "index",
+        null
+      ],
+      "nullable": true,
+      "description": "Pricing Model"
+    },
+    "price_guarantee_until": {
+      "type": "string",
+      "format": "date",
+      "example": "2025-01-01",
+      "nullable": true,
+      "description": "Price Guarantee Until"
+    },
+    "grid_fees_handling": {
+      "type": "string",
+      "enum": [
+        "inclusive",
+        "pass_through",
+        null
+      ],
+      "nullable": true,
+      "description": "Grid Fees & Levies"
+    },
+    "product_quality": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "green_hkn",
+        "green_new_plants",
+        "regional",
+        "climate_neutral",
+        null
+      ],
+      "nullable": true,
+      "description": "Product Quality"
+    },
+    "total_volume_kwh": {
+      "type": "string",
+      "nullable": true,
+      "description": "Total Contract Volume (kWh/year, forecast)"
+    },
+    "volume_rule": {
+      "type": "string",
+      "enum": [
+        "open_supply",
+        "tolerance_band",
+        "take_or_pay",
+        null
+      ],
+      "nullable": true,
+      "description": "Volume Rule"
+    },
+    "tolerance_lower_percent": {
+      "type": "string",
+      "nullable": true,
+      "description": "Tolerance Band Lower Limit (%)"
+    },
+    "tolerance_upper_percent": {
+      "type": "string",
+      "nullable": true,
+      "description": "Tolerance Band Upper Limit (%)"
+    },
+    "tender_reference": {
+      "type": "string",
+      "nullable": true,
+      "description": "Tender Reference"
+    },
+    "tender_lot": {
+      "type": "string",
+      "nullable": true,
+      "description": "Tender Lot"
+    },
+    "billing_account": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Billing Account"
+    },
+    "billing_address": {
+      "$ref": "#/definitions/BaseRelationRef",
+      "description": "Billing Address"
+    },
+    "payment": {
+      "$ref": "#/definitions/BaseRelationRef",
+      "description": "Payment Details"
+    },
+    "invoice_mode": {
+      "type": "string",
+      "enum": [
+        "collective",
+        "individual",
+        null
+      ],
+      "nullable": true,
+      "description": "Invoice Mode"
+    },
+    "billing_period": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "every_quarter",
+        "yearly",
+        null
+      ],
+      "nullable": true,
+      "description": "Billing Period"
+    },
+    "payment_term_days": {
+      "type": "string",
+      "nullable": true,
+      "description": "Payment Term (Days)"
+    },
+    "expected_delivery_points": {
+      "type": "string",
+      "nullable": true,
+      "description": "Expected Delivery Points"
+    },
+    "delivery_point_notice_weeks": {
+      "type": "string",
+      "nullable": true,
+      "description": "Delivery Point Notice Period (Weeks)"
+    },
+    "metering_included": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Metering Included"
+    },
+    "contracts": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Contracts"
+    },
+    "workflows": {
+      "$ref": "#/definitions/WorkflowOverview"
+    },
+    "_files": {
+      "$ref": "#/definitions/BaseRelation"
+    },
+    "_created_at": {
+      "readOnly": true,
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Timestamp of entity creation"
+    },
+    "_updated_at": {
+      "readOnly": true,
+      "type": "string",
+      "format": "date-time",
+      "nullable": true,
+      "description": "Timestamp of entity last update"
+    },
+    "_owners": {
+      "type": "array",
+      "readOnly": true,
+      "items": {
+        "description": "The user / organization owning this entity.\n\nNote: Owner implicitly has access to the entity regardless of ACLs.\n",
+        "type": "object",
+        "properties": {
+          "org_id": {
+            "type": "string",
+            "example": "123"
+          },
+          "user_id": {
+            "type": "string",
+            "example": "456"
+          }
+        },
+        "required": [
+          "org_id"
+        ]
+      }
+    },
+    "_acl": {
+      "readOnly": true,
+      "type": "object",
+      "description": "Access control list (ACL) for an entity. Defines sharing access to external orgs or users.",
+      "additionalProperties": true,
+      "properties": {
+        "view": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        },
+        "edit": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        },
+        "delete": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "org:456"
+          }
+        }
+      }
+    },
+    "_manifest": {
+      "readOnly": true,
+      "type": "array",
+      "nullable": true,
+      "description": "Blueprint ID used to create/update the entity",
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "123e4567-e89b-12d3-a456-426614174000"
+      ]
+    }
+  },
+  "definitions": {
+    "PurposeAttribute": {
+      "type": "array",
+      "description": "List of purpose ids",
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+      ]
+    },
+    "BaseUUID": {
+      "type": "string",
+      "format": "uuid",
+      "example": "123e4567-e89b-12d3-a456-426614174000"
+    },
+    "BaseTags": {
+      "type": "array",
+      "nullable": true,
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "example"
+      ]
+    },
+    "BaseRelation": {
+      "type": [
+        "object",
+        "array"
+      ],
+      "maxItems": 0,
+      "nullable": true,
+      "description": "Relation to another entity",
+      "example": {
+        "$relation": [
+          {
+            "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+            "_tags": [
+              "example"
+            ]
+          }
+        ]
+      },
+      "properties": {
+        "$relation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "_tags": {
+                "$ref": "#/definitions/BaseTags"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BaseRelationRef": {
+      "type": "object",
+      "nullable": true,
+      "description": "Reference to a specific property of another entity",
+      "properties": {
+        "$relation_ref": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "$ref": "#/definitions/BaseUUID"
+              },
+              "path": {
+                "type": "string",
+                "example": "address",
+                "description": "The property of the entity (pointed by entity_id) to be used as the reference"
+              },
+              "_tags": {
+                "$ref": "#/definitions/BaseTags"
+              },
+              "_id": {
+                "type": "string",
+                "example": "xHcOoJCa07eysJ1GaQeSb"
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserRelation": {
+      "type": "array",
+      "nullable": true,
+      "description": "Users or user groups assigned to the entity",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "user"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "org_id": {
+            "type": "string",
+            "example": "123"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "example": "user@example.com"
+          },
+          "display_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_uri": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "WorkflowStatus": {
+      "type": "string",
+      "enum": [
+        "STARTED",
+        "DONE",
+        "CLOSED"
+      ]
+    },
+    "StepType": {
+      "type": "string",
+      "enum": [
+        "MANUAL",
+        "AUTOMATION"
+      ]
+    },
+    "StepStatus": {
+      "type": "string",
+      "enum": [
+        "UNASSIGNED",
+        "ASSIGNED",
+        "COMPLETED",
+        "SKIPPED",
+        "IN_PROGRESS",
+        "SCHEDULED",
+        "PENDING",
+        "CONDITION_PENDING",
+        "WAITING_FOR_CONFIRMATION",
+        "WAITING_FOR_JOURNEY_SUBMISSION",
+        "ON_HOLD",
+        "FAILED"
+      ]
+    },
+    "PhaseInEntity": {
+      "type": "object",
+      "description": "Workflow phase information",
+      "properties": {
+        "phase_id": {
+          "type": "string"
+        },
+        "phase_name": {
+          "type": "string"
+        },
+        "phase_progress": {
+          "type": "number"
+        },
+        "phase_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TaskInEntity": {
+      "type": "object",
+      "description": "Open task of a workflow",
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "task_name": {
+          "type": "string"
+        },
+        "task_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_duedate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "task_start_date": {
+          "type": "string"
+        },
+        "task_execution_type": {
+          "$ref": "#/definitions/StepType"
+        },
+        "task_status": {
+          "$ref": "#/definitions/StepStatus"
+        }
+      }
+    },
+    "ClosingReason": {
+      "type": "object",
+      "description": "Reason for closing a workflow",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "won"
+        },
+        "title": {
+          "type": "string",
+          "example": "Won"
+        }
+      },
+      "required": [
+        "id",
+        "title"
+      ]
+    },
+    "WorkflowInEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "definition_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/WorkflowStatus"
+        },
+        "assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "duedate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "progress": {
+          "type": "number"
+        },
+        "phases_in_progress": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PhaseInEntity"
+          }
+        },
+        "last_update_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "upcoming_tasks_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "task_name": {
+          "type": "string"
+        },
+        "task_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "task_duedate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "task_start_date": {
+          "type": "string"
+        },
+        "task_execution_type": {
+          "$ref": "#/definitions/StepType"
+        },
+        "task_status": {
+          "$ref": "#/definitions/StepStatus"
+        },
+        "current_tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TaskInEntity"
+          }
+        },
+        "phase_id": {
+          "type": "string"
+        },
+        "phase_name": {
+          "type": "string"
+        },
+        "phase_assignees": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "phase_progress": {
+          "type": "number"
+        },
+        "selected_closing_reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClosingReason"
+          }
+        },
+        "closing_reason_description": {
+          "type": "string"
+        }
+      }
+    },
+    "WorkflowOverview": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "$ref": "#/definitions/WorkflowInEntity"
+        }
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/WorkflowInEntity"
+        }
+      }
+    }
+  }
+}

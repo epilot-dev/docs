@@ -418,6 +418,10 @@
       "nullable": true,
       "description": "External ID"
     },
+    "bundle_contract": {
+      "$ref": "#/definitions/BaseRelation",
+      "description": "Framework Contract"
+    },
     "workflows": {
       "$ref": "#/definitions/WorkflowOverview"
     },

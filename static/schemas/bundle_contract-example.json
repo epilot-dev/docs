@@ -1,0 +1,216 @@
+{
+  "_schema": "bundle_contract",
+  "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "_org": "123",
+  "_title": "Entity Title",
+  "_tags": [
+    "family:label"
+  ],
+  "_purpose": [
+    "7675dc56-fd1b-46ee-9c35-defe0667b32e"
+  ],
+  "contract_name": "string",
+  "contract_number": "string",
+  "status": "draft",
+  "branch": "power",
+  "assignee": [
+    {
+      "type": "user",
+      "user_id": "string",
+      "group_id": "string",
+      "org_id": "123",
+      "email": "user@example.com",
+      "display_name": "John Doe",
+      "phone": "string",
+      "image_uri": {}
+    }
+  ],
+  "external_id": "string",
+  "description": "string",
+  "last_sync_at": "2025-01-01",
+  "customer": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "contact_persons": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "start_date": "2025-01-01",
+  "end_date": "2025-01-01",
+  "supply_start_date": "2025-01-01",
+  "supply_end_date": "2025-01-01",
+  "auto_renewal": true,
+  "renewal_duration_amount": "string",
+  "renewal_duration_unit": "weeks",
+  "notice_time_amount": "string",
+  "notice_time_unit": "weeks",
+  "termination_date": "2025-01-01",
+  "termination_reason": "string",
+  "pricing_model": "fixed",
+  "price_guarantee_until": "2025-01-01",
+  "grid_fees_handling": "inclusive",
+  "product_quality": "standard",
+  "total_volume_kwh": "string",
+  "volume_rule": "open_supply",
+  "tolerance_lower_percent": "string",
+  "tolerance_upper_percent": "string",
+  "tender_reference": "string",
+  "tender_lot": "string",
+  "billing_account": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "billing_address": {
+    "$relation_ref": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "path": "address",
+        "_tags": [
+          "example"
+        ],
+        "_id": "xHcOoJCa07eysJ1GaQeSb"
+      }
+    ]
+  },
+  "payment": {
+    "$relation_ref": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "path": "address",
+        "_tags": [
+          "example"
+        ],
+        "_id": "xHcOoJCa07eysJ1GaQeSb"
+      }
+    ]
+  },
+  "invoice_mode": "collective",
+  "billing_period": "monthly",
+  "payment_term_days": "string",
+  "expected_delivery_points": "string",
+  "delivery_point_notice_weeks": "string",
+  "metering_included": true,
+  "contracts": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "workflows": {
+    "primary": {
+      "id": "string",
+      "definition_id": "string",
+      "name": "string",
+      "status": "STARTED",
+      "assignees": [
+        "string"
+      ],
+      "duedate": "1970-01-01T00:00:00.000Z",
+      "progress": 0,
+      "phases_in_progress": [
+        {
+          "phase_id": "string",
+          "phase_name": "string",
+          "phase_progress": 0,
+          "phase_assignees": [
+            "string"
+          ]
+        }
+      ],
+      "last_update_time": "1970-01-01T00:00:00.000Z",
+      "upcoming_tasks_assignees": [
+        "string"
+      ],
+      "task_id": "string",
+      "task_name": "string",
+      "task_assignees": [
+        "string"
+      ],
+      "task_duedate": "1970-01-01T00:00:00.000Z",
+      "task_start_date": "string",
+      "task_execution_type": "MANUAL",
+      "task_status": "UNASSIGNED",
+      "current_tasks": [
+        {
+          "task_id": "string",
+          "task_name": "string",
+          "task_assignees": [
+            "string"
+          ],
+          "task_duedate": "1970-01-01T00:00:00.000Z",
+          "task_start_date": "string",
+          "task_execution_type": "MANUAL",
+          "task_status": "UNASSIGNED"
+        }
+      ],
+      "phase_id": "string",
+      "phase_name": "string",
+      "phase_assignees": [
+        "string"
+      ],
+      "phase_progress": 0,
+      "selected_closing_reasons": [
+        {
+          "id": "won",
+          "title": "Won"
+        }
+      ],
+      "closing_reason_description": "string"
+    }
+  },
+  "_files": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
+  "_created_at": "1970-01-01T00:00:00.000Z",
+  "_updated_at": "1970-01-01T00:00:00.000Z",
+  "_owners": [
+    {
+      "org_id": "123",
+      "user_id": "456"
+    }
+  ],
+  "_acl": {
+    "view": [
+      "org:456"
+    ],
+    "edit": [
+      "org:456"
+    ],
+    "delete": [
+      "org:456"
+    ]
+  },
+  "_manifest": [
+    "123e4567-e89b-12d3-a456-426614174000"
+  ]
+}

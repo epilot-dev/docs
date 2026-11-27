@@ -161,6 +161,16 @@
   },
   "last_sync_at": "2025-01-01",
   "external_id": "string",
+  "bundle_contract": {
+    "$relation": [
+      {
+        "entity_id": "123e4567-e89b-12d3-a456-426614174000",
+        "_tags": [
+          "example"
+        ]
+      }
+    ]
+  },
   "workflows": {
     "primary": {
       "id": "string",
