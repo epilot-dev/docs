@@ -2,6 +2,10 @@
 
 This changelog covers breaking changes, new features, and significant updates to epilot's public APIs, including REST APIs, core entities, and core events.
 
+## 2026-11-27 Entity API
+
+- [Breaking] **Reserved activity types rejected** — `POST /v1/entity/activity` now returns `400` when `type` is one of the activity types the Entity API creates itself: `EntityCreated`, `EntityUpdated`, `EntityDeleted`, `EntitySoftDeleted`, `EntityRestored`, `RelationsAdded`, `RelationsRemoved`, `RelationsSoftDeleted`, `RelationsRestored`, and `RelationsDeleted`. Integrations that post these types to add feed entries need to use a custom activity type instead.
+
 ## 2026-11-16 Workflows Execution API, Scheduler API
 
 - [New] **Put flow tasks on hold** — Tasks can be put on hold, and a hold can be expired manually or by a schedule. Be prepared for the new hold expiry target type when reading schedules.
